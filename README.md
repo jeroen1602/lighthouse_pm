@@ -18,7 +18,8 @@ It MOST probably won't actually brick your lighthouses, but I'm not liable in ca
 Since the method used to change the power state of the lighthouses is the same as the one that 
 Valve uses it is very unlikely to actually brick the lighthouse.
 
-If for whatever reason your lighthouse does get bricked, please [create an issue](./issues) so we can prevent other users from bricking theirs.
+If for whatever reason your lighthouse does get bricked, please 
+[create an issue](https://github.com/jeroen1602/lighthouse_pm/issues) so we can prevent other users from bricking theirs.
 
 ## Installation
 
@@ -28,7 +29,8 @@ Almost all phones made after 2013 support this.
 
 ### Sideload
 
-After that you can grab the `APK` from the [releases](./releases) page and [sideload](https://www.howtogeek.com/313433/how-to-sideload-apps-on-android/) this onto your device.
+After that you can grab the `APK` from the [releases](https://github.com/jeroen1602/lighthouse_pm/releases) 
+page and [sideload](https://www.howtogeek.com/313433/how-to-sideload-apps-on-android/) this onto your device.
 
 ### Google play
 
