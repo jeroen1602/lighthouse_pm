@@ -3,14 +3,15 @@ import 'package:flutter/foundation.dart';
 /// A enum that describes the current power state of a lighthouse beacon.
 class LighthousePowerState {
   final String text;
-  final int byte;
+  final int setByte;
+  final int stateByte;
 
-  const LighthousePowerState._internal(this.text, this.byte);
+  const LighthousePowerState._internal(this.text, this.setByte, this.stateByte);
 
-  static const STANDBY = const LighthousePowerState._internal('Standby', 0x00);
-  static const ON = const LighthousePowerState._internal('On', 0x01);
-  static const UNKNOWN = const LighthousePowerState._internal('Unknown', null);
-  static const BOOTING = const LighthousePowerState._internal('Booting', null);
+  static const STANDBY = const LighthousePowerState._internal('Standby', 0x00, 0x00);
+  static const ON = const LighthousePowerState._internal('On', 0x01, 0x0b);
+  static const UNKNOWN = const LighthousePowerState._internal('Unknown', null, null);
+  static const BOOTING = const LighthousePowerState._internal('Booting', null, 0x09);
 
   /// Convert a power state byte into a power state enum item.
   ///

@@ -16,38 +16,42 @@ class LighthouseWidget extends StatelessWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-          Padding(
+          /*Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image(
                 image: AssetImage('assets/images/android.png'),
                 fit: BoxFit.fitHeight,
-              )),
+              )),*/
           Expanded(
-              child: Column(children: <Widget>[
-            Container(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  children: <Widget>[
-                    Text('${this.lighthouseDevice.name}',
-                        style: Theme.of(context).textTheme.headline4)
-                  ],
-                )),
-            Container(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  children: <Widget>[
-                    StreamBuilder<int>(
-                        stream: this.lighthouseDevice.powerState,
-                        initialData: 0xFF,
-                        builder: (c, snapshot) {
-                          final data = snapshot.hasData ? snapshot.data : 0xFF;
-                          return _LHItemPowerStateWidget(powerState: data);
-                        }),
-                    VerticalDivider(),
-                    Text('${this.lighthouseDevice.id}')
-                  ],
-                ))
-          ])),
+              child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(children: <Widget>[
+                    Container(
+                        alignment: Alignment.topLeft,
+                        child: Row(
+                          children: <Widget>[
+                            Text('${this.lighthouseDevice.name}',
+                                style: Theme.of(context).textTheme.headline4)
+                          ],
+                        )),
+                    Container(
+                        alignment: Alignment.topLeft,
+                        child: Row(
+                          children: <Widget>[
+                            StreamBuilder<int>(
+                                stream: this.lighthouseDevice.powerState,
+                                initialData: 0xFF,
+                                builder: (c, snapshot) {
+                                  final data =
+                                      snapshot.hasData ? snapshot.data : 0xFF;
+                                  return _LHItemPowerStateWidget(
+                                      powerState: data);
+                                }),
+                            VerticalDivider(),
+                            Text('${this.lighthouseDevice.id}')
+                          ],
+                        ))
+                  ]))),
           StreamBuilder<int>(
               stream: this.lighthouseDevice.powerState,
               initialData: 0xFF,

@@ -25,6 +25,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+def home = System.getProperty('user.home')
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = new File(home + '/android-keys/key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains('~')) {
+    keystoreProperties['storeFile'] = keystoreProperties['storeFile'].replace('~', home)
+}
+
 android {
     compileSdkVersion 30
 
@@ -44,12 +54,23 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    signingConfigs {
+        release {
+            if (!keystoreProperties['keyAlias']) {
+                throw new RuntimeException('Keystore not defined!');
+            }
+
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+
+        }
+    }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

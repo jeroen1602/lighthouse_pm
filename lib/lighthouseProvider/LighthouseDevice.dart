@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -31,7 +32,7 @@ class LighthouseDevice {
   ///Get the power state of the device as an int.
   Stream<int> get powerState {
     this._startPowerStateStream();
-    return this._powsterState.stream;
+    return this._powerState.stream;
   }
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
@@ -41,7 +42,7 @@ class LighthouseDevice {
 
   final BluetoothDevice _device;
   BluetoothCharacteristic _characteristic;
-  BehaviorSubject<int> _powsterState = BehaviorSubject.seeded(0x02);
+  BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
   StreamSubscription _powerStateSubscription;
 
   ///Check if the device is a valid Lighthouse device.
@@ -103,7 +104,7 @@ class LighthouseDevice {
     if (this._characteristic == null) {
       return;
     }
-    await this._characteristic.write([newState.byte], withoutResponse: true);
+    await this._characteristic.write([newState.setByte], withoutResponse: true);
   }
 
   bool _powerStateTransaction = false;
@@ -127,7 +128,7 @@ class LighthouseDevice {
           _powerStateTransaction = true;
           this._characteristic.read().then((data) {
             if (data.length >= 1) {
-              this._powsterState.add(data[0]);
+              this._powerState.add(data[0]);
             }
             _powerStateTransaction = false;
           }).catchError((error) {
@@ -139,5 +140,75 @@ class LighthouseDevice {
     _powerStateSubscription.onDone(() {
       _powerStateSubscription = null;
     });
+  }
+}
+
+/// This is a fake [LighthouseDevice] that won't actually do anything.
+///
+/// This always uses fake data and doesn't actually connect to a device. And
+/// always uses fake data.
+class LighthouseDeviceFake extends LighthouseDevice {
+  LighthouseDeviceFake() : super(null) {
+    final random = new Random();
+    for (var i = 0; i < 8; i++) {
+      this._name += random.nextInt(16).toRadixString(16).toUpperCase();
+    }
+    String id = '00:00:00:00:00:';
+    id += random.nextInt(16).toRadixString(16).toUpperCase();
+    id += random.nextInt(16).toRadixString(16).toUpperCase();
+    this._id = new DeviceIdentifier(id);
+
+    if (random.nextBool()) {
+      this._powerState.add(LighthousePowerState.ON.stateByte);
+    } else {
+      this._powerState.add(LighthousePowerState.STANDBY.stateByte);
+    }
+  }
+
+  String _name = 'LHB-';
+
+  @override
+  String get name => _name;
+
+  DeviceIdentifier _id;
+
+  @override
+  DeviceIdentifier get id => _id;
+
+  BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
+
+  @override
+  Stream<int> get powerState => _powerState.stream;
+
+  @override
+  Stream<LighthousePowerState> get powerStateEnum =>
+      this.powerState.map((e) => LighthousePowerState.fromByte(e));
+
+  @override
+  Future<bool> isValid() async {
+    return true;
+  }
+
+  @override
+  Future disconnect() async {
+    return;
+  }
+
+  @override
+  Future changeState(LighthousePowerState newState) async {
+    switch (newState) {
+      case LighthousePowerState.BOOTING:
+      case LighthousePowerState.UNKNOWN:
+        return;
+      case LighthousePowerState.ON:
+        this._powerState.add(LighthousePowerState.ON.setByte);
+        await Future.delayed(new Duration(milliseconds: 10));
+        this._powerState.add(LighthousePowerState.BOOTING.stateByte);
+        await Future.delayed(new Duration(milliseconds: 300));
+        this._powerState.add(LighthousePowerState.ON.stateByte);
+        break;
+      case LighthousePowerState.STANDBY:
+        this._powerState.add(LighthousePowerState.STANDBY.setByte);
+    }
   }
 }

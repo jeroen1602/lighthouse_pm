@@ -40,7 +40,11 @@ class LighthouseProvider {
           .map((devices) => devices.map((device) => device.data).toList());
 
   /// Get an instance of [LighthouseProvider].
-  static get instance => _instance;
+  static get instance {
+    return LighthouseProvider._instance;
+//    return LighthouseProviderFake.instance;
+  }
+
   static final _instance = LighthouseProvider._();
   Set<DeviceIdentifier> _connectingDevices = Set();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
@@ -165,5 +169,47 @@ class LighthouseProvider {
     _scanResultSubscription.onDone(() {
       this._scanResultSubscription = null;
     });
+  }
+}
+
+/// A [LighthouseProvider] that always returns fake data and doesn't actually
+/// communicate with any bluetooth service.
+///
+/// This is only used for testing and creating screenshots.
+class LighthouseProviderFake extends LighthouseProvider {
+  LighthouseProviderFake._() : super._();
+
+  @override
+  Future stopScan() async {
+    return;
+  }
+
+  @override
+  Future startScan(
+      {ScanMode scanMode = ScanMode.lowLatency, Duration timeout}) async {
+    this._lighthouseDevicesFake.add(List());
+    final list = this._lighthouseDevicesFake.value;
+    await Future.delayed(new Duration(milliseconds: 300));
+    list.add(new LighthouseDeviceFake());
+    this._lighthouseDevicesFake.add(list);
+    await Future.delayed(new Duration(milliseconds: 400));
+    list.add(new LighthouseDeviceFake());
+    this._lighthouseDevicesFake.add(list);
+  }
+
+  BehaviorSubject<List<LighthouseDevice>> _lighthouseDevicesFake =
+      BehaviorSubject.seeded([]);
+
+  @override
+  Stream<List<LighthouseDevice>> get lighthouseDevices =>
+      _lighthouseDevicesFake.stream;
+
+  static LighthouseProviderFake _instance;
+
+  static LighthouseProviderFake get instance {
+    if (LighthouseProviderFake._instance == null) {
+      LighthouseProviderFake._instance = LighthouseProviderFake._();
+    }
+    return LighthouseProviderFake._instance;
   }
 }
