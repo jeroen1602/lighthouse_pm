@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 
-import 'lighthouseProvider/LighthousePowerState.dart';
+import '../LighthousePowerState.dart';
 
 /// A widget for showing a [LighthouseDevice] in a list.
 class LighthouseWidget extends StatelessWidget {

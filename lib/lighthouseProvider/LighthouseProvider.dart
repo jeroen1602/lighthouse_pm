@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,12 +41,17 @@ class LighthouseProvider {
           .map((devices) => devices.map((device) => device.data).toList());
 
   /// Get an instance of [LighthouseProvider].
-  static get instance {
-    return LighthouseProvider._instance;
+  static LighthouseProvider get instance {
+    if (Foundation.kReleaseMode) {
+      return LighthouseProvider._instance;
+    } else {
+      // easily change to use the actual provider or the fake one.
+      return LighthouseProvider._instance;
 //    return LighthouseProviderFake.instance;
+    }
   }
 
-  static final _instance = LighthouseProvider._();
+  static final LighthouseProvider _instance = LighthouseProvider._();
   Set<DeviceIdentifier> _connectingDevices = Set();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
@@ -60,12 +66,16 @@ class LighthouseProvider {
     ScanMode scanMode = ScanMode.lowLatency,
     Duration timeout,
   }) async {
-    this._disconnectOpenDevices();
-    this._lightHouseDevices.add(List());
-    this._connectingDevices.clear();
-    this._startListeningScanResults();
+    await cleanUp();
+    _startListeningScanResults();
     await FlutterBlue.instance
         .startScan(scanMode: scanMode, timeout: timeout, allowDuplicates: true);
+  }
+
+  Future cleanUp() async {
+    await _disconnectOpenDevices();
+    _lightHouseDevices.add(List());
+    _connectingDevices.clear();
   }
 
   /// Stop scanning for [LighthouseDevice]s.

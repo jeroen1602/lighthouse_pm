@@ -78,8 +78,10 @@ class LighthouseDevice {
 
   ///Disconnect from the device.
   Future disconnect() async {
+    debugPrint('Disconnecting from the powerstate');
     await this._powerStateSubscription.cancel();
-    return this._device.disconnect();
+    this._characteristic = null;
+    await this._device.disconnect();
   }
 
   ///Change the state of the device.
@@ -119,6 +121,7 @@ class LighthouseDevice {
         this._powerStateSubscription.resume();
         return;
       }
+      return;
     }
     _powerStateTransaction = false;
     _powerStateSubscription =
@@ -135,9 +138,16 @@ class LighthouseDevice {
             debugPrint(error);
           });
         }
+      } else {
+        debugPrint('Cleaning-up old subscription!');
+        final subscription = this._powerStateSubscription;
+        if (subscription != null) {
+          subscription.cancel();
+        }
       }
     });
     _powerStateSubscription.onDone(() {
+      debugPrint('Cleaning-up powerstate subscription!');
       _powerStateSubscription = null;
     });
   }
