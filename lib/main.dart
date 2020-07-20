@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-import 'LighthouseWidget.dart';
-import 'lighthouseProvider/LighthouseDevice.dart';
-import 'lighthouseProvider/LighthouseProvider.dart';
+import 'pages/MainPage.dart';
 
 void main() {
   runApp(MainApp());
@@ -13,71 +11,12 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: true,
         title: 'Lighthouse PM',
         theme: ThemeData(
             primarySwatch: Colors.grey,
             visualDensity: VisualDensity.adaptivePlatformDensity),
-        home: StreamBuilder<BluetoothState>(
-            stream: FlutterBlue.instance.state,
-            initialData: BluetoothState.unknown,
-            builder: (c, snapshot) {
-              final state = snapshot.data;
-              if (state == BluetoothState.on) {
-                return ScanDevicesScreen();
-              }
-              return BluetoothOffScreen(state: state);
-            }));
-  }
-}
-
-class ScanDevicesScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lighthouse PM'),
-      ),
-      backgroundColor: Colors.white,
-      body: RefreshIndicator(
-          onRefresh: () => LighthouseProvider.instance
-              .startScan(timeout: Duration(seconds: 4)),
-          // The list of visible devices.
-          child: SingleChildScrollView(
-              child: Column(children: <Widget>[
-            StreamBuilder<List<LighthouseDevice>>(
-                stream: LighthouseProvider.instance.lighthouseDevices,
-                initialData: [],
-                builder: (c, snapshot) {
-                  if (!snapshot.hasData) {
-                    //TODO: add better error handling.
-                    return Text('E');
-                  }
-                  return Column(
-                      children: snapshot.data
-                          .map((d) => LighthouseWidget(d))
-                          .toList());
-                })
-          ]))),
-      // The button for starting and stopping scanning.
-      floatingActionButton: StreamBuilder<bool>(
-          stream: FlutterBlue.instance.isScanning,
-          initialData: false,
-          builder: (c, snapshot) {
-            if (snapshot.data) {
-              return FloatingActionButton(
-                child: Icon(Icons.stop),
-                onPressed: () => LighthouseProvider.instance.stopScan(),
-                backgroundColor: Colors.red,
-              );
-            } else {
-              return FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () => LighthouseProvider.instance
-                    .startScan(timeout: Duration(seconds: 4)),
-              );
-            }
-          }),
-    );
+        home: MainPage());
   }
 }
 
