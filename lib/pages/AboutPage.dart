@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 
+import 'PrivacyPage.dart';
+
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,8 @@ class AboutPage extends StatelessWidget {
                         .copyWith(color: Colors.black)),
                 trailing: Icon(Icons.arrow_forward_ios),
                 onTap: () => {
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('TBI')))
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PrivacyPage()))
                 },
               ),
               Divider(),
