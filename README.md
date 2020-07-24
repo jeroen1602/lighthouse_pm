@@ -2,7 +2,7 @@
 
 Power management app to control the Valve Index® lighthouses from your phone.
 
-Inspired by [lighthouse-v2-manager](https://github.com/nouser2013/lighthouse-v2-manager) but that project is desktop only
+Inspired by [lighthouse-v2-manager](https://github.com/nouser2013/lighthouse-v2-manager) but that project is desktop only.
 And if your computer doesn't have a bluetooth adapter then it is useless. Sadly the Valve Index® doesn't provide it's bluetooth adapter
 to the system and thus can't be used for that. Fortunately most phones do have bluetooth support, so I made this app to
 easily change the power state of a Lighthouse.
