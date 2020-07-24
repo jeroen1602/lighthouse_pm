@@ -4,6 +4,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
+import 'package:lighthouse_pm/pages/AboutPage.dart';
 
 import '../main.dart';
 
@@ -29,17 +30,15 @@ class ScanDevicesPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _ScanDevicesPage();
   }
-
 }
 
-class _ScanDevicesPage extends State<ScanDevicesPage> with WidgetsBindingObserver {
-
+class _ScanDevicesPage extends State<ScanDevicesPage>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    LighthouseProvider.instance
-        .startScan(timeout: Duration(seconds: 4));
+    LighthouseProvider.instance.startScan(timeout: Duration(seconds: 4));
   }
 
   @override
@@ -47,9 +46,6 @@ class _ScanDevicesPage extends State<ScanDevicesPage> with WidgetsBindingObserve
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +80,30 @@ class _ScanDevicesPage extends State<ScanDevicesPage> with WidgetsBindingObserve
           } else {
             return FloatingActionButton(
               child: Icon(Icons.search),
-              onPressed: () =>
-                  LighthouseProvider.instance
-                      .startScan(timeout: Duration(seconds: 4)),
+              onPressed: () => LighthouseProvider.instance
+                  .startScan(timeout: Duration(seconds: 4)),
             );
           }
         },
       ),
+      drawer: Drawer(
+          child: ListView(
+        children: <Widget>[
+          DrawerHeader(
+              decoration: BoxDecoration(color: Colors.grey),
+              child: Text('Lighthouse PM',
+                  style: TextStyle(color: Colors.black, fontSize: 24))),
+          ListTile(
+            leading: Icon(Icons.info),
+            title: Text('About'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AboutPage()));
+            },
+          )
+        ],
+      )),
     );
   }
 
