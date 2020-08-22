@@ -63,8 +63,15 @@ class LighthouseWidget extends StatelessWidget {
                     final state = LighthousePowerState.fromByte(data);
                     if (state == LighthousePowerState.BOOTING) {
                       Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('Lighthouse is already booting!'),
-                      ));
+                          content: Text('Lighthouse is already booting!'),
+                          action: SnackBarAction(
+                            label: 'I\'m sure',
+                            onPressed: () async {
+                              await this
+                                  .lighthouseDevice
+                                  .changeState(LighthousePowerState.STANDBY);
+                            },
+                          )));
                       return;
                     }
                     var newSate = LighthousePowerState.ON;
