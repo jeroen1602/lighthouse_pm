@@ -60,9 +60,16 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
           final list = snapshot.data;
           return ListView.builder(
             itemBuilder: (BuildContext context, int index) {
+              if (index == list.length) {
+                // Add an extra container at the bottom to stop the floating
+                // button from obstructing the last item.
+                return Container(
+                  height: 80,
+                );
+              }
               return LighthouseWidget(list[index]);
             },
-            itemCount: list.length,
+            itemCount: list.length + 1,
           );
         },
       ),

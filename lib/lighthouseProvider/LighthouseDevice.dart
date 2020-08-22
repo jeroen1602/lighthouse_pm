@@ -214,7 +214,7 @@ class LighthouseDeviceFake extends LighthouseDevice {
         this._powerState.add(LighthousePowerState.ON.setByte);
         await Future.delayed(new Duration(milliseconds: 10));
         this._powerState.add(LighthousePowerState.BOOTING.stateByte);
-        await Future.delayed(new Duration(milliseconds: 300));
+        await Future.delayed(new Duration(milliseconds: 1200));
         this._powerState.add(LighthousePowerState.ON.stateByte);
         break;
       case LighthousePowerState.STANDBY:

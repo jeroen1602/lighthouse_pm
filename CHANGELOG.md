@@ -8,6 +8,8 @@
  - Added About page.
  - Added button to launch build-in licenses page.
  - Added privacy page.
+ - Fixed not able to change powerstate if lightouse is stuck at 0x01 (starting).
+ - Fixed lighthouse state button being obstructed by the scan button.
 
 
 # Version 0.0.1+1 2020-07-18
