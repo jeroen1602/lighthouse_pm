@@ -47,8 +47,8 @@ class LighthouseProvider {
       return LighthouseProvider._instance;
     } else {
       // easily change to use the actual provider or the fake one.
-//      return LighthouseProvider._instance;
-    return LighthouseProviderFake.instance;
+      return LighthouseProvider._instance;
+//    return LighthouseProviderFake.instance;
     }
   }
 
@@ -202,7 +202,8 @@ class LighthouseProviderFake extends LighthouseProvider {
     final list = this._lighthouseDevicesFake.value;
     final random = new Random();
     for (var i = 0; i < 20; i++) {
-      await Future.delayed(new Duration(milliseconds: random.nextInt(500) + 200));
+      await Future.delayed(
+          new Duration(milliseconds: random.nextInt(500) + 200));
       list.add(new LighthouseDeviceFake());
       this._lighthouseDevicesFake.add(list);
     }
