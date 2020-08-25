@@ -5,6 +5,10 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
+import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
+import 'package:lighthouse_pm/widgets/PermanentPermissionDeniedAlertWidget.dart';
+import 'package:lighthouse_pm/widgets/PermissionsAlertWidget.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../main.dart';
 
@@ -38,7 +42,14 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    LighthouseProvider.instance.startScan(timeout: Duration(seconds: 4));
+    BLEPermissionsHelper.hasBLEPermissions().then((state) {
+      if (state == PermissionStatus.granted) {
+        LighthouseProvider.instance.startScan(timeout: Duration(seconds: 4));
+      } else {
+        debugPrint(
+            "Could not start scan because the permission has not been granted");
+      }
+    });
   }
 
   @override
@@ -87,8 +98,40 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
           } else {
             return FloatingActionButton(
               child: Icon(Icons.search),
-              onPressed: () => LighthouseProvider.instance
-                  .startScan(timeout: Duration(seconds: 4)),
+              onPressed: () async {
+                switch (await BLEPermissionsHelper.hasBLEPermissions()) {
+                  case PermissionStatus.denied:
+                  case PermissionStatus.undetermined:
+                  case PermissionStatus.restricted:
+                    // expression can be `null`
+                    if (await PermissionsAlertWidget.showCustomDialog(
+                        context) != true) {
+                      return;
+                    }
+                    switch (
+                        await BLEPermissionsHelper.requestBLEPermissions()) {
+                      case PermissionStatus.permanentlyDenied:
+                        continue permanentlyDenied;
+                      case PermissionStatus.granted:
+                        continue granted;
+                      default:
+                        return;
+                    }
+                    break;
+                  granted:
+                  case PermissionStatus.granted:
+                    LighthouseProvider.instance
+                        .startScan(timeout: Duration(seconds: 4));
+                    break;
+                  permanentlyDenied:
+                  case PermissionStatus.permanentlyDenied:
+                    // expression can be `null`
+                    if (await PermanentPermissionDeniedAlertWidget
+                        .showCustomDialog(context) == true) {
+                      openAppSettings();
+                    }
+                }
+              },
             );
           }
         },
@@ -121,7 +164,16 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         LighthouseProvider.instance.cleanUp();
         break;
       case AppLifecycleState.resumed:
-        LighthouseProvider.instance.startScan(timeout: Duration(seconds: 4));
+        BLEPermissionsHelper.hasBLEPermissions().then((status) {
+          if (status == PermissionStatus.granted) {
+            LighthouseProvider.instance
+                .startScan(timeout: Duration(seconds: 4));
+          } else {
+            debugPrint(
+                "Could not start scan because the permission has not been granted on resume");
+          }
+        });
+
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
