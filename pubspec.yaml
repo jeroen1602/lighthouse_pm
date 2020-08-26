@@ -26,6 +26,7 @@ dependencies:
   flutter_blue: ^0.7.2
   rxdart: ^0.24.1
   package_info: ^0.4.1
+  permission_handler: ^5.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

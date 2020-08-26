@@ -11,6 +11,7 @@
  - Fixed not able to change powerstate if lightouse is stuck at 0x01 (starting).
  - Fixed lighthouse state button being obstructed by the scan button.
  - Added new app icon.
+ - (Android) Added a dialog that shows to inform a user of the use of location permissions
 
 
 # Version 0.0.1+1 2020-07-18
