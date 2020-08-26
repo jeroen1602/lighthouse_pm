@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 ///
@@ -7,6 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 /// BLE.
 ///
 class BLEPermissionsHelper {
+  static const _channel =
+      const MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");
+
   ///
   /// A function to check if the app is allowed to use BLE.
   /// On Android the device is only allowed to use BLE if the location permission
@@ -40,6 +45,42 @@ class BLEPermissionsHelper {
     }
     if (Platform.isIOS) {
       return PermissionStatus.granted;
+    }
+    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+  }
+
+  ///
+  /// Open the bluetooth settings on the device.
+  /// On Android this is possible.
+  /// On iOS this function is not possible and will always return [false].
+  ///
+  /// May throw [UnsupportedError] if the platform is not supported.
+  static Future<bool> openBLESettings() async {
+    if (Platform.isAndroid) {
+      return _channel.invokeMethod("openBLESettings");
+    }
+    if (Platform.isIOS) {
+      // According to[(this](https://stackoverflow.com/a/43754366/13324337) you
+      // aren't allowed to open settings on ios.
+      debugPrint("Can't open settings because iOS doesn't support it.");
+      return false;
+    }
+    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+  }
+  ///
+  /// Enable the bluetooth adapter on a device.
+  /// On Android this is possible.
+  /// On iOS this function is not possible and will always return [false].
+  ///
+  /// May throw [UnsupportedError] if the platform is not supported.
+  static Future<bool> enableBLE() async {
+    if (Platform.isAndroid) {
+      return _channel.invokeMethod("enableBluetooth");
+    }
+    if (Platform.isIOS) {
+      // iOS doesn't have an API that can handle enable bluetooth for us.
+      debugPrint("Can't enable BLE on iOS since there is no api.");
+      return false;
     }
     throw new UnsupportedError("ERROR: unsupported platform! $Platform");
   }

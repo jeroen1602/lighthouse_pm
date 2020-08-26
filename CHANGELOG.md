@@ -12,6 +12,8 @@
  - Fixed lighthouse state button being obstructed by the scan button.
  - Added new app icon.
  - (Android) Added a dialog that shows to inform a user of the use of location permissions
+ - Created Bluetooth not enabled screen.
+ - (Android) added option to enable Bluetooth from the Bluetooth not enabled screen.
 
 
 # Version 0.0.1+1 2020-07-18
