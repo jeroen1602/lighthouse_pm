@@ -14,6 +14,7 @@
  - (Android) Added a dialog that shows to inform a user of the use of location permissions
  - Created Bluetooth not enabled screen.
  - (Android) added option to enable Bluetooth from the Bluetooth not enabled screen.
+ - (Android) Added a workaround so the app doesn't crash if closed while scanning. Still waiting on (https://github.com/pauldemarco/flutter_blue/issues/649) for an actual fix.
 
 
 # Version 0.0.1+1 2020-07-18

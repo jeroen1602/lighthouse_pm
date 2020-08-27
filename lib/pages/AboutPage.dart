@@ -47,8 +47,7 @@ class AboutPage extends StatelessWidget {
                         .headline6
                         .copyWith(color: Colors.black)),
                 trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PrivacyPage())),
+                onTap: () => Navigator.pushNamed(context, '/about/privacy'),
               ),
               Divider(),
               ListTile(

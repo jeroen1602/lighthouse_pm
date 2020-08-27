@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/pages/AboutPage.dart';
+import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 
 import 'pages/MainPage.dart';
 
@@ -48,6 +50,12 @@ class MainApp extends StatelessWidget {
         theme: ThemeData(
             primarySwatch: Colors.grey,
             visualDensity: VisualDensity.adaptivePlatformDensity),
-        home: MainPage());
+        routes: {
+          '/': (context) => MainPage(),
+          '/about': (context) => AboutPage(),
+          '/about/privacy': (context) => PrivacyPage()
+        }
+        // home: MainPage()
+    );
   }
 }

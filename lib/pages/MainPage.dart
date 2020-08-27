@@ -6,7 +6,6 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
-import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:lighthouse_pm/widgets/EnableBluetoothAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/PermanentPermissionDeniedAlertWidget.dart';
@@ -14,45 +13,60 @@ import 'package:lighthouse_pm/widgets/PermissionsAlertWidget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MainPage extends StatelessWidget {
+  Future<bool> _onWillPop() async {
+    // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
+    if (Platform.isAndroid) {
+      if (await FlutterBlue.instance.isScanning.first) {
+        await LighthouseProvider.instance.stopScan();
+        await LighthouseProvider.instance.cleanUp();
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FlutterBlue.instance.state,
-      initialData: BluetoothState.unknown,
-      builder: (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
-        final state = snapshot.data;
-        final Widget floatingButton =
-            state == BluetoothState.on ? _ScanFloatingButtonWidget() : null;
-        final Widget body = state == BluetoothState.on
-            ? ScanDevicesPage()
-            : BluetoothOffScreen(state: state);
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: StreamBuilder(
+        stream: FlutterBlue.instance.state,
+        initialData: BluetoothState.unknown,
+        builder:
+            (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
+          final state = snapshot.data;
+          final Widget floatingButton =
+              state == BluetoothState.on ? _ScanFloatingButtonWidget() : null;
+          final Widget body = state == BluetoothState.on
+              ? ScanDevicesPage()
+              : BluetoothOffScreen(state: state);
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Lighthouse PM'),
-          ),
-          floatingActionButton: floatingButton,
-          drawer: Drawer(
-              child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.grey),
-                  child: Text('Lighthouse PM',
-                      style: TextStyle(color: Colors.black, fontSize: 24))),
-              ListTile(
-                leading: Icon(Icons.info),
-                title: Text('About'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AboutPage()));
-                },
-              )
-            ],
-          )),
-          body: body,
-        );
-      },
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Lighthouse PM'),
+            ),
+            floatingActionButton: floatingButton,
+            drawer: Drawer(
+                child: ListView(
+              children: <Widget>[
+                DrawerHeader(
+                    decoration: BoxDecoration(color: Colors.grey),
+                    child: Text('Lighthouse PM',
+                        style: TextStyle(color: Colors.black, fontSize: 24))),
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text('About'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/about');
+                  },
+                )
+              ],
+            )),
+            body: body,
+          );
+        },
+      ),
     );
   }
 }
@@ -172,6 +186,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
+        LighthouseProvider.instance.stopScan();
         LighthouseProvider.instance.cleanUp();
         break;
       case AppLifecycleState.resumed:
