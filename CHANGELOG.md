@@ -1,5 +1,5 @@
 
-# Version 0.0.2+2 RC
+# Version 1.0.0+2 2020-08-27
 
  - Fixed powerstate connection staying open on rescan.
  - Fixed powerstate connection staying open on app pause.
