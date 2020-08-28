@@ -16,7 +16,9 @@ class MainPage extends StatelessWidget {
   Future<bool> _onWillPop() async {
     // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
     if (Platform.isAndroid) {
-      if (await FlutterBlue.instance.isScanning.first) {
+      if (await FlutterBlue.instance.isScanning.first ||
+          (await LighthouseProvider.instance.lighthouseDevices.first).length >
+              0) {
         await LighthouseProvider.instance.stopScan();
         await LighthouseProvider.instance.cleanUp();
         await Future.delayed(Duration(milliseconds: 100));

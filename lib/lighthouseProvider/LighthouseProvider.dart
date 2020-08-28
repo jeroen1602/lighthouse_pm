@@ -48,7 +48,7 @@ class LighthouseProvider {
     } else {
       // easily change to use the actual provider or the fake one.
       return LighthouseProvider._instance;
-//    return LighthouseProviderFake.instance;
+      // return LighthouseProviderFake.instance;
     }
   }
 

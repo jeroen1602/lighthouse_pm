@@ -1,4 +1,8 @@
 
+# Version 1.0.1+3 RC
+
+ - (Android) Close connection to open device on app close. 
+
 # Version 1.0.0+2 2020-08-27
 
  - Fixed powerstate connection staying open on rescan.
