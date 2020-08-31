@@ -1,7 +1,11 @@
 
-# Version 1.0.1+3 RC
+# Version 1.0.2+4 RC
 
  - (Android) Close connection to open device on app close. 
+
+# Version 1.0.1+3 2020-08-31
+
+ - (Android) Fixed app crash on launch for Android < 7.0 (24). (#24)
 
 # Version 1.0.0+2 2020-08-27
 
