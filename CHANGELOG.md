@@ -1,3 +1,10 @@
+# Version 1.0.2+4 RC
+
+ - (Android) Close connection to open device on app close. 
+
+# Version 1.0.2+4 RC
+
+ - (Android) Close connection to open device on app close. 
 
 # Version 1.0.1+3 2020-08-31
 
@@ -20,7 +27,6 @@
  - (Android) added option to enable Bluetooth from the Bluetooth not enabled screen.
  - (Android) Added a workaround so the app doesn't crash if closed while scanning. Still waiting on (https://github.com/pauldemarco/flutter_blue/issues/649) for an actual fix.
 
-
 # Version 0.0.1+1 2020-07-18
 
 First release!
@@ -29,4 +35,3 @@ First release!
  - Added live update of powerstate.
  - Added feature to change power-state.
  - Added page when bluetooth is disabled.
-
