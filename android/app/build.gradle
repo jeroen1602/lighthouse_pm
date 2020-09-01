@@ -37,6 +37,7 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 
 android {
     compileSdkVersion 30
+    ndkVersion "21.3.6528147"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -47,7 +48,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.jeroen1602.lighthouse_pm"
         minSdkVersion 19
         targetSdkVersion 30
@@ -57,14 +57,15 @@ android {
     signingConfigs {
         release {
             if (!keystoreProperties['keyAlias']) {
-                throw new RuntimeException('Keystore not defined!');
+                println "WARNING: Release keystore has not been found! Building release builds will be impossible!"
+                println "Keystore properties should be located at: `${keystorePropertiesFile}` ."
+                println "Go to `android/app/build.gradle` to change this if needed!"
+            } else {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
             }
-
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-
         }
     }
 
