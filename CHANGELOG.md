@@ -1,6 +1,10 @@
 # Version 1.0.2+4 RC
 
  - (Android) Close connection to open device on app close. 
+ - Added a troubleshooting page.
+ - Troubleshooting will also show up if no device have been found after the scan has finished.
+ - (Android) Added smart troubleshooting item for location permissions.
+ - (Android) Added smart troubleshooting item for bluetooth enabled.
 
 # Version 1.0.2+4 RC
 

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
+import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 
 import 'pages/MainPage.dart';
 
@@ -53,7 +54,8 @@ class MainApp extends StatelessWidget {
         routes: {
           '/': (context) => MainPage(),
           '/about': (context) => AboutPage(),
-          '/about/privacy': (context) => PrivacyPage()
+          '/about/privacy': (context) => PrivacyPage(),
+          '/troubleshooting': (context) => TroubleshootingPage(),
         }
         // home: MainPage()
     );

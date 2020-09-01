@@ -8,10 +8,10 @@ import 'package:rxdart/rxdart.dart';
 import 'LighthousePowerState.dart';
 
 ///The bluetooth service that handles the power state of the device.
-final Guid _PWR_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
+final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
 
 ///The characteristic that handles the power state of the device.
-final Guid _PWR_CHARACTERISTIC = Guid('00001525-1212-efde-1523-785feabcd124');
+final Guid _POWER_CHARACTERISTIC = Guid('00001525-1212-efde-1523-785feabcd124');
 
 /// A single lighthouse device. (This doesn't mean that it is a valid device.
 /// if used outside of the [LighthouseProvider] then you can be (almost) certain
@@ -62,12 +62,12 @@ class LighthouseDevice {
     debugPrint('Finding service for device: ${this._device.id.toString()}');
     List<BluetoothService> services = await this._device.discoverServices();
     for (final service in services) {
-      if (service.uuid != _PWR_SERVICE) {
+      if (service.uuid != _POWER_SERVICE) {
         continue;
       }
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
-        if (characteristic.uuid == _PWR_CHARACTERISTIC) {
+        if (characteristic.uuid == _POWER_CHARACTERISTIC) {
           this._characteristic = characteristic;
           return true;
         }
