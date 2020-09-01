@@ -9,6 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 /// BLE.
 ///
 class BLEPermissionsHelper {
+  BLEPermissionsHelper._();
+
   static const _channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");
 
@@ -80,6 +82,24 @@ class BLEPermissionsHelper {
     if (Platform.isIOS) {
       // iOS doesn't have an API that can handle enable bluetooth for us.
       debugPrint("Can't enable BLE on iOS since there is no api.");
+      return false;
+    }
+    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+  }
+
+  ///
+  /// Open location settings for a specific platform.
+  /// On Android this is possible.
+  /// On iOS this function nis not possible and will always return [false].
+  ///
+  /// May throw [UnsupportedError] if the platform is not supported.
+  static Future<bool> openLocationSettings() async {
+    if (Platform.isAndroid) {
+      return _channel.invokeMethod("openLocationSettings");
+    }
+    if (Platform.isIOS) {
+      // iOS doesn't have an API that can open location settings
+      debugPrint("Can't open location settings on iOS since there is no api.");
       return false;
     }
     throw new UnsupportedError("ERROR: unsupported platform! $Platform");

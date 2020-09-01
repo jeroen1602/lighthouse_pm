@@ -4,8 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'PrivacyPage.dart';
-
 const _github_url = "https://github.com/jeroen1602/lighthouse_pm";
 
 class AboutPage extends StatelessWidget {

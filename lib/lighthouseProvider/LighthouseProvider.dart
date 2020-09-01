@@ -85,7 +85,9 @@ class LighthouseProvider {
   /// [lighthouseDevices] will still contain the (at the time of stopping)
   /// valid [LighthouseDevice]s.
   Future stopScan() async {
-    this._scanResultSubscription.pause();
+    if (this._scanResultSubscription != null) {
+      this._scanResultSubscription.pause();
+    }
     await FlutterBlue.instance.stopScan();
   }
 

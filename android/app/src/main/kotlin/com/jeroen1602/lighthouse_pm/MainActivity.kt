@@ -10,9 +10,8 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NAME).setMethodCallHandler {
-            call, result ->
-            when(call.method) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NAME).setMethodCallHandler { call, result ->
+            when (call.method) {
                 "openBLESettings" -> {
                     openBLESettings()
                     result.success(true)
@@ -20,6 +19,10 @@ class MainActivity : FlutterActivity() {
                 "enableBluetooth" -> {
                     val bluetooth = enableBluetooth()
                     result.success(bluetooth)
+                }
+                "openLocationSettings" -> {
+                    openLocationSettings()
+                    result.success(true)
                 }
                 else -> result.notImplemented()
             }
@@ -32,13 +35,19 @@ class MainActivity : FlutterActivity() {
         intent.action = android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
         startActivity(intent)
     }
-    
+
     private fun enableBluetooth(): Boolean {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         if (!adapter.isEnabled) {
             return adapter.enable()
         }
         return false;
+    }
+
+    private fun openLocationSettings() {
+        val intent = Intent()
+        intent.action = android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+        startActivity(intent)
     }
 
     companion object {

@@ -3,14 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
+import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
+import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
-import 'package:lighthouse_pm/widgets/EnableBluetoothAlertWidget.dart';
-import 'package:lighthouse_pm/widgets/PermanentPermissionDeniedAlertWidget.dart';
-import 'package:lighthouse_pm/widgets/PermissionsAlertWidget.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
 
 class MainPage extends StatelessWidget {
   Future<bool> _onWillPop() async {
@@ -31,7 +33,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: StreamBuilder(
+      child: StreamBuilder<BluetoothState>(
         stream: FlutterBlue.instance.state,
         initialData: BluetoothState.unknown,
         builder:
@@ -62,7 +64,14 @@ class MainPage extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/about');
                   },
-                )
+                ),
+                ListTile(
+                    leading: Icon(Icons.report),
+                    title: Text('Troubleshooting'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/troubleshooting');
+                    })
               ],
             )),
             body: body,
@@ -91,37 +100,10 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
           return FloatingActionButton(
             child: Icon(Icons.search),
             onPressed: () async {
-              switch (await BLEPermissionsHelper.hasBLEPermissions()) {
-                case PermissionStatus.denied:
-                case PermissionStatus.undetermined:
-                case PermissionStatus.restricted:
-                  // expression can be `null`
-                  if (await PermissionsAlertWidget.showCustomDialog(context) !=
-                      true) {
-                    return;
-                  }
-                  switch (await BLEPermissionsHelper.requestBLEPermissions()) {
-                    case PermissionStatus.permanentlyDenied:
-                      continue permanentlyDenied;
-                    case PermissionStatus.granted:
-                      continue granted;
-                    default:
-                      return;
-                  }
-                  break;
-                granted:
-                case PermissionStatus.granted:
-                  LighthouseProvider.instance
-                      .startScan(timeout: Duration(seconds: 4));
-                  break;
-                permanentlyDenied:
-                case PermissionStatus.permanentlyDenied:
-                  // expression can be `null`
-                  if (await PermanentPermissionDeniedAlertWidget
-                          .showCustomDialog(context) ==
-                      true) {
-                    openAppSettings();
-                  }
+              if (await LocationPermissionDialogFlow
+                  .showLocationPermissionDialogFlow(context)) {
+                await LighthouseProvider.instance
+                    .startScan(timeout: Duration(seconds: 4));
               }
             },
           );
@@ -160,20 +142,51 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     super.dispose();
   }
 
+  var updates = 0;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<LighthouseDevice>>(
       stream: LighthouseProvider.instance.lighthouseDevices,
       initialData: [],
       builder: (c, snapshot) {
+        updates++;
         final list = snapshot.data;
+        if (list.isEmpty && updates > 2) {
+          return StreamBuilder<bool>(
+            stream: FlutterBlue.instance.isScanning,
+            initialData: true,
+            builder: (context, scanningSnapshot) {
+              final scanning = scanningSnapshot.data;
+              if (scanning) {
+                return Container();
+              } else {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                          'Unable to find lighthouses, try some troubleshooting.',
+                        style: Theme.of(context).primaryTextTheme.headline4.copyWith(color: Colors.black),
+                      textAlign: TextAlign.center,),
+                    ),
+                    Expanded(
+                      child: TroubleshootingContentWidget(),
+                    )
+                  ],
+                );
+              }
+            },
+          );
+        }
+
         return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             if (index == list.length) {
               // Add an extra container at the bottom to stop the floating
               // button from obstructing the last item.
               return Container(
-                height: 80,
+                height: _DEVICE_LIST_SCROLL_PADDING,
               );
             }
             return LighthouseWidget(list[index]);
@@ -220,13 +233,8 @@ class BluetoothOffScreen extends StatelessWidget {
     if (Platform.isAndroid && state == BluetoothState.off) {
       return RaisedButton(
           onPressed: () async {
-            // Expression can be `null`
-            if (await EnableBluetoothAlertWidget.showCustomDialog(context) ==
-                true) {
-              if (!await BLEPermissionsHelper.enableBLE()) {
-                print("Could not enable Bluetooth.");
-              }
-            }
+            await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
+                context);
           },
           child: Text(
             'Enable Bluetooth.',
