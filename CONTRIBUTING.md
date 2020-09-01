@@ -1,7 +1,8 @@
 # Contributing
 
-Feel free to contribute to the project. But before you start take a look at the issues because 
-someone may already be working on it.
+Feel free to contribute to the project. But before you start take a look at the issues because someone may already be working on it.
+
+If you want to add to the project, feel free to do so. And if it's your first time helping out then take a look at the [help wanted](https://github.com/jeroen1602/lighthouse_pm/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issues.
 
 ## Issues
 

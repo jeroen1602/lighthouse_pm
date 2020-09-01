@@ -7,10 +7,7 @@ And if your computer doesn't have a bluetooth adapter then it is useless. Sadly 
 to the system and thus can't be used for that. Fortunately most phones do have bluetooth support, so I made this app to
 easily change the power state of a Lighthouse.
 
-![lighthouse pm in action](docs/lighthouse_pm_screenshot.png)
-
-
-**This project is still very alpha and sometimes the app needs to be restarted because it's gotten softlocked.**
+<img src="docs/lighthouse_pm_screenshot.png" alt="lighthouse pm in action" width="300"/>
 
 **This project gives no warranty that you won't brick your lighthouses!**
 
@@ -26,16 +23,24 @@ If for whatever reason your lighthouse does get bricked, please
 Before you install this app, make sure that your phone supports bluetooth low energy (BLE).
 Almost all phones made after 2013 support this.
 
+### System requirements
+
+#### Android
+
+ - Bluetooth low energy support (as stated abovo modern devices probably support it).
+ - Android 4.4 (API level 19) and up.
+
+### Google Play
+
+<a href="https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google play" width="250"></a>
+
+*Google Play and the Google Play logo are trademarks of Google LLC.*
 
 ### Sideload
 
 After that you can grab the `APK` from the [releases](https://github.com/jeroen1602/lighthouse_pm/releases) 
 page and [sideload](https://www.howtogeek.com/313433/how-to-sideload-apps-on-android/) this onto your device.
-
-### Google play
-
-I first want the app to become a bit more stable (no/ rare softlocks) before releasing it to the 
-PlayStore.
 
 ### iOS
 
