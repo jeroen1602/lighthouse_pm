@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseProviderV2.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
@@ -39,6 +41,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.""", 0)
 
 void main() {
   LicenseRegistry.addLicense(licenses);
+  LighthouseProviderV2.instance
+      .addBLEDeviceProvider(LighthouseV2DeviceProvider.instance);
   runApp(MainApp());
 }
 
@@ -58,6 +62,6 @@ class MainApp extends StatelessWidget {
           '/troubleshooting': (context) => TroubleshootingPage(),
         }
         // home: MainPage()
-    );
+        );
   }
 }

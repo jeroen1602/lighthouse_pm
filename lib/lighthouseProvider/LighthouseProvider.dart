@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:rxdart/rxdart.dart';
@@ -43,7 +42,7 @@ class LighthouseProvider {
 
   /// Get an instance of [LighthouseProvider].
   static LighthouseProvider get instance {
-    if (Foundation.kReleaseMode) {
+    if (kReleaseMode) {
       return LighthouseProvider._instance;
     } else {
       // easily change to use the actual provider or the fake one.
@@ -54,6 +53,7 @@ class LighthouseProvider {
 
   static final LighthouseProvider _instance = LighthouseProvider._();
   Set<DeviceIdentifier> _connectingDevices = Set();
+  Set<DeviceIdentifier> _rejectedDevices = Set();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
 
@@ -78,6 +78,7 @@ class LighthouseProvider {
     await _disconnectOpenDevices();
     _lightHouseDevices.add(List());
     _connectingDevices.clear();
+    _rejectedDevices.clear();
   }
 
   /// Stop scanning for [LighthouseDevice]s.
