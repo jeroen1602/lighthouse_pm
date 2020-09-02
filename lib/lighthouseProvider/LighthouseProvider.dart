@@ -74,6 +74,7 @@ class LighthouseProvider {
   }
 
   Future cleanUp() async {
+    await stopScan();
     await _disconnectOpenDevices();
     _lightHouseDevices.add(List());
     _connectingDevices.clear();

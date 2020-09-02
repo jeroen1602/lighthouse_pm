@@ -13,6 +13,7 @@ import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
+const Duration _SCAN_DURATION = Duration(seconds: 4);
 
 class MainPage extends StatelessWidget {
   Future<bool> _onWillPop() async {
@@ -21,7 +22,6 @@ class MainPage extends StatelessWidget {
       if (await FlutterBlue.instance.isScanning.first ||
           (await LighthouseProvider.instance.lighthouseDevices.first).length >
               0) {
-        await LighthouseProvider.instance.stopScan();
         await LighthouseProvider.instance.cleanUp();
         await Future.delayed(Duration(milliseconds: 100));
       }
@@ -60,17 +60,35 @@ class MainPage extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.info),
                   title: Text('About'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, '/about');
+                    LighthouseProvider.instance.cleanUp();
+                    await Navigator.pushNamed(context, '/about');
+                    if (await BLEPermissionsHelper.hasBLEPermissions() ==
+                        PermissionStatus.granted) {
+                      LighthouseProvider.instance
+                          .startScan(timeout: _SCAN_DURATION);
+                    } else {
+                      debugPrint(
+                          "Could not start scan because permission has not been granted. On navigator pop");
+                    }
                   },
                 ),
                 ListTile(
                     leading: Icon(Icons.report),
                     title: Text('Troubleshooting'),
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, '/troubleshooting');
+                      LighthouseProvider.instance.cleanUp();
+                      await Navigator.pushNamed(context, '/troubleshooting');
+                      if (await BLEPermissionsHelper.hasBLEPermissions() ==
+                          PermissionStatus.granted) {
+                        LighthouseProvider.instance
+                            .startScan(timeout: _SCAN_DURATION);
+                      } else {
+                        debugPrint(
+                            "Could not start scan because permission has not been granted. On navigator pop");
+                      }
                     })
               ],
             )),
@@ -103,7 +121,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
               if (await LocationPermissionDialogFlow
                   .showLocationPermissionDialogFlow(context)) {
                 await LighthouseProvider.instance
-                    .startScan(timeout: Duration(seconds: 4));
+                    .startScan(timeout: _SCAN_DURATION);
               }
             },
           );
@@ -128,7 +146,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     WidgetsBinding.instance.addObserver(this);
     BLEPermissionsHelper.hasBLEPermissions().then((state) {
       if (state == PermissionStatus.granted) {
-        LighthouseProvider.instance.startScan(timeout: Duration(seconds: 4));
+        LighthouseProvider.instance.startScan(timeout: _SCAN_DURATION);
       } else {
         debugPrint(
             "Could not start scan because the permission has not been granted");
@@ -166,9 +184,13 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     Padding(
                       padding: EdgeInsets.all(12),
                       child: Text(
-                          'Unable to find lighthouses, try some troubleshooting.',
-                        style: Theme.of(context).primaryTextTheme.headline4.copyWith(color: Colors.black),
-                      textAlign: TextAlign.center,),
+                        'Unable to find lighthouses, try some troubleshooting.',
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .headline4
+                            .copyWith(color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Expanded(
                       child: TroubleshootingContentWidget(),
@@ -201,14 +223,13 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-        LighthouseProvider.instance.stopScan();
         LighthouseProvider.instance.cleanUp();
         break;
       case AppLifecycleState.resumed:
         BLEPermissionsHelper.hasBLEPermissions().then((status) {
           if (status == PermissionStatus.granted) {
             LighthouseProvider.instance
-                .startScan(timeout: Duration(seconds: 4));
+                .startScan(timeout: _SCAN_DURATION);
           } else {
             debugPrint(
                 "Could not start scan because the permission has not been granted on resume");

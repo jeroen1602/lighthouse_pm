@@ -5,6 +5,7 @@
  - Troubleshooting will also show up if no device have been found after the scan has finished.
  - (Android) Added smart troubleshooting item for location permissions.
  - (Android) Added smart troubleshooting item for bluetooth enabled.
+ - Close open connection when switching to another page.
 
 # Version 1.0.2+4 RC
 
