@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'LighthousePowerState.dart';
 
-abstract class LighthouseDeviceV2 {
+abstract class LighthouseDevice {
   ///
   /// Get the device's name.
   ///

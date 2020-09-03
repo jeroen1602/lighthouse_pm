@@ -13,12 +13,12 @@ abstract class DeviceProvider<D> {
   bool nameCheck(String name);
 
   ///
-  /// Connect to a device and return a super class of [LighthouseDeviceV2].
+  /// Connect to a device and return a super class of [LighthouseDevice].
   ///
   /// [device] the specific device to connect to and test.
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
-  Future<LighthouseDeviceV2/*?*/> getDevice(D device);
+  Future<LighthouseDevice/*?*/> getDevice(D device);
 
   ///
   /// Close any open connections that may have been made for discovering devices.

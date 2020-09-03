@@ -12,13 +12,13 @@ abstract class BLEDeviceProvider extends DeviceProvider<BluetoothDevice> {
   Set<BLEDevice> _bleDevicesDiscovering = Set();
 
   ///
-  /// Connect to a device and return a super class of [LighthouseDeviceV2].
+  /// Connect to a device and return a super class of [LighthouseDevice].
   ///
   /// [device] the specific device to connect to and test.
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
   @override
-  Future<LighthouseDeviceV2 /*?*/ > getDevice(BluetoothDevice device) async {
+  Future<LighthouseDevice /*?*/ > getDevice(BluetoothDevice device) async {
     BLEDevice bleDevice = await this.internalGetDevice(device);
     this._bleDevicesDiscovering.add(bleDevice);
     try {

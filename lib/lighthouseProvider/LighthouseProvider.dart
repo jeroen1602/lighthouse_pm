@@ -9,8 +9,8 @@ import 'package:rxdart/rxdart.dart';
 import 'LighthouseDevice.dart';
 import 'timeout/TimeoutContainer.dart';
 
-class LighthouseProviderV2 {
-  LighthouseProviderV2._();
+class LighthouseProvider {
+  LighthouseProvider._();
 
   /// Get a stream with a [List] of valid [LighthouseDevice]s.
   ///
@@ -24,20 +24,20 @@ class LighthouseProviderV2 {
   /// Make sure to call [startScan] in order to start getting a [List] of
   /// [LighthouseDevice]s.
   ///
-  Stream<List<LighthouseDeviceV2>> get lighthouseDevices =>
+  Stream<List<LighthouseDevice>> get lighthouseDevices =>
       _lightHouseDevices.stream.map((containers) =>
           containers.map((container) => container.data).toList());
 
   /// Get an instance of [LighthouseProvider].
-  static LighthouseProviderV2 get instance {
-    return LighthouseProviderV2._instance;
+  static LighthouseProvider get instance {
+    return LighthouseProvider._instance;
   }
 
-  static final LighthouseProviderV2 _instance = LighthouseProviderV2._();
+  static final LighthouseProvider _instance = LighthouseProvider._();
   Set<LHDeviceIdentifier> _connectingDevices = Set();
   Set<LHDeviceIdentifier> _rejectedDevices = Set();
-  BehaviorSubject<List<TimeoutContainer<LighthouseDeviceV2>>>
-      _lightHouseDevices = BehaviorSubject.seeded([]);
+  BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
+      BehaviorSubject.seeded([]);
   StreamSubscription _scanResultSubscription;
   Set<BLEDeviceProvider> _bleDeviceProviders = Set();
 
@@ -174,8 +174,7 @@ class LighthouseProviderV2 {
                     LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id));
               } else {
                 final list = this._lightHouseDevices.value;
-                list.add(
-                    TimeoutContainer<LighthouseDeviceV2>(lighthouseDevice));
+                list.add(TimeoutContainer<LighthouseDevice>(lighthouseDevice));
                 this._lightHouseDevices.add(list);
               }
               this._connectingDevices.remove(scanResult.device.id);
@@ -190,14 +189,13 @@ class LighthouseProviderV2 {
 
   ///
   /// Will return `null` if no device provider could validate the device.
-  Future<LighthouseDeviceV2> _getLighthouseDevice(
-      BluetoothDevice device) async {
+  Future<LighthouseDevice> _getLighthouseDevice(BluetoothDevice device) async {
     debugPrint('Trying to connect to device with name: ${device.name}');
     for (final bLEDeviceProvider in _bleDeviceProviders) {
       if (!bLEDeviceProvider.nameCheck(device.name)) {
         continue;
       }
-      final LighthouseDeviceV2 lighthouseDevice =
+      final LighthouseDevice lighthouseDevice =
           await bLEDeviceProvider.getDevice(device);
       if (lighthouseDevice != null) {
         return lighthouseDevice;

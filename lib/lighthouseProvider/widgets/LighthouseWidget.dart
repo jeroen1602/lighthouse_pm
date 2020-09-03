@@ -5,10 +5,10 @@ import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
 
 /// A widget for showing a [LighthouseDevice] in a list.
-class LighthouseWidgetV2 extends StatelessWidget {
-  LighthouseWidgetV2(this.lighthouseDevice, {Key key}) : super(key: key);
+class LighthouseWidget extends StatelessWidget {
+  LighthouseWidget(this.lighthouseDevice, {Key key}) : super(key: key);
 
-  final LighthouseDeviceV2 lighthouseDevice;
+  final LighthouseDevice lighthouseDevice;
 
   @override
   Widget build(BuildContext context) {

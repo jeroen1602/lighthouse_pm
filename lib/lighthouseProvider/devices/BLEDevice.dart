@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 ///
 /// A device for all other devices.
 ///
-abstract class BLEDevice extends LighthouseDeviceV2 {
+abstract class BLEDevice extends LighthouseDevice {
   BLEDevice(this.device);
 
   @protected

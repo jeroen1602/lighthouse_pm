@@ -41,7 +41,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.""", 0)
 
 void main() {
   LicenseRegistry.addLicense(licenses);
-  LighthouseProviderV2.instance
+  LighthouseProvider.instance
       .addBLEDeviceProvider(LighthouseV2DeviceProvider.instance);
   runApp(MainApp());
 }

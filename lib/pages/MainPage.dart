@@ -17,7 +17,7 @@ const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
 const Duration _SCAN_DURATION = Duration(seconds: 4);
 
 Future _startScan() async {
-  await LighthouseProviderV2.instance.startScan(timeout: _SCAN_DURATION);
+  await LighthouseProvider.instance.startScan(timeout: _SCAN_DURATION);
 }
 
 Future _startScanWithCheck({String failMessage = ""}) async {
@@ -29,12 +29,12 @@ Future _startScanWithCheck({String failMessage = ""}) async {
   }
 }
 
-Future _stopScan() async => await LighthouseProviderV2.instance.stopScan();
+Future _stopScan() async => await LighthouseProvider.instance.stopScan();
 
-Future _cleanUp() async => await LighthouseProviderV2.instance.cleanUp();
+Future _cleanUp() async => await LighthouseProvider.instance.cleanUp();
 
 Future<bool> _hasConnectedDevices() async =>
-    ((await LighthouseProviderV2.instance.lighthouseDevices.first).length > 0);
+    ((await LighthouseProvider.instance.lighthouseDevices.first).length > 0);
 
 class MainPage extends StatelessWidget {
   Future<bool> _onWillPop() async {
@@ -170,8 +170,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<LighthouseDeviceV2>>(
-      stream: LighthouseProviderV2.instance.lighthouseDevices,
+    return StreamBuilder<List<LighthouseDevice>>(
+      stream: LighthouseProvider.instance.lighthouseDevices,
       initialData: [],
       builder: (c, snapshot) {
         updates++;
@@ -218,7 +218,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 height: _DEVICE_LIST_SCROLL_PADDING,
               );
             }
-            return LighthouseWidgetV2(list[index]);
+            return LighthouseWidget(list[index]);
           },
           itemCount: list.length + 1,
         );
