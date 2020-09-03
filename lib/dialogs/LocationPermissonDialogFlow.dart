@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/widgets/PermanentPermissionDeniedAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/PermissionsAlertWidget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +19,8 @@ class LocationPermissionDialogFlow {
   /// settings.
   ///
   /// This flow works only on Android!.
-  static Future<bool> showLocationPermissionDialogFlow(BuildContext context) async {
+  static Future<bool> showLocationPermissionDialogFlow(
+      BuildContext context) async {
     switch (await BLEPermissionsHelper.hasBLEPermissions()) {
       case PermissionStatus.denied:
       case PermissionStatus.undetermined:
