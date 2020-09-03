@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 
+import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
 
 /// A widget for showing a [LighthouseDevice] in a list.
@@ -16,12 +16,6 @@ class LighthouseWidget extends StatelessWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-          /*Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image(
-                image: AssetImage('assets/images/android.png'),
-                fit: BoxFit.fitHeight,
-              )),*/
           Expanded(
               child: Padding(
                   padding: const EdgeInsets.all(6.0),
@@ -48,7 +42,7 @@ class LighthouseWidget extends StatelessWidget {
                                       powerState: data);
                                 }),
                             VerticalDivider(),
-                            Text('${this.lighthouseDevice.id}')
+                            Text('${this.lighthouseDevice.deviceIdentifier}')
                           ],
                         ))
                   ]))),
@@ -95,7 +89,8 @@ class _LHItemPowerStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = LighthousePowerState.fromByte(this.powerState);
-    return Text('${state.text} (0x${powerState.toRadixString(16)})');
+    return Text(
+        '${state.text} (0x${powerState.toRadixString(16).padLeft(2, '0')})');
   }
 }
 

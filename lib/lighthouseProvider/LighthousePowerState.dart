@@ -32,7 +32,6 @@ class LighthousePowerState {
       case 0x01:
       case 0x09:
         return LighthousePowerState.BOOTING;
-      case 0x0b:
       default:
         return LighthousePowerState.UNKNOWN;
     }

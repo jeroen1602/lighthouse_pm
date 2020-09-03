@@ -6,6 +6,7 @@
  - (Android) Added smart troubleshooting item for location permissions.
  - (Android) Added smart troubleshooting item for bluetooth enabled.
  - Close open connection when switching to another page.
+ - Close connection to discovering lighthouses on app close.
 
 # Version 1.0.2+4 RC
 
