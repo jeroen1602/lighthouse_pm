@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:rxdart/rxdart.dart';
 

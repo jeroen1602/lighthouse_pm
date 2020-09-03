@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// An alert dialog to ask the user if they really want to enable the bluetooth
