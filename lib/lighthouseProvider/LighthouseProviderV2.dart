@@ -61,7 +61,7 @@ class LighthouseProviderV2 {
     Duration timeout,
   }) async {
     await cleanUp();
-    _startListeningScanResults();
+    await _startListeningScanResults();
     await FlutterBlue.instance
         .startScan(scanMode: scanMode, timeout: timeout, allowDuplicates: true);
   }
@@ -117,15 +117,13 @@ class LighthouseProviderV2 {
   }
 
   /// Start the stream for listening to the [LighthouseDevice]s.
-  ///
-  /// This will try and re-use a previous active stream if one already exists.
-  void _startListeningScanResults() {
+  Future _startListeningScanResults() async {
     if (_scanResultSubscription != null) {
-      if (_scanResultSubscription.isPaused) {
-        _scanResultSubscription.resume();
-        return;
+      if (!_scanResultSubscription.isPaused) {
+        _scanResultSubscription.pause();
       }
-      _scanResultSubscription.cancel();
+      await _scanResultSubscription.cancel();
+      _scanResultSubscription = null;
     }
 
     _scanResultSubscription = FlutterBlue.instance.scanResults
@@ -145,6 +143,9 @@ class LighthouseProviderV2 {
         // Give the listener at least 2ms to process the data before firing again.
         .debounce((_) => TimerStream(true, Duration(milliseconds: 2)))
         .listen((scanResults) {
+          if (scanResults.isEmpty) {
+            return;
+          }
           for (final scanResult in scanResults) {
             if (this._connectingDevices.contains(
                 LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id))) {
