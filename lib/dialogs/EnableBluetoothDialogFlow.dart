@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:lighthouse_pm/widgets/EnableBluetoothAlertWidget.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -69,6 +69,7 @@ class BLEPermissionsHelper {
     }
     throw new UnsupportedError("ERROR: unsupported platform! $Platform");
   }
+
   ///
   /// Enable the bluetooth adapter on a device.
   /// On Android this is possible.
