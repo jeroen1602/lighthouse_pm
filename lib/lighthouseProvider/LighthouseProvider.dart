@@ -9,6 +9,17 @@ import 'package:rxdart/rxdart.dart';
 import 'LighthouseDevice.dart';
 import 'timeout/TimeoutContainer.dart';
 
+///A provider for getting all [LighthouseDevice]s in the region.
+///
+/// The provider uses [FlutterBlue] and "overrides" the [startScan] and
+/// [stopScan] methods.
+///
+/// For basic usage:
+/// Get an instance using [LighthouseProvider.instance].
+/// Get a stream of valid [LighthouseDevice]s using [lighthouseDevices].\
+/// Start scanning using [startScan]. (not the startScan form [FlutterBlue].
+/// Stop scanning using [StopScan]. (not The stopScan from [FlutterBlue].
+///
 class LighthouseProvider {
   LighthouseProvider._();
 
