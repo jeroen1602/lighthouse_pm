@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseProviderV2.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';

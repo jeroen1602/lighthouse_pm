@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../LighthouseDeviceV2.dart';
+import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
 
 /// A widget for showing a [LighthouseDevice] in a list.
@@ -89,7 +89,8 @@ class _LHItemPowerStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = LighthousePowerState.fromByte(this.powerState);
-    return Text('${state.text} (0x${powerState.toRadixString(16)})');
+    return Text(
+        '${state.text} (0x${powerState.toRadixString(16).padLeft(2, '0')})');
   }
 }
 

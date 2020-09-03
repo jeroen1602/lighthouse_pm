@@ -1,5 +1,5 @@
 
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDeviceV2.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 
 ///
 /// An abstract super class of what all device provider should be able to do.

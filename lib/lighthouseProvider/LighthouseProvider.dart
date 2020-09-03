@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/BLEDeviceProvider.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'LighthouseDeviceV2.dart';
+import 'LighthouseDevice.dart';
 import 'timeout/TimeoutContainer.dart';
 
 class LighthouseProviderV2 {

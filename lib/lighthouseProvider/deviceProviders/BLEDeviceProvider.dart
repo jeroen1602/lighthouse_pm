@@ -3,7 +3,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 
 import '../DeviceProvider.dart';
-import '../LighthouseDeviceV2.dart';
+import '../LighthouseDevice.dart';
 
 ///
 /// An abstract device provider specifically made for Bluetooth low energy.

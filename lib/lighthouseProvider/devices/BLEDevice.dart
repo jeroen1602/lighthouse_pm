@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDeviceV2.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 
 ///
