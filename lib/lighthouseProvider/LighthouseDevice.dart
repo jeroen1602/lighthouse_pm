@@ -78,7 +78,7 @@ abstract class LighthouseDevice {
       });
 
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
-  StreamSubscription _powerStateSubscription;
+  StreamSubscription /* ? */ _powerStateSubscription;
   bool _powerStateTransaction = false;
 
   ///Change the state of the device.

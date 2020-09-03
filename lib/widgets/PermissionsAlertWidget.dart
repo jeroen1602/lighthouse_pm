@@ -10,23 +10,23 @@ class PermissionsAlertWidget extends StatelessWidget {
         title: Text("Location permissions required"),
         content: RichText(
             text: TextSpan(children: <InlineSpan>[
-              TextSpan(
-                  style: Theme.of(context).primaryTextTheme.bodyText1,
-                  text:
+          TextSpan(
+              style: Theme.of(context).primaryTextTheme.bodyText1,
+              text:
                   "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
-              TextSpan(
-                text: "More info.",
-                style: Theme.of(context).primaryTextTheme.bodyText1.copyWith(
-                    color: Colors.blue, decoration: TextDecoration.underline),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AboutPage()));
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PrivacyPage()));
-                  },
-              )
-            ])),
+          TextSpan(
+            text: "More info.",
+            style: Theme.of(context).primaryTextTheme.bodyText1.copyWith(
+                color: Colors.blue, decoration: TextDecoration.underline),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AboutPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PrivacyPage()));
+              },
+          )
+        ])),
         actions: <Widget>[
           FlatButton(
             child: Text("Allow permissions"),
@@ -43,7 +43,7 @@ class PermissionsAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool> showCustomDialog(BuildContext context) {
+  static Future<bool /* ? */ > showCustomDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {

@@ -49,7 +49,7 @@ class LighthouseProvider {
   Set<LHDeviceIdentifier> _rejectedDevices = Set();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
-  StreamSubscription _scanResultSubscription;
+  StreamSubscription /* ? */ _scanResultSubscription;
   Set<BLEDeviceProvider> _bleDeviceProviders = Set();
 
   void addBLEDeviceProvider(BLEDeviceProvider bleDeviceProvider) {
@@ -200,7 +200,7 @@ class LighthouseProvider {
 
   ///
   /// Will return `null` if no device provider could validate the device.
-  Future<LighthouseDevice> _getLighthouseDevice(BluetoothDevice device) async {
+  Future<LighthouseDevice /* ? */> _getLighthouseDevice(BluetoothDevice device) async {
     debugPrint('Trying to connect to device with name: ${device.name}');
     for (final bLEDeviceProvider in _bleDeviceProviders) {
       if (!bLEDeviceProvider.nameCheck(device.name)) {

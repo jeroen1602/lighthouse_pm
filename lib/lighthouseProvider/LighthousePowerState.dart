@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 /// A enum that describes the current power state of a lighthouse beacon.
 class LighthousePowerState {
   final String text;
-  final int setByte;
-  final int stateByte;
+  final int /* ? */ setByte;
+  final int /* ? */ stateByte;
 
   const LighthousePowerState._internal(this.text, this.setByte, this.stateByte);
 

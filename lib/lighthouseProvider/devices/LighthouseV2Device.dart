@@ -14,7 +14,7 @@ final Guid _POWER_CHARACTERISTIC = Guid('00001525-1212-efde-1523-785feabcd124');
 class LighthouseV2Device extends BLEDevice {
   LighthouseV2Device(BluetoothDevice device) : super(device);
 
-  BluetoothCharacteristic _characteristic;
+  BluetoothCharacteristic /* ? */ _characteristic;
 
   @override
   Future<int /*?*/ > getCurrentState() async {

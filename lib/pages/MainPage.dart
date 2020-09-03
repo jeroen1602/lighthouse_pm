@@ -58,8 +58,8 @@ class MainPage extends StatelessWidget {
         builder:
             (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
           final state = snapshot.data;
-          final Widget floatingButton =
-          state == BluetoothState.on ? _ScanFloatingButtonWidget() : null;
+          final Widget /* ? */ floatingButton =
+              state == BluetoothState.on ? _ScanFloatingButtonWidget() : null;
           final Widget body = state == BluetoothState.on
               ? ScanDevicesPage()
               : BluetoothOffScreen(state: state);
@@ -71,38 +71,36 @@ class MainPage extends StatelessWidget {
             floatingActionButton: floatingButton,
             drawer: Drawer(
                 child: ListView(
-                  children: <Widget>[
-                    DrawerHeader(
-                        decoration: BoxDecoration(color: Colors.grey),
-                        child: Text('Lighthouse PM',
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 24))),
-                    ListTile(
-                      leading: Icon(Icons.info),
-                      title: Text('About'),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        _cleanUp();
-                        await Navigator.pushNamed(context, '/about');
-                        _startScanWithCheck(
-                            failMessage:
+              children: <Widget>[
+                DrawerHeader(
+                    decoration: BoxDecoration(color: Colors.grey),
+                    child: Text('Lighthouse PM',
+                        style: TextStyle(color: Colors.black, fontSize: 24))),
+                ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text('About'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    _cleanUp();
+                    await Navigator.pushNamed(context, '/about');
+                    _startScanWithCheck(
+                        failMessage:
                             "Could not start scan because permission has not been granted. On navigator pop");
-                      },
-                    ),
-                    ListTile(
-                        leading: Icon(Icons.report),
-                        title: Text('Troubleshooting'),
-                        onTap: () async {
-                          Navigator.pop(context);
-                          _cleanUp();
-                          await Navigator.pushNamed(
-                              context, '/troubleshooting');
-                          _startScanWithCheck(
-                              failMessage:
+                  },
+                ),
+                ListTile(
+                    leading: Icon(Icons.report),
+                    title: Text('Troubleshooting'),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      _cleanUp();
+                      await Navigator.pushNamed(context, '/troubleshooting');
+                      _startScanWithCheck(
+                          failMessage:
                               "Could not start scan because permission has not been granted. On navigator pop");
-                        }),
-                  ],
-                )),
+                    }),
+              ],
+            )),
             body: body,
           );
         },
@@ -156,7 +154,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     WidgetsBinding.instance.addObserver(this);
     _startScanWithCheck(
         failMessage:
-        "Could not start scan because the permission has not been granted");
+            "Could not start scan because the permission has not been granted");
   }
 
   @override
@@ -190,8 +188,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       padding: EdgeInsets.all(12),
                       child: Text(
                         'Unable to find lighthouses, try some troubleshooting.',
-                        style: Theme
-                            .of(context)
+                        style: Theme.of(context)
                             .primaryTextTheme
                             .headline4
                             .copyWith(color: Colors.black),
@@ -234,11 +231,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       case AppLifecycleState.resumed:
         _startScanWithCheck(
             failMessage:
-            "Could not start scan because the permission has not been granted on resume.");
+                "Could not start scan because the permission has not been granted on resume.");
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
-      // Do nothing.
+        // Do nothing.
         break;
     }
   }
@@ -258,8 +255,7 @@ class BluetoothOffScreen extends StatelessWidget {
           },
           child: Text(
             'Enable Bluetooth.',
-            style: Theme
-                .of(context)
+            style: Theme.of(context)
                 .primaryTextTheme
                 .bodyText1
                 .copyWith(color: Colors.black),
@@ -282,18 +278,14 @@ class BluetoothOffScreen extends StatelessWidget {
               color: Colors.white54,
             ),
             Text(
-              'Bluetooth is ${state != null
-                  ? state.toString().substring(15)
-                  : 'not available'}.',
-              style: Theme
-                  .of(context)
+              'Bluetooth is ${state != null ? state.toString().substring(15) : 'not available'}.',
+              style: Theme.of(context)
                   .primaryTextTheme
                   .headline6
                   .copyWith(color: Colors.white),
             ),
             Text('Bluetooth needs to be enabled to talk to the lighthouses',
-                style: Theme
-                    .of(context)
+                style: Theme.of(context)
                     .primaryTextTheme
                     .subtitle1
                     .copyWith(color: Colors.white)),
