@@ -44,10 +44,12 @@ class LighthouseV2Device extends BLEDevice {
   @override
   Future<bool> isValid() async {
     debugPrint('Connecting to device: ${this.deviceIdentifier}');
-    await this.device.connect(timeout: Duration(seconds: 10)).catchError((e) {
+    try {
+      await this.device.connect(timeout: Duration(seconds: 10));
+    } on TimeoutException {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
-    }, test: (e) => e is TimeoutException);
+    }
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<BluetoothService> services =

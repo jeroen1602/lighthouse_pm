@@ -8,10 +8,7 @@
  - Close open connection when switching to another page.
  - Close connection to discovering lighthouses on app close.
  - (Android) Hopefully fixed rare crash when closing app while scan is running.
-
-# Version 1.0.2+4 RC
-
- - (Android) Close connection to open device on app close. 
+ - BETA added support for Vive base stations.
 
 # Version 1.0.1+3 2020-08-31
 

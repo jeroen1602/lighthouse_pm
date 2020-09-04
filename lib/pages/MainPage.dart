@@ -284,11 +284,14 @@ class BluetoothOffScreen extends StatelessWidget {
                   .headline6
                   .copyWith(color: Colors.white),
             ),
-            Text('Bluetooth needs to be enabled to talk to the lighthouses',
-                style: Theme.of(context)
-                    .primaryTextTheme
-                    .subtitle1
-                    .copyWith(color: Colors.white)),
+            Text(
+              'Bluetooth needs to be enabled to talk to the lighthouses',
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .subtitle1
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
             _toSettingsButton(context)
           ],
         ),

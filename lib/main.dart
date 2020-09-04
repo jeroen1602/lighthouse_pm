@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
@@ -43,6 +44,8 @@ void main() {
   LicenseRegistry.addLicense(licenses);
   LighthouseProvider.instance
       .addBLEDeviceProvider(LighthouseV2DeviceProvider.instance);
+  LighthouseProvider.instance
+      .addBLEDeviceProvider(ViveBaseStationDeviceProvider.instance);
   runApp(MainApp());
 }
 
