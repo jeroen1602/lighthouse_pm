@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'LighthousePowerState.dart';
@@ -79,7 +80,7 @@ abstract class LighthouseDevice {
 
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
   StreamSubscription /* ? */ _powerStateSubscription;
-  bool _powerStateTransaction = false;
+  final Mutex _transaction = Mutex();
 
   ///Change the state of the device.
   ///
@@ -100,7 +101,12 @@ abstract class LighthouseDevice {
       debugPrint('Cannot change powerstate to booting');
       return;
     }
-    await internalChangeState(newState);
+    try {
+      await _transaction.acquire();
+      await internalChangeState(newState);
+    } finally {
+      _transaction.release();
+    }
   }
 
   /// Start the power state stream.
@@ -115,24 +121,26 @@ abstract class LighthouseDevice {
       }
       return;
     }
-    _powerStateTransaction = false;
-    _powerStateSubscription = Stream.periodic(getUpdateInterval()).listen((_) {
+    _powerStateSubscription =
+        Stream.periodic(getUpdateInterval()).listen((_) async {
       if (hasOpenConnection) {
-        if (!_powerStateTransaction) {
-          getCurrentState().then((data) {
+        if (!_transaction.isLocked) {
+          try {
+            await _transaction.acquire();
+            final data = await getCurrentState();
             if (this._powerState.isClosed) {
-              this.disconnect();
+              await this.disconnect();
               return;
             }
             if (data != null) {
               this._powerState.add(data);
             }
-            // TODO: handle `null` data.
-            _powerStateTransaction = false;
-          }).catchError((error, s) {
-            debugPrint(error.toString());
-            debugPrint(s.toString());
-          });
+          } catch (e, s) {
+            debugPrint('$e');
+            debugPrint('$s');
+          } finally {
+            _transaction.release();
+          }
         }
       } else {
         debugPrint('Cleaning-up old subscription!');

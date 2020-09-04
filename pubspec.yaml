@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^0.18.1
   url_launcher: ^5.5.2
   flutter_icons: ^1.1.0
+  mutex: ^1.1.0
 
 
 
