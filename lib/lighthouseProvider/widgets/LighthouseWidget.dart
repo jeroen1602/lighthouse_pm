@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/UnknownStateAlertWidget.dart';
 
 import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
+
+typedef LighthousePowerState _ToPowerState(int byte);
 
 /// A widget for showing a [LighthouseDevice] in a list.
 class LighthouseWidget extends StatelessWidget {
@@ -38,7 +41,10 @@ class LighthouseWidget extends StatelessWidget {
                                   final data =
                                       snapshot.hasData ? snapshot.data : 0xFF;
                                   return _LHItemPowerStateWidget(
-                                      powerState: data);
+                                    powerStateByte: data,
+                                    toPowerState:
+                                        lighthouseDevice.powerStateFromByte,
+                                  );
                                 }),
                             VerticalDivider(),
                             Text('${this.lighthouseDevice.deviceIdentifier}')
@@ -52,26 +58,44 @@ class LighthouseWidget extends StatelessWidget {
                 final data = snapshot.hasData ? snapshot.data : 0xFF;
                 return _LHItemButtonWidget(
                   powerState: data,
+                  toPowerState: lighthouseDevice.powerStateFromByte,
                   onTap: () async {
-                    final state = LighthousePowerState.fromByte(data);
-                    if (state == LighthousePowerState.BOOTING) {
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text('Lighthouse is already booting!'),
-                          action: SnackBarAction(
-                            label: 'I\'m sure',
-                            onPressed: () async {
-                              await this
-                                  .lighthouseDevice
-                                  .changeState(LighthousePowerState.STANDBY);
-                            },
-                          )));
-                      return;
+                    final state = lighthouseDevice.powerStateFromByte(data);
+                    switch (state) {
+                      case LighthousePowerState.BOOTING:
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('Lighthouse is already booting!'),
+                            action: SnackBarAction(
+                              label: 'I\'m sure',
+                              onPressed: () async {
+                                await this
+                                    .lighthouseDevice
+                                    .changeState(LighthousePowerState.STANDBY);
+                              },
+                            )));
+                        break;
+                      case LighthousePowerState.UNKNOWN:
+                        switch (await UnknownStateAlertWidget.showCustomDialog(
+                            context, lighthouseDevice, data)) {
+                          case LighthousePowerState.ON:
+                            continue powerOn;
+                          case LighthousePowerState.STANDBY:
+                            continue powerOff;
+                        }
+                        break;
+                      powerOff:
+                      case LighthousePowerState.ON:
+                        await this
+                            .lighthouseDevice
+                            .changeState(LighthousePowerState.STANDBY);
+                        break;
+                      powerOn:
+                      case LighthousePowerState.STANDBY:
+                        await this
+                            .lighthouseDevice
+                            .changeState(LighthousePowerState.ON);
+                        break;
                     }
-                    var newSate = LighthousePowerState.ON;
-                    if (state == LighthousePowerState.ON) {
-                      newSate = LighthousePowerState.STANDBY;
-                    }
-                    await this.lighthouseDevice.changeState(newSate);
                   },
                 );
               })
@@ -81,15 +105,18 @@ class LighthouseWidget extends StatelessWidget {
 
 /// Display the state of the device together with the state as a number in hex.
 class _LHItemPowerStateWidget extends StatelessWidget {
-  _LHItemPowerStateWidget({Key key, this.powerState}) : super(key: key);
+  _LHItemPowerStateWidget(
+      {Key key, @required this.powerStateByte, @required this.toPowerState})
+      : super(key: key);
 
-  final int powerState;
+  final int powerStateByte;
+  final _ToPowerState toPowerState;
 
   @override
   Widget build(BuildContext context) {
-    var state = LighthousePowerState.fromByte(this.powerState);
+    final state = toPowerState(powerStateByte);
     return Text(
-        '${state.text} (0x${powerState.toRadixString(16).padLeft(2, '0')})');
+        '${state.text} (0x${powerStateByte.toRadixString(16).padLeft(2, '0')})');
   }
 }
 
@@ -97,15 +124,17 @@ class _LHItemPowerStateWidget extends StatelessWidget {
 class _LHItemButtonWidget extends StatelessWidget {
   _LHItemButtonWidget({
     Key key,
-    this.powerState,
-    this.onTap,
+    @required this.powerState,
+    @required this.onTap,
+    @required this.toPowerState,
   }) : super(key: key);
   final int powerState;
   final VoidCallback onTap;
+  final _ToPowerState toPowerState;
 
   @override
   Widget build(BuildContext context) {
-    var state = LighthousePowerState.fromByte(this.powerState);
+    final state = toPowerState(powerState);
     var color = Colors.grey;
     switch (state) {
       case LighthousePowerState.ON:
@@ -113,6 +142,9 @@ class _LHItemButtonWidget extends StatelessWidget {
         break;
       case LighthousePowerState.STANDBY:
         color = Colors.blue;
+        break;
+      case LighthousePowerState.BOOTING:
+        color = Colors.orange;
         break;
     }
     return Padding(

@@ -38,8 +38,23 @@ class LighthouseV2Device extends BLEDevice {
   }
 
   @override
-  LighthousePowerState internalGetPowerStateFromByte(int byte) =>
-      LighthousePowerState.fromByte(byte);
+  LighthousePowerState powerStateFromByte(int byte) {
+    if (byte < 0x0 || byte > 0xff) {
+      debugPrint(
+          'Byte was lower than 0x00 or higher than 0xff. actual value: 0x${byte.toRadixString(16)}');
+    }
+    switch (byte) {
+      case 0x00:
+        return LighthousePowerState.STANDBY;
+      case 0x0b:
+        return LighthousePowerState.ON;
+      case 0x01:
+      case 0x09:
+        return LighthousePowerState.BOOTING;
+      default:
+        return LighthousePowerState.UNKNOWN;
+    }
+  }
 
   @override
   Future<bool> isValid() async {
@@ -80,9 +95,17 @@ class LighthouseV2Device extends BLEDevice {
   @override
   Future internalChangeState(LighthousePowerState newState) async {
     if (this._characteristic != null) {
-      await this
-          ._characteristic
-          .write([newState.setByte], withoutResponse: true);
+      switch(newState) {
+        case LighthousePowerState.ON:
+          await this
+              ._characteristic
+              .write([0x01], withoutResponse: true);
+          break;
+        case LighthousePowerState.STANDBY:
+          await this
+              ._characteristic
+              .write([0x00], withoutResponse: true);
+      }
     }
   }
 }
