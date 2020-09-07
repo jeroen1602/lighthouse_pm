@@ -12,6 +12,7 @@
  - (iOS) Changed app icon (is the same as Android app icon now)
  - (iOS) Changed display name ("lighthouse_pm" -> "Lighthouse PM")
  - Added a dialog for changing the state when the state is unknown
+ - Added lighthouse metadata page on long press power button
 
 # Version 1.0.1+3 2020-08-31
 

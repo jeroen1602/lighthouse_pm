@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseMetadataPage.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/UnknownStateAlertWidget.dart';
 
 import '../LighthouseDevice.dart';
@@ -59,7 +60,7 @@ class LighthouseWidget extends StatelessWidget {
                 return _LHItemButtonWidget(
                   powerState: data,
                   toPowerState: lighthouseDevice.powerStateFromByte,
-                  onTap: () async {
+                  onPress: () async {
                     final state = lighthouseDevice.powerStateFromByte(data);
                     switch (state) {
                       case LighthousePowerState.BOOTING:
@@ -97,6 +98,13 @@ class LighthouseWidget extends StatelessWidget {
                         break;
                     }
                   },
+                  onLongPress: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (c) =>
+                                LighthouseMetadataPage(lighthouseDevice)));
+                  },
                 );
               })
         ]));
@@ -125,11 +133,13 @@ class _LHItemButtonWidget extends StatelessWidget {
   _LHItemButtonWidget({
     Key key,
     @required this.powerState,
-    @required this.onTap,
+    @required this.onPress,
+    @required this.onLongPress,
     @required this.toPowerState,
   }) : super(key: key);
   final int powerState;
-  final VoidCallback onTap;
+  final VoidCallback onPress;
+  final VoidCallback onLongPress;
   final _ToPowerState toPowerState;
 
   @override
@@ -150,7 +160,8 @@ class _LHItemButtonWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: RawMaterialButton(
-          onPressed: () => onTap.call(),
+          onPressed: () => onPress.call(),
+          onLongPress: () => onLongPress.call(),
           elevation: 2.0,
           fillColor: Colors.white,
           padding: const EdgeInsets.all(2.0),

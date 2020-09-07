@@ -14,6 +14,16 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// Get the firmware version of the device.
+  ///
+  String get firmwareVersion;
+
+  ///
+  /// Other reported info.
+  ///
+  Map<String, String> get otherMetadata;
+
+  ///
   /// Get the identifier for the device.
   ///
   LHDeviceIdentifier get deviceIdentifier;
