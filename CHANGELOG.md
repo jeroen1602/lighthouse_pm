@@ -13,6 +13,7 @@
  - (iOS) Changed display name ("lighthouse_pm" -> "Lighthouse PM")
  - Added a dialog for changing the state when the state is unknown
  - Added lighthouse metadata page on long press power button
+ - Added helping out dialog to the unknown power state dialog.
 
 # Version 1.0.1+3 2020-08-31
 

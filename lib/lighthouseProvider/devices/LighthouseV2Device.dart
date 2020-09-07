@@ -65,6 +65,7 @@ class LighthouseV2Device extends BLEDevice {
       debugPrint(
           'Byte was lower than 0x00 or higher than 0xff. actual value: 0x${byte.toRadixString(16)}');
     }
+
     switch (byte) {
       case 0x00:
         return LighthousePowerState.STANDBY;
