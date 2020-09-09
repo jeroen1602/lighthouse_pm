@@ -12,8 +12,7 @@ import 'package:vibration/vibration.dart';
 const _GITHUB_ISSUE_URL =
     "https://github.com/jeroen1602/lighthouse_pm/issues/40";
 
-/// An alert dialog to ask the user if they really want to enable the bluetooth
-/// adapter.
+/// Am alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
   UnknownStateAlertWidget(this.device, this.currentState, {Key key})
       : super(key: key);
@@ -76,6 +75,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
   }
 }
 
+/// A dialog to ask the user to help out with unknown states
 class UnknownStateHelpOutAlertWidget extends StatelessWidget {
   UnknownStateHelpOutAlertWidget(this.device, this.currentState, {Key key})
       : super(key: key);

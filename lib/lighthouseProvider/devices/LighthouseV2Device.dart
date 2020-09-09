@@ -117,6 +117,7 @@ class LighthouseV2Device extends BLEDevice {
                 break;
               default:
                 debugPrint('Unsupported type ${defaultCharacteristic.type}');
+                break;
             }
             if (response != null) {
               _otherMetadata[defaultCharacteristic.name] = response;
@@ -150,6 +151,7 @@ class LighthouseV2Device extends BLEDevice {
           break;
         case LighthousePowerState.STANDBY:
           await this._characteristic.write([0x00], withoutResponse: true);
+          break;
       }
     }
   }

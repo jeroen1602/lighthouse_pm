@@ -59,7 +59,6 @@ class ReadOnlyByteData implements ByteData {
   @override
   int getInt16(int byteOffset, [Endian endian = Endian.big]) {
     return _byteData.getInt16(byteOffset, endian);
-    ;
   }
 
   @override
