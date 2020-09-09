@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/pages/AboutPage.dart';
-import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 
 class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
   @override
@@ -20,10 +18,8 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
                 color: Colors.blue, decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AboutPage()));
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PrivacyPage()));
+                Navigator.pushNamed(context, '/about');
+                Navigator.pushNamed(context, '/about/privacy');
               },
           )
         ])),
