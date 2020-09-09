@@ -14,6 +14,16 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// Get the firmware version of the device.
+  ///
+  String get firmwareVersion;
+
+  ///
+  /// Other reported info.
+  ///
+  Map<String, String> get otherMetadata;
+
+  ///
   /// Get the identifier for the device.
   ///
   LHDeviceIdentifier get deviceIdentifier;
@@ -38,8 +48,7 @@ abstract class LighthouseDevice {
   ///
   /// Convert a device specific state byte to a global `LighthousePowerState`.
   ///
-  @protected
-  LighthousePowerState internalGetPowerStateFromByte(int byte);
+  LighthousePowerState powerStateFromByte(int byte);
 
   ///
   /// Get the update interval that this device supports.
@@ -75,7 +84,7 @@ abstract class LighthouseDevice {
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
   Stream<LighthousePowerState> get powerStateEnum => this.powerState.map((e) {
-        return internalGetPowerStateFromByte(e);
+        return powerStateFromByte(e);
       });
 
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
