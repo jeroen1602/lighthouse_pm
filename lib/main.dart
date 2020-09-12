@@ -5,7 +5,9 @@ import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2Dev
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
+import 'package:provider/provider.dart';
 
+import 'bloc.dart';
 import 'pages/MainPage.dart';
 
 //region LICENSE
@@ -49,19 +51,23 @@ void main() {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: true,
-        title: 'Lighthouse PM',
-        theme: ThemeData(
-            primarySwatch: Colors.grey,
-            visualDensity: VisualDensity.adaptivePlatformDensity),
-        routes: {
-          '/': (context) => MainPage(),
-          '/about': (context) => AboutPage(),
-          '/about/privacy': (context) => PrivacyPage(),
-          '/troubleshooting': (context) => TroubleshootingPage(),
-        }
-        // home: MainPage()
-        );
+    return Provider<LighthousePMBloc>(
+      create: (_) => LighthousePMBloc(),
+      dispose: (_, bloc) => bloc.close(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: true,
+          title: 'Lighthouse PM',
+          theme: ThemeData(
+              primarySwatch: Colors.grey,
+              visualDensity: VisualDensity.adaptivePlatformDensity),
+          routes: {
+            '/': (context) => MainPage(),
+            '/about': (context) => AboutPage(),
+            '/about/privacy': (context) => PrivacyPage(),
+            '/troubleshooting': (context) => TroubleshootingPage(),
+          }
+          // home: MainPage()
+          ),
+    );
   }
 }

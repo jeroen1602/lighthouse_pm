@@ -1,6 +1,6 @@
-import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/CustomLongPressGestureRecognizer.dart';
@@ -93,7 +93,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
   GestureRecognizer createRecognizer(BuildContext context, String version) {
     return CustomLongPressGestureRecognizer()
       ..onLongPress = () async {
-        await ClipboardManager.copyToClipBoard(_getClipboardString(version));
+        Clipboard.setData(ClipboardData(text: _getClipboardString(version)));
         if (await Vibration.hasVibrator()) {
           Vibration.vibrate(duration: 200);
         }
