@@ -27,7 +27,7 @@ Almost all phones made after 2013 support this.
 
 #### Android
 
- - Bluetooth low energy support (as stated abovo modern devices probably support it).
+ - Bluetooth low energy support (as stated above modern devices probably support it).
  - Android 4.4 (API level 19) and up.
 
 ### Google Play
