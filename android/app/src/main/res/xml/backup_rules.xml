@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<full-backup-content>
+    <include
+        domain="root"
+        path="./app_flutter/db.sqlite"
+        requiredFlags="deviceToDeviceTransfer" />
+</full-backup-content>
