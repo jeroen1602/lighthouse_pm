@@ -9,105 +9,122 @@ typedef LighthousePowerState _ToPowerState(int byte);
 
 /// A widget for showing a [LighthouseDevice] in a list.
 class LighthouseWidget extends StatelessWidget {
-  LighthouseWidget(this.lighthouseDevice, {Key key}) : super(key: key);
+  LighthouseWidget(this.lighthouseDevice,
+      {this.onLongPress, this.selected, this.nickname, Key key})
+      : super(key: key);
 
   final LighthouseDevice lighthouseDevice;
+  final GestureLongPressCallback onLongPress;
+  final bool selected;
+  final String /* ? */ nickname;
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-          Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(children: <Widget>[
-                    Container(
-                        alignment: Alignment.topLeft,
-                        child: Row(
-                          children: <Widget>[
-                            Text('${this.lighthouseDevice.name}',
-                                style: Theme.of(context).textTheme.headline4)
-                          ],
-                        )),
-                    Container(
-                        alignment: Alignment.topLeft,
-                        child: Row(
-                          children: <Widget>[
-                            StreamBuilder<int>(
-                                stream: this.lighthouseDevice.powerState,
-                                initialData: 0xFF,
-                                builder: (c, snapshot) {
-                                  final data =
-                                      snapshot.hasData ? snapshot.data : 0xFF;
-                                  return _LHItemPowerStateWidget(
-                                    powerStateByte: data,
-                                    toPowerState:
-                                        lighthouseDevice.powerStateFromByte,
-                                  );
-                                }),
-                            VerticalDivider(),
-                            Text('${this.lighthouseDevice.deviceIdentifier}')
-                          ],
-                        ))
-                  ]))),
-          StreamBuilder<int>(
-              stream: this.lighthouseDevice.powerState,
-              initialData: 0xFF,
-              builder: (c, snapshot) {
-                final data = snapshot.hasData ? snapshot.data : 0xFF;
-                return _LHItemButtonWidget(
-                  powerState: data,
-                  toPowerState: lighthouseDevice.powerStateFromByte,
-                  onPress: () async {
-                    final state = lighthouseDevice.powerStateFromByte(data);
-                    switch (state) {
-                      case LighthousePowerState.BOOTING:
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Lighthouse is already booting!'),
-                            action: SnackBarAction(
-                              label: 'I\'m sure',
-                              onPressed: () async {
+    return Container(
+        color: selected ? Colors.black12 : Colors.transparent,
+        child: InkWell(
+            onLongPress: onLongPress,
+            child: IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                  Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Column(children: <Widget>[
+                            Container(
+                                alignment: Alignment.topLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                        '${this.nickname != null ? this.nickname : this.lighthouseDevice.name}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4)
+                                  ],
+                                )),
+                            Container(
+                                alignment: Alignment.topLeft,
+                                child: Row(
+                                  children: <Widget>[
+                                    StreamBuilder<int>(
+                                        stream:
+                                            this.lighthouseDevice.powerState,
+                                        initialData: 0xFF,
+                                        builder: (c, snapshot) {
+                                          final data = snapshot.hasData
+                                              ? snapshot.data
+                                              : 0xFF;
+                                          return _LHItemPowerStateWidget(
+                                            powerStateByte: data,
+                                            toPowerState: lighthouseDevice
+                                                .powerStateFromByte,
+                                          );
+                                        }),
+                                    VerticalDivider(),
+                                    Text(
+                                        '${this.lighthouseDevice.deviceIdentifier}')
+                                  ],
+                                ))
+                          ]))),
+                  StreamBuilder<int>(
+                      stream: this.lighthouseDevice.powerState,
+                      initialData: 0xFF,
+                      builder: (c, snapshot) {
+                        final data = snapshot.hasData ? snapshot.data : 0xFF;
+                        return _LHItemButtonWidget(
+                          powerState: data,
+                          toPowerState: lighthouseDevice.powerStateFromByte,
+                          onPress: () async {
+                            final state =
+                                lighthouseDevice.powerStateFromByte(data);
+                            switch (state) {
+                              case LighthousePowerState.BOOTING:
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content:
+                                        Text('Lighthouse is already booting!'),
+                                    action: SnackBarAction(
+                                      label: 'I\'m sure',
+                                      onPressed: () async {
+                                        await this.lighthouseDevice.changeState(
+                                            LighthousePowerState.STANDBY);
+                                      },
+                                    )));
+                                break;
+                              case LighthousePowerState.UNKNOWN:
+                                switch (await UnknownStateAlertWidget
+                                    .showCustomDialog(
+                                        context, lighthouseDevice, data)) {
+                                  case LighthousePowerState.ON:
+                                    continue powerOn;
+                                  case LighthousePowerState.STANDBY:
+                                    continue powerOff;
+                                }
+                                break;
+                              powerOff:
+                              case LighthousePowerState.ON:
                                 await this
                                     .lighthouseDevice
                                     .changeState(LighthousePowerState.STANDBY);
-                              },
-                            )));
-                        break;
-                      case LighthousePowerState.UNKNOWN:
-                        switch (await UnknownStateAlertWidget.showCustomDialog(
-                            context, lighthouseDevice, data)) {
-                          case LighthousePowerState.ON:
-                            continue powerOn;
-                          case LighthousePowerState.STANDBY:
-                            continue powerOff;
-                        }
-                        break;
-                      powerOff:
-                      case LighthousePowerState.ON:
-                        await this
-                            .lighthouseDevice
-                            .changeState(LighthousePowerState.STANDBY);
-                        break;
-                      powerOn:
-                      case LighthousePowerState.STANDBY:
-                        await this
-                            .lighthouseDevice
-                            .changeState(LighthousePowerState.ON);
-                        break;
-                    }
-                  },
-                  onLongPress: () async {
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (c) =>
-                                LighthouseMetadataPage(lighthouseDevice)));
-                  },
-                );
-              })
-        ]));
+                                break;
+                              powerOn:
+                              case LighthousePowerState.STANDBY:
+                                await this
+                                    .lighthouseDevice
+                                    .changeState(LighthousePowerState.ON);
+                                break;
+                            }
+                          },
+                          onLongPress: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (c) => LighthouseMetadataPage(
+                                        lighthouseDevice)));
+                          },
+                        );
+                      })
+                ]))));
   }
 }
 

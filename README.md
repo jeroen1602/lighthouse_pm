@@ -27,10 +27,12 @@ Almost all phones made after 2013 support this.
 
 #### Android
 
- - Bluetooth low energy support (as stated abovo modern devices probably support it).
+ - Bluetooth low energy support (as stated above modern devices probably support it).
  - Android 4.4 (API level 19) and up.
 
 ### Google Play
+
+**NOTE** The Google Play version may be behind by a version because of the approval process.
 
 <a href="https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm" target="_blank">
 <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google play" width="250"></a>
@@ -48,3 +50,12 @@ Since the app is made in Flutter it should be able to run on iOS device with a m
 tweaking. I however don't have any Apple device so I can't test this.
 
 If there is anyone who does want to pick this up and support that part then please look at [contributing](CONTRIBUTING.md).
+
+## Building
+
+Because the app uses generated code you will first need to run `flutter packages pub run build_runner build` or `flutter packages pub run build_runner watch` before the app can be build.
+
+### Release build
+
+Sometimes before you can create a release build you will need to assemble the Android component before an Android build can be created.
+Run `./gradlew assemble` inside the `./android` folder before running `flutter build apk`/ `flutter build appbundle`

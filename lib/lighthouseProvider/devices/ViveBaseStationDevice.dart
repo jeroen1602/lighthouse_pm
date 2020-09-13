@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
+import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
 
 final Guid _POWER_CHARACTERISTIC = Guid('0000cb01-0000-1000-8000-00805f9b34fb');
 
@@ -12,9 +14,17 @@ class ViveBaseStationDevice extends BLEDevice {
   ViveBaseStationDevice(BluetoothDevice device) : super(device);
 
   BluetoothCharacteristic /* ? */ _characteristic;
-  int _deviceId
+  int /* ? */ _deviceId;
+  String /* ? */ _firmwareVersion;
 
-      /* ? */;
+  @override
+  String get firmwareVersion {
+    if (_firmwareVersion == null) {
+      return "UNKNOWN";
+    } else {
+      return _firmwareVersion;
+    }
+  }
 
   @override
   Future cleanupConnection() async {
@@ -80,7 +90,7 @@ class ViveBaseStationDevice extends BLEDevice {
   }
 
   @override
-  LighthousePowerState internalGetPowerStateFromByte(int byte) {
+  LighthousePowerState powerStateFromByte(int byte) {
     return LighthousePowerState.UNKNOWN;
   }
 
@@ -108,11 +118,21 @@ class ViveBaseStationDevice extends BLEDevice {
       // TODO: check service uuid, but I don't know it yet.
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
+        final uuid = characteristic.uuid.toLighthouseGuid();
+
         if (characteristic.uuid == _POWER_CHARACTERISTIC) {
           this._characteristic = characteristic;
-          return true;
+        }
+        if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
+            .isEqualToGuid(uuid)) {
+          this._firmwareVersion = await characteristic.readString();
+          this._firmwareVersion =
+              this._firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
         }
       }
+    }
+    if (this._characteristic != null) {
+      return true;
     }
     await disconnect();
     return false;
@@ -120,4 +140,7 @@ class ViveBaseStationDevice extends BLEDevice {
 
   @override
   String get name => device.name;
+
+  @override
+  Map<String, String> get otherMetadata => Map();
 }

@@ -135,7 +135,6 @@ class LighthouseV2Device extends BLEDevice {
     return false;
   }
 
-  // TODO: support nicknames.
   @override
   String get name => device.name;
 

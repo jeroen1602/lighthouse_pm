@@ -28,14 +28,20 @@ dependencies:
   rxdart: ^0.24.1
   package_info: ^0.4.1
   permission_handler: ^5.0.1
-  flutter_svg: ^0.18.1
+  flutter_svg: ^0.19.0
   url_launcher: ^5.5.2
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
-  clipboard_manager: ^0.0.4
   vibration: ^1.4.0
   toast: ^0.1.5
+  moor_flutter: ^3.1.0
+  sqlite3_flutter_libs: ^0.2.0
+  path_provider: ^1.6.14
+  provider: ^4.3.2+2
+  tuple: ^1.0.3
+  intl: ^0.16.1
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -44,6 +50,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  moor_generator: ^3.3.1
+  build_runner: 1.10.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
