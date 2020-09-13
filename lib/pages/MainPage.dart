@@ -170,6 +170,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               updates++;
               final tuple = snapshot.data;
               final list = tuple.item2;
+              list.sort((a, b) =>
+                  a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id));
               final nicknames = tuple.item1;
               // Make sure a device hasn't left
               final selectedCopy = Set<LHDeviceIdentifier>();
@@ -274,7 +276,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               nickname:
                                   nickname == null ? null : nickname.nickname);
                       if (newNickname != null) {
-                        blocWithoutListen.insertNewNickname(newNickname);
+                        if (newNickname.nickname == null) {
+                          blocWithoutListen
+                              .deleteNicknames([newNickname.macAddress]);
+                        } else {
+                          blocWithoutListen.insertNewNickname(newNickname);
+                        }
                         selected.remove(item);
                       }
                     }
