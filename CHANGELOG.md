@@ -1,6 +1,6 @@
 # Version 1.0.2+4 RC
 
- - (Android) Close connection to open device on app close. 
+ - (Android) Close connection to open device on app close.
  - Added a troubleshooting page.
  - Troubleshooting will also show up if no device have been found after the scan has finished.
  - (Android) Added smart troubleshooting item for location permissions.
@@ -9,11 +9,13 @@
  - Close connection to discovering lighthouses on app close.
  - (Android) Hopefully fixed rare crash when closing app while scan is running.
  - Make sure no read is happening while writing.
- - (iOS) Changed app icon (is the same as Android app icon now)
- - (iOS) Changed display name ("lighthouse_pm" -> "Lighthouse PM")
- - Added a dialog for changing the state when the state is unknown
- - Added lighthouse metadata page on long press power button
+ - (iOS) Changed app icon (is the same as Android app icon now).
+ - (iOS) Changed display name ("lighthouse_pm" -> "Lighthouse PM").
+ - Added a dialog for changing the state when the state is unknown.
+ - Added lighthouse metadata page on long press power button.
  - Added helping out dialog to the unknown power state dialog.
+ - Added the ability to nickname lighthouses.
+ - Added settings page.
 
 # Version 1.0.1+3 2020-08-31
 
