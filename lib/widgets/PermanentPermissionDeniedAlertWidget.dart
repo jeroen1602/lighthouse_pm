@@ -18,8 +18,8 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
                 color: Colors.blue, decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.pushNamed(context, '/about');
-                Navigator.pushNamed(context, '/about/privacy');
+                Navigator.pushNamed(context, '/settings');
+                Navigator.pushNamed(context, '/settings/privacy');
               },
           )
         ])),

@@ -23,18 +23,6 @@ class MainPageDrawer extends StatelessWidget {
             child: Text('Lighthouse PM',
                 style: TextStyle(color: Colors.black, fontSize: 24))),
         ListTile(
-          leading: Icon(Icons.info),
-          title: Text('About'),
-          onTap: () async {
-            Navigator.pop(context);
-            _cleanUp();
-            await Navigator.pushNamed(context, '/about');
-            _startScanWithCheck(
-                failMessage:
-                    "Could not start scan because permission has not been granted. On navigator pop");
-          },
-        ),
-        ListTile(
             leading: Icon(Icons.report),
             title: Text('Troubleshooting'),
             onTap: () async {
