@@ -32,8 +32,12 @@ class LighthouseDatabase extends _$LighthouseDatabase {
 
   Stream<List<Nickname>> get watchSavedNicknames => select(nicknames).watch();
 
-  Future<int> insertNewNickname(Nickname nickname) async {
-    return await into(nicknames)
-        .insert(nickname, mode: InsertMode.insertOrReplace);
+  Future<int> insertNewNickname(Nickname nickname) {
+    return into(nicknames).insert(nickname, mode: InsertMode.insertOrReplace);
+  }
+
+  Future deleteNicknames(List<String> macAddresses) {
+    return (delete(nicknames)..where((t) => t.macAddress.isIn(macAddresses)))
+        .go();
   }
 }

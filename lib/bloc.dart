@@ -10,6 +10,8 @@ class LighthousePMBloc {
   Future<int> insertNewNickname(Nickname nickname) =>
       db.insertNewNickname(nickname);
 
+  Future deleteNicknames(List<String> macAddresses) => db.deleteNicknames(macAddresses);
+
   void close() {
     db.close();
   }

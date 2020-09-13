@@ -266,8 +266,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           orElse: () => null);
 
                       final newNickname =
-                          await NicknameAlertWidget.showCustomDialog(
-                              context, device, nickname);
+                          await NicknameAlertWidget.showCustomDialog(context,
+                              macAddress: device.deviceIdentifier.toString(),
+                              deviceName: device.name,
+                              nickname:
+                                  nickname == null ? null : nickname.nickname);
                       if (newNickname != null) {
                         blocWithoutListen.insertNewNickname(newNickname);
                         selected.remove(item);

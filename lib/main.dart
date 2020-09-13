@@ -4,6 +4,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/pages/AboutPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
+import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +63,7 @@ class MainApp extends StatelessWidget {
               visualDensity: VisualDensity.adaptivePlatformDensity),
           routes: {
             '/': (context) => MainPage(),
+            '/settings': (context) => SettingsPage(),
             '/about': (context) => AboutPage(),
             '/about/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 
 /// A dialog for changing the nickname of a lighthouse
 class NicknameAlertWidget extends StatefulWidget {
-  NicknameAlertWidget(this.device, this.nickname, {Key key}) : super(key: key);
-  final LighthouseDevice device;
-  final Nickname /* ? */ nickname;
+  NicknameAlertWidget({
+    Key key,
+    @required this.macAddress,
+    this.deviceName,
+    this.nickname,
+  }) : super(key: key);
+  final String macAddress;
+  final String /* ? */ deviceName;
+  final String /* ? */ nickname;
 
   @override
   State<StatefulWidget> createState() {
@@ -16,11 +21,17 @@ class NicknameAlertWidget extends StatefulWidget {
   /// Open a dialog and return a [Nickname] with the new setting.
   /// Can return `null` if the dialog is cancelled.
   static Future<Nickname /* ? */ > showCustomDialog(BuildContext context,
-      LighthouseDevice device, Nickname /* ? */ nickname) {
+      {@required String macAddress,
+      String /* ? */ deviceName,
+      String /* ? */ nickname}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return NicknameAlertWidget(device, nickname);
+          return NicknameAlertWidget(
+            macAddress: macAddress,
+            deviceName: deviceName,
+            nickname: nickname,
+          );
         });
   }
 }
@@ -31,7 +42,7 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
   @override
   void initState() {
     if (widget.nickname != null) {
-      textController.text = widget.nickname.nickname;
+      textController.text = widget.nickname;
     }
     super.initState();
   }
@@ -50,7 +61,9 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
                   .primaryTextTheme
                   .bodyText1
                   .copyWith(fontWeight: FontWeight.bold),
-              text: widget.device.name),
+              text: widget.deviceName == null
+                  ? widget.macAddress
+                  : widget.deviceName),
           TextSpan(
               style: Theme.of(context).primaryTextTheme.bodyText1, text: "."),
         ],
@@ -71,17 +84,11 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           onPressed: () {
             final text = textController.text.trim();
             if (text.isEmpty) {
-              Navigator.pop(
-                  context,
-                  Nickname(
-                      macAddress: widget.device.deviceIdentifier.toString(),
-                      nickname: null));
+              Navigator.pop(context,
+                  Nickname(macAddress: widget.macAddress, nickname: null));
             } else {
-              Navigator.pop(
-                  context,
-                  Nickname(
-                      macAddress: widget.device.deviceIdentifier.toString(),
-                      nickname: text));
+              Navigator.pop(context,
+                  Nickname(macAddress: widget.macAddress, nickname: text));
             }
           },
         ),
