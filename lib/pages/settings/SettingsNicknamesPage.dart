@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
@@ -47,9 +48,10 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Nickname>>(
-      stream: bloc.watchSavedNicknames,
-      builder: (BuildContext _, AsyncSnapshot<List<Nickname>> snapshot) {
+    return StreamBuilder<List<NicknamesLastSeenJoin>>(
+      stream: bloc.watchSavedNicknamesWithLastSeen(),
+      builder: (BuildContext _,
+          AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
         Widget body = Center(
           child: CircularProgressIndicator(),
         );
@@ -134,14 +136,15 @@ class _DataNicknamePage extends StatelessWidget {
       : super(key: key);
 
   final bool selecting;
-  final List<Nickname> nicknames;
+  final List<NicknamesLastSeenJoin> nicknames;
   final _SelectItem selectItem;
   final _IsSelected isSelected;
   final _DeselectItem deselectItem;
   final _DeleteItem deleteItem;
   final _UpdateItem updateItem;
 
-  Future _changeNickname(BuildContext context, Nickname oldNickname) async {
+  Future _changeNickname(
+      BuildContext context, NicknamesLastSeenJoin oldNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
         macAddress: oldNickname.macAddress, nickname: oldNickname.nickname);
     if (newNickname != null) {
@@ -162,31 +165,31 @@ class _DataNicknamePage extends StatelessWidget {
         return Column(
           children: [
             Container(
-                color: selected ? Colors.black12 : Colors.transparent,
-                child: InkWell(
-                  onLongPress: () {
-                    if (!selecting) {
+              color: selected ? Colors.black12 : Colors.transparent,
+              child: ListTile(
+                title: Text(item.nickname),
+                subtitle: Text(
+                    '${item.macAddress}${item.lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(item.lastSeen) : ''}'),
+                onLongPress: () {
+                  if (!selecting) {
+                    selectItem(item.macAddress);
+                  } else {
+                    _changeNickname(context, item);
+                  }
+                },
+                onTap: () {
+                  if (selecting) {
+                    if (selected) {
+                      deselectItem(item.macAddress);
+                    } else {
                       selectItem(item.macAddress);
-                    } else {
-                      _changeNickname(context, item);
                     }
-                  },
-                  onTap: () {
-                    if (selecting) {
-                      if (selected) {
-                        deselectItem(item.macAddress);
-                      } else {
-                        selectItem(item.macAddress);
-                      }
-                    } else {
-                      _changeNickname(context, item);
-                    }
-                  },
-                  child: ListTile(
-                    title: Text(item.nickname),
-                    subtitle: Text(item.macAddress),
-                  ),
-                )),
+                  } else {
+                    _changeNickname(context, item);
+                  }
+                },
+              ),
+            ),
             Divider()
           ],
         );

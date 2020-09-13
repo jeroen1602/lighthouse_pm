@@ -216,6 +216,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           );
                         }
                         final device = list[index];
+                        bloc.insertLastSeenDevice(LastSeenDevice(
+                            macAddress: device.deviceIdentifier.toString()));
                         final nickname = nicknames.singleWhere(
                             (element) =>
                                 element.macAddress ==

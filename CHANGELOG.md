@@ -15,6 +15,7 @@
  - Added lighthouse metadata page on long press power button.
  - Added helping out dialog to the unknown power state dialog.
  - Added the ability to nickname lighthouses.
+ - Added settings page.
 
 # Version 1.0.1+3 2020-08-31
 

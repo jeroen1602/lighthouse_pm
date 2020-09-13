@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl_standalone.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
+import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc.dart';
-import 'pages/MainPage.dart';
 
 void main() {
+  findSystemLocale().then((locale) async {
+    await initializeDateFormatting();
+  });
   LighthouseProvider.instance
       .addBLEDeviceProvider(LighthouseV2DeviceProvider.instance);
   runApp(MainApp());

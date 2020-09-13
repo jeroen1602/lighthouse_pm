@@ -10,7 +10,20 @@ class LighthousePMBloc {
   Future<int> insertNewNickname(Nickname nickname) =>
       db.insertNewNickname(nickname);
 
-  Future deleteNicknames(List<String> macAddresses) => db.deleteNicknames(macAddresses);
+  Future deleteNicknames(List<String> macAddresses) =>
+      db.deleteNicknames(macAddresses);
+
+  Stream<List<NicknamesLastSeenJoin>> watchSavedNicknamesWithLastSeen() {
+    return db.watchSavedNicknamesWithLastSeen();
+  }
+
+  Future<int> insertLastSeenDevice(LastSeenDevice lastSeen) {
+    return db.insertLastSeenDevice(lastSeen);
+  }
+
+  Future<void> deleteAllLastSeen() {
+    return db.deleteAllLastSeen();
+  }
 
   void close() {
     db.close();
