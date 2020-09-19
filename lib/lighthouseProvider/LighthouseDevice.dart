@@ -95,7 +95,7 @@ abstract class LighthouseDevice {
   ///
   /// The only valid options are:
   ///  - [LighthousePowerState.ON]
-  ///  - [LighthousePowerState.STANDBY]
+  ///  - [LighthousePowerState.SLEEP]
   ///
   /// When an invalid [newState] is given then this will only be logged in the
   /// console and `return` immediately.

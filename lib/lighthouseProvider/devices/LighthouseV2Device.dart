@@ -68,7 +68,7 @@ class LighthouseV2Device extends BLEDevice {
 
     switch (byte) {
       case 0x00:
-        return LighthousePowerState.STANDBY;
+        return LighthousePowerState.SLEEP;
       case 0x0b:
         return LighthousePowerState.ON;
       case 0x01:
@@ -148,7 +148,7 @@ class LighthouseV2Device extends BLEDevice {
         case LighthousePowerState.ON:
           await this._characteristic.write([0x01], withoutResponse: true);
           break;
-        case LighthousePowerState.STANDBY:
+        case LighthousePowerState.SLEEP:
           await this._characteristic.write([0x00], withoutResponse: true);
           break;
       }
