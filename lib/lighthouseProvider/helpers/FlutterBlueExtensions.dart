@@ -27,7 +27,17 @@ extension BluetoothCharacteristicFunctions on BluetoothCharacteristic {
 
   Future<int> readUint32() async {
     final data = await readByteData();
-    return data.getUint32(0);
+    switch(data.lengthInBytes) {
+      case 0:
+        return 0;
+      case 1:
+        return data.getUint8(0);
+      case 2:
+      case 3:
+        return data.getUint16(0);
+      default:
+        return data.getUint32(0);
+    }
   }
 
   Future<Null> writeByteData(ByteData value,

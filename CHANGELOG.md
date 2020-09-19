@@ -16,6 +16,7 @@
  - Added helping out dialog to the unknown power state dialog.
  - Added the ability to nickname lighthouses.
  - Added settings page.
+ - Added channel to metadata page.
 
 # Version 1.0.1+3 2020-08-31
 
@@ -30,7 +31,7 @@
  - Added About page.
  - Added button to launch build-in licenses page.
  - Added privacy page.
- - Fixed not able to change powerstate if lightouse is stuck at 0x01 (starting).
+ - Fixed not able to change powerstate if lighthouse is stuck at 0x01 (starting).
  - Fixed lighthouse state button being obstructed by the scan button.
  - Added new app icon.
  - (Android) Added a dialog that shows to inform a user of the use of location permissions

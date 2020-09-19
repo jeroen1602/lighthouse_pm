@@ -4,14 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
 
 ///The bluetooth service that handles the power state of the device.
-final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
+// final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
 
 ///The characteristic that handles the power state of the device.
-final Guid _POWER_CHARACTERISTIC = Guid('00001525-1212-efde-1523-785feabcd124');
+const String _POWER_CHARACTERISTIC = '00001525-1212-efde-1523-785feabcd124';
+
+const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice {
   LighthouseV2Device(BluetoothDevice device) : super(device);
@@ -87,6 +90,9 @@ class LighthouseV2Device extends BLEDevice {
       return false;
     }, test: (e) => e is TimeoutException);
 
+    final powerCharacteristic = LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+    final channelCharacteristic = LighthouseGuid.fromString(_CHANNEL_CHARACTERISTIC);
+
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<BluetoothService> services =
         await this.device.discoverServices();
@@ -95,9 +101,14 @@ class LighthouseV2Device extends BLEDevice {
       for (final characteristic in service.characteristics) {
         final uuid = characteristic.uuid.toLighthouseGuid();
 
-        if (characteristic.uuid == _POWER_CHARACTERISTIC) {
+        if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
         }
+        if (uuid == channelCharacteristic) {
+          final channel = await characteristic.readUint32();
+          _otherMetadata['Channel'] = channel.toString();
+        }
+
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
           this._firmwareVersion = await characteristic.readString();
