@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
+import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -49,9 +50,14 @@ class SettingsPage extends StatelessWidget {
                 title: Text('Clear all last seen devices'),
                 trailing: Icon(Icons.arrow_forward_ios),
                 onTap: () async {
-                  await _bloc(context).deleteAllLastSeen();
-                  Toast.show('Cleared up all last seen items', context,
-                      duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                  // result can be `null`
+                  if (await ClearLastSeenAlertWidget.showCustomDialog(
+                          context) ==
+                      true) {
+                    await _bloc(context).deleteAllLastSeen();
+                    Toast.show('Cleared up all last seen items', context,
+                        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                  }
                 }),
             Divider(),
             ListTile(

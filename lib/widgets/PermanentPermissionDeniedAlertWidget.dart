@@ -24,13 +24,13 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
           )
         ])),
         actions: <Widget>[
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Open settings"),
             onPressed: () {
               Navigator.pop(context, true);
             },
           ),
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Cancel"),
             onPressed: () {
               Navigator.pop(context, false);

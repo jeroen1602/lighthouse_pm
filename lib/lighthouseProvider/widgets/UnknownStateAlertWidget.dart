@@ -44,19 +44,19 @@ class UnknownStateAlertWidget extends StatelessWidget {
           ]),
         ),
         actions: <Widget>[
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Start device"),
             onPressed: () {
               Navigator.pop(context, LighthousePowerState.ON);
             },
           ),
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Shutdown device"),
             onPressed: () {
               Navigator.pop(context, LighthousePowerState.SLEEP);
             },
           ),
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Cancel"),
             onPressed: () {
               Navigator.pop(context, null);
@@ -178,7 +178,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         },
       ),
       actions: <Widget>[
-        FlatButton(
+        SimpleDialogOption(
           child: Text("Open issue"),
           onPressed: () async {
             if (await canLaunch(_GITHUB_ISSUE_URL)) {
@@ -186,7 +186,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
             }
           },
         ),
-        FlatButton(
+        SimpleDialogOption(
           child: Text("Cancel"),
           onPressed: () {
             Navigator.pop(context, null);
