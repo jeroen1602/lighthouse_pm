@@ -7,6 +7,10 @@ class LighthousePMBloc {
 
   Stream<List<Nickname>> get watchSavedNicknames => db.watchSavedNicknames;
 
+  Stream<Nickname /* ? */> watchNicknameForMacAddress(String macAddress) {
+    return db.watchNicknameForMacAddress(macAddress);
+  }
+
   Future<int> insertNewNickname(Nickname nickname) =>
       db.insertNewNickname(nickname);
 

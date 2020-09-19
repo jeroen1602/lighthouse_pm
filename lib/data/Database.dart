@@ -39,6 +39,16 @@ class LighthouseDatabase extends _$LighthouseDatabase {
   @override
   int get schemaVersion => 1;
 
+  Stream<Nickname /* ? */> watchNicknameForMacAddress(String macAddress) {
+    macAddress = macAddress.toUpperCase();
+    return (select(nicknames)..where((n) => n.macAddress.equals(macAddress))).watch().map((list) {
+      if (list.isEmpty) {
+        return null;
+      }
+      return list[0];
+    });
+  }
+
   Stream<List<Nickname>> get watchSavedNicknames => select(nicknames).watch();
 
   Future<int> insertNewNickname(Nickname nickname) {
