@@ -87,7 +87,7 @@ class LighthouseWidget extends StatelessWidget {
                                       label: 'I\'m sure',
                                       onPressed: () async {
                                         await this.lighthouseDevice.changeState(
-                                            LighthousePowerState.STANDBY);
+                                            LighthousePowerState.SLEEP);
                                       },
                                     )));
                                 break;
@@ -97,7 +97,7 @@ class LighthouseWidget extends StatelessWidget {
                                         context, lighthouseDevice, data)) {
                                   case LighthousePowerState.ON:
                                     continue powerOn;
-                                  case LighthousePowerState.STANDBY:
+                                  case LighthousePowerState.SLEEP:
                                     continue powerOff;
                                 }
                                 break;
@@ -105,10 +105,10 @@ class LighthouseWidget extends StatelessWidget {
                               case LighthousePowerState.ON:
                                 await this
                                     .lighthouseDevice
-                                    .changeState(LighthousePowerState.STANDBY);
+                                    .changeState(LighthousePowerState.SLEEP);
                                 break;
                               powerOn:
-                              case LighthousePowerState.STANDBY:
+                              case LighthousePowerState.SLEEP:
                                 await this
                                     .lighthouseDevice
                                     .changeState(LighthousePowerState.ON);
@@ -167,7 +167,7 @@ class _LHItemButtonWidget extends StatelessWidget {
       case LighthousePowerState.ON:
         color = Colors.green;
         break;
-      case LighthousePowerState.STANDBY:
+      case LighthousePowerState.SLEEP:
         color = Colors.blue;
         break;
       case LighthousePowerState.BOOTING:

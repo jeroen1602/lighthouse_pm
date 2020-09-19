@@ -53,7 +53,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
           FlatButton(
             child: Text("Shutdown device"),
             onPressed: () {
-              Navigator.pop(context, LighthousePowerState.STANDBY);
+              Navigator.pop(context, LighthousePowerState.SLEEP);
             },
           ),
           FlatButton(
