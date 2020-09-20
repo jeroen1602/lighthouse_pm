@@ -17,6 +17,7 @@
  - Added the ability to nickname lighthouses.
  - Added settings page.
  - Added channel to metadata page.
+ - Added identify device extension to metadata page.
 
 # Version 1.0.1+3 2020-08-31
 

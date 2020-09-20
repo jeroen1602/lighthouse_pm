@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -49,49 +50,52 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     map["Firmware version"] = widget.device.firmwareVersion;
     map.addAll(widget.device.otherMetadata);
     final entries = map.entries.toList(growable: false);
+    final List<Widget> body = [];
+
+    if (widget.device is DeviceWithExtensions) {
+      body.add(_ExtraActionsWidget(widget.device as DeviceWithExtensions));
+    }
+
+    for (int i = 0; i < entries.length; i++) {
+      body.add(_MetadataInkWell(name: entries[i].key, value: entries[i].value));
+    }
+
+    body.add(StreamBuilder<Nickname>(
+      stream: _bloc.watchNicknameForMacAddress(
+          widget.device.deviceIdentifier.toString()),
+      builder: (BuildContext context, AsyncSnapshot<Nickname> snapshot) {
+        if (snapshot.hasData) {
+          return _MetadataInkWell(
+            name: 'Nickname',
+            value: snapshot.data.nickname,
+            onTap: () {
+              changeNicknameHandler(snapshot.data.nickname);
+            },
+          );
+        } else {
+          final theme = Theme.of(context);
+          return InkWell(
+            child: ListTile(
+              title: Text('Nickname'),
+              subtitle: Text(
+                'Not set',
+                style: theme.textTheme.bodyText2.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theme.textTheme.caption.color),
+              ),
+              onTap: () {
+                changeNicknameHandler(null);
+              },
+            ),
+          );
+        }
+      },
+    ));
 
     return Scaffold(
       appBar: AppBar(title: Text('Lighthouse Metadata')),
-      body: ListView.builder(
-        itemBuilder: (BuildContext c, int index) {
-          if (index == entries.length) {
-            return StreamBuilder<Nickname>(
-              stream: _bloc.watchNicknameForMacAddress(
-                  widget.device.deviceIdentifier.toString()),
-              builder:
-                  (BuildContext context, AsyncSnapshot<Nickname> snapshot) {
-                if (snapshot.hasData) {
-                  return _MetadataInkWell(
-                    name: 'Nickname',
-                    value: snapshot.data.nickname,
-                    onTap: () {
-                      changeNicknameHandler(snapshot.data.nickname);
-                    },
-                  );
-                } else {
-                  final theme = Theme.of(context);
-                  return InkWell(
-                    child: ListTile(
-                      title: Text('Nickname'),
-                      subtitle: Text(
-                        'Not set',
-                        style: theme.textTheme.bodyText2.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: theme.textTheme.caption.color),
-                      ),
-                      onTap: () {
-                        changeNicknameHandler(null);
-                      },
-                    ),
-                  );
-                }
-              },
-            );
-          }
-          return _MetadataInkWell(
-              name: entries[index].key, value: entries[index].value);
-        },
-        itemCount: entries.length + 1,
+      body: ListView(
+        children: body,
       ),
     );
   }
@@ -122,5 +126,65 @@ class _MetadataInkWell extends StatelessWidget {
       },
       onTap: onTap,
     );
+  }
+}
+
+class _ExtraActionsWidget extends StatelessWidget {
+  _ExtraActionsWidget(this.device, {Key key}) : super(key: key);
+
+  final DeviceWithExtensions device;
+
+  @override
+  Widget build(BuildContext context) {
+    final extensions = device.deviceExtensions.toList(growable: false);
+
+    return Container(
+        height: 165.0,
+        child: Column(
+          children: [
+            Flexible(
+              child: ListTile(
+                title: Text(
+                  'Extra actions',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+            ),
+            Divider(),
+            Container(
+              height: 85.0,
+              child: ListView.builder(
+                itemBuilder: (c, index) {
+                  return Column(
+                    children: [
+                      Container(
+                        height: 60.0,
+                        child: RawMaterialButton(
+                          onPressed: () async {
+                            await extensions[index].onTap();
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          padding: const EdgeInsets.all(2.0),
+                          shape: CircleBorder(),
+                          child: extensions[index].icon,
+                        ),
+                      ),
+                      Container(
+                        height: 5,
+                      ),
+                      Text(extensions[index].toolTip),
+                    ],
+                  );
+                },
+                itemCount: extensions.length,
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+            Divider(
+              thickness: 1.5,
+            ),
+          ],
+        ));
   }
 }
