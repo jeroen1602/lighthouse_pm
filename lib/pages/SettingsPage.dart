@@ -12,9 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
 class SettingsPage extends StatelessWidget {
-  LighthousePMBloc _bloc(BuildContext context) {
-    return Provider.of<LighthousePMBloc>(context, listen: false);
-  }
+  LighthousePMBloc _bloc(BuildContext context) =>
+      Provider.of<LighthousePMBloc>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
