@@ -5,10 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
 
-final Guid _POWER_CHARACTERISTIC = Guid('0000cb01-0000-1000-8000-00805f9b34fb');
+const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
 class ViveBaseStationDevice extends BLEDevice {
   ViveBaseStationDevice(BluetoothDevice device) : super(device);
@@ -72,7 +73,7 @@ class ViveBaseStationDevice extends BLEDevice {
         command.setUint8(1, 0x00);
         command.setUint16(2, 0x0000, Endian.big);
         break;
-      case LighthousePowerState.STANDBY:
+      case LighthousePowerState.SLEEP:
         command.setUint8(1, 0x02);
         command.setUint16(2, 0x0001, Endian.big);
         break;
@@ -114,20 +115,33 @@ class ViveBaseStationDevice extends BLEDevice {
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<BluetoothService> services =
         await this.device.discoverServices();
+
+    final powerCharacteristic =
+        LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+
     for (final service in services) {
       // TODO: check service uuid, but I don't know it yet.
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
         final uuid = characteristic.uuid.toLighthouseGuid();
 
-        if (characteristic.uuid == _POWER_CHARACTERISTIC) {
+        if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
+          continue;
         }
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
-          this._firmwareVersion = await characteristic.readString();
-          this._firmwareVersion =
-              this._firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
+          try {
+            this._firmwareVersion = await characteristic.readString();
+            this._firmwareVersion = this
+                ._firmwareVersion
+                .replaceAll('\r', '')
+                .replaceAll('\n', ' ');
+          } catch (e, s) {
+            debugPrint('Unable to get firmware version because: $e');
+            debugPrint('$s');
+          }
+          continue;
         }
       }
     }
