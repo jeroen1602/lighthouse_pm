@@ -4,7 +4,7 @@ class LighthousePowerState {
 
   const LighthousePowerState._internal(this.text);
 
-  static const STANDBY = const LighthousePowerState._internal('Standby');
+  static const SLEEP = const LighthousePowerState._internal('Sleep');
   static const ON = const LighthousePowerState._internal('On');
   static const UNKNOWN = const LighthousePowerState._internal('Unknown');
   static const BOOTING = const LighthousePowerState._internal('Booting');

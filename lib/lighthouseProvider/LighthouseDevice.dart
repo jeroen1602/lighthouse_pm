@@ -35,7 +35,9 @@ abstract class LighthouseDevice {
     if (_powerStateSubscription != null) {
       await _powerStateSubscription.cancel();
     }
-    await this._powerState.close();
+    if (this._powerState != null) {
+      await this._powerState.close();
+    }
     await internalDisconnect();
   }
 
@@ -87,15 +89,28 @@ abstract class LighthouseDevice {
         return powerStateFromByte(e);
       });
 
+  // ignore: close_sinks
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
   StreamSubscription /* ? */ _powerStateSubscription;
-  final Mutex _transaction = Mutex();
+
+  ///
+  /// This is the mutex used for transactions.
+  /// It should only be used fox extra calls, [DeviceExtensions] may add the
+  /// need to add extra transaction calls to the device.
+  ///
+  /// [internalChangeState], and [getCurrentState] are already protected by this
+  /// mutex and thus there is no need to add it extra. The app will deadlock
+  /// itself if you do try to obtain the mutex in these functions.
+  ///
+  ///
+  @protected
+  final Mutex transactionMutex = Mutex();
 
   ///Change the state of the device.
   ///
   /// The only valid options are:
   ///  - [LighthousePowerState.ON]
-  ///  - [LighthousePowerState.STANDBY]
+  ///  - [LighthousePowerState.SLEEP]
   ///
   /// When an invalid [newState] is given then this will only be logged in the
   /// console and `return` immediately.
@@ -111,10 +126,10 @@ abstract class LighthouseDevice {
       return;
     }
     try {
-      await _transaction.acquire();
+      await transactionMutex.acquire();
       await internalChangeState(newState);
     } finally {
-      _transaction.release();
+      transactionMutex.release();
     }
   }
 
@@ -133,9 +148,9 @@ abstract class LighthouseDevice {
     _powerStateSubscription =
         Stream.periodic(getUpdateInterval()).listen((_) async {
       if (hasOpenConnection) {
-        if (!_transaction.isLocked) {
+        if (!transactionMutex.isLocked) {
           try {
-            await _transaction.acquire();
+            await transactionMutex.acquire();
             final data = await getCurrentState();
             if (this._powerState.isClosed) {
               await this.disconnect();
@@ -148,7 +163,7 @@ abstract class LighthouseDevice {
             debugPrint('$e');
             debugPrint('$s');
           } finally {
-            _transaction.release();
+            transactionMutex.release();
           }
         }
       } else {

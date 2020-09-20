@@ -4,19 +4,32 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtensions.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/IdentifyDeviceExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
 
 ///The bluetooth service that handles the power state of the device.
-final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
+// final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
 
 ///The characteristic that handles the power state of the device.
-final Guid _POWER_CHARACTERISTIC = Guid('00001525-1212-efde-1523-785feabcd124');
+const String _POWER_CHARACTERISTIC = '00001525-1212-efde-1523-785feabcd124';
 
-class LighthouseV2Device extends BLEDevice {
-  LighthouseV2Device(BluetoothDevice device) : super(device);
+const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 
+const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
+
+class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
+  LighthouseV2Device(BluetoothDevice device) : super(device) {
+    deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
+  }
+
+  @override
+  final Set<DeviceExtensions> deviceExtensions = Set();
   BluetoothCharacteristic /* ? */ _characteristic;
+  BluetoothCharacteristic /* ? */ _identifyCharacteristic;
   String /* ? */ _firmwareVersion;
   final Map<String, String> _otherMetadata = Map();
   static const _SUPPORTED_CHARACTERISTICS_LIST = const [
@@ -25,6 +38,10 @@ class LighthouseV2Device extends BLEDevice {
     DefaultCharacteristics.HARDWARE_REVISION_CHARACTERISTIC,
     DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC,
   ];
+
+  IdentifyDeviceExtension get _identifyDeviceExtension => (deviceExtensions
+          .firstWhere((element) => element is IdentifyDeviceExtension)
+      as IdentifyDeviceExtension);
 
   @override
   String get firmwareVersion {
@@ -68,7 +85,7 @@ class LighthouseV2Device extends BLEDevice {
 
     switch (byte) {
       case 0x00:
-        return LighthousePowerState.STANDBY;
+        return LighthousePowerState.SLEEP;
       case 0x0b:
         return LighthousePowerState.ON;
       case 0x01:
@@ -88,6 +105,14 @@ class LighthouseV2Device extends BLEDevice {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
     }
+    _identifyDeviceExtension.setEnabled(false);
+
+    final powerCharacteristic =
+        LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+    final channelCharacteristic =
+        LighthouseGuid.fromString(_CHANNEL_CHARACTERISTIC);
+    final identifyCharacteristic =
+        LighthouseGuid.fromString(_IDENTIFY_CHARACTERISTIC);
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<BluetoothService> services =
@@ -97,32 +122,63 @@ class LighthouseV2Device extends BLEDevice {
       for (final characteristic in service.characteristics) {
         final uuid = characteristic.uuid.toLighthouseGuid();
 
-        if (characteristic.uuid == _POWER_CHARACTERISTIC) {
+        if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
+          continue;
         }
+        if (uuid == identifyCharacteristic) {
+          this._identifyCharacteristic = characteristic;
+          _identifyDeviceExtension.setEnabled(true);
+          continue;
+        }
+        if (uuid == channelCharacteristic) {
+          try {
+            final channel = await characteristic.readUint32();
+            _otherMetadata['Channel'] = channel.toString();
+          } catch (e, s) {
+            debugPrint('Unable to get channel because: $e');
+            debugPrint('$s');
+          }
+          continue;
+        }
+
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
-          this._firmwareVersion = await characteristic.readString();
-          this._firmwareVersion =
-              this._firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
+          try {
+            this._firmwareVersion = await characteristic.readString();
+            this._firmwareVersion = this
+                ._firmwareVersion
+                .replaceAll('\r', '')
+                .replaceAll('\n', ' ');
+          } catch (e, s) {
+            debugPrint('Unable to get firmware version because: $e');
+            debugPrint('$s');
+          }
+          continue;
         }
         for (final defaultCharacteristic in _SUPPORTED_CHARACTERISTICS_LIST) {
           if (defaultCharacteristic.isEqualToGuid(uuid)) {
-            String response;
-            switch (defaultCharacteristic.type) {
-              case int:
-                final responseInt = await characteristic.readUint32();
-                response = "$responseInt";
-                break;
-              case String:
-                response = await characteristic.readString();
-                break;
-              default:
-                debugPrint('Unsupported type ${defaultCharacteristic.type}');
-                break;
-            }
-            if (response != null) {
-              _otherMetadata[defaultCharacteristic.name] = response;
+            try {
+              String response;
+              switch (defaultCharacteristic.type) {
+                case int:
+                  final responseInt = await characteristic.readUint32();
+                  response = "$responseInt";
+                  break;
+                case String:
+                  response = await characteristic.readString();
+                  break;
+                default:
+                  debugPrint('Unsupported type ${defaultCharacteristic.type}');
+                  break;
+              }
+              if (response != null) {
+                _otherMetadata[defaultCharacteristic.name] = response;
+              }
+            } catch (e, s) {
+              debugPrint(
+                  'Unable to get metadata characteristic "${defaultCharacteristic.name}", because $e');
+              debugPrint('$s');
             }
           }
         }
@@ -140,7 +196,9 @@ class LighthouseV2Device extends BLEDevice {
 
   @override
   Future cleanupConnection() async {
+    await _identifyDeviceExtension.close();
     this._characteristic = null;
+    this._identifyCharacteristic = null;
   }
 
   @override
@@ -150,10 +208,25 @@ class LighthouseV2Device extends BLEDevice {
         case LighthousePowerState.ON:
           await this._characteristic.write([0x01], withoutResponse: true);
           break;
-        case LighthousePowerState.STANDBY:
+        case LighthousePowerState.SLEEP:
           await this._characteristic.write([0x00], withoutResponse: true);
           break;
       }
+    }
+  }
+
+  /// Identify the current lighthouse by way of blinking the front LED.
+  Future<void> identify() async {
+    if (this._identifyCharacteristic == null) {
+      debugPrint('No identify characteristic set!');
+      return;
+    }
+    try {
+      await transactionMutex.acquire();
+      // Write any byte to the characteristic to start the identify option.
+      await this._identifyCharacteristic.write([0x00], withoutResponse: true);
+    } finally {
+      transactionMutex.release();
     }
   }
 }
