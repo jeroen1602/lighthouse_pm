@@ -90,8 +90,10 @@ class LighthouseV2Device extends BLEDevice {
       return false;
     }, test: (e) => e is TimeoutException);
 
-    final powerCharacteristic = LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
-    final channelCharacteristic = LighthouseGuid.fromString(_CHANNEL_CHARACTERISTIC);
+    final powerCharacteristic =
+        LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+    final channelCharacteristic =
+        LighthouseGuid.fromString(_CHANNEL_CHARACTERISTIC);
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<BluetoothService> services =
@@ -105,33 +107,51 @@ class LighthouseV2Device extends BLEDevice {
           this._characteristic = characteristic;
         }
         if (uuid == channelCharacteristic) {
-          final channel = await characteristic.readUint32();
-          _otherMetadata['Channel'] = channel.toString();
+          try {
+            final channel = await characteristic.readUint32();
+            _otherMetadata['Channel'] = channel.toString();
+          } catch (e, s) {
+            debugPrint('Unable to get channel because: $e');
+            debugPrint('$s');
+          }
         }
 
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
-          this._firmwareVersion = await characteristic.readString();
-          this._firmwareVersion =
-              this._firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
+          try {
+            this._firmwareVersion = await characteristic.readString();
+            this._firmwareVersion = this
+                ._firmwareVersion
+                .replaceAll('\r', '')
+                .replaceAll('\n', ' ');
+          } catch (e, s) {
+            debugPrint('Unable to get firmware version because: $e');
+            debugPrint('$s');
+          }
         }
         for (final defaultCharacteristic in _SUPPORTED_CHARACTERISTICS_LIST) {
           if (defaultCharacteristic.isEqualToGuid(uuid)) {
-            String response;
-            switch (defaultCharacteristic.type) {
-              case int:
-                final responseInt = await characteristic.readUint32();
-                response = "$responseInt";
-                break;
-              case String:
-                response = await characteristic.readString();
-                break;
-              default:
-                debugPrint('Unsupported type ${defaultCharacteristic.type}');
-                break;
-            }
-            if (response != null) {
-              _otherMetadata[defaultCharacteristic.name] = response;
+            try {
+              String response;
+              switch (defaultCharacteristic.type) {
+                case int:
+                  final responseInt = await characteristic.readUint32();
+                  response = "$responseInt";
+                  break;
+                case String:
+                  response = await characteristic.readString();
+                  break;
+                default:
+                  debugPrint('Unsupported type ${defaultCharacteristic.type}');
+                  break;
+              }
+              if (response != null) {
+                _otherMetadata[defaultCharacteristic.name] = response;
+              }
+            } catch (e, s) {
+              debugPrint(
+                  'Unable to get metadata characteristic "${defaultCharacteristic.name}", because $e');
+              debugPrint('$s');
             }
           }
         }
