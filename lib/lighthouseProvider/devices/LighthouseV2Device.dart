@@ -39,6 +39,10 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC,
   ];
 
+  IdentifyDeviceExtension get _identifyDeviceExtension => (deviceExtensions
+          .firstWhere((element) => element is IdentifyDeviceExtension)
+      as IdentifyDeviceExtension);
+
   @override
   String get firmwareVersion {
     if (_firmwareVersion == null) {
@@ -99,6 +103,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
     }, test: (e) => e is TimeoutException);
+    _identifyDeviceExtension.setEnabled(false);
 
     final powerCharacteristic =
         LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
@@ -121,6 +126,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         }
         if (uuid == identifyCharacteristic) {
           this._identifyCharacteristic = characteristic;
+          _identifyDeviceExtension.setEnabled(true);
           continue;
         }
         if (uuid == channelCharacteristic) {
@@ -188,7 +194,9 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   Future cleanupConnection() async {
+    await _identifyDeviceExtension.close();
     this._characteristic = null;
+    this._identifyCharacteristic = null;
   }
 
   @override
@@ -211,9 +219,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
       debugPrint('No identify characteristic set!');
       return;
     }
-    await transactionMutex.acquire();
-    // Write any byte to the characteristic to start the identify option.
-    await this._identifyCharacteristic.write([0x00]);
-    transactionMutex.release();
+    try {
+      await transactionMutex.acquire();
+      // Write any byte to the characteristic to start the identify option.
+      await this._identifyCharacteristic.write([0x00], withoutResponse: true);
+    } finally {
+      transactionMutex.release();
+    }
   }
 }

@@ -35,7 +35,9 @@ abstract class LighthouseDevice {
     if (_powerStateSubscription != null) {
       await _powerStateSubscription.cancel();
     }
-    await this._powerState.close();
+    if (this._powerState != null) {
+      await this._powerState.close();
+    }
     await internalDisconnect();
   }
 
@@ -87,6 +89,7 @@ abstract class LighthouseDevice {
         return powerStateFromByte(e);
       });
 
+  // ignore: close_sinks
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
   StreamSubscription /* ? */ _powerStateSubscription;
 

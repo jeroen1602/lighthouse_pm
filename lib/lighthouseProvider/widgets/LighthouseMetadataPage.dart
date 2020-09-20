@@ -159,15 +159,24 @@ class _ExtraActionsWidget extends StatelessWidget {
                     children: [
                       Container(
                         height: 60.0,
-                        child: RawMaterialButton(
-                          onPressed: () async {
-                            await extensions[index].onTap();
+                        child: StreamBuilder<bool>(
+                          stream: extensions[index].enabledStream,
+                          initialData: false,
+                          builder: (c, snapshot) {
+                            return RawMaterialButton(
+                              onPressed: () async {
+                                await extensions[index].onTap();
+                              },
+                              enableFeedback: snapshot.hasData && snapshot.data,
+                              elevation: 2.0,
+                              fillColor: (snapshot.hasData && snapshot.data)
+                                  ? Colors.white
+                                  : Colors.white30,
+                              padding: const EdgeInsets.all(2.0),
+                              shape: CircleBorder(),
+                              child: extensions[index].icon,
+                            );
                           },
-                          elevation: 2.0,
-                          fillColor: Colors.white,
-                          padding: const EdgeInsets.all(2.0),
-                          shape: CircleBorder(),
-                          child: extensions[index].icon,
                         ),
                       ),
                       Container(
