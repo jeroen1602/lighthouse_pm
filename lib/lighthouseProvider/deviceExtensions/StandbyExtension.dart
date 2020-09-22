@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'DeviceWithExtensions.dart';
 
 import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
+import 'DeviceWithExtensions.dart';
 import 'StateExtension.dart';
 
 ///
@@ -28,11 +28,9 @@ extension StandbyExtensionExtensions on LighthouseDevice {
       return false;
     }
     final device = this as DeviceWithExtensions;
-    for (final extension in device.deviceExtensions) {
-      if (extension is StandbyExtension) {
-        return true;
-      }
-    }
-    return false;
+    return device.deviceExtensions.firstWhere(
+            (element) => element is StandbyExtension,
+            orElse: () => null) !=
+        null;
   }
 }
