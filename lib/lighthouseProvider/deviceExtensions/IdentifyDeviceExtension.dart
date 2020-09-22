@@ -1,10 +1,10 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'DeviceExtensions.dart';
+import 'DeviceExtension.dart';
 
 /// A device extension that allow the device to be identified.
-class IdentifyDeviceExtension extends DeviceExtensions {
+class IdentifyDeviceExtension extends DeviceExtension {
   IdentifyDeviceExtension({FutureCallback onTap})
       : super(
             onTap: onTap,

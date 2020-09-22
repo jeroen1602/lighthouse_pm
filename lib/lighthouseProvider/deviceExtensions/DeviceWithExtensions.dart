@@ -1,6 +1,6 @@
-import './DeviceExtensions.dart';
+import './DeviceExtension.dart';
 
 /// An interface for devices that have extra function extensions.
 abstract class DeviceWithExtensions {
-  final Set<DeviceExtensions> deviceExtensions = Set();
+  final Set<DeviceExtension> deviceExtensions = Set();
 }

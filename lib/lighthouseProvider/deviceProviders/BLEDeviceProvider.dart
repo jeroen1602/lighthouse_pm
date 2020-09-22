@@ -24,10 +24,14 @@ abstract class BLEDeviceProvider extends DeviceProvider<BluetoothDevice> {
     try {
       final valid = await bleDevice.isValid();
       this._bleDevicesDiscovering.remove(bleDevice);
+      if (valid){
+        bleDevice.afterIsValid();
+      }
       return valid ? bleDevice : null;
     } catch (e, s) {
       debugPrint('$e');
       debugPrint('$s');
+      bleDevice.disconnect();
       return null;
     }
   }

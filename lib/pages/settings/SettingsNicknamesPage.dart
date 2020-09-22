@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/bloc.dart';
@@ -43,7 +44,7 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
   }
 
   Future _updateItem(Nickname nickname) {
-    return blocWithoutListen.insertNewNickname(nickname);
+    return blocWithoutListen.insertNickname(nickname);
   }
 
   @override
@@ -215,40 +216,41 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
 
   @override
   Widget build(BuildContext context) {
+    final Widget blockIcon = kReleaseMode ? Icon(Icons.block, size: 120.0) : GestureDetector(
+      onTap: () {
+        if (tapCounter < _TAP_TOP) {
+          tapCounter++;
+        }
+        if (tapCounter < _TAP_TOP && tapCounter > _TAP_TOP - 3) {
+          Toast.show(
+              'Just ${_TAP_TOP - tapCounter} left until a fake nickname is created',
+              context);
+        }
+        if (tapCounter == _TAP_TOP) {
+          bloc.insertNickname(Nickname(
+              macAddress: "FF:FF:FF:FF:FF:FF",
+              nickname: "This is a test nickname1"));
+          bloc.insertNickname(Nickname(
+              macAddress: "FF:FF:FF:FF:FF:FE",
+              nickname: "This is a test nickname2"));
+          bloc.insertNickname(Nickname(
+              macAddress: "FF:FF:FF:FF:FF:FD",
+              nickname: "This is a test nickname3"));
+          bloc.insertNickname(Nickname(
+              macAddress: "FF:FF:FF:FF:FF:FC",
+              nickname: "This is a test nickname4"));
+          Toast.show('Fake nickname created!', context,
+              duration: Toast.LENGTH_LONG);
+          tapCounter++;
+        }
+      },
+      child: Icon(Icons.block, size: 120.0) ,
+    );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              if (tapCounter < _TAP_TOP) {
-                tapCounter++;
-              }
-              if (tapCounter < _TAP_TOP && tapCounter > _TAP_TOP - 3) {
-                Toast.show(
-                    'Just ${_TAP_TOP - tapCounter} left until a fake nickname is created',
-                    context);
-              }
-              if (tapCounter == _TAP_TOP) {
-                bloc.insertNewNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FF",
-                    nickname: "This is a test nickname1"));
-                bloc.insertNewNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FE",
-                    nickname: "This is a test nickname2"));
-                bloc.insertNewNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FD",
-                    nickname: "This is a test nickname3"));
-                bloc.insertNewNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FC",
-                    nickname: "This is a test nickname4"));
-                Toast.show('Fake nickname created!', context,
-                    duration: Toast.LENGTH_LONG);
-                tapCounter++;
-              }
-            },
-            child: Icon(Icons.block, size: 120.0),
-          ),
+          blockIcon,
           Text(
             'No nicknames given (yet).',
             style: Theme.of(context).textTheme.headline6,

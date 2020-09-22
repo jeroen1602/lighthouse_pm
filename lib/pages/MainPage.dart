@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
@@ -64,18 +65,30 @@ Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
 }
 
 class MainPage extends StatelessWidget {
+  LighthousePMBloc _bloc(BuildContext context) =>
+      Provider.of<LighthousePMBloc>(context, listen: false);
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<BluetoothState>(
-        stream: FlutterBlue.instance.state,
-        initialData: BluetoothState.unknown,
-        builder:
-            (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
-          final state = snapshot.data;
-          return state == BluetoothState.on
-              ? ScanDevicesPage()
-              : BluetoothOffScreen(state: state);
-        });
+    return StreamBuilder<MainPageSettings>(
+      stream: MainPageSettings.mainPageSettingsStream(_bloc(context)),
+      initialData: MainPageSettings.DEFAULT_MAIN_PAGE_SETTINGS,
+      builder:
+          (BuildContext c, AsyncSnapshot<MainPageSettings> settingsSnapshot) {
+        return StreamBuilder<BluetoothState>(
+            stream: FlutterBlue.instance.state,
+            initialData: BluetoothState.unknown,
+            builder:
+                (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
+              final state = snapshot.data;
+              return state == BluetoothState.on
+                  ? ScanDevicesPage(
+                      settings: settingsSnapshot.data,
+                    )
+                  : BluetoothOffScreen(state: state);
+            });
+      },
+    );
   }
 }
 
@@ -110,6 +123,10 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
 }
 
 class ScanDevicesPage extends StatefulWidget {
+  ScanDevicesPage({Key key, @required this.settings}) : super(key: key);
+
+  final MainPageSettings settings;
+
   @override
   State<StatefulWidget> createState() {
     return _ScanDevicesPage();
@@ -245,6 +262,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                             });
                           },
                           nickname: nickname != null ? nickname.nickname : null,
+                          sleepState: widget.settings.sleepState,
                         );
                       },
                       itemCount: list.length + 1,
@@ -283,7 +301,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           blocWithoutListen
                               .deleteNicknames([newNickname.macAddress]);
                         } else {
-                          blocWithoutListen.insertNewNickname(newNickname);
+                          blocWithoutListen.insertNickname(newNickname);
                         }
                         selected.remove(item);
                       }

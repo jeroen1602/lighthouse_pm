@@ -4,8 +4,8 @@ typedef FutureCallback = Future<void> Function();
 typedef StreamEnabledFunction = Stream<bool> Function();
 
 //A single device extension to add extra functionality to a device.
-abstract class DeviceExtensions {
-  DeviceExtensions(
+abstract class DeviceExtension {
+  DeviceExtension(
       {@required this.toolTip,
       @required this.icon,
       @required this.onTap,
