@@ -81,7 +81,7 @@ abstract class LighthouseDevice {
   /// Get the power state of the device as a device specific int.
   Stream<int> get powerState {
     this._startPowerStateStream();
-    return this._powerState.stream;
+    return _powerState.stream;
   }
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
@@ -138,6 +138,7 @@ abstract class LighthouseDevice {
   /// If this method is called while there is already an active stream then it
   /// will do nothing.
   void _startPowerStateStream() {
+    int retryCount = 0;
     if (this._powerStateSubscription != null) {
       if (this._powerStateSubscription.isPaused) {
         this._powerStateSubscription.resume();
@@ -149,6 +150,7 @@ abstract class LighthouseDevice {
         Stream.periodic(getUpdateInterval()).listen((_) async {
       if (hasOpenConnection) {
         if (!transactionMutex.isLocked) {
+          retryCount = 0;
           try {
             await transactionMutex.acquire();
             final data = await getCurrentState();
@@ -164,6 +166,11 @@ abstract class LighthouseDevice {
             debugPrint('$s');
           } finally {
             transactionMutex.release();
+          }
+        } else {
+          if (retryCount++ > 5) {
+            debugPrint(
+                'Unable to get power state because the mutex has been locked for a while ($retryCount). $transactionMutex');
           }
         }
       } else {

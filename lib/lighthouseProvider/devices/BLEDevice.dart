@@ -33,6 +33,11 @@ abstract class BLEDevice extends LighthouseDevice {
       LHDeviceIdentifier.fromFlutterBlue(device.id);
 
   ///
+  /// Fired after the isValid method has returned true.
+  ///
+  void afterIsValid();
+
+  ///
   /// If this is a valid device of the specified type.
   ///
   Future<bool> isValid();
