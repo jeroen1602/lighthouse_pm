@@ -4,19 +4,30 @@ import 'package:lighthouse_pm/lighthouseProvider/widgets/UnknownStateAlertWidget
 
 import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
+import '../deviceExtensions/StandbyExtension.dart';
 
 typedef LighthousePowerState _ToPowerState(int byte);
 
 /// A widget for showing a [LighthouseDevice] in a list.
 class LighthouseWidget extends StatelessWidget {
   LighthouseWidget(this.lighthouseDevice,
-      {this.onLongPress, this.selected, this.nickname, Key key})
-      : super(key: key);
+      {this.onLongPress,
+      this.selected,
+      this.nickname,
+      this.sleepState = LighthousePowerState.SLEEP,
+      Key key})
+      : super(key: key) {
+    assert(
+        sleepState == LighthousePowerState.SLEEP ||
+            sleepState == LighthousePowerState.STANDBY,
+        'The sleep state may not be ${sleepState.text.toUpperCase()}');
+  }
 
   final LighthouseDevice lighthouseDevice;
   final GestureLongPressCallback onLongPress;
   final bool selected;
   final String /* ? */ nickname;
+  final LighthousePowerState sleepState;
 
   @override
   Widget build(BuildContext context) {
@@ -103,9 +114,17 @@ class LighthouseWidget extends StatelessWidget {
                                 break;
                               powerOff:
                               case LighthousePowerState.ON:
-                                await this
-                                    .lighthouseDevice
-                                    .changeState(LighthousePowerState.SLEEP);
+                                if (lighthouseDevice.hasStandbyExtension) {
+                                  await this
+                                      .lighthouseDevice
+                                      .changeState(this.sleepState);
+                                } else {
+                                  debugPrint(
+                                      'The device doesn\'t support STANDBY so SLEEP will always be used.');
+                                  await this
+                                      .lighthouseDevice
+                                      .changeState(LighthousePowerState.SLEEP);
+                                }
                                 break;
                               powerOn:
                               case LighthousePowerState.STANDBY:

@@ -37,7 +37,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       if (newNickname.nickname == null) {
         await _blocWithoutListen.deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.insertNewNickname(newNickname);
+        await _blocWithoutListen.insertNickname(newNickname);
       }
     }
   }

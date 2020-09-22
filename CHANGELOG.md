@@ -20,6 +20,7 @@
  - Renamed Standby to Sleep, just like the steamVR program.
  - Added identify device extension to metadata page.
  - Added standby (motors on, laser off) state extension to metadata page.
+ - Added a setting to use standby instead of sleep by default.
 
 # Version 1.0.1+3 2020-08-31
 

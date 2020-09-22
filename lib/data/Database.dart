@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:lighthouse_pm/data/tables/SimpleSettingsTable.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
@@ -18,8 +19,9 @@ class NicknamesLastSeenJoin {
   final DateTime /* ? */ lastSeen;
 }
 
-// This file required generated files. Use `flutter packages pub run build_runner
-// build` or `flutter packages pub run build_runner watch` to generate these files.
+// This file required generated files.
+// Use `flutter packages pub run build_runner build`
+// or `flutter packages pub run build_runner watch` to generate these files.
 
 LazyDatabase _openConnection() {
   // the LazyDatabase util lets us find the right location for the file async.
@@ -32,7 +34,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Nicknames, LastSeenDevices])
+@UseMoor(tables: [Nicknames, LastSeenDevices, SimpleSettings])
 class LighthouseDatabase extends _$LighthouseDatabase {
   LighthouseDatabase() : super(_openConnection());
 

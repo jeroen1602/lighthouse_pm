@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:package_info/package_info.dart';
@@ -59,6 +60,25 @@ class SettingsPage extends StatelessWidget {
                   }
                 }),
             Divider(),
+            StreamBuilder<LighthousePowerState>(
+              stream: _bloc(context).settings.getSleepStateAsStream(),
+              builder: (BuildContext c,
+                  AsyncSnapshot<LighthousePowerState> snapshot) {
+                final state = snapshot.hasData &&
+                    snapshot.data == LighthousePowerState.STANDBY;
+                return SwitchListTile(
+                  title: Text('Use STANDBY instead of SLEEP'),
+                  value: state,
+                  onChanged: (value) {
+                    _bloc(context).settings.insertSleepState(value
+                        ? LighthousePowerState.STANDBY
+                        : LighthousePowerState.SLEEP);
+                  },
+                );
+              },
+            ),
+            Divider(),
+            // About goes here!
             ListTile(
               title: Text('About',
                   style: Theme.of(context)
