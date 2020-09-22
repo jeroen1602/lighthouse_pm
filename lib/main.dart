@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
+import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
@@ -27,7 +28,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<LighthousePMBloc>(
-      create: (_) => LighthousePMBloc(),
+      create: (_) => LighthousePMBloc(LighthouseDatabase()),
       dispose: (_, bloc) => bloc.close(),
       child: MaterialApp(
           debugShowCheckedModeBanner: true,

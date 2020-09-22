@@ -5,14 +5,17 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtensions.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/IdentifyDeviceExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/OnExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/SleepExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
 
 ///The bluetooth service that handles the power state of the device.
-// final Guid _POWER_SERVICE = Guid('00001523-1212-efde-1523-785feabcd124');
+// final String _POWER_SERVICE = '00001523-1212-efde-1523-785feabcd124';
 
 ///The characteristic that handles the power state of the device.
 const String _POWER_CHARACTERISTIC = '00001525-1212-efde-1523-785feabcd124';
@@ -23,11 +26,12 @@ const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   LighthouseV2Device(BluetoothDevice device) : super(device) {
+    // Add a part of the [DeviceExtenion]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
   @override
-  final Set<DeviceExtensions> deviceExtensions = Set();
+  final Set<DeviceExtension> deviceExtensions = Set();
   BluetoothCharacteristic /* ? */ _characteristic;
   BluetoothCharacteristic /* ? */ _identifyCharacteristic;
   String /* ? */ _firmwareVersion;
@@ -86,9 +90,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     switch (byte) {
       case 0x00:
         return LighthousePowerState.SLEEP;
+      case 0x02:
+        return LighthousePowerState.STANDBY;
       case 0x0b:
         return LighthousePowerState.ON;
       case 0x01:
+      case 0x08:
       case 0x09:
         return LighthousePowerState.BOOTING;
       default:
@@ -191,6 +198,16 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     return false;
   }
 
+  void afterIsValid() {
+    // Add the extra extensions that need a valid connection to work.
+    deviceExtensions.add(StandbyExtension(
+        changeState: changeState, powerStateStream: powerStateEnum));
+    deviceExtensions.add(SleepExtension(
+        changeState: changeState, powerStateStream: powerStateEnum));
+    deviceExtensions.add(OnExtension(
+        changeState: changeState, powerStateStream: powerStateEnum));
+  }
+
   @override
   String get name => device.name;
 
@@ -210,6 +227,9 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           break;
         case LighthousePowerState.SLEEP:
           await this._characteristic.write([0x00], withoutResponse: true);
+          break;
+        case LighthousePowerState.STANDBY:
+          await this._characteristic.write([0x02], withoutResponse: true);
           break;
       }
     }

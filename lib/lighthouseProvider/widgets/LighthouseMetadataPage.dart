@@ -37,7 +37,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       if (newNickname.nickname == null) {
         await _blocWithoutListen.deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.insertNewNickname(newNickname);
+        await _blocWithoutListen.insertNickname(newNickname);
       }
     }
   }
@@ -171,7 +171,7 @@ class _ExtraActionsWidget extends StatelessWidget {
                               elevation: 2.0,
                               fillColor: (snapshot.hasData && snapshot.data)
                                   ? Colors.white
-                                  : Colors.white30,
+                                  : Colors.white54,
                               padding: const EdgeInsets.all(2.0),
                               shape: CircleBorder(),
                               child: extensions[index].icon,
