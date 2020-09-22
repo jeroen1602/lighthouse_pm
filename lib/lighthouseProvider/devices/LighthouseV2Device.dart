@@ -8,6 +8,8 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/IdentifyDeviceExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/OnExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/SleepExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
@@ -24,7 +26,7 @@ const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   LighthouseV2Device(BluetoothDevice device) : super(device) {
-    // Add a part of the [DeviceExtenion]s the rest are added after
+    // Add a part of the [DeviceExtenion]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
@@ -197,6 +199,10 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
     deviceExtensions.add(StandbyExtension(
+        changeState: changeState, powerStateStream: powerStateEnum));
+    deviceExtensions.add(SleepExtension(
+        changeState: changeState, powerStateStream: powerStateEnum));
+    deviceExtensions.add(OnExtension(
         changeState: changeState, powerStateStream: powerStateEnum));
   }
 
