@@ -106,6 +106,11 @@ class LighthouseWidget extends StatelessWidget {
                                 switch (await UnknownStateAlertWidget
                                     .showCustomDialog(
                                         context, lighthouseDevice, data)) {
+                                  case LighthousePowerState.STANDBY:
+                                    await this
+                                        .lighthouseDevice
+                                        .changeState(LighthousePowerState.STANDBY);
+                                    break;
                                   case LighthousePowerState.ON:
                                     continue powerOn;
                                   case LighthousePowerState.SLEEP:

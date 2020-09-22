@@ -23,6 +23,7 @@
  - Added a setting to use standby instead of sleep by default.
  - Added sleep state extension to metadata page.
  - Added on state extension to metadata page.
+ - Added a standby option to the unknown state dialog.
 
 # Version 1.0.1+3 2020-08-31
 

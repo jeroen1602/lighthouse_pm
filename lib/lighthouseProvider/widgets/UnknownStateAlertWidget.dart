@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/helpers/CustomLongPressGestureRecognizer.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:package_info/package_info.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,6 +23,38 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final actions = <Widget>[
+      SimpleDialogOption(
+        child: Text("On"),
+        onPressed: () {
+          Navigator.pop(context, LighthousePowerState.ON);
+        },
+      ),
+      SimpleDialogOption(
+        child: Text("Sleep"),
+        onPressed: () {
+          Navigator.pop(context, LighthousePowerState.SLEEP);
+        },
+      ),
+      SimpleDialogOption(
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.pop(context, null);
+        },
+      ),
+    ];
+
+    // Add standby, but only if it's supported
+    if (device.hasStandbyExtension) {
+      actions.insert(1, SimpleDialogOption(
+        child: Text("Standby"),
+        onPressed: () {
+          Navigator.pop(context, LighthousePowerState.STANDBY);
+        },
+      ));
+    }
+
     return AlertDialog(
         title: Text('Unknown state'),
         content: RichText(
@@ -43,26 +76,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
             )
           ]),
         ),
-        actions: <Widget>[
-          SimpleDialogOption(
-            child: Text("Start device"),
-            onPressed: () {
-              Navigator.pop(context, LighthousePowerState.ON);
-            },
-          ),
-          SimpleDialogOption(
-            child: Text("Shutdown device"),
-            onPressed: () {
-              Navigator.pop(context, LighthousePowerState.SLEEP);
-            },
-          ),
-          SimpleDialogOption(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.pop(context, null);
-            },
-          ),
-        ]);
+        actions: actions);
   }
 
   static Future<LighthousePowerState /* ? */ > showCustomDialog(
