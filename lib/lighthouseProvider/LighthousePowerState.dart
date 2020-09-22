@@ -8,4 +8,5 @@ class LighthousePowerState {
   static const ON = const LighthousePowerState._internal('On');
   static const UNKNOWN = const LighthousePowerState._internal('Unknown');
   static const BOOTING = const LighthousePowerState._internal('Booting');
+  static const STANDBY = const LighthousePowerState._internal('Standby');
 }

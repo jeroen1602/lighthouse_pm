@@ -108,6 +108,7 @@ class LighthouseWidget extends StatelessWidget {
                                     .changeState(LighthousePowerState.SLEEP);
                                 break;
                               powerOn:
+                              case LighthousePowerState.STANDBY:
                               case LighthousePowerState.SLEEP:
                                 await this
                                     .lighthouseDevice
@@ -170,8 +171,11 @@ class _LHItemButtonWidget extends StatelessWidget {
       case LighthousePowerState.SLEEP:
         color = Colors.blue;
         break;
-      case LighthousePowerState.BOOTING:
+      case LighthousePowerState.STANDBY:
         color = Colors.orange;
+        break;
+      case LighthousePowerState.BOOTING:
+        color = Colors.yellow;
         break;
     }
     return Padding(

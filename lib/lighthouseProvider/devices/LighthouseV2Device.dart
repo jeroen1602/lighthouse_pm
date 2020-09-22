@@ -86,9 +86,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     switch (byte) {
       case 0x00:
         return LighthousePowerState.SLEEP;
+      case 0x02:
+        return LighthousePowerState.STANDBY;
       case 0x0b:
         return LighthousePowerState.ON;
       case 0x01:
+      case 0x08:
       case 0x09:
         return LighthousePowerState.BOOTING;
       default:
@@ -208,6 +211,9 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           break;
         case LighthousePowerState.SLEEP:
           await this._characteristic.write([0x00], withoutResponse: true);
+          break;
+        case LighthousePowerState.STANDBY:
+          await this._characteristic.write([0x02], withoutResponse: true);
           break;
       }
     }
