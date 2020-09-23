@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+
+import '../LighthouseDevice.dart';
+import '../ble/BluetoothDevice.dart';
+import '../ble/DeviceIdentifier.dart';
 
 ///
 /// A device for all other devices.
@@ -10,7 +11,7 @@ abstract class BLEDevice extends LighthouseDevice {
   BLEDevice(this.device);
 
   @protected
-  final BluetoothDevice device;
+  final LHBluetoothDevice device;
 
   ///
   /// Disconnect form the device and call the cleanup for the superclass to also
@@ -29,8 +30,7 @@ abstract class BLEDevice extends LighthouseDevice {
   Future cleanupConnection();
 
   @override
-  LHDeviceIdentifier get deviceIdentifier =>
-      LHDeviceIdentifier.fromFlutterBlue(device.id);
+  LHDeviceIdentifier get deviceIdentifier => device.id;
 
   ///
   /// Fired after the isValid method has returned true.

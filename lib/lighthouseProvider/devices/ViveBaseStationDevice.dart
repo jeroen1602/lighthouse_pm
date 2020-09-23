@@ -2,19 +2,21 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
-import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
-import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
+
+import '../LighthousePowerState.dart';
+import '../ble/BluetoothCharacteristic.dart';
+import '../ble/BluetoothDevice.dart';
+import '../ble/BluetoothService.dart';
+import '../ble/DefaultCharacteristics.dart';
+import '../ble/Guid.dart';
+import 'BLEDevice.dart';
 
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
 class ViveBaseStationDevice extends BLEDevice {
-  ViveBaseStationDevice(BluetoothDevice device) : super(device);
+  ViveBaseStationDevice(LHBluetoothDevice device) : super(device);
 
-  BluetoothCharacteristic /* ? */ _characteristic;
+  LHBluetoothCharacteristic /* ? */ _characteristic;
   int /* ? */ _deviceId;
   String /* ? */ _firmwareVersion;
 
@@ -37,7 +39,7 @@ class ViveBaseStationDevice extends BLEDevice {
     if (_characteristic == null) {
       return null;
     }
-    if ((await this.device.state.first) != BluetoothDeviceState.connected) {
+    if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
@@ -113,7 +115,7 @@ class ViveBaseStationDevice extends BLEDevice {
     }
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
-    final List<BluetoothService> services =
+    final List<LHBluetoothService> services =
         await this.device.discoverServices();
 
     final powerCharacteristic =
@@ -123,7 +125,7 @@ class ViveBaseStationDevice extends BLEDevice {
       // TODO: check service uuid, but I don't know it yet.
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
-        final uuid = characteristic.uuid.toLighthouseGuid();
+        final uuid = characteristic.uuid;
 
         if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;

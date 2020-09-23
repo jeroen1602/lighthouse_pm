@@ -2,53 +2,13 @@
 /// Extensions for the flutter blue classes.
 ///
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 
-const int _BYTES_IN_INT_32 = 32 ~/ 8;
-
-extension BluetoothCharacteristicFunctions on BluetoothCharacteristic {
-  Future<ByteData> readByteData() async {
-    final data = await read();
-    final output = ByteData(data.length);
-    for (var i = 0; i < data.length; i++) {
-      output.setUint8(i, data[i]);
-    }
-    return output;
-  }
-
-  Future<String> readString() async {
-    final list = await read();
-    return Utf8Decoder().convert(list);
-  }
-
-  Future<int> readUint32() async {
-    final data = await readByteData();
-    switch(data.lengthInBytes) {
-      case 0:
-        return 0;
-      case 1:
-        return data.getUint8(0);
-      case 2:
-      case 3:
-        return data.getUint16(0);
-      default:
-        return data.getUint32(0);
-    }
-  }
-
-  Future<Null> writeByteData(ByteData value,
-      {bool withoutResponse = false}) async {
-    final list = List<int>(value.lengthInBytes);
-    for (var i = 0; i < value.lengthInBytes; i++) {
-      list.add(value.getUint8(i));
-    }
-    return await write(list, withoutResponse: withoutResponse);
-  }
-}
+import '../ble/BluetoothDevice.dart';
+import '../ble/DeviceIdentifier.dart';
+import '../ble/Guid.dart';
 
 extension GuidByteData on Guid {
   ByteData toByteData() {
@@ -60,25 +20,30 @@ extension GuidByteData on Guid {
     return output;
   }
 
-  int getFirstAsUInt32() {
-    final list = toByteArray();
-    final data = ByteData(_BYTES_IN_INT_32);
-    for (var i = 0; i < _BYTES_IN_INT_32; i++) {
-      data.setUint8(i, list[i]);
-    }
-    return data.getUint32(0, Endian.big);
-  }
-
-  bool checkFirstPart(int expected) {
-    return getFirstAsUInt32() == expected;
-  }
-
   LighthouseGuid toLighthouseGuid() {
     return LighthouseGuid.fromBytes(this.toByteData());
   }
+}
 
-  Guid32 toGuid32() {
-    final bytes = this.toByteData();
-    return Guid32.fromInt32(bytes.getUint32(0, Endian.big));
+extension DeviceIdentifierExtensions on DeviceIdentifier {
+  LHDeviceIdentifier toLHDeviceIdentifier() {
+    return LHDeviceIdentifier(this.id);
+  }
+}
+
+extension BluetoothDeviceStateExtensions on BluetoothDeviceState {
+  LHBluetoothDeviceState toLHState() {
+    switch (this) {
+      case BluetoothDeviceState.connected:
+        return LHBluetoothDeviceState.connected;
+      case BluetoothDeviceState.connecting:
+        return LHBluetoothDeviceState.connecting;
+      case BluetoothDeviceState.disconnected:
+        return LHBluetoothDeviceState.disconnected;
+      case BluetoothDeviceState.disconnecting:
+        return LHBluetoothDeviceState.disconnecting;
+      default:
+        return LHBluetoothDeviceState.unknown;
+    }
   }
 }

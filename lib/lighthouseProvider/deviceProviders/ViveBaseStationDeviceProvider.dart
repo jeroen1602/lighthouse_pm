@@ -1,8 +1,8 @@
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/BLEDeviceProvider.dart';
-import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
-import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
-import 'package:lighthouse_pm/lighthouseProvider/devices/ViveBaseStationDevice.dart';
+import '../ble/BluetoothDevice.dart';
+import '../devices/BLEDevice.dart';
+import '../devices/LighthouseV2Device.dart';
+import '../devices/ViveBaseStationDevice.dart';
+import 'BLEDeviceProvider.dart';
 
 ///
 /// A device provider for discovering and connection to [LighthouseV2Device]s.
@@ -26,7 +26,7 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
-  Future<BLEDevice> internalGetDevice(BluetoothDevice device) async {
+  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
     return ViveBaseStationDevice(device);
   }
 

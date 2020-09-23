@@ -189,6 +189,14 @@ class LighthouseProvider {
         return;
       }
       final list = this._lightHouseDevices.value;
+      // Check if this device is already in the list, which should never happen.
+      if (list.firstWhere((element) => element.data == newDevice,
+              orElse: () => null) !=
+          null) {
+        debugPrint(
+            'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+        return;
+      }
       list.add(TimeoutContainer<LighthouseDevice>(newDevice));
       this._lightHouseDevices.add(list);
       this._lightHouseDevices.add(list);

@@ -6,7 +6,9 @@ import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
 import '../ble/DeviceIdentifier.dart';
+import '../helpers/FlutterBlueExtensions.dart';
 import 'BLELighthouseBackend.dart';
+import 'flutterBlue/FlutterBlueBluetoothDevice.dart';
 
 /// A backend that provides devices using [FlutterBlue].
 class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
@@ -93,7 +95,7 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
           }
           for (final scanResult in scanResults) {
             final deviceIdentifier =
-                LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id);
+                scanResult.device.id.toLHDeviceIdentifier();
 
             if (this._connectingDevices.contains(deviceIdentifier)) {
               continue;
@@ -134,7 +136,7 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
         continue;
       }
       final LighthouseDevice lighthouseDevice =
-          await bLEDeviceProvider.getDevice(device);
+          await bLEDeviceProvider.getDevice(FlutterBlueBluetoothDevice(device));
       if (lighthouseDevice != null) {
         return lighthouseDevice;
       }
