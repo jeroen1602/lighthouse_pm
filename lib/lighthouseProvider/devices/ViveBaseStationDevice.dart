@@ -153,6 +153,11 @@ class ViveBaseStationDevice extends BLEDevice {
   }
 
   @override
+  void afterIsValid() {
+    // Do nothing for now.
+  }
+
+  @override
   String get name => device.name;
 
   @override
