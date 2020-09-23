@@ -3,9 +3,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backend/FlutterBlueLighthouseBackend.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
-import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
+import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
@@ -17,10 +18,13 @@ void main() {
   findSystemLocale().then((locale) async {
     await initializeDateFormatting();
   });
+
+  LighthouseProvider.instance.addBackend(FlutterBlueLighthouseBackend.instance);
+
+  LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
   LighthouseProvider.instance
-      .addBLEDeviceProvider(LighthouseV2DeviceProvider.instance);
-  LighthouseProvider.instance
-      .addBLEDeviceProvider(ViveBaseStationDeviceProvider.instance);
+      .addProvider(ViveBaseStationDeviceProvider.instance);
+
   runApp(MainApp());
 }
 

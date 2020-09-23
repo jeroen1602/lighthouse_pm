@@ -1,4 +1,4 @@
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
+import './LighthouseDevice.dart';
 
 ///
 /// An abstract super class of what all device provider should be able to do.
@@ -23,4 +23,12 @@ abstract class DeviceProvider<D> {
   /// If no open connection have been made this can just return.
   ///
   Future disconnectRunningDiscoveries();
+
+  @override
+  bool operator ==(Object other) {
+    return this.runtimeType == other.runtimeType;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
 }
