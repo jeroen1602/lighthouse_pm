@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../DeviceProvider.dart';
 import '../LighthouseDevice.dart';
 import '../ble/DeviceIdentifier.dart';
+import 'LowLevelDevice.dart';
 
 /// A function where the parent should update the last seen and return if the device was found.
 typedef UpdateLastSeen = bool Function(LHDeviceIdentifier deviceIdentifier);
@@ -21,7 +22,7 @@ typedef UpdateLastSeen = bool Function(LHDeviceIdentifier deviceIdentifier);
 /// when the backend has been added to the [LighthouseProvider] it will set the
 /// [updateLastSeen] function which can be used to check if the unknown device
 /// is already known.
-abstract class LighthouseBackend<T extends DeviceProvider> {
+abstract class LighthouseBackend<T extends DeviceProvider<D>, D extends LowLevelDevice> {
   /// Check if a [DeviceProvider] is of a type that this [LighthouseBackend]
   /// supports/ uses.
   bool isMyProviderType(DeviceProvider provider) {
@@ -82,4 +83,21 @@ abstract class LighthouseBackend<T extends DeviceProvider> {
 
   /// IMPORTANT the [LighthouseProvider] should set this value when registering a backend!
   UpdateLastSeen /* ? */ updateLastSeen;
+
+  /// Will return `null` if no device provider could validate the device.
+  @protected
+  Future<LighthouseDevice /* ? */ > getLighthouseDevice(D device) async {
+    debugPrint('Trying to connect to device with name: ${device.name}');
+    for (final provider in providers) {
+      if (!provider.nameCheck(device.name)) {
+        continue;
+      }
+      final LighthouseDevice lighthouseDevice =
+      await provider.getDevice(device);
+      if (lighthouseDevice != null) {
+        return lighthouseDevice;
+      }
+    }
+    return null;
+  }
 }

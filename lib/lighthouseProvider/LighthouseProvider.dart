@@ -9,10 +9,12 @@ import 'backend/LighthouseBackend.dart';
 import 'ble/DeviceIdentifier.dart';
 import 'timeout/TimeoutContainer.dart';
 
-///A provider for getting all [LighthouseDevice]s in the region.
+///A provider for getting all [LighthouseDevice]s in the area.
 ///
-/// The provider uses [LighthouseBackend] and "overrides" the [startScan] and
-/// [stopScan] methods.
+/// Before the provider actually becomes useful you will need to add at least
+/// on [LighthouseBackend] to provide the provider with a backend to use. These
+/// backends must be provided with at least 1 [LighthouseProvider] or else the
+/// backend won't know what devices are valid.
 ///
 /// For basic usage:
 /// Get an instance using [LighthouseProvider.instance].
@@ -63,40 +65,46 @@ class LighthouseProvider {
     }
   }
 
-  LighthouseBackend /* ? */ getBackendForDeviceProvider(
+  /// Get a list of all the backends that this [DeviceProvider] can be used with.
+  List<LighthouseBackend> _getBackendForDeviceProvider(
       DeviceProvider provider) {
+    final List<LighthouseBackend> backendList = List<LighthouseBackend>();
     for (final backend in _backendSet) {
       if (backend.isMyProviderType(provider)) {
-        return backend;
+        backendList.add(backend);
       }
     }
-    return null;
+    return backendList;
   }
 
-  /// Add a [DeviceProvider] to the first [LighthouseBackend] that supports it.
+  /// Add a [DeviceProvider] to every [LighthouseBackend] that supports it.
   ///
   /// Will throw a [UnsupportedError] if no valid backend could be found for the
   /// [DeviceProvider].
   void addProvider(DeviceProvider provider) {
-    final backend = getBackendForDeviceProvider(provider);
-    if (backend == null) {
+    final backendList = _getBackendForDeviceProvider(provider);
+    if (backendList == null || backendList.isEmpty) {
       throw UnsupportedError(
           'No backend found for device provider: "${provider.runtimeType}". Did you forget to add the backend first?');
     }
-    backend.addProvider(provider);
+    for (final backend in backendList) {
+      backend.addProvider(provider);
+    }
   }
 
-  /// Remove a [DeviceProvider] to the first [LighthouseBackend] that supports it.
+  /// Remove a [DeviceProvider] from every [LighthouseBackend] that supports it.
   ///
   /// Will throw a [UnsupportedError] if no valid backend could be found for the
   /// [DeviceProvider].
   void removeProvider(DeviceProvider provider) {
-    final backend = getBackendForDeviceProvider(provider);
-    if (backend == null) {
+    final backendList = _getBackendForDeviceProvider(provider);
+    if (backendList == null || backendList.isEmpty) {
       throw UnsupportedError(
           'No backend found for device provider: "${provider.runtimeType}". Did you forget to add the backend first?');
     }
-    backend.removeProvider(provider);
+    for (final backend in backendList) {
+      backend.removeProvider(provider);
+    }
   }
 
   /// Start scanning for [LighthouseDevice]s.

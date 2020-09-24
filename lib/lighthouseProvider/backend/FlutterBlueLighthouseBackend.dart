@@ -109,7 +109,8 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
             }
             // Possibly a new lighthouse, let's make sure it's valid.
             this._connectingDevices.add(deviceIdentifier);
-            _getLighthouseDevice(scanResult.device).then((lighthouseDevice) {
+            getLighthouseDevice(FlutterBlueBluetoothDevice(scanResult.device))
+                .then((lighthouseDevice) {
               if (lighthouseDevice == null) {
                 debugPrint(
                     'Found a non valid device! Mac: ${scanResult.device.id.toString()}');
@@ -125,22 +126,5 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
     _scanResultSubscription.onDone(() {
       this._scanResultSubscription = null;
     });
-  }
-
-  /// Will return `null` if no device provider could validate the device.
-  Future<LighthouseDevice /* ? */ > _getLighthouseDevice(
-      BluetoothDevice device) async {
-    debugPrint('Trying to connect to device with name: ${device.name}');
-    for (final bLEDeviceProvider in providers) {
-      if (!bLEDeviceProvider.nameCheck(device.name)) {
-        continue;
-      }
-      final LighthouseDevice lighthouseDevice =
-          await bLEDeviceProvider.getDevice(FlutterBlueBluetoothDevice(device));
-      if (lighthouseDevice != null) {
-        return lighthouseDevice;
-      }
-    }
-    return null;
   }
 }
