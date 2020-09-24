@@ -107,9 +107,8 @@ class LighthouseWidget extends StatelessWidget {
                                     .showCustomDialog(
                                         context, lighthouseDevice, data)) {
                                   case LighthousePowerState.STANDBY:
-                                    await this
-                                        .lighthouseDevice
-                                        .changeState(LighthousePowerState.STANDBY);
+                                    await this.lighthouseDevice.changeState(
+                                        LighthousePowerState.STANDBY);
                                     break;
                                   case LighthousePowerState.ON:
                                     continue powerOn;
@@ -165,8 +164,9 @@ class _LHItemPowerStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = toPowerState(powerStateByte);
+    final hexString = powerStateByte.toRadixString(16);
     return Text(
-        '${state.text} (0x${powerStateByte.toRadixString(16).padLeft(2, '0')})');
+        '${state.text} (0x${hexString.padLeft(hexString.length + (hexString.length % 2), '0')})');
   }
 }
 

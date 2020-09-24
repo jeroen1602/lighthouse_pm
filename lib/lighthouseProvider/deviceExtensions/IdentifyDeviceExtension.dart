@@ -20,6 +20,9 @@ class IdentifyDeviceExtension extends DeviceExtension {
   BehaviorSubject<bool> _enabledSubject = BehaviorSubject.seeded(true);
 
   Stream<bool> _enabledStream() {
+    if (_enabledSubject == null) {
+      _enabledSubject = BehaviorSubject.seeded(true);
+    }
     return _enabledSubject.stream;
   }
 
@@ -31,6 +34,5 @@ class IdentifyDeviceExtension extends DeviceExtension {
     if (_enabledSubject != null) {
       await _enabledSubject.close();
     }
-    _enabledSubject = null;
   }
 }

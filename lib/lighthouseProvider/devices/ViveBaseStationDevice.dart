@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -44,11 +45,34 @@ class ViveBaseStationDevice extends BLEDevice {
       return null;
     }
     final dataArray = await _characteristic.read();
-    final byteArray = ByteData(8);
-    for (var i = 0; i < 8; i++) {
+    final byteArray = ByteData(min(8, dataArray.length));
+    for (var i = 0; i < min(8, dataArray.length); i++) {
       byteArray.setUint8(i, dataArray[i]);
     }
-    return byteArray.getUint64(0, Endian.little);
+    switch (byteArray.lengthInBytes) {
+      case 1:
+        return byteArray.getUint8(0);
+      case 2:
+        return byteArray.getUint16(0, Endian.big);
+      case 3:
+        return (byteArray.getUint16(0, Endian.big) << 8) +
+            byteArray.getUint8(2);
+      case 4:
+        return byteArray.getUint32(0, Endian.big);
+      case 5:
+        return (byteArray.getUint32(0, Endian.big) << 8) +
+            byteArray.getUint8(4);
+      case 6:
+        return (byteArray.getUint32(0, Endian.big) << 16) +
+            byteArray.getUint16(4, Endian.big);
+      case 7:
+        return (byteArray.getUint32(0, Endian.big) << 24) +
+            (byteArray.getUint16(4, Endian.big) << 8) +
+            byteArray.getUint8(6);
+      case 8:
+      default:
+        return byteArray.getUint64(0, Endian.big);
+    }
   }
 
   @override

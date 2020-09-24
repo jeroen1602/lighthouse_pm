@@ -1,9 +1,10 @@
 import './LighthouseDevice.dart';
+import 'backend/LowLevelDevice.dart';
 
 ///
 /// An abstract super class of what all device provider should be able to do.
 ///
-abstract class DeviceProvider<D> {
+abstract class DeviceProvider<D extends LowLevelDevice> {
   ///
   /// A simple check to see if the name matches with what the device provider
   /// expects. If the name doesn't matter for the device provider just always
