@@ -27,10 +27,6 @@ void main() {
   }
 
   LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
-  if (!kReleaseMode) {
-    LighthouseProvider.instance
-        .addProvider(ViveBaseStationDeviceProvider.instance);
-  }
 
   runApp(MainApp());
 }

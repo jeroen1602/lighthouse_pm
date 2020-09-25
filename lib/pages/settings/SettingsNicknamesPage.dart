@@ -223,7 +223,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
         }
         if (tapCounter < _TAP_TOP && tapCounter > _TAP_TOP - 3) {
           Toast.show(
-              'Just ${_TAP_TOP - tapCounter} left until a fake nickname is created',
+              'Just ${_TAP_TOP - tapCounter} left until a fake nicknames are created',
               context);
         }
         if (tapCounter == _TAP_TOP) {

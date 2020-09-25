@@ -21,6 +21,19 @@ class ViveBaseStationBloc {
     });
   }
 
+  Stream<List<int>> getIdsAsStream() {
+    return db.select(db.viveBaseStationIds).watch().map((event) {
+      if (event == null || event.isEmpty) {
+        return [];
+      }
+      final out = <int>[];
+      for (final item in event) {
+        out.add(item.id);
+      }
+      return out;
+    });
+  }
+
   Future<void> insertId(int id) {
     assert(id & 0xFFFFFFFF == id,
         'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16)}');
