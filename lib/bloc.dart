@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:rxdart/rxdart.dart';
@@ -7,10 +8,12 @@ import 'package:rxdart/rxdart.dart';
 class LighthousePMBloc {
   final LighthouseDatabase db;
   final SettingsBloc settings;
+  final ViveBaseStationBloc viveBaseStation;
 
   LighthousePMBloc(LighthouseDatabase db)
       : db = db,
-        settings = SettingsBloc(db);
+        settings = SettingsBloc(db),
+        viveBaseStation = ViveBaseStationBloc(db);
 
   Stream<List<Nickname>> get watchSavedNicknames => db.watchSavedNicknames;
 

@@ -49,6 +49,7 @@ abstract class LighthouseBackend<T extends DeviceProvider<D>, D extends LowLevel
   /// In release mode it will just log to the console.
   ///
   /// Any backend that implements this method MUST await the super function first.
+  @mustCallSuper
   Future<void> startScan({@required Duration timeout}) async {
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
@@ -72,6 +73,7 @@ abstract class LighthouseBackend<T extends DeviceProvider<D>, D extends LowLevel
 
   /// Disconnect form any open devices.
   /// If needed a subclass may override this, but be sure to call the super method!
+  @mustCallSuper
   Future<void> disconnectOpenDevices() async {
     for (final bleDeviceProvider in providers) {
       await bleDeviceProvider.disconnectRunningDiscoveries();

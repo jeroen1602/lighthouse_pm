@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
 
 import '../LighthousePowerState.dart';
 import '../ble/BluetoothCharacteristic.dart';
@@ -10,15 +12,20 @@ import '../ble/BluetoothDevice.dart';
 import '../ble/BluetoothService.dart';
 import '../ble/DefaultCharacteristics.dart';
 import '../ble/Guid.dart';
+import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
 class ViveBaseStationDevice extends BLEDevice {
-  ViveBaseStationDevice(LHBluetoothDevice device) : super(device);
+  ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationBloc bloc)
+      : _bloc = bloc,
+        super(device);
 
+  final ViveBaseStationBloc /* ? */ _bloc;
   LHBluetoothCharacteristic /* ? */ _characteristic;
   int /* ? */ _deviceId;
+  int /* ? */ _deviceIdEnd;
   String /* ? */ _firmwareVersion;
 
   @override
@@ -124,11 +131,20 @@ class ViveBaseStationDevice extends BLEDevice {
   @override
   Future<bool> isValid() async {
     try {
-      _deviceId = int.parse(name.replaceAll('HTC BS', '').replaceAll(' ', ''),
-          radix: 16);
+      final idPart = name.replaceAll('HTC BS', '').replaceAll(' ', '');
+      _deviceIdEnd = int.parse(idPart.substring(2), radix: 16);
     } on FormatException {
       debugPrint('Could not get deviceId from name. "$name"');
       return false;
+    }
+    if (_bloc != null) {
+      _deviceId = await _bloc.getIdOnSubset(_deviceIdEnd);
+      if (_deviceId == null) {
+        debugPrint('Device Id not set yet for "$name"');
+      }
+    } else {
+      debugPrint(
+          'Bloc not set for ViveBaseStationDevice, will not be able to store the state');
     }
     debugPrint('Connecting to device: ${this.deviceIdentifier}');
     try {
@@ -146,7 +162,6 @@ class ViveBaseStationDevice extends BLEDevice {
         LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
 
     for (final service in services) {
-      // TODO: check service uuid, but I don't know it yet.
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
         final uuid = characteristic.uuid;
@@ -181,6 +196,44 @@ class ViveBaseStationDevice extends BLEDevice {
   @override
   void afterIsValid() {
     // Do nothing for now.
+  }
+
+  @override
+  Future<bool> showExtraInfoWidget(BuildContext context) async {
+    if (this._deviceId != null) {
+      return true;
+    }
+
+    return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
+            context, _deviceIdEnd)
+        .then((value) async {
+      if (value == null) {
+        return false;
+      }
+      value = value.toUpperCase();
+      if (value.length == 4) {
+        value += _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
+      }
+      if (value.length == 8) {
+        if (value.substring(3) ==
+            _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase()) {
+          debugPrint('End of the device did not match');
+          return false;
+        }
+        try {
+          this._deviceId = int.parse(value, radix: 16);
+          if (_bloc != null) {
+            await _bloc.insertId(_deviceId);
+          } else {
+            debugPrint('Could not save device id because the bloc was null');
+          }
+          return true;
+        } on FormatException {
+          debugPrint('Could not convert device id to a number');
+        }
+      }
+      return false;
+    });
   }
 
   @override

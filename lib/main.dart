@@ -27,8 +27,10 @@ void main() {
   }
 
   LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
-  LighthouseProvider.instance
-      .addProvider(ViveBaseStationDeviceProvider.instance);
+  if (!kReleaseMode) {
+    LighthouseProvider.instance
+        .addProvider(ViveBaseStationDeviceProvider.instance);
+  }
 
   runApp(MainApp());
 }
@@ -37,7 +39,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<LighthousePMBloc>(
-      create: (_) => LighthousePMBloc(LighthouseDatabase()),
+      create: (_) => _initializeDataBase(),
       dispose: (_, bloc) => bloc.close(),
       child: MaterialApp(
           debugShowCheckedModeBanner: true,
@@ -54,5 +56,16 @@ class MainApp extends StatelessWidget {
           // home: MainPage()
           ),
     );
+  }
+
+  LighthousePMBloc _initializeDataBase() {
+    final db = LighthouseDatabase();
+    final mainBloc = LighthousePMBloc(db);
+    if (!kReleaseMode) {
+      ViveBaseStationDeviceProvider.instance
+          .setViveBaseStationBloc(mainBloc.viveBaseStation);
+    }
+
+    return mainBloc;
   }
 }

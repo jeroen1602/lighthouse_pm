@@ -1,3 +1,5 @@
+import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+
 import '../ble/BluetoothDevice.dart';
 import '../devices/BLEDevice.dart';
 import '../devices/LighthouseV2Device.dart';
@@ -9,6 +11,8 @@ import 'BLEDeviceProvider.dart';
 ///
 class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ViveBaseStationDeviceProvider._();
+
+  ViveBaseStationBloc /* ? */ _bloc;
 
   static ViveBaseStationDeviceProvider _instance;
 
@@ -23,11 +27,18 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   }
 
   ///
+  /// Set the databased bloc for saving the ids of vive base stations.
+  ///
+  void setViveBaseStationBloc(ViveBaseStationBloc bloc) {
+    this._bloc = bloc;
+  }
+
+  ///
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return ViveBaseStationDevice(device);
+    return ViveBaseStationDevice(device, _bloc);
   }
 
   ///

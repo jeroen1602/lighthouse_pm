@@ -244,7 +244,7 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
-    debugPrint('Written some shit to vive base station!');
+    debugPrint('Written some data to vive base station!');
   }
 }
 
