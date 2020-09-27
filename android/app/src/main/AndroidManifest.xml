@@ -8,6 +8,8 @@
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
+    <!--Fix for not being able to check canLaunch on Android 30 and up-->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:allowBackup="true"

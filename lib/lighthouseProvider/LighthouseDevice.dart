@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -131,6 +131,15 @@ abstract class LighthouseDevice {
     } finally {
       transactionMutex.release();
     }
+  }
+
+  /// Show an extra window for the user to fill in extra info needed for the
+  /// lighthouse device.
+  /// Will not show a dialog if the device is already excepted.
+  /// Returns a [Future] with a [bool] if the device is now able to change the
+  /// state.
+  Future<bool> showExtraInfoWidget(BuildContext context) async {
+    return true;
   }
 
   /// Start the power state stream.

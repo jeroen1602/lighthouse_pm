@@ -11,6 +11,7 @@ import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
@@ -75,6 +76,16 @@ class MainPage extends StatelessWidget {
       initialData: MainPageSettings.DEFAULT_MAIN_PAGE_SETTINGS,
       builder:
           (BuildContext c, AsyncSnapshot<MainPageSettings> settingsSnapshot) {
+        if (settingsSnapshot.hasData) {
+          if (settingsSnapshot.data.viveBaseStationsEnabled) {
+            LighthouseProvider.instance
+                .addProvider(ViveBaseStationDeviceProvider.instance);
+          } else {
+            LighthouseProvider.instance
+                .removeProvider(ViveBaseStationDeviceProvider.instance);
+          }
+        }
+
         return StreamBuilder<BluetoothState>(
             stream: FlutterBlue.instance.state,
             initialData: BluetoothState.unknown,
@@ -404,11 +415,14 @@ class BluetoothOffScreen extends StatelessWidget {
                   .headline6
                   .copyWith(color: Colors.white),
             ),
-            Text('Bluetooth needs to be enabled to talk to the lighthouses',
-                style: Theme.of(context)
-                    .primaryTextTheme
-                    .subtitle1
-                    .copyWith(color: Colors.white)),
+            Text(
+              'Bluetooth needs to be enabled to talk to the lighthouses',
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .subtitle1
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
             _toSettingsButton(context)
           ],
         ),

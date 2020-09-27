@@ -87,6 +87,10 @@ class LighthouseWidget extends StatelessWidget {
                           powerState: data,
                           toPowerState: lighthouseDevice.powerStateFromByte,
                           onPress: () async {
+                            if (!await lighthouseDevice
+                                .showExtraInfoWidget(context)) {
+                              return;
+                            }
                             final state =
                                 lighthouseDevice.powerStateFromByte(data);
                             switch (state) {
@@ -97,8 +101,19 @@ class LighthouseWidget extends StatelessWidget {
                                     action: SnackBarAction(
                                       label: 'I\'m sure',
                                       onPressed: () async {
-                                        await this.lighthouseDevice.changeState(
-                                            LighthousePowerState.SLEEP);
+                                        if (lighthouseDevice
+                                            .hasStandbyExtension) {
+                                          await this
+                                              .lighthouseDevice
+                                              .changeState(this.sleepState);
+                                        } else {
+                                          debugPrint(
+                                              'The device doesn\'t support STANDBY so SLEEP will always be used.');
+                                          await this
+                                              .lighthouseDevice
+                                              .changeState(
+                                                  LighthousePowerState.SLEEP);
+                                        }
                                       },
                                     )));
                                 break;
@@ -107,9 +122,8 @@ class LighthouseWidget extends StatelessWidget {
                                     .showCustomDialog(
                                         context, lighthouseDevice, data)) {
                                   case LighthousePowerState.STANDBY:
-                                    await this
-                                        .lighthouseDevice
-                                        .changeState(LighthousePowerState.STANDBY);
+                                    await this.lighthouseDevice.changeState(
+                                        LighthousePowerState.STANDBY);
                                     break;
                                   case LighthousePowerState.ON:
                                     continue powerOn;
@@ -165,8 +179,9 @@ class _LHItemPowerStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = toPowerState(powerStateByte);
+    final hexString = powerStateByte.toRadixString(16);
     return Text(
-        '${state.text} (0x${powerStateByte.toRadixString(16).padLeft(2, '0')})');
+        '${state.text} (0x${hexString.padLeft(hexString.length + (hexString.length % 2), '0')})');
   }
 }
 

@@ -9,11 +9,13 @@ abstract class DeviceExtension {
       {@required this.toolTip,
       @required this.icon,
       @required this.onTap,
+      this.updateListAfter = false,
       this.streamEnabledFunction});
 
   final String toolTip;
   final Widget icon;
   final FutureCallback onTap;
+  final bool updateListAfter;
   @protected
   StreamEnabledFunction streamEnabledFunction;
 

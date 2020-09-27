@@ -1,18 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/IdentifyDeviceExtension.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/OnExtension.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/SleepExtension.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
-import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
-import 'package:lighthouse_pm/lighthouseProvider/helpers/FlutterBlueExtensions.dart';
+
+import '../LighthousePowerState.dart';
+import '../ble/BluetoothCharacteristic.dart';
+import '../ble/BluetoothDevice.dart';
+import '../ble/BluetoothService.dart';
+import '../ble/DefaultCharacteristics.dart';
+import '../ble/Guid.dart';
+import '../deviceExtensions/DeviceExtension.dart';
+import '../deviceExtensions/DeviceWithExtensions.dart';
+import '../deviceExtensions/IdentifyDeviceExtension.dart';
+import '../deviceExtensions/OnExtension.dart';
+import '../deviceExtensions/SleepExtension.dart';
+import '../deviceExtensions/StandbyExtension.dart';
+import 'BLEDevice.dart';
 
 ///The bluetooth service that handles the power state of the device.
 // final String _POWER_SERVICE = '00001523-1212-efde-1523-785feabcd124';
@@ -25,15 +27,15 @@ const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
-  LighthouseV2Device(BluetoothDevice device) : super(device) {
+  LighthouseV2Device(LHBluetoothDevice device) : super(device) {
     // Add a part of the [DeviceExtenion]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
-  BluetoothCharacteristic /* ? */ _characteristic;
-  BluetoothCharacteristic /* ? */ _identifyCharacteristic;
+  LHBluetoothCharacteristic /* ? */ _characteristic;
+  LHBluetoothCharacteristic /* ? */ _identifyCharacteristic;
   String /* ? */ _firmwareVersion;
   final Map<String, String> _otherMetadata = Map();
   static const _SUPPORTED_CHARACTERISTICS_LIST = const [
@@ -64,7 +66,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     if (_characteristic == null) {
       return null;
     }
-    if ((await this.device.state.first) != BluetoothDeviceState.connected) {
+    if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
@@ -106,10 +108,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   @override
   Future<bool> isValid() async {
     debugPrint('Connecting to device: ${this.deviceIdentifier}');
-    await this.device.connect(timeout: Duration(seconds: 10)).catchError((e) {
+    try {
+      await this.device.connect(timeout: Duration(seconds: 10));
+    } on TimeoutException {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
-    }, test: (e) => e is TimeoutException);
+    }
     _identifyDeviceExtension.setEnabled(false);
 
     final powerCharacteristic =
@@ -120,12 +124,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         LighthouseGuid.fromString(_IDENTIFY_CHARACTERISTIC);
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
-    final List<BluetoothService> services =
+    final List<LHBluetoothService> services =
         await this.device.discoverServices();
     for (final service in services) {
       // Find the correct characteristic.
       for (final characteristic in service.characteristics) {
-        final uuid = characteristic.uuid.toLighthouseGuid();
+        final uuid = characteristic.uuid;
 
         if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
@@ -161,32 +165,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           }
           continue;
         }
-        for (final defaultCharacteristic in _SUPPORTED_CHARACTERISTICS_LIST) {
-          if (defaultCharacteristic.isEqualToGuid(uuid)) {
-            try {
-              String response;
-              switch (defaultCharacteristic.type) {
-                case int:
-                  final responseInt = await characteristic.readUint32();
-                  response = "$responseInt";
-                  break;
-                case String:
-                  response = await characteristic.readString();
-                  break;
-                default:
-                  debugPrint('Unsupported type ${defaultCharacteristic.type}');
-                  break;
-              }
-              if (response != null) {
-                _otherMetadata[defaultCharacteristic.name] = response;
-              }
-            } catch (e, s) {
-              debugPrint(
-                  'Unable to get metadata characteristic "${defaultCharacteristic.name}", because $e');
-              debugPrint('$s');
-            }
-          }
-        }
+        checkCharacteristicForDefaultValue(
+            _SUPPORTED_CHARACTERISTICS_LIST, characteristic, _otherMetadata);
       }
     }
     if (this._characteristic != null) {

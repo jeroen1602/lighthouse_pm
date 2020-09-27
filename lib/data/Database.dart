@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'tables/LastSeenDevicesTable.dart';
 import 'tables/NicknameTable.dart';
+import 'tables/ViveBaseStationIdTable.dart';
 
 part 'Database.g.dart';
 
@@ -34,16 +35,19 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Nicknames, LastSeenDevices, SimpleSettings])
+@UseMoor(
+    tables: [Nicknames, LastSeenDevices, SimpleSettings, ViveBaseStationIds])
 class LighthouseDatabase extends _$LighthouseDatabase {
   LighthouseDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
 
-  Stream<Nickname /* ? */> watchNicknameForMacAddress(String macAddress) {
+  Stream<Nickname /* ? */ > watchNicknameForMacAddress(String macAddress) {
     macAddress = macAddress.toUpperCase();
-    return (select(nicknames)..where((n) => n.macAddress.equals(macAddress))).watch().map((list) {
+    return (select(nicknames)..where((n) => n.macAddress.equals(macAddress)))
+        .watch()
+        .map((list) {
       if (list.isEmpty) {
         return null;
       }

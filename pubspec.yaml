@@ -29,7 +29,7 @@ dependencies:
   package_info: ^0.4.1
   permission_handler: ^5.0.1
   flutter_svg: ^0.19.0
-  url_launcher: ^5.5.2
+  url_launcher: ^5.7.1
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
