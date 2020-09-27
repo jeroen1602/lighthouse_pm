@@ -169,7 +169,7 @@ class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             _intListFromString('LIGHTHOUSE PM By Jeroen1602'),
             _fromDefaultCharacteristic(
-                DefaultCharacteristics.HARDWARE_REVISION_CHARACTERISTIC));
+                DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC));
 }
 //endregion
 

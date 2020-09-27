@@ -52,7 +52,8 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     final entries = map.entries.toList(growable: false);
     final List<Widget> body = [];
 
-    if (widget.device is DeviceWithExtensions) {
+    if (widget.device is DeviceWithExtensions &&
+        (widget.device as DeviceWithExtensions).deviceExtensions.isNotEmpty) {
       body.add(_ExtraActionsWidget(widget.device as DeviceWithExtensions));
     }
 
@@ -111,10 +112,18 @@ class _MetadataInkWell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       child: ListTile(
         title: Text(name),
-        subtitle: Text(value),
+        subtitle: Text(
+          value != null ? value : 'Not set',
+          style: value != null
+              ? null
+              : theme.textTheme.bodyText2.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theme.textTheme.caption.color),
+        ),
       ),
       onLongPress: () async {
         Clipboard.setData(ClipboardData(text: value));

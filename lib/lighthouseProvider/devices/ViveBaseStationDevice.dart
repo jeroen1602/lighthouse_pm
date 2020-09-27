@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../LighthousePowerState.dart';
 import '../ble/BluetoothCharacteristic.dart';
@@ -12,21 +13,55 @@ import '../ble/BluetoothDevice.dart';
 import '../ble/BluetoothService.dart';
 import '../ble/DefaultCharacteristics.dart';
 import '../ble/Guid.dart';
+import '../deviceExtensions/DeviceExtension.dart';
+import '../deviceExtensions/DeviceWithExtensions.dart';
+import '../deviceExtensions/OnExtension.dart';
+import '../deviceExtensions/SleepExtension.dart';
+import '../deviceExtensions/StandbyExtension.dart';
 import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
-class ViveBaseStationDevice extends BLEDevice {
+class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationBloc bloc)
       : _bloc = bloc,
         super(device);
 
+  @override
+  final Set<DeviceExtension> deviceExtensions = Set();
   final ViveBaseStationBloc /* ? */ _bloc;
   LHBluetoothCharacteristic /* ? */ _characteristic;
-  int /* ? */ _deviceId;
+  int /* ? */ _deviceIdStorage;
+
+  int /* ? */ get _deviceId => _deviceIdStorage;
+
+  set _deviceId(int /* ? */ id) {
+    _deviceIdStorage = id;
+    _hasDeviceIdSubject.add(id != null);
+    if (id == null) {
+      _otherMetadata['Id'] = null;
+    } else {
+      _otherMetadata['Id'] = '$id';
+    }
+  }
+
   int /* ? */ _deviceIdEnd;
   String /* ? */ _firmwareVersion;
+  BehaviorSubject<bool> _hasDeviceIdSubject = BehaviorSubject.seeded(false);
+  final Map<String, String> _otherMetadata = Map();
+  static const _SUPPORTED_CHARACTERISTICS_LIST = const [
+    DefaultCharacteristics.MODEL_NUMBER_STRING_CHARACTERISTIC,
+    DefaultCharacteristics.SERIAL_NUMBER_STRING_CHARACTERISTIC,
+    DefaultCharacteristics.HARDWARE_REVISION_CHARACTERISTIC,
+    DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC,
+  ];
+
+  @override
+  String get name => device.name;
+
+  @override
+  Map<String, String> get otherMetadata => _otherMetadata;
 
   @override
   String get firmwareVersion {
@@ -184,6 +219,8 @@ class ViveBaseStationDevice extends BLEDevice {
           }
           continue;
         }
+        checkCharacteristicForDefaultValue(
+            _SUPPORTED_CHARACTERISTICS_LIST, characteristic, _otherMetadata);
       }
     }
     if (this._characteristic != null) {
@@ -195,7 +232,34 @@ class ViveBaseStationDevice extends BLEDevice {
 
   @override
   void afterIsValid() {
-    // Do nothing for now.
+    // Add the extra extensions that need a valid connection to work.
+    deviceExtensions.add(StandbyExtension(
+        changeState: changeState,
+        powerStateStream: _getPowerStateStreamForExtensions()));
+    deviceExtensions.add(SleepExtension(
+        changeState: changeState,
+        powerStateStream: _getPowerStateStreamForExtensions()));
+    deviceExtensions.add(OnExtension(
+        changeState: changeState,
+        powerStateStream: _getPowerStateStreamForExtensions()));
+  }
+
+  Stream<LighthousePowerState> _getPowerStateStreamForExtensions() {
+    LighthousePowerState lastState = LighthousePowerState.UNKNOWN;
+    bool hasId = false;
+    return MergeStream<dynamic>([powerStateEnum, _hasDeviceIdSubject.stream])
+        .map((event) {
+      if (event is LighthousePowerState) {
+        lastState = event;
+      } else if (event is bool) {
+        hasId = event;
+      }
+      if (hasId) {
+        return lastState;
+      } else {
+        return LighthousePowerState.BOOTING;
+      }
+    }).asBroadcastStream();
   }
 
   @override
@@ -235,10 +299,4 @@ class ViveBaseStationDevice extends BLEDevice {
       return false;
     });
   }
-
-  @override
-  String get name => device.name;
-
-  @override
-  Map<String, String> get otherMetadata => Map();
 }

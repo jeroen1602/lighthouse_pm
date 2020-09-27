@@ -165,32 +165,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           }
           continue;
         }
-        for (final defaultCharacteristic in _SUPPORTED_CHARACTERISTICS_LIST) {
-          if (defaultCharacteristic.isEqualToGuid(uuid)) {
-            try {
-              String response;
-              switch (defaultCharacteristic.type) {
-                case int:
-                  final responseInt = await characteristic.readUint32();
-                  response = "$responseInt";
-                  break;
-                case String:
-                  response = await characteristic.readString();
-                  break;
-                default:
-                  debugPrint('Unsupported type ${defaultCharacteristic.type}');
-                  break;
-              }
-              if (response != null) {
-                _otherMetadata[defaultCharacteristic.name] = response;
-              }
-            } catch (e, s) {
-              debugPrint(
-                  'Unable to get metadata characteristic "${defaultCharacteristic.name}", because $e');
-              debugPrint('$s');
-            }
-          }
-        }
+        checkCharacteristicForDefaultValue(
+            _SUPPORTED_CHARACTERISTICS_LIST, characteristic, _otherMetadata);
       }
     }
     if (this._characteristic != null) {
