@@ -4,7 +4,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backend/FakeBLEBackend.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backend/FlutterBlueLighthouseBackend.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
@@ -23,7 +22,8 @@ void main() {
 
   LighthouseProvider.instance.addBackend(FlutterBlueLighthouseBackend.instance);
   if (!kReleaseMode) {
-    LighthouseProvider.instance.addBackend(FakeBLEBackend.instance);
+    // Add this back if you need to test for devices you don't own.
+    //LighthouseProvider.instance.addBackend(FakeBLEBackend.instance);
   }
 
   LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
