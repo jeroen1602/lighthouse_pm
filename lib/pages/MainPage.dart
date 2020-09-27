@@ -214,8 +214,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                   'Unable to find lighthouses, try some troubleshooting.',
                                   style: Theme.of(context)
                                       .primaryTextTheme
-                                      .headline4
-                                      .copyWith(color: Colors.black),
+                                      .headline4,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
