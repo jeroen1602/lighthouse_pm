@@ -43,6 +43,7 @@ class MainApp extends StatelessWidget {
           theme: ThemeData(
               primarySwatch: Colors.grey,
               visualDensity: VisualDensity.adaptivePlatformDensity),
+          darkTheme: ThemeData.dark(),
           routes: {
             '/': (context) => MainPage(),
             '/settings': (context) => SettingsPage(),

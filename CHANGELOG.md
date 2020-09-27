@@ -24,6 +24,7 @@
  - Added sleep state extension to metadata page.
  - Added on state extension to metadata page.
  - Added a standby option to the unknown state dialog.
+ - Added Dark Theme using OS theme (android 10+, iOS 13+)
  - Added a lighthouseBackend for more lighthouse types in the future.
  - BETA added support for Vive base stations.
 
