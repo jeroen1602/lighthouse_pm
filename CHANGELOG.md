@@ -24,6 +24,7 @@
  - Added sleep state extension to metadata page.
  - Added on state extension to metadata page.
  - Added a standby option to the unknown state dialog.
+ - Added Dark Theme using OS theme (android 10+, iOS 13+)
 
 # Version 1.0.1+3 2020-08-31
 
