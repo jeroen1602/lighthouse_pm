@@ -50,7 +50,6 @@ class MainApp extends StatelessWidget {
             '/settings/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),
           }
-          // home: MainPage()
           ),
     );
   }
@@ -58,10 +57,8 @@ class MainApp extends StatelessWidget {
   LighthousePMBloc _initializeDataBase() {
     final db = LighthouseDatabase();
     final mainBloc = LighthousePMBloc(db);
-    if (!kReleaseMode) {
-      ViveBaseStationDeviceProvider.instance
-          .setViveBaseStationBloc(mainBloc.viveBaseStation);
-    }
+    ViveBaseStationDeviceProvider.instance
+        .setViveBaseStationBloc(mainBloc.viveBaseStation);
 
     return mainBloc;
   }

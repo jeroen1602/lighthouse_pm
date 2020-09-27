@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/DefaultCharacteristics.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
 import '../../ble/BluetoothDevice.dart';
 import '../../ble/BluetoothService.dart';
+import '../../ble/DefaultCharacteristics.dart';
 import '../../ble/DeviceIdentifier.dart';
 import '../../ble/Guid.dart';
 

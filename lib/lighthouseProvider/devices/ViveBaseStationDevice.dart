@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ClearIdExtension.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthousePowerState.dart';
@@ -14,6 +13,7 @@ import '../ble/BluetoothDevice.dart';
 import '../ble/BluetoothService.dart';
 import '../ble/DefaultCharacteristics.dart';
 import '../ble/Guid.dart';
+import '../deviceExtensions/ClearIdExtension.dart';
 import '../deviceExtensions/DeviceExtension.dart';
 import '../deviceExtensions/DeviceWithExtensions.dart';
 import '../deviceExtensions/OnExtension.dart';
@@ -170,7 +170,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       final idPart = name.replaceAll('HTC BS', '').replaceAll(' ', '');
       _deviceIdEnd = int.parse(idPart.substring(2), radix: 16);
     } on FormatException {
-      debugPrint('Could not get deviceId from name. "$name"');
+      debugPrint('Could not get device id end from name. "$name"');
       return false;
     }
     if (_bloc != null) {

@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backend/fake/FakeBluetoothDevice.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
 import 'BLELighthouseBackend.dart';
+import 'fake/FakeBluetoothDevice.dart';
 
 class FakeBLEBackend extends BLELighthouseBackend {
 // Make sure there is always only one instance.
@@ -31,7 +31,6 @@ class FakeBLEBackend extends BLELighthouseBackend {
   @override
   Future<void> stopScan() async {
     _foundDeviceSubject.add(null);
-    //NAH
   }
 
   @override
