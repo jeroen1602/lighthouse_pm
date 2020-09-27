@@ -6,6 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
@@ -15,6 +16,7 @@ class LighthouseMetadataPage extends StatefulWidget {
   LighthouseMetadataPage(this.device, {Key key}) : super(key: key);
 
   final LighthouseDevice device;
+  final BehaviorSubject<int> _updateSubject = BehaviorSubject.seeded(0);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,8 +44,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  List<Widget> _generateBody() {
     Map<String, String> map = Map();
     map["Device type"] = "${widget.device.runtimeType}";
     map["Name"] = widget.device.name;
@@ -54,7 +55,12 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 
     if (widget.device is DeviceWithExtensions &&
         (widget.device as DeviceWithExtensions).deviceExtensions.isNotEmpty) {
-      body.add(_ExtraActionsWidget(widget.device as DeviceWithExtensions));
+      body.add(_ExtraActionsWidget(
+        widget.device as DeviceWithExtensions,
+        updateList: () {
+          widget._updateSubject.add(widget._updateSubject.value + 1);
+        },
+      ));
     }
 
     for (int i = 0; i < entries.length; i++) {
@@ -93,10 +99,18 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       },
     ));
 
+    return body;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Lighthouse Metadata')),
-      body: ListView(
-        children: body,
+      body: StreamBuilder<int>(
+        stream: widget._updateSubject.stream,
+        builder: (c, s) => ListView(
+          children: _generateBody(),
+        ),
       ),
     );
   }
@@ -139,9 +153,11 @@ class _MetadataInkWell extends StatelessWidget {
 }
 
 class _ExtraActionsWidget extends StatelessWidget {
-  _ExtraActionsWidget(this.device, {Key key}) : super(key: key);
+  _ExtraActionsWidget(this.device, {Key key, this.updateList})
+      : super(key: key);
 
   final DeviceWithExtensions device;
+  final VoidCallback updateList;
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +191,10 @@ class _ExtraActionsWidget extends StatelessWidget {
                             return RawMaterialButton(
                               onPressed: () async {
                                 await extensions[index].onTap();
+                                if (extensions[index].updateListAfter &&
+                                    updateList != null) {
+                                  updateList();
+                                }
                               },
                               enableFeedback: snapshot.hasData && snapshot.data,
                               elevation: 2.0,

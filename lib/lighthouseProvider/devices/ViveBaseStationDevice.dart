@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ClearIdExtension.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthousePowerState.dart';
@@ -17,7 +18,6 @@ import '../deviceExtensions/DeviceExtension.dart';
 import '../deviceExtensions/DeviceWithExtensions.dart';
 import '../deviceExtensions/OnExtension.dart';
 import '../deviceExtensions/SleepExtension.dart';
-import '../deviceExtensions/StandbyExtension.dart';
 import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
@@ -42,7 +42,8 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (id == null) {
       _otherMetadata['Id'] = null;
     } else {
-      _otherMetadata['Id'] = '$id';
+      _otherMetadata['Id'] =
+          '0x${id.toRadixString(16).padLeft(8, '0').toUpperCase()}';
     }
   }
 
@@ -233,9 +234,12 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
-    deviceExtensions.add(StandbyExtension(
-        changeState: changeState,
-        powerStateStream: _getPowerStateStreamForExtensions()));
+    if (_bloc != null) {
+      deviceExtensions.add(ClearIdExtension(
+          bloc: _bloc,
+          deviceIdEnd: _deviceIdEnd,
+          clearId: () => _deviceId = null));
+    }
     deviceExtensions.add(SleepExtension(
         changeState: changeState,
         powerStateStream: _getPowerStateStreamForExtensions()));
