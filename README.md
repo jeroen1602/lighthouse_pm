@@ -55,6 +55,8 @@ If there is anyone who does want to pick this up and support that part then plea
 
 Because the app uses generated code you will first need to run `flutter packages pub run build_runner build` or `flutter packages pub run build_runner watch` before the app can be build.
 
+While the app is in development there may be changes to the local database, there will not be any migrations written unless it's between actual versions. So you may need to clear the app storage before some new features start working.
+
 ### Release build
 
 Sometimes before you can create a release build you will need to assemble the Android component before an Android build can be created.
