@@ -70,6 +70,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/app-icon.svg
+    - assets/images/identify-icon.svg
     - assets/images/github-dark.svg
     - assets/images/github-light.svg
 
