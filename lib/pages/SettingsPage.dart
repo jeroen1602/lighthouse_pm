@@ -19,6 +19,27 @@ class SettingsPage extends StatelessWidget {
   LighthousePMBloc _bloc(BuildContext context) =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 
+  Future<List<ThemeMode>> _getSupportedThemeModes() async {
+    if (await SettingsBloc.supportsThemeModeSystem) {
+      return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
+    } else {
+      return [ThemeMode.light, ThemeMode.dark];
+    }
+  }
+
+  String _themeModeToString(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.system:
+        return "System";
+      case ThemeMode.dark:
+        return "Dark";
+      case ThemeMode.light:
+        return "Light";
+      default:
+        return "UNKNOWN";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +122,39 @@ class SettingsPage extends StatelessWidget {
                                     value: value,
                                     child: Text('$value seconds')))
                             .toList());
+                  },
+                ),
+                Divider(),
+                FutureBuilder<List<ThemeMode>>(
+                  future: _getSupportedThemeModes(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot) {
+                    if (!supportedThemesSnapshot.hasData) {
+                      return CircularProgressIndicator();
+                    }
+                    return StreamBuilder<ThemeMode>(
+                      stream:
+                          _bloc(context).settings.getPreferedThemeAsStream(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<ThemeMode> snapshot) {
+                        return DropdownMenuListTile<ThemeMode>(
+                          title: Text('Set prefered theme'),
+                          value: snapshot.data,
+                          onChanged: (ThemeMode theme) async =>
+                              await _bloc(context)
+                                  .settings
+                                  .setPreferedTheme(theme),
+                          items: supportedThemesSnapshot.data
+                              .map<DropdownMenuItem<ThemeMode>>(
+                                  (ThemeMode theme) =>
+                                      DropdownMenuItem<ThemeMode>(
+                                        value: theme,
+                                        child: Text(_themeModeToString(theme)),
+                                      ))
+                              .toList(),
+                        );
+                      },
+                    );
                   },
                 ),
                 Divider(),

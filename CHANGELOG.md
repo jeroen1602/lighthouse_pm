@@ -29,6 +29,7 @@
  - BETA added support for Vive base stations.
  - Added scan duration option.
  - (Android) Fixed urls not opening on Android 11.
+ - Added an option to settings for selecting the preferred theme.
 
 # Version 1.0.1+3 2020-08-31
 
