@@ -6,6 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
+import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ViveBaseStationAlertWidget.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
@@ -82,6 +83,24 @@ class SettingsPage extends StatelessWidget {
                             : LighthousePowerState.SLEEP);
                       },
                     );
+                  },
+                ),
+                Divider(),
+                StreamBuilder<int>(
+                  stream: _bloc(context).settings.getScanDurationsAsStream(),
+                  builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+                    return DropdownMenuListTile<int>(
+                        title: Text('Set scan duration'),
+                        value: snapshot.data,
+                        onChanged: (int value) async => await _bloc(context)
+                            .settings
+                            .setScanDuration(value),
+                        items: SettingsBloc.SCAN_DURATION_VALUES
+                            .map<DropdownMenuItem<int>>((int value) =>
+                                DropdownMenuItem<int>(
+                                    value: value,
+                                    child: Text('$value seconds')))
+                            .toList());
                   },
                 ),
                 Divider(),

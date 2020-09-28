@@ -23,16 +23,16 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
-const Duration _SCAN_DURATION = Duration(seconds: 4);
 
-Future _startScan() async {
-  await LighthouseProvider.instance.startScan(timeout: _SCAN_DURATION);
+Future _startScan(Duration scanDuration) async {
+  await LighthouseProvider.instance.startScan(timeout: scanDuration);
 }
 
-Future _startScanWithCheck({String failMessage = ""}) async {
+Future _startScanWithCheck(Duration scanDuration,
+    {String failMessage = ""}) async {
   if (await BLEPermissionsHelper.hasBLEPermissions() ==
       PermissionStatus.granted) {
-    await _startScan();
+    await _startScan(scanDuration);
   } else if (failMessage != null && failMessage.isNotEmpty && !kReleaseMode) {
     debugPrint(failMessage);
   }
@@ -96,7 +96,10 @@ class MainPage extends StatelessWidget {
                   ? ScanDevicesPage(
                       settings: settingsSnapshot.data,
                     )
-                  : BluetoothOffScreen(state: state);
+                  : BluetoothOffScreen(
+                      state: state,
+                      settings: settingsSnapshot.data,
+                    );
             });
       },
     );
@@ -104,6 +107,11 @@ class MainPage extends StatelessWidget {
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget {
+  _ScanFloatingButtonWidget({Key key, @required this.settings})
+      : super(key: key);
+
+  final MainPageSettings settings;
+
   @override
   Widget build(BuildContext context) {
     // The button for starting and stopping scanning.
@@ -123,7 +131,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
             onPressed: () async {
               if (await LocationPermissionDialogFlow
                   .showLocationPermissionDialogFlow(context)) {
-                await _startScan();
+                await _startScan(Duration(seconds: settings.scanDuration));
               }
             },
           );
@@ -158,7 +166,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _startScanWithCheck(
+    _startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
         failMessage:
             "Could not start scan because the permission has not been granted");
   }
@@ -338,8 +346,14 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   backgroundColor: actionBarColor,
                   leading: leading,
                 ),
-                floatingActionButton: _ScanFloatingButtonWidget(),
-                drawer: MainPageDrawer(_cleanUp, _startScanWithCheck),
+                floatingActionButton: _ScanFloatingButtonWidget(
+                  settings: widget.settings,
+                ),
+                drawer: MainPageDrawer(_cleanUp, ({String failMessage}) {
+                  return _startScanWithCheck(
+                      Duration(seconds: widget.settings.scanDuration),
+                      failMessage: failMessage);
+                }),
                 body: body,
               );
             }));
@@ -356,7 +370,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         _cleanUp();
         break;
       case AppLifecycleState.resumed:
-        _startScanWithCheck(
+        _startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
             failMessage:
                 "Could not start scan because the permission has not been granted on resume.");
         break;
@@ -369,9 +383,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 }
 
 class BluetoothOffScreen extends StatelessWidget {
-  const BluetoothOffScreen({Key key, this.state}) : super(key: key);
+  const BluetoothOffScreen(
+      {Key key, @required this.state, @required this.settings})
+      : super(key: key);
 
   final BluetoothState state;
+  final MainPageSettings settings;
 
   Widget _toSettingsButton(BuildContext context) {
     if (Platform.isAndroid && state == BluetoothState.off) {
@@ -395,7 +412,10 @@ class BluetoothOffScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue,
-      drawer: MainPageDrawer(_cleanUp, _startScanWithCheck),
+      drawer: MainPageDrawer(_cleanUp, ({String failMessage}) {
+        return _startScanWithCheck(Duration(seconds: settings.scanDuration),
+            failMessage: failMessage);
+      }),
       appBar: AppBar(
         title: Text('Lighthouse PM'),
       ),
