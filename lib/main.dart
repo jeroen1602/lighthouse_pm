@@ -65,9 +65,13 @@ class LighthousePMApp extends StatelessWidget {
               debugShowCheckedModeBanner: true,
               title: 'Lighthouse PM',
               theme: ThemeData(
-                  primarySwatch: Colors.grey,
-                  visualDensity: VisualDensity.adaptivePlatformDensity),
-              darkTheme: ThemeData.dark(),
+                  colorScheme: ColorScheme.light(),
+                  primarySwatch: Colors.grey
+              ),
+              darkTheme: ThemeData(
+                colorScheme: ColorScheme.dark(),
+                primarySwatch:Colors.blueGrey
+              ),
               themeMode: themeSnapshot.data,
               routes: {
             '/': (context) => MainPage(),
