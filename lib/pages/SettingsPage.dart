@@ -249,7 +249,9 @@ class SettingsPage extends StatelessWidget {
                   title: Text('Fork me on Github'),
                   trailing: Icon(Icons.arrow_forward_ios),
                   leading: SvgPicture.asset(
-                    "assets/images/github-dark.svg",
+                    (Theme.of(context).brightness == Brightness.light)
+                        ?"assets/images/github-dark.svg"
+                        :"assets/images/github-light.svg" ,
                     width: 24,
                     height: 24,
                   ),
