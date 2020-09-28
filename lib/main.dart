@@ -37,20 +37,7 @@ class MainApp extends StatelessWidget {
     return Provider<LighthousePMBloc>(
       create: (_) => _initializeDataBase(),
       dispose: (_, bloc) => bloc.close(),
-      child: MaterialApp(
-          debugShowCheckedModeBanner: true,
-          title: 'Lighthouse PM',
-          theme: ThemeData(
-              primarySwatch: Colors.grey,
-              visualDensity: VisualDensity.adaptivePlatformDensity),
-          darkTheme: ThemeData.dark(),
-          routes: {
-            '/': (context) => MainPage(),
-            '/settings': (context) => SettingsPage(),
-            '/settings/privacy': (context) => PrivacyPage(),
-            '/troubleshooting': (context) => TroubleshootingPage(),
-          }
-          ),
+      child: LighthousePMApp(),
     );
   }
 
@@ -61,5 +48,33 @@ class MainApp extends StatelessWidget {
         .setViveBaseStationBloc(mainBloc.viveBaseStation);
 
     return mainBloc;
+  }
+}
+
+class LighthousePMApp extends StatelessWidget {
+  LighthousePMBloc _bloc(BuildContext context) =>
+      Provider.of<LighthousePMBloc>(context, listen: false);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<ThemeMode>(
+      stream: _bloc(context).settings.getPreferedThemeAsStream(),
+      initialData: ThemeMode.system,
+      builder: (BuildContext context, AsyncSnapshot<ThemeMode> themeSnapshot) =>
+          MaterialApp(
+              debugShowCheckedModeBanner: true,
+              title: 'Lighthouse PM',
+              theme: ThemeData(
+                  primarySwatch: Colors.grey,
+                  visualDensity: VisualDensity.adaptivePlatformDensity),
+              darkTheme: ThemeData.dark(),
+              themeMode: themeSnapshot.data,
+              routes: {
+            '/': (context) => MainPage(),
+            '/settings': (context) => SettingsPage(),
+            '/settings/privacy': (context) => PrivacyPage(),
+            '/troubleshooting': (context) => TroubleshootingPage(),
+          }),
+    );
   }
 }
