@@ -99,10 +99,6 @@ class _ViveBaseStationExtraInfoAlertState
           )),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Cancel'),
-          onPressed: () => Navigator.pop(context),
-        ),
-        SimpleDialogOption(
           child: Text('Set'),
           onPressed: () {
             final text = _textController.text.trim();
@@ -110,6 +106,10 @@ class _ViveBaseStationExtraInfoAlertState
               Navigator.pop(context, text);
             }
           },
+        ),
+        SimpleDialogOption(
+          child: Text('Cancel'),
+          onPressed: () => Navigator.pop(context),
         ),
       ],
     );
