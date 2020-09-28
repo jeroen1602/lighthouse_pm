@@ -78,8 +78,8 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
           // Filter out all devices that don't have a correct name.
           final List<ScanResult> output = List();
           for (final scanResult in scanResults) {
-            for (final bleDeviceProviders in providers) {
-              if (bleDeviceProviders.nameCheck(scanResult.device.name)) {
+            for (final deviceProvider in providers) {
+              if (deviceProvider.nameCheck(scanResult.device.name)) {
                 output.add(scanResult);
                 break;
               }

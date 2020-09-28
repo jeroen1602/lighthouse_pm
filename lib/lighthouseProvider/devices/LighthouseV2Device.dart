@@ -165,7 +165,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           }
           continue;
         }
-        checkCharacteristicForDefaultValue(
+        await checkCharacteristicForDefaultValue(
             _SUPPORTED_CHARACTERISTICS_LIST, characteristic, _otherMetadata);
       }
     }
