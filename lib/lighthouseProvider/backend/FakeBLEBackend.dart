@@ -31,11 +31,13 @@ class FakeBLEBackend extends BLELighthouseBackend {
   @override
   Future<void> stopScan() async {
     _foundDeviceSubject.add(null);
+    _isScanningSubject.add(false);
   }
 
   @override
   Future<void> startScan({@required Duration timeout}) async {
     await super.startScan(timeout: timeout);
+    _isScanningSubject.add(true);
     for (int i = 0; i < 2; i++) {
       await Future.delayed(Duration(milliseconds: random.nextInt(500) + 200));
       final device = await getLighthouseDevice(FakeLighthouseV2Device(i, i));
@@ -51,8 +53,14 @@ class FakeBLEBackend extends BLELighthouseBackend {
         _foundDeviceSubject.add(device);
       }
     }
+    _isScanningSubject.add(false);
   }
 
   @override
   Future<void> cleanUp() async {}
+
+  BehaviorSubject<bool> _isScanningSubject = BehaviorSubject.seeded(false);
+
+  @override
+  Stream<bool> get isScanning => _isScanningSubject.stream;
 }

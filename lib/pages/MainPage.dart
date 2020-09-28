@@ -116,7 +116,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // The button for starting and stopping scanning.
     return StreamBuilder<bool>(
-      stream: FlutterBlue.instance.isScanning,
+      stream: LighthouseProvider.instance.isScanning,
       initialData: false,
       builder: (c, snapshot) {
         if (snapshot.data) {

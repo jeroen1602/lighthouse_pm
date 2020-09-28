@@ -22,7 +22,8 @@ typedef UpdateLastSeen = bool Function(LHDeviceIdentifier deviceIdentifier);
 /// when the backend has been added to the [LighthouseProvider] it will set the
 /// [updateLastSeen] function which can be used to check if the unknown device
 /// is already known.
-abstract class LighthouseBackend<T extends DeviceProvider<D>, D extends LowLevelDevice> {
+abstract class LighthouseBackend<T extends DeviceProvider<D>,
+    D extends LowLevelDevice> {
   /// Check if a [DeviceProvider] is of a type that this [LighthouseBackend]
   /// supports/ uses.
   bool isMyProviderType(DeviceProvider provider) {
@@ -95,11 +96,15 @@ abstract class LighthouseBackend<T extends DeviceProvider<D>, D extends LowLevel
         continue;
       }
       final LighthouseDevice lighthouseDevice =
-      await provider.getDevice(device);
+          await provider.getDevice(device);
       if (lighthouseDevice != null) {
         return lighthouseDevice;
       }
     }
     return null;
   }
+
+  /// A stream that updates if the current back end is scanning.
+  /// Will return `null` if the back end doesn't support it.
+  Stream<bool> /* ? */ get isScanning => null;
 }

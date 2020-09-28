@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
@@ -51,6 +52,11 @@ class LighthouseProvider {
       BehaviorSubject.seeded([]);
   StreamSubscription /* ? */ _backendResultSubscription;
   Set<LighthouseBackend> _backendSet = Set();
+
+  BehaviorSubject<bool> _isScanningBehavior = BehaviorSubject.seeded(false);
+  StreamSubscription /* ? */ _isScanningSubscription;
+
+  Stream<bool> get isScanning => _isScanningBehavior.stream;
 
   /// Add a backend for providing data.
   void addBackend(LighthouseBackend backend) {
@@ -113,13 +119,13 @@ class LighthouseProvider {
   /// for new ones.
   ///
   /// Will call the [cleanUp] function before starting the scan.
-  Future startScan({
-    @required Duration timeout,
-  }) async {
+  Future startScan({@required Duration timeout}) async {
+    await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
     for (final backend in _backendSet) {
-      await backend.startScan(timeout: timeout);
+      // may need to add await back again depending on how the providers react to being multi-threaded.
+      backend.startScan(timeout: timeout);
     }
   }
 
@@ -148,6 +154,39 @@ class LighthouseProvider {
     for (final backend in _backendSet) {
       await backend.stopScan();
     }
+  }
+
+  /// Start combining all [isScanning] from the backend providers.
+  Future<void> _startIsScanningSubscription() async {
+    if (_isScanningSubscription != null) {
+      await _isScanningSubscription.cancel();
+      _isScanningSubscription = null;
+    }
+
+    final List<Stream<Tuple2<int, bool>>> streams = _backendSet
+        .map((element) => element.isScanning)
+        .where((stream) => stream != null)
+        .toList(growable: false)
+        .asMap()
+        .entries
+        .map((entry) =>
+            entry.value.map((event) => Tuple2<int, bool>(entry.key, event)))
+        .toList(growable: false);
+
+    final List<bool> scanResults = List<bool>(streams.length);
+    for (var i = 0; i < scanResults.length; i++) {
+      scanResults[i] = false;
+    }
+
+    _isScanningSubscription =
+        MergeStream<Tuple2<int, bool>>(streams).map<bool>((scanning) {
+      if (scanning.item1 >= 0 && scanning.item1 < scanResults.length) {
+        scanResults[scanning.item1] = scanning.item2;
+      }
+      return scanResults.reduce((value, element) => value || element);
+    }).listen((isScanning) {
+      this._isScanningBehavior.add(isScanning);
+    });
   }
 
   /// Update the last time a device has been seen.
