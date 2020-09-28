@@ -127,4 +127,7 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
       this._scanResultSubscription = null;
     });
   }
+
+  @override
+  Stream<bool> get isScanning => FlutterBlue.instance.isScanning;
 }
