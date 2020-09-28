@@ -10,7 +10,7 @@ class IdentifyDeviceExtension extends DeviceExtension {
             onTap: onTap,
             toolTip: 'Identify',
             icon: SvgPicture.asset(
-              "assets/images/app-icon.svg",
+              "assets/images/identify-icon.svg",
               width: 24,
               height: 24,
             )) {
