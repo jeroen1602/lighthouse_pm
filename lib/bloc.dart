@@ -142,8 +142,12 @@ class SettingsBloc {
         .asyncMap((event) async {
       if (event.length == 1 && event[0].data != null) {
         final themeIndex = int.tryParse(event[0].data, radix: 10);
-        if (themeIndex >= 0 && themeIndex < ThemeMode.values.length) {
+        if (themeIndex != null &&
+            themeIndex >= 0 &&
+            themeIndex < ThemeMode.values.length) {
           var themeMode = ThemeMode.values[themeIndex];
+          // Make sure the theme mode is something that the current device supports.
+          // How it´s become a value that isn't support is a question to solve then.
           if (themeMode == ThemeMode.system && !await supportsThemeModeSystem) {
             themeMode = ThemeMode.light;
           }
