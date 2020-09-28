@@ -200,9 +200,7 @@ class SettingsPage extends StatelessWidget {
                     height: 24,
                   ),
                   onTap: () async {
-                    if (await canLaunch(_GITHUB_URL)) {
-                      await launch(_GITHUB_URL);
-                    }
+                    await launch(_GITHUB_URL);
                   },
                 ),
                 Divider(),

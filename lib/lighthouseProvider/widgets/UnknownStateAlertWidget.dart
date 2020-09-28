@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:lighthouse_pm/lighthouseProvider/helpers/CustomLongPressGestureRecognizer.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/helpers/CustomLongPressGestureRecognizer.dart';
 import 'package:package_info/package_info.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,7 +23,6 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final actions = <Widget>[
       SimpleDialogOption(
         child: Text("On"),
@@ -47,12 +46,14 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
     // Add standby, but only if it's supported
     if (device.hasStandbyExtension) {
-      actions.insert(1, SimpleDialogOption(
-        child: Text("Standby"),
-        onPressed: () {
-          Navigator.pop(context, LighthousePowerState.STANDBY);
-        },
-      ));
+      actions.insert(
+          1,
+          SimpleDialogOption(
+            child: Text("Standby"),
+            onPressed: () {
+              Navigator.pop(context, LighthousePowerState.STANDBY);
+            },
+          ));
     }
 
     return AlertDialog(
@@ -195,9 +196,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         SimpleDialogOption(
           child: Text("Open issue"),
           onPressed: () async {
-            if (await canLaunch(_GITHUB_ISSUE_URL)) {
-              await launch(_GITHUB_ISSUE_URL);
-            }
+            await launch(_GITHUB_ISSUE_URL);
           },
         ),
         SimpleDialogOption(
