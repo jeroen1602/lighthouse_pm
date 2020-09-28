@@ -3,7 +3,6 @@ import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:rxdart/rxdart.dart';
 
 class LighthousePMBloc {
   final LighthouseDatabase db;
@@ -52,10 +51,12 @@ class SettingsBloc {
   //IDS
   static const DEFAULT_SLEEP_STATE_ID = 1;
   static const VIVE_BASE_STATION_ENABLED_ID = 2;
+  static const SCAN_DURATION_ID = 3;
+  static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
 
   Stream<LighthousePowerState> getSleepStateAsStream(
       {LighthousePowerState defaultValue = LighthousePowerState.SLEEP}) {
-    final dbStream = (db.select(db.simpleSettings)
+    return (db.select(db.simpleSettings)
           ..where((tbl) => tbl.id.equals(DEFAULT_SLEEP_STATE_ID)))
         .watch()
         .map((event) {
@@ -67,9 +68,8 @@ class SettingsBloc {
           debugPrint('Could not convert data returned to a string');
         }
       }
-      return null;
+      return defaultValue;
     });
-    return MergeStream([Stream.value(defaultValue), dbStream]);
   }
 
   Future<void> insertSleepState(LighthousePowerState sleepState) {
@@ -84,7 +84,7 @@ class SettingsBloc {
   }
 
   Stream<bool> getViveBaseStationsEnabledStream() {
-    final dbStream = (db.select(db.simpleSettings)
+    return (db.select(db.simpleSettings)
           ..where((tbl) => tbl.id.equals(VIVE_BASE_STATION_ENABLED_ID)))
         .watch()
         .map((event) {
@@ -97,13 +97,32 @@ class SettingsBloc {
       }
       return true;
     });
-    return MergeStream([Stream.value(false), dbStream]);
   }
 
   Future<void> setViveBaseStationEnabled(bool enabled) {
     return db.into(db.simpleSettings).insert(
         SimpleSetting(
             id: VIVE_BASE_STATION_ENABLED_ID, data: enabled ? '1' : '0'),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  Stream<int> getScanDurationsAsStream({int defaultValue = 5}) {
+    return (db.select(db.simpleSettings)
+          ..where((tbl) => tbl.id.equals(SCAN_DURATION_ID)))
+        .watch()
+        .map((event) {
+      if (event.length == 1 && event[0].data != null) {
+        return int.tryParse(event[0].data, radix: 10);
+      } else {
+        return defaultValue;
+      }
+    });
+  }
+
+  Future<void> setScanDuration(int duration) {
+    assert(duration > 0, 'duration should be higher than 0');
+    return db.into(db.simpleSettings).insert(
+        SimpleSetting(id: SCAN_DURATION_ID, data: duration.toRadixString(10)),
         mode: InsertMode.insertOrReplace);
   }
 }

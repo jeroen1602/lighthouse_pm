@@ -27,6 +27,7 @@
  - Added Dark Theme using OS theme (android 10+, iOS 13+)
  - Added a lighthouseBackend for more lighthouse types in the future.
  - BETA added support for Vive base stations.
+ - Added scan duration option.
 
 # Version 1.0.1+3 2020-08-31
 
