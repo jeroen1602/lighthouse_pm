@@ -26,18 +26,18 @@ dependencies:
     sdk: flutter
   flutter_blue: ^0.7.2
   rxdart: ^0.24.1
-  package_info: ^0.4.1
+  package_info: ^0.4.3
   permission_handler: ^5.0.1
   flutter_svg: ^0.19.0
-  url_launcher: ^5.7.1
+  url_launcher: ^5.7.2
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
-  vibration: ^1.4.0
+  vibration: ^1.5.0
   toast: ^0.1.5
   moor_flutter: ^3.1.0
   sqlite3_flutter_libs: ^0.2.0
-  path_provider: ^1.6.14
+  path_provider: ^1.6.18
   provider: ^4.3.2+2
   tuple: ^1.0.3
   intl: ^0.16.1
