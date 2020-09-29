@@ -32,7 +32,7 @@ class LighthouseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: selected ? Colors.black12 : Colors.transparent,
+        color: selected ? Theme.of(context).selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onLongPress,
             child: IntrinsicHeight(

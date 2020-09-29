@@ -289,7 +289,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final List<Widget> actions = [];
               Color actionBarColor;
               if (selectedCopy.length == 1) {
-                actionBarColor = Colors.orange;
+                actionBarColor = Theme.of(context).selectedRowColor;
                 actions.add(IconButton(
                   tooltip: 'Change nickname',
                   icon: Icon(Icons.edit_attributes),
@@ -343,7 +343,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 appBar: AppBar(
                   title: Text('Lighthouse PM'),
                   actions: actions,
-                  backgroundColor: actionBarColor,
+                  backgroundColor: actionBarColor ?? Theme.of(context).primaryColor,
                   leading: leading,
                 ),
                 floatingActionButton: _ScanFloatingButtonWidget(
