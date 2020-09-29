@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -22,6 +21,8 @@ import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
+const String _POWER_STATE_CHARACTERISTIC =
+    '0000CB01-0000-1000-8000-00805F9B34FB';
 
 class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationBloc bloc)
@@ -32,6 +33,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   final Set<DeviceExtension> deviceExtensions = Set();
   final ViveBaseStationBloc /* ? */ _bloc;
   LHBluetoothCharacteristic /* ? */ _characteristic;
+  LHBluetoothCharacteristic /* ? */ _powerCharacteristic;
   int /* ? */ _deviceIdStorage;
 
   int /* ? */ get _deviceId => _deviceIdStorage;
@@ -76,45 +78,26 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   Future cleanupConnection() async {
     _characteristic = null;
+    _powerCharacteristic = null;
   }
 
   @override
   Future<int /* ? */ > getCurrentState() async {
-    if (_characteristic == null) {
+    if (_powerCharacteristic == null) {
       return null;
     }
     if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
-    final dataArray = await _characteristic.read();
-    final byteArray = ByteData(min(8, dataArray.length));
-    for (var i = 0; i < min(8, dataArray.length); i++) {
-      byteArray.setUint8(i, dataArray[i]);
-    }
-    switch (byteArray.lengthInBytes) {
-      case 1:
-        return byteArray.getUint8(0);
-      case 2:
-        return byteArray.getUint16(0, Endian.big);
-      case 3:
-        return (byteArray.getUint16(0, Endian.big) << 8) +
-            byteArray.getUint8(2);
-      case 4:
-        return byteArray.getUint32(0, Endian.big);
-      case 5:
-        return (byteArray.getUint32(0, Endian.big) << 8) +
-            byteArray.getUint8(4);
-      case 6:
-        return (byteArray.getUint32(0, Endian.big) << 16) +
-            byteArray.getUint16(4, Endian.big);
-      case 7:
-        return (byteArray.getUint32(0, Endian.big) << 24) +
-            (byteArray.getUint16(4, Endian.big) << 8) +
-            byteArray.getUint8(6);
-      case 8:
-      default:
-        return byteArray.getUint64(0, Endian.big);
+    final byteArray = await _powerCharacteristic.readByteData();
+
+    if (byteArray.lengthInBytes >= 2) {
+      return byteArray.getUint8(1);
+    } else if (byteArray.lengthInBytes >= 1) {
+      return byteArray.getUint8(0);
+    } else {
+      return null;
     }
   }
 
@@ -161,7 +144,14 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   LighthousePowerState powerStateFromByte(int byte) {
-    return LighthousePowerState.UNKNOWN;
+    switch (byte) {
+      case 0x15:
+        return LighthousePowerState.ON;
+      case 0x12:
+        return LighthousePowerState.SLEEP;
+      default:
+        return LighthousePowerState.UNKNOWN;
+    }
   }
 
   @override
@@ -196,6 +186,8 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
     final powerCharacteristic =
         LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+    final powerStateCharacteristic =
+        LighthouseGuid.fromString(_POWER_STATE_CHARACTERISTIC);
 
     for (final service in services) {
       // Find the correct characteristic.
@@ -204,6 +196,10 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
         if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
+          continue;
+        }
+        if (uuid == powerStateCharacteristic) {
+          this._powerCharacteristic = characteristic;
           continue;
         }
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
