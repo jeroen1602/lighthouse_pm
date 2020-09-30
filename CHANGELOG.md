@@ -1,4 +1,4 @@
-# Version 1.0.2+4 RC
+# Version 1.1,0+4 30-09-2020 
 
  - (Android) Close connection to open device on app close.
  - Added a troubleshooting page.
