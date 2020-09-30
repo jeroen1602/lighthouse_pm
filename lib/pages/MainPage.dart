@@ -231,9 +231,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                 padding: EdgeInsets.all(12),
                                 child: Text(
                                   'Unable to find lighthouses, try some troubleshooting.',
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .headline4,
+                                  style: Theme.of(context).textTheme.headline4,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -343,7 +341,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 appBar: AppBar(
                   title: Text('Lighthouse PM'),
                   actions: actions,
-                  backgroundColor: actionBarColor ?? Theme.of(context).primaryColor,
+                  backgroundColor:
+                      actionBarColor ?? Theme.of(context).primaryColor,
                   leading: leading,
                 ),
                 floatingActionButton: _ScanFloatingButtonWidget(

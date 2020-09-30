@@ -54,7 +54,7 @@ class TroubleshootingContentWidget extends StatelessWidget {
                   : 'Make sure that your lighthouses are V2 lighthouses and not V1/Vive'),
               subtitle: Text(data
                   ? 'The Vive Base station support is still in beta so it might not work correctly.'
-                  : 'This app does not support V1 base stations yet™.'),
+                  : 'The Vive Base station support is still in beta and needs to be enabled.'),
               leading: SvgPicture.asset("assets/images/app-icon.svg"));
         },
       ),

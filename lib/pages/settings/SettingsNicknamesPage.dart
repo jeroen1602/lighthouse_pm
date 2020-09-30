@@ -76,7 +76,9 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
           }
         }
 
-        final Color scaffoldColor = selected.isNotEmpty ? Colors.orange : null;
+        final Color scaffoldColor = selected.isNotEmpty
+            ? Theme.of(context).selectedRowColor
+            : Theme.of(context).primaryColor;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [
@@ -166,7 +168,9 @@ class _DataNicknamePage extends StatelessWidget {
         return Column(
           children: [
             Container(
-              color: selected ? Colors.black12 : Colors.transparent,
+              color: selected
+                  ? Theme.of(context).selectedRowColor
+                  : Colors.transparent,
               child: ListTile(
                 title: Text(item.nickname),
                 subtitle: Text(
@@ -216,36 +220,38 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget blockIcon = kReleaseMode ? Icon(Icons.block, size: 120.0) : GestureDetector(
-      onTap: () {
-        if (tapCounter < _TAP_TOP) {
-          tapCounter++;
-        }
-        if (tapCounter < _TAP_TOP && tapCounter > _TAP_TOP - 3) {
-          Toast.show(
-              'Just ${_TAP_TOP - tapCounter} left until a fake nicknames are created',
-              context);
-        }
-        if (tapCounter == _TAP_TOP) {
-          bloc.insertNickname(Nickname(
-              macAddress: "FF:FF:FF:FF:FF:FF",
-              nickname: "This is a test nickname1"));
-          bloc.insertNickname(Nickname(
-              macAddress: "FF:FF:FF:FF:FF:FE",
-              nickname: "This is a test nickname2"));
-          bloc.insertNickname(Nickname(
-              macAddress: "FF:FF:FF:FF:FF:FD",
-              nickname: "This is a test nickname3"));
-          bloc.insertNickname(Nickname(
-              macAddress: "FF:FF:FF:FF:FF:FC",
-              nickname: "This is a test nickname4"));
-          Toast.show('Fake nickname created!', context,
-              duration: Toast.LENGTH_LONG);
-          tapCounter++;
-        }
-      },
-      child: Icon(Icons.block, size: 120.0) ,
-    );
+    final Widget blockIcon = kReleaseMode
+        ? Icon(Icons.block, size: 120.0)
+        : GestureDetector(
+            onTap: () {
+              if (tapCounter < _TAP_TOP) {
+                tapCounter++;
+              }
+              if (tapCounter < _TAP_TOP && tapCounter > _TAP_TOP - 3) {
+                Toast.show(
+                    'Just ${_TAP_TOP - tapCounter} left until a fake nicknames are created',
+                    context);
+              }
+              if (tapCounter == _TAP_TOP) {
+                bloc.insertNickname(Nickname(
+                    macAddress: "FF:FF:FF:FF:FF:FF",
+                    nickname: "This is a test nickname1"));
+                bloc.insertNickname(Nickname(
+                    macAddress: "FF:FF:FF:FF:FF:FE",
+                    nickname: "This is a test nickname2"));
+                bloc.insertNickname(Nickname(
+                    macAddress: "FF:FF:FF:FF:FF:FD",
+                    nickname: "This is a test nickname3"));
+                bloc.insertNickname(Nickname(
+                    macAddress: "FF:FF:FF:FF:FF:FC",
+                    nickname: "This is a test nickname4"));
+                Toast.show('Fake nickname created!', context,
+                    duration: Toast.LENGTH_LONG);
+                tapCounter++;
+              }
+            },
+            child: Icon(Icons.block, size: 120.0),
+          );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,

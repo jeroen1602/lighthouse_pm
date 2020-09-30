@@ -42,6 +42,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
@@ -57,9 +59,7 @@ class SettingsPage extends StatelessWidget {
                     height: 24.0,
                   ),
                   title: Text('Lighthouse Power management',
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .headline6
+                      style: theme.textTheme.headline6
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -161,9 +161,7 @@ class SettingsPage extends StatelessWidget {
                 // region Vive Base station
                 ListTile(
                   title: Text('Vive Base station | BETA',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6
+                      style: theme.textTheme.headline6
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -224,9 +222,7 @@ class SettingsPage extends StatelessWidget {
                 // region about
                 ListTile(
                   title: Text('About',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6
+                      style: theme.textTheme.headline6
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -249,9 +245,9 @@ class SettingsPage extends StatelessWidget {
                   title: Text('Fork me on Github'),
                   trailing: Icon(Icons.arrow_forward_ios),
                   leading: SvgPicture.asset(
-                    (Theme.of(context).brightness == Brightness.light)
+                    (theme.brightness == Brightness.light)
                         ? "assets/images/github-dark.svg"
-                        :"assets/images/github-light.svg" ,
+                        : "assets/images/github-light.svg",
                     width: 24,
                     height: 24,
                   ),

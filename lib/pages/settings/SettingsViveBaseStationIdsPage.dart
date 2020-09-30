@@ -67,7 +67,9 @@ class _SettingsViveBaseStationIdsPage
           }
         }
 
-        final Color scaffoldColor = selected.isNotEmpty ? Theme.of(context).selectedRowColor : Theme.of(context).primaryColor;
+        final Color scaffoldColor = selected.isNotEmpty
+            ? Theme.of(context).selectedRowColor
+            : Theme.of(context).primaryColor;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [
@@ -142,7 +144,9 @@ class _DataPage extends StatelessWidget {
         return Column(
           children: [
             Container(
-              color: selected ? Theme.of(context).selectedRowColor : Colors.transparent,
+              color: selected
+                  ? Theme.of(context).selectedRowColor
+                  : Colors.transparent,
               child: ListTile(
                 title: Text(
                     '${id.toRadixString(16).padLeft(8, '0').toUpperCase()}'),
