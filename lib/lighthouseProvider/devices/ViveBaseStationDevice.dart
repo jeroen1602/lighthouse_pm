@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -87,34 +86,14 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       await disconnect();
       return null;
     }
-    final dataArray = await _characteristic.read();
-    final byteArray = ByteData(min(8, dataArray.length));
-    for (var i = 0; i < min(8, dataArray.length); i++) {
-      byteArray.setUint8(i, dataArray[i]);
-    }
-    switch (byteArray.lengthInBytes) {
-      case 1:
-        return byteArray.getUint8(0);
-      case 2:
-        return byteArray.getUint16(0, Endian.big);
-      case 3:
-        return (byteArray.getUint16(0, Endian.big) << 8) +
-            byteArray.getUint8(2);
-      case 4:
-        return byteArray.getUint32(0, Endian.big);
-      case 5:
-        return (byteArray.getUint32(0, Endian.big) << 8) +
-            byteArray.getUint8(4);
-      case 6:
-        return (byteArray.getUint32(0, Endian.big) << 16) +
-            byteArray.getUint16(4, Endian.big);
-      case 7:
-        return (byteArray.getUint32(0, Endian.big) << 24) +
-            (byteArray.getUint16(4, Endian.big) << 8) +
-            byteArray.getUint8(6);
-      case 8:
-      default:
-        return byteArray.getUint64(0, Endian.big);
+    final byteArray = await _characteristic.readByteData();
+
+    if (byteArray.lengthInBytes >= 2) {
+      return byteArray.getUint8(1);
+    } else if (byteArray.lengthInBytes >= 1) {
+      return byteArray.getUint8(0);
+    } else {
+      return null;
     }
   }
 
@@ -149,19 +128,21 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(0, _deviceId, Endian.little);
+    command.setUint32(4, _deviceId, Endian.little);
 
-    final List<int> data = List(20);
-    for (var i = 0; i < 20; i++) {
-      data[i] = command.getUint8(i);
-    }
-
-    await _characteristic.write(data, withoutResponse: true);
+    await _characteristic.writeByteData(command, withoutResponse: true);
   }
 
   @override
   LighthousePowerState powerStateFromByte(int byte) {
-    return LighthousePowerState.UNKNOWN;
+    switch (byte) {
+      case 0x15:
+        return LighthousePowerState.ON;
+      case 0x12:
+        return LighthousePowerState.SLEEP;
+      default:
+        return LighthousePowerState.UNKNOWN;
+    }
   }
 
   @override

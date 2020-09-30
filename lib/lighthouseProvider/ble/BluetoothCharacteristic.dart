@@ -50,7 +50,7 @@ abstract class LHBluetoothCharacteristic {
       {bool withoutResponse = false}) async {
     final list = List<int>(value.lengthInBytes);
     for (var i = 0; i < value.lengthInBytes; i++) {
-      list.add(value.getUint8(i));
+      list[i] = value.getUint8(i);
     }
     return await write(list, withoutResponse: withoutResponse);
   }

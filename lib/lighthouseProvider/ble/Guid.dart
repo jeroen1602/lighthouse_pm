@@ -39,11 +39,17 @@ class LighthouseGuid {
 
   @override
   String toString() {
-    String one = _bytes.getUint32(0).toRadixString(16).padLeft(8);
-    String two = _bytes.getUint16(4).toRadixString(16).padLeft(4);
-    String three = _bytes.getUint16(6).toRadixString(16).padLeft(4);
-    String four = _bytes.getUint16(8).toRadixString(16).padLeft(4);
-    String five = _bytes.getUint32(10).toRadixString(16).padLeft(8);
+    String one =
+        _bytes.getUint32(0, Endian.big).toRadixString(16).padLeft(8, '0');
+    String two =
+        _bytes.getUint16(4, Endian.big).toRadixString(16).padLeft(4, '0');
+    String three =
+        _bytes.getUint16(6, Endian.big).toRadixString(16).padLeft(4, '0');
+    String four =
+        _bytes.getUint16(8, Endian.big).toRadixString(16).padLeft(4, '0');
+    String five =
+        _bytes.getUint32(10, Endian.big).toRadixString(16).padLeft(8, '0') +
+            _bytes.getUint16(14, Endian.big).toRadixString(16).padLeft(4, '0');
     return "$one-$two-$three-$four-$five";
   }
 
