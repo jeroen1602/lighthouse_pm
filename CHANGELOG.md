@@ -1,4 +1,10 @@
-# Version 1.1,0+4 30-09-2020 
+
+# Version 1.1.0+5 30-09-2020
+
+ - (Android) Fixed app including too many ABI's in the app bundle. This is a play store only release
+ since nothing has changed for the APK releases. (hence the version name not increasing).
+
+# Version 1.1.0+4 30-09-2020 
 
  - (Android) Close connection to open device on app close.
  - Added a troubleshooting page.
