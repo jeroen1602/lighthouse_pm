@@ -226,7 +226,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
         RawMaterialButton(
             onPressed: onTap,
             elevation: 2.0,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).buttonColor,
             padding: const EdgeInsets.all(8.0),
             shape: CircleBorder(),
             child: Icon(

@@ -23,7 +23,10 @@ void main() {
   LighthouseProvider.instance.addBackend(FlutterBlueLighthouseBackend.instance);
   if (!kReleaseMode) {
     // Add this back if you need to test for devices you don't own.
-    //LighthouseProvider.instance.addBackend(FakeBLEBackend.instance);
+    // you'll also need to
+    // import 'package:lighthouse_pm/lighthouseProvider/backend/FakeBLEBackend.dart';
+
+    // LighthouseProvider.instance.addBackend(FakeBLEBackend.instance);
   }
 
   LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
@@ -65,9 +68,15 @@ class LighthousePMApp extends StatelessWidget {
               debugShowCheckedModeBanner: true,
               title: 'Lighthouse PM',
               theme: ThemeData(
-                  primarySwatch: Colors.grey,
-                  visualDensity: VisualDensity.adaptivePlatformDensity),
-              darkTheme: ThemeData.dark(),
+                  colorScheme: ColorScheme.light(),
+                  primarySwatch: Colors.blueGrey,
+                  selectedRowColor: Colors.grey,
+              ),
+              darkTheme: ThemeData(
+                colorScheme: ColorScheme.dark(),
+                primarySwatch:Colors.blueGrey,
+                selectedRowColor: Colors.blueGrey,
+              ),
               themeMode: themeSnapshot.data,
               routes: {
             '/': (context) => MainPage(),
