@@ -32,7 +32,7 @@ class LighthouseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: selected ? Colors.black12 : Colors.transparent,
+        color: selected ? Theme.of(context).selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onLongPress,
             child: IntrinsicHeight(
@@ -223,7 +223,7 @@ class _LHItemButtonWidget extends StatelessWidget {
           onPressed: () => onPress.call(),
           onLongPress: () => onLongPress.call(),
           elevation: 2.0,
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).buttonColor,
           padding: const EdgeInsets.all(2.0),
           shape: CircleBorder(),
           child: Icon(

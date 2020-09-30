@@ -199,8 +199,8 @@ class _ExtraActionsWidget extends StatelessWidget {
                               enableFeedback: snapshot.hasData && snapshot.data,
                               elevation: 2.0,
                               fillColor: (snapshot.hasData && snapshot.data)
-                                  ? Colors.white
-                                  : Colors.white54,
+                                  ? Theme.of(context).buttonColor
+                                  : Theme.of(context).disabledColor,
                               padding: const EdgeInsets.all(2.0),
                               shape: CircleBorder(),
                               child: extensions[index].icon,
