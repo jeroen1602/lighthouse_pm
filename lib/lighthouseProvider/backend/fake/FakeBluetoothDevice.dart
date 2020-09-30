@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
 import '../../ble/BluetoothDevice.dart';
@@ -239,12 +240,28 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
   _FakeViveBaseStationCharacteristic()
       : super(
             LighthouseGuid.fromString('0000cb01-0000-1000-8000-00805f9b34fb')) {
-    data.addAll([0x01, 0x02]);
+    data.addAll([0x00, 0x12]);
+  }
+
+  void changeState(LighthousePowerState state) {
+    switch (state) {
+      case LighthousePowerState.ON:
+        data.clear();
+        data.addAll([0x00, 0x15]);
+        break;
+      case LighthousePowerState.SLEEP:
+        data.clear();
+        data.addAll([0x00, 0x12]);
+    }
   }
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
-    debugPrint('Written some data to vive base station!');
+    if (data[1] == 0x00 && data[2] == 0x00 && data[3] == 0x00) {
+      changeState(LighthousePowerState.ON);
+    } else if (data[1] == 0x02 && data[2] == 0x00 && data[3] == 0x01) {
+      changeState(LighthousePowerState.SLEEP);
+    }
   }
 }
 

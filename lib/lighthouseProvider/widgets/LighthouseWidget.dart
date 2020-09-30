@@ -32,7 +32,8 @@ class LighthouseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: selected ? Theme.of(context).selectedRowColor : Colors.transparent,
+        color:
+            selected ? Theme.of(context).selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onLongPress,
             child: IntrinsicHeight(
@@ -128,7 +129,8 @@ class LighthouseWidget extends StatelessWidget {
                                   case LighthousePowerState.ON:
                                     continue powerOn;
                                   case LighthousePowerState.SLEEP:
-                                    continue powerOff;
+                                    await this.lighthouseDevice.changeState(
+                                        LighthousePowerState.SLEEP);
                                 }
                                 break;
                               powerOff:

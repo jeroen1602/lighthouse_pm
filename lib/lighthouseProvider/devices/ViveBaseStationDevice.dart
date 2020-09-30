@@ -21,8 +21,6 @@ import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
-const String _POWER_STATE_CHARACTERISTIC =
-    '0000CB01-0000-1000-8000-00805F9B34FB';
 
 class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationBloc bloc)
@@ -33,7 +31,6 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   final Set<DeviceExtension> deviceExtensions = Set();
   final ViveBaseStationBloc /* ? */ _bloc;
   LHBluetoothCharacteristic /* ? */ _characteristic;
-  LHBluetoothCharacteristic /* ? */ _powerCharacteristic;
   int /* ? */ _deviceIdStorage;
 
   int /* ? */ get _deviceId => _deviceIdStorage;
@@ -78,19 +75,18 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   Future cleanupConnection() async {
     _characteristic = null;
-    _powerCharacteristic = null;
   }
 
   @override
   Future<int /* ? */ > getCurrentState() async {
-    if (_powerCharacteristic == null) {
+    if (_characteristic == null) {
       return null;
     }
     if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
-    final byteArray = await _powerCharacteristic.readByteData();
+    final byteArray = await _characteristic.readByteData();
 
     if (byteArray.lengthInBytes >= 2) {
       return byteArray.getUint8(1);
@@ -132,14 +128,9 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(0, _deviceId, Endian.little);
+    command.setUint32(4, _deviceId, Endian.little);
 
-    final List<int> data = List(20);
-    for (var i = 0; i < 20; i++) {
-      data[i] = command.getUint8(i);
-    }
-
-    await _characteristic.write(data, withoutResponse: true);
+    await _characteristic.writeByteData(command, withoutResponse: true);
   }
 
   @override
@@ -186,8 +177,6 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
     final powerCharacteristic =
         LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
-    final powerStateCharacteristic =
-        LighthouseGuid.fromString(_POWER_STATE_CHARACTERISTIC);
 
     for (final service in services) {
       // Find the correct characteristic.
@@ -196,10 +185,6 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
         if (uuid == powerCharacteristic) {
           this._characteristic = characteristic;
-          continue;
-        }
-        if (uuid == powerStateCharacteristic) {
-          this._powerCharacteristic = characteristic;
           continue;
         }
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
