@@ -7,7 +7,7 @@ And if your computer doesn't have a bluetooth adapter then it is useless. Sadly 
 to the system and thus can't be used for that. Fortunately most phones do have bluetooth support, so I made this app to
 easily change the power state of a Lighthouse.
 
-<img src="docs/lighthouse_pm_screenshot.png" alt="lighthouse pm in action" width="300"/>
+<img src="docs/lighthouse_pm_screenshot_dark.png" alt="lighthouse pm in action" width="300"/>
 
 **This project gives no warranty that you won't brick your lighthouses!**
 
