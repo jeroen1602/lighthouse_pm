@@ -1,4 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const _GITHUB_ISSUES_URL =
+    "https://github.com/jeroen1602/lighthouse_pm/issues/";
 
 ///
 /// A widget showing the a material scaffold with some help items the user may need.
@@ -66,8 +71,26 @@ class HelpPage extends StatelessWidget {
             ),
             _HelpItem(
               title: 'To be extended',
-              body: Text(
-                  'This page will be further extended as needed with more help features as needed.'),
+              body: RichText(
+                text: TextSpan(style: textTheme, children: [
+                  TextSpan(
+                      text:
+                          'This page will be further extended as needed with more help items.\n\n'),
+                  TextSpan(
+                      text:
+                          'If you feel something should be explained here, feel free to '),
+                  TextSpan(
+                      text: 'create an issue on github',
+                      style: textTheme.copyWith(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          await launch(_GITHUB_ISSUES_URL);
+                        }),
+                  TextSpan(text: '!')
+                ]),
+              ),
             )
           ],
         ));
