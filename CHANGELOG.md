@@ -1,4 +1,9 @@
 
+# Version 1.1.1+6 RC
+
+ - Added mutex to back end so no device shows up twice.
+ - Fixed dialog theme not showing in light mode.  
+
 # Version 1.1.0+5 30-09-2020
 
  - (Android) Fixed app including too many ABI's in the app bundle. This is a play store only release

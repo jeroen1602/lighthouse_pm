@@ -54,18 +54,18 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           text: TextSpan(
         children: <InlineSpan>[
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text: "Set a nickname for "),
           TextSpan(
               style: Theme.of(context)
-                  .primaryTextTheme
+                  .textTheme
                   .bodyText1
                   .copyWith(fontWeight: FontWeight.bold),
               text: widget.deviceName == null
                   ? widget.macAddress
                   : widget.deviceName),
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1, text: "."),
+              style: Theme.of(context).textTheme.bodyText1, text: "."),
         ],
       )),
       content: TextField(
