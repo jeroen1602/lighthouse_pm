@@ -135,14 +135,16 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   LighthousePowerState powerStateFromByte(int byte) {
-    switch (byte) {
-      case 0x15:
-        return LighthousePowerState.ON;
-      case 0x12:
-        return LighthousePowerState.SLEEP;
-      default:
-        return LighthousePowerState.UNKNOWN;
-    }
+    // revert back to unknown, still needs some research.
+    return LighthousePowerState.UNKNOWN;
+    // switch (byte) {
+    //   case 0x15:
+    //     return LighthousePowerState.ON;
+    //   case 0x12:
+    //     return LighthousePowerState.SLEEP;
+    //   default:
+    //     return LighthousePowerState.UNKNOWN;
+    // }
   }
 
   @override
