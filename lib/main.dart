@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backend/FlutterBlueLighthouseBackend.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
@@ -20,13 +20,13 @@ void main() {
     await initializeDateFormatting();
   });
 
-  LighthouseProvider.instance.addBackend(FlutterBlueLighthouseBackend.instance);
+  LighthouseProvider.instance.addBackEnd(FlutterBlueLighthouseBackEnd.instance);
   if (!kReleaseMode) {
     // Add this back if you need to test for devices you don't own.
     // you'll also need to
-    // import 'package:lighthouse_pm/lighthouseProvider/backend/FakeBLEBackend.dart';
+    // import 'package:lighthouse_pm/lighthouseProvider/backEnd/FakeBLEBackEnd.dart';
 
-    // LighthouseProvider.instance.addBackend(FakeBLEBackend.instance);
+    // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
   }
 
   LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
@@ -68,13 +68,13 @@ class LighthousePMApp extends StatelessWidget {
               debugShowCheckedModeBanner: true,
               title: 'Lighthouse PM',
               theme: ThemeData(
-                  colorScheme: ColorScheme.light(),
-                  primarySwatch: Colors.blueGrey,
-                  selectedRowColor: Colors.grey,
+                colorScheme: ColorScheme.light(),
+                primarySwatch: Colors.blueGrey,
+                selectedRowColor: Colors.grey,
               ),
               darkTheme: ThemeData(
                 colorScheme: ColorScheme.dark(),
-                primarySwatch:Colors.blueGrey,
+                primarySwatch: Colors.blueGrey,
                 selectedRowColor: Colors.blueGrey,
               ),
               themeMode: themeSnapshot.data,

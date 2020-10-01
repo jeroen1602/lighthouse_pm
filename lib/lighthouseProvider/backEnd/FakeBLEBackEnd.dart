@@ -4,18 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
-import 'BLELighthouseBackend.dart';
+import 'BLELighthouseBackEnd.dart';
 import 'fake/FakeBluetoothDevice.dart';
 
-class FakeBLEBackend extends BLELighthouseBackend {
+class FakeBLEBackEnd extends BLELighthouseBackEnd {
 // Make sure there is always only one instance.
-  static FakeBLEBackend /* ? */ _instance;
+  static FakeBLEBackEnd /* ? */ _instance;
 
-  FakeBLEBackend._();
+  FakeBLEBackEnd._();
 
-  static FakeBLEBackend get instance {
+  static FakeBLEBackEnd get instance {
     if (_instance == null) {
-      _instance = FakeBLEBackend._();
+      _instance = FakeBLEBackEnd._();
     }
     return _instance;
   }

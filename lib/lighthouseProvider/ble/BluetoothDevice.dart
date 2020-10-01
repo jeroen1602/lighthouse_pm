@@ -1,4 +1,4 @@
-import '../backend/LowLevelDevice.dart';
+import '../backEnd/LowLevelDevice.dart';
 import 'BluetoothService.dart';
 import 'DeviceIdentifier.dart';
 

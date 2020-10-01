@@ -2,29 +2,31 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
 import '../ble/DeviceIdentifier.dart';
 import '../helpers/FlutterBlueExtensions.dart';
-import 'BLELighthouseBackend.dart';
+import 'BLELighthouseBackEnd.dart';
 import 'flutterBlue/FlutterBlueBluetoothDevice.dart';
 
-/// A backend that provides devices using [FlutterBlue].
-class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
+/// A back end that provides devices using [FlutterBlue].
+class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   // Make sure there is always only one instance.
-  static FlutterBlueLighthouseBackend /* ? */ _instance;
+  static FlutterBlueLighthouseBackEnd /* ? */ _instance;
 
-  FlutterBlueLighthouseBackend._();
+  FlutterBlueLighthouseBackEnd._();
 
-  static FlutterBlueLighthouseBackend get instance {
+  static FlutterBlueLighthouseBackEnd get instance {
     if (_instance == null) {
-      _instance = FlutterBlueLighthouseBackend._();
+      _instance = FlutterBlueLighthouseBackEnd._();
     }
     return _instance;
   }
 
   // Some state variables.
+  final Mutex _devicesMutex = Mutex();
   Set<LHDeviceIdentifier> _connectingDevices = Set();
   Set<LHDeviceIdentifier> _rejectedDevices = Set();
 
@@ -61,6 +63,9 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
     _foundDeviceSubject.add(null);
     _connectingDevices.clear();
     _rejectedDevices.clear();
+    if (_devicesMutex.isLocked) {
+      _devicesMutex.release();
+    }
   }
 
   Future<void> _startListeningScanResults() async {
@@ -108,17 +113,29 @@ class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
               continue;
             }
             // Possibly a new lighthouse, let's make sure it's valid.
-            this._connectingDevices.add(deviceIdentifier);
-            getLighthouseDevice(FlutterBlueBluetoothDevice(scanResult.device))
-                .then((lighthouseDevice) {
-              if (lighthouseDevice == null) {
-                debugPrint(
-                    'Found a non valid device! Mac: ${scanResult.device.id.toString()}');
-                this._rejectedDevices.add(deviceIdentifier);
-              } else {
-                this._foundDeviceSubject.add(lighthouseDevice);
+            this._devicesMutex.acquire().then((_) async {
+              this._connectingDevices.add(deviceIdentifier);
+              if (_devicesMutex.isLocked) {
+                _devicesMutex.release();
               }
-              this._connectingDevices.remove(deviceIdentifier);
+
+              final lighthouseDevice = await getLighthouseDevice(
+                  FlutterBlueBluetoothDevice(scanResult.device));
+              try {
+                await _devicesMutex.acquire();
+                if (lighthouseDevice == null) {
+                  debugPrint(
+                      'Found a non valid device! Mac: ${scanResult.device.id.toString()}');
+                  this._rejectedDevices.add(deviceIdentifier);
+                } else {
+                  this._foundDeviceSubject.add(lighthouseDevice);
+                }
+                this._connectingDevices.remove(deviceIdentifier);
+              } finally {
+                if (_devicesMutex.isLocked) {
+                  _devicesMutex.release();
+                }
+              }
             });
           }
         });
