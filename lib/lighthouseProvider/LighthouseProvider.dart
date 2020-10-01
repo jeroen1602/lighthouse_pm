@@ -7,22 +7,22 @@ import 'package:tuple/tuple.dart';
 
 import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
-import 'backend/LighthouseBackend.dart';
+import 'backEnd/LighthouseBackEnd.dart';
 import 'ble/DeviceIdentifier.dart';
 import 'timeout/TimeoutContainer.dart';
 
 ///A provider for getting all [LighthouseDevice]s in the area.
 ///
 /// Before the provider actually becomes useful you will need to add at least
-/// on [LighthouseBackend] to provide the provider with a backend to use. These
+/// on [LighthouseBackEnd] to provide the provider with a back end to use. These
 /// back ends must be provided with at least 1 [LighthouseProvider] or else the
-/// backend won't know what devices are valid.
+/// back end won't know what devices are valid.
 ///
 /// For basic usage:
 /// Get an instance using [LighthouseProvider.instance].
 /// Get a stream of valid [LighthouseDevice]s using [lighthouseDevices].\
-/// Start scanning using [startScan]. (not the startScan form the [LighthouseBackend].
-/// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackend].
+/// Start scanning using [startScan]. (not the startScan form the [LighthouseBackEnd].
+/// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackEnd].
 ///
 class LighthouseProvider {
   LighthouseProvider._();
@@ -52,66 +52,66 @@ class LighthouseProvider {
   final Mutex _lighthouseDeviceMutex = Mutex();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
-  StreamSubscription /* ? */ _backendResultSubscription;
-  Set<LighthouseBackend> _backendSet = Set();
+  StreamSubscription /* ? */ _backEndResultSubscription;
+  Set<LighthouseBackEnd> _backEndSet = Set();
 
   BehaviorSubject<bool> _isScanningBehavior = BehaviorSubject.seeded(false);
   StreamSubscription /* ? */ _isScanningSubscription;
 
   Stream<bool> get isScanning => _isScanningBehavior.stream;
 
-  /// Add a backend for providing data.
-  void addBackend(LighthouseBackend backend) {
-    backend.updateLastSeen = _updateLastSeen;
-    _backendSet.add(backend);
+  /// Add a back end for providing data.
+  void addBackEnd(LighthouseBackEnd backEnd) {
+    backEnd.updateLastSeen = _updateLastSeen;
+    _backEndSet.add(backEnd);
   }
 
-  /// Remove a backend for providing data.
-  void removeBackend(LighthouseBackend backend) {
-    if (_backendSet.remove(backend)) {
-      backend.updateLastSeen = null;
+  /// Remove a back end for providing data.
+  void removeBackEnd(LighthouseBackEnd backEnd) {
+    if (_backEndSet.remove(backEnd)) {
+      backEnd.updateLastSeen = null;
     }
   }
 
-  /// Get a list of all the backends that this [DeviceProvider] can be used with.
-  List<LighthouseBackend> _getBackendForDeviceProvider(
+  /// Get a list of all the back ends that this [DeviceProvider] can be used with.
+  List<LighthouseBackEnd> _getBackEndForDeviceProvider(
       DeviceProvider provider) {
-    final List<LighthouseBackend> backendList = List<LighthouseBackend>();
-    for (final backend in _backendSet) {
-      if (backend.isMyProviderType(provider)) {
-        backendList.add(backend);
+    final List<LighthouseBackEnd> backEndList = List<LighthouseBackEnd>();
+    for (final backEnd in _backEndSet) {
+      if (backEnd.isMyProviderType(provider)) {
+        backEndList.add(backEnd);
       }
     }
-    return backendList;
+    return backEndList;
   }
 
-  /// Add a [DeviceProvider] to every [LighthouseBackend] that supports it.
+  /// Add a [DeviceProvider] to every [LighthouseBackEnd] that supports it.
   ///
-  /// Will throw a [UnsupportedError] if no valid backend could be found for the
+  /// Will throw a [UnsupportedError] if no valid back end could be found for the
   /// [DeviceProvider].
   void addProvider(DeviceProvider provider) {
-    final backendList = _getBackendForDeviceProvider(provider);
-    if (backendList == null || backendList.isEmpty) {
+    final backEndList = _getBackEndForDeviceProvider(provider);
+    if (backEndList == null || backEndList.isEmpty) {
       throw UnsupportedError(
-          'No backend found for device provider: "${provider.runtimeType}". Did you forget to add the backend first?');
+          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
     }
-    for (final backend in backendList) {
-      backend.addProvider(provider);
+    for (final backEnd in backEndList) {
+      backEnd.addProvider(provider);
     }
   }
 
-  /// Remove a [DeviceProvider] from every [LighthouseBackend] that supports it.
+  /// Remove a [DeviceProvider] from every [LighthouseBackEnd] that supports it.
   ///
-  /// Will throw a [UnsupportedError] if no valid backend could be found for the
+  /// Will throw a [UnsupportedError] if no valid back end could be found for the
   /// [DeviceProvider].
   void removeProvider(DeviceProvider provider) {
-    final backendList = _getBackendForDeviceProvider(provider);
-    if (backendList == null || backendList.isEmpty) {
+    final backEndList = _getBackEndForDeviceProvider(provider);
+    if (backEndList == null || backEndList.isEmpty) {
       throw UnsupportedError(
-          'No backend found for device provider: "${provider.runtimeType}". Did you forget to add the backend first?');
+          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
     }
-    for (final backend in backendList) {
-      backend.removeProvider(provider);
+    for (final backEnd in backEndList) {
+      backEnd.removeProvider(provider);
     }
   }
 
@@ -125,9 +125,9 @@ class LighthouseProvider {
     await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
-    for (final backend in _backendSet) {
+    for (final backEnd in _backEndSet) {
       // may need to add await back again depending on how the providers react to being multi-threaded.
-      backend.startScan(timeout: timeout);
+      backEnd.startScan(timeout: timeout);
     }
   }
 
@@ -138,8 +138,8 @@ class LighthouseProvider {
   Future cleanUp() async {
     await stopScan();
     await _disconnectOpenDevices();
-    for (final backend in _backendSet) {
-      await backend.cleanUp();
+    for (final backEnd in _backEndSet) {
+      await backEnd.cleanUp();
     }
     _lightHouseDevices.add(List());
     if (_lighthouseDeviceMutex.isLocked) {
@@ -153,22 +153,22 @@ class LighthouseProvider {
   /// [lighthouseDevices] will still contain the (at the time of stopping)
   /// valid [LighthouseDevice]s.
   Future stopScan() async {
-    if (this._backendResultSubscription != null) {
-      this._backendResultSubscription.pause();
+    if (this._backEndResultSubscription != null) {
+      this._backEndResultSubscription.pause();
     }
-    for (final backend in _backendSet) {
-      await backend.stopScan();
+    for (final backEnd in _backEndSet) {
+      await backEnd.stopScan();
     }
   }
 
-  /// Start combining all [isScanning] from the backend providers.
+  /// Start combining all [isScanning] from the back end providers.
   Future<void> _startIsScanningSubscription() async {
     if (_isScanningSubscription != null) {
       await _isScanningSubscription.cancel();
       _isScanningSubscription = null;
     }
 
-    final List<Stream<Tuple2<int, bool>>> streams = _backendSet
+    final List<Stream<Tuple2<int, bool>>> streams = _backEndSet
         .map((element) => element.isScanning)
         .where((stream) => stream != null)
         .toList(growable: false)
@@ -211,8 +211,8 @@ class LighthouseProvider {
 
   /// Disconnect from all known and open devices.
   Future _disconnectOpenDevices() async {
-    for (final backend in _backendSet) {
-      await backend.disconnectOpenDevices();
+    for (final backEnd in _backEndSet) {
+      await backEnd.disconnectOpenDevices();
     }
     final list = this._lightHouseDevices.value;
     for (final device in list) {
@@ -223,20 +223,20 @@ class LighthouseProvider {
   /// Combine the output streams from all the back-ends and add combine all their
   /// returned [LighthouseDevice]s.
   Future _startListeningScanResults() async {
-    if (_backendResultSubscription != null) {
-      if (!_backendResultSubscription.isPaused) {
-        _backendResultSubscription.pause();
+    if (_backEndResultSubscription != null) {
+      if (!_backEndResultSubscription.isPaused) {
+        _backEndResultSubscription.pause();
       }
-      await _backendResultSubscription.cancel();
-      _backendResultSubscription = null;
+      await _backEndResultSubscription.cancel();
+      _backEndResultSubscription = null;
     }
 
     final streams = <Stream<LighthouseDevice /* ? */ >>[];
-    for (final backend in _backendSet) {
-      streams.add(backend.lighthouseStream);
+    for (final backEnd in _backEndSet) {
+      streams.add(backEnd.lighthouseStream);
     }
 
-    _backendResultSubscription = MergeStream(streams).listen((newDevice) async {
+    _backEndResultSubscription = MergeStream(streams).listen((newDevice) async {
       if (newDevice == null) {
         return;
       }
@@ -261,8 +261,8 @@ class LighthouseProvider {
       }
     });
     // Clean-up for when the stream is canceled.
-    _backendResultSubscription.onDone(() {
-      this._backendResultSubscription = null;
+    _backEndResultSubscription.onDone(() {
+      this._backEndResultSubscription = null;
     });
   }
 }

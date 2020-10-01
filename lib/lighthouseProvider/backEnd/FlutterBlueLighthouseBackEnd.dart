@@ -8,19 +8,19 @@ import 'package:rxdart/rxdart.dart';
 import '../LighthouseDevice.dart';
 import '../ble/DeviceIdentifier.dart';
 import '../helpers/FlutterBlueExtensions.dart';
-import 'BLELighthouseBackend.dart';
+import 'BLELighthouseBackEnd.dart';
 import 'flutterBlue/FlutterBlueBluetoothDevice.dart';
 
-/// A backend that provides devices using [FlutterBlue].
-class FlutterBlueLighthouseBackend extends BLELighthouseBackend {
+/// A back end that provides devices using [FlutterBlue].
+class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   // Make sure there is always only one instance.
-  static FlutterBlueLighthouseBackend /* ? */ _instance;
+  static FlutterBlueLighthouseBackEnd /* ? */ _instance;
 
-  FlutterBlueLighthouseBackend._();
+  FlutterBlueLighthouseBackEnd._();
 
-  static FlutterBlueLighthouseBackend get instance {
+  static FlutterBlueLighthouseBackEnd get instance {
     if (_instance == null) {
-      _instance = FlutterBlueLighthouseBackend._();
+      _instance = FlutterBlueLighthouseBackEnd._();
     }
     return _instance;
   }

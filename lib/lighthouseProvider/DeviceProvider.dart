@@ -1,5 +1,5 @@
 import './LighthouseDevice.dart';
-import 'backend/LowLevelDevice.dart';
+import 'backEnd/LowLevelDevice.dart';
 
 ///
 /// An abstract super class of what all device provider should be able to do.
