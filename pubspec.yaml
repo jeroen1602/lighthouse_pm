@@ -74,6 +74,7 @@ flutter:
     - assets/images/identify-icon.svg
     - assets/images/github-dark.svg
     - assets/images/github-light.svg
+    - assets/images/drawer-image.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
