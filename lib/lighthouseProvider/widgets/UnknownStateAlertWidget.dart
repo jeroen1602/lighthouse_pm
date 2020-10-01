@@ -61,13 +61,13 @@ class UnknownStateAlertWidget extends StatelessWidget {
         content: RichText(
           text: TextSpan(children: <InlineSpan>[
             TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text:
                   'The state of this device is unknown. What do you want to do?\n',
             ),
             TextSpan(
               text: "Help out.",
-              style: Theme.of(context).primaryTextTheme.bodyText1.copyWith(
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
                   color: Colors.blue, decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
@@ -129,19 +129,19 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
           return RichText(
               text: TextSpan(children: <InlineSpan>[
             TextSpan(
-                style: Theme.of(context).primaryTextTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText1,
                 text:
                     'Help out by leaving a comment with the following information on the github issue.\n\n'),
             TextSpan(
               children: <InlineSpan>[
                 TextSpan(
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2,
                   text: 'App version: ',
                   recognizer: recognizer,
                 ),
                 TextSpan(
                   style: Theme.of(context)
-                      .primaryTextTheme
+                      .textTheme
                       .bodyText2
                       .copyWith(fontWeight: FontWeight.bold),
                   text:
@@ -149,39 +149,39 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                   recognizer: recognizer,
                 ),
                 TextSpan(
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2,
                   text: 'Device type: ',
                   recognizer: recognizer,
                 ),
                 TextSpan(
                   style: Theme.of(context)
-                      .primaryTextTheme
+                      .textTheme
                       .bodyText2
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '${device.runtimeType}\n',
                   recognizer: recognizer,
                 ),
                 TextSpan(
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2,
                   text: 'Firmware version: ',
                   recognizer: recognizer,
                 ),
                 TextSpan(
                   style: Theme.of(context)
-                      .primaryTextTheme
+                      .textTheme
                       .bodyText2
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '${device.firmwareVersion}\n',
                   recognizer: recognizer,
                 ),
                 TextSpan(
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2,
                   text: 'Current reported state: ',
                   recognizer: recognizer,
                 ),
                 TextSpan(
                   style: Theme.of(context)
-                      .primaryTextTheme
+                      .textTheme
                       .bodyText2
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '0x${currentState.toRadixString(16).padLeft(2, '0')}\n',

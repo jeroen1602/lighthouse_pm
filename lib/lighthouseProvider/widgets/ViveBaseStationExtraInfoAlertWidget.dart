@@ -70,14 +70,14 @@ class _ViveBaseStationExtraInfoAlertState
       title: RichText(
         text: TextSpan(children: <InlineSpan>[
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text: 'Base station id required.\n'),
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text: 'The id is found on the back and should end with: '),
           TextSpan(
               style: Theme.of(context)
-                  .primaryTextTheme
+                  .textTheme
                   .bodyText1
                   .copyWith(fontWeight: FontWeight.bold),
               text: widget.existingIdEnd
@@ -85,7 +85,7 @@ class _ViveBaseStationExtraInfoAlertState
                   .padLeft(4, '0')
                   .toUpperCase()),
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1, text: '.'),
+              style: Theme.of(context).textTheme.bodyText1, text: '.'),
         ]),
       ),
       content: Form(

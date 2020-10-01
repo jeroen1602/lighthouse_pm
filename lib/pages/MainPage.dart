@@ -399,7 +399,7 @@ class BluetoothOffScreen extends StatelessWidget {
           child: Text(
             'Enable Bluetooth.',
             style: Theme.of(context)
-                .primaryTextTheme
+                .textTheme
                 .bodyText1
                 .copyWith(color: Colors.black),
           ));
@@ -430,14 +430,14 @@ class BluetoothOffScreen extends StatelessWidget {
             Text(
               'Bluetooth is ${state != null ? state.toString().substring(15) : 'not available'}.',
               style: Theme.of(context)
-                  .primaryTextTheme
+                  .textTheme
                   .headline6
                   .copyWith(color: Colors.white),
             ),
             Text(
               'Bluetooth needs to be enabled to talk to the lighthouses',
               style: Theme.of(context)
-                  .primaryTextTheme
+                  .textTheme
                   .subtitle1
                   .copyWith(color: Colors.white),
               textAlign: TextAlign.center,

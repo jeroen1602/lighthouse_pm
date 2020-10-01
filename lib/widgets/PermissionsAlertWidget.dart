@@ -9,12 +9,12 @@ class PermissionsAlertWidget extends StatelessWidget {
         content: RichText(
             text: TextSpan(children: <InlineSpan>[
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text:
                   "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
           TextSpan(
             text: "More info.",
-            style: Theme.of(context).primaryTextTheme.bodyText1.copyWith(
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
                 color: Colors.blue, decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
