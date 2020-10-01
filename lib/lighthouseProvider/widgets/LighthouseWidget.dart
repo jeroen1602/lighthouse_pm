@@ -133,7 +133,6 @@ class LighthouseWidget extends StatelessWidget {
                                         LighthousePowerState.SLEEP);
                                 }
                                 break;
-                              powerOff:
                               case LighthousePowerState.ON:
                                 if (lighthouseDevice.hasStandbyExtension) {
                                   await this

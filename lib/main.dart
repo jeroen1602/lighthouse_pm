@@ -7,6 +7,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
+import 'package:lighthouse_pm/pages/HelpPage.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
@@ -83,6 +84,7 @@ class LighthousePMApp extends StatelessWidget {
             '/settings': (context) => SettingsPage(),
             '/settings/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),
+            '/help': (context) => HelpPage(),
           }),
     );
   }
