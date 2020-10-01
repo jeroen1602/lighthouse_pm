@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
@@ -14,7 +15,7 @@ import 'timeout/TimeoutContainer.dart';
 ///
 /// Before the provider actually becomes useful you will need to add at least
 /// on [LighthouseBackend] to provide the provider with a backend to use. These
-/// backends must be provided with at least 1 [LighthouseProvider] or else the
+/// back ends must be provided with at least 1 [LighthouseProvider] or else the
 /// backend won't know what devices are valid.
 ///
 /// For basic usage:
@@ -48,6 +49,7 @@ class LighthouseProvider {
   }
 
   static final LighthouseProvider _instance = LighthouseProvider._();
+  final Mutex _lighthouseDeviceMutex = Mutex();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
   StreamSubscription /* ? */ _backendResultSubscription;
@@ -140,6 +142,9 @@ class LighthouseProvider {
       await backend.cleanUp();
     }
     _lightHouseDevices.add(List());
+    if (_lighthouseDeviceMutex.isLocked) {
+      _lighthouseDeviceMutex.release();
+    }
   }
 
   /// Stop scanning for [LighthouseDevice]s.
@@ -231,22 +236,29 @@ class LighthouseProvider {
       streams.add(backend.lighthouseStream);
     }
 
-    _backendResultSubscription = MergeStream(streams).listen((newDevice) {
+    _backendResultSubscription = MergeStream(streams).listen((newDevice) async {
       if (newDevice == null) {
         return;
       }
-      final list = this._lightHouseDevices.value;
-      // Check if this device is already in the list, which should never happen.
-      if (list.firstWhere((element) => element.data == newDevice,
-              orElse: () => null) !=
-          null) {
-        debugPrint(
-            'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
-        return;
+      try {
+        await _lighthouseDeviceMutex.acquire();
+        final list = this._lightHouseDevices.value;
+        // Check if this device is already in the list, which should never happen.
+        if (list.firstWhere((element) => element.data == newDevice,
+                orElse: () => null) !=
+            null) {
+          debugPrint(
+              'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+          return;
+        }
+        list.add(TimeoutContainer<LighthouseDevice>(newDevice));
+        this._lightHouseDevices.add(list);
+        this._lightHouseDevices.add(list);
+      } finally {
+        if (_lighthouseDeviceMutex.isLocked) {
+          _lighthouseDeviceMutex.release();
+        }
       }
-      list.add(TimeoutContainer<LighthouseDevice>(newDevice));
-      this._lightHouseDevices.add(list);
-      this._lightHouseDevices.add(list);
     });
     // Clean-up for when the stream is canceled.
     _backendResultSubscription.onDone(() {
