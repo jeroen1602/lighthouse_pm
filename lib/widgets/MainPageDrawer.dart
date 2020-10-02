@@ -18,49 +18,49 @@ class MainPageDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
         child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-                decoration: BoxDecoration(image: DecorationImage(
-                  image: AssetImage('assets/images/drawer-image.png'),
-                  fit: BoxFit.cover
-                )),
-                child: SvgPicture.asset('assets/images/app-icon.svg')),
-            ListTile(
-                leading: Icon(Icons.report),
-                title: Text('Troubleshooting'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  _cleanUp();
-                  await Navigator.pushNamed(context, '/troubleshooting');
-                  _startScanWithCheck(
-                      failMessage:
+      children: <Widget>[
+        DrawerHeader(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/drawer-image.png'),
+                    fit: BoxFit.cover)),
+            child: SvgPicture.asset('assets/images/app-icon.svg')),
+        ListTile(
+            leading: Icon(Icons.report),
+            title: Text('Troubleshooting'),
+            onTap: () async {
+              Navigator.pop(context);
+              _cleanUp();
+              await Navigator.pushNamed(context, '/troubleshooting');
+              _startScanWithCheck(
+                  failMessage:
                       "Could not start scan because permission has not been granted. On navigator pop");
-                }),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () async {
-                Navigator.pop(context);
-                _cleanUp();
-                await Navigator.pushNamed(context, '/settings');
-                _startScanWithCheck(
-                    failMessage:
+            }),
+        ListTile(
+          leading: Icon(Icons.info),
+          title: Text('Help'),
+          onTap: () async {
+            Navigator.pop(context);
+            _cleanUp();
+            await Navigator.pushNamed(context, '/help');
+            _startScanWithCheck(
+                failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.info),
-              title: Text('Help'),
-              onTap: () async {
-                Navigator.pop(context);
-                _cleanUp();
-                await Navigator.pushNamed(context, '/help');
-                _startScanWithCheck(
-                    failMessage:
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Settings'),
+          onTap: () async {
+            Navigator.pop(context);
+            _cleanUp();
+            await Navigator.pushNamed(context, '/settings');
+            _startScanWithCheck(
+                failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
-              },
-            ),
-          ],
-        ));
+          },
+        ),
+      ],
+    ));
   }
 }
