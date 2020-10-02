@@ -5,6 +5,7 @@
  - Fixed dialog theme not showing in light mode.
  - Reverted Vive Base station report back to UNKNOWN, still needs some research before this works.
  - Added help page.
+ - Changed drawer header image.
 
 # Version 1.1.0+5 30-09-2020
 
