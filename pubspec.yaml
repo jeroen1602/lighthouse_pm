@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.1+6
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.10.3 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,20 +28,24 @@ dependencies:
   rxdart: ^0.24.1
   package_info: ^0.4.3
   permission_handler: ^5.0.1
-  flutter_svg: ^0.19.0
-  url_launcher: ^5.7.2
+  flutter_svg: ^0.19.1
+  url_launcher: ^5.7.8
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
-  vibration: ^1.5.0
+  vibration: ^1.7.1
   toast: ^0.1.5
   moor_flutter: ^3.1.0
   sqlite3_flutter_libs: ^0.2.0
-  path_provider: ^1.6.18
+  path_provider: ^1.6.22
   provider: ^4.3.2+2
   tuple: ^1.0.3
   intl: ^0.16.1
   device_info: ^0.4.2
+
+# This may need to be enabled again if the build runner doesn't like it.
+#dependency_overrides:
+#  analyzer: 0.39.14
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,8 +55,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  moor_generator: ^3.3.1
-  build_runner: 1.10.1
+  moor_generator: ^3.4.0
+  build_runner: 1.10.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,9 +70,6 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/app-icon.svg
     - assets/images/identify-icon.svg
