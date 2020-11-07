@@ -29,19 +29,19 @@ dependencies:
   package_info: ^0.4.3
   permission_handler: ^5.0.1
   flutter_svg: ^0.19.1
-  url_launcher: ^5.7.8
+  url_launcher: ^5.7.10
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
-  vibration: ^1.7.1
+  vibration: ^1.7.2
   toast: ^0.1.5
   moor_flutter: ^3.1.0
   sqlite3_flutter_libs: ^0.2.0
-  path_provider: ^1.6.22
+  path_provider: ^1.6.24
   provider: ^4.3.2+2
   tuple: ^1.0.3
   intl: ^0.16.1
-  device_info: ^0.4.2
+  device_info: ^1.0.0
 
 # This may need to be enabled again if the build runner doesn't like it.
 #dependency_overrides:
