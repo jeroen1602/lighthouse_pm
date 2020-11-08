@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 
 const double _TROUBLESHOOTING_SCROLL_PADDING = 20;
 
@@ -30,6 +32,9 @@ class TroubleshootingPage extends StatelessWidget {
 /// permissions for Android.
 ///
 class TroubleshootingContentWidget extends StatelessWidget {
+  LighthousePMBloc _bloc(BuildContext context) =>
+      Provider.of<LighthousePMBloc>(context, listen: false);
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
@@ -38,11 +43,21 @@ class TroubleshootingContentWidget extends StatelessWidget {
         leading: Icon(Icons.power, color: Colors.blue),
       ),
       Divider(),
-      ListTile(
-          title: Text(
-              'Make sure that your lighthouses are V2 lighthouses and not V1/Vive'),
-          subtitle: Text('This app does not support V1 base stations yet™.'),
-          leading: SvgPicture.asset("assets/images/app-icon.svg")),
+      StreamBuilder<bool>(
+        initialData: false,
+        stream: _bloc(context).settings.getViveBaseStationsEnabledStream(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          final data = snapshot.hasData && snapshot.data;
+          return ListTile(
+              title: Text(data
+                  ? 'Vive Base station support is still in beta'
+                  : 'Make sure that your lighthouses are V2 lighthouses and not V1/Vive'),
+              subtitle: Text(data
+                  ? 'The Vive Base station support is still in beta so it might not work correctly.'
+                  : 'The Vive Base station support is still in beta and needs to be enabled.'),
+              leading: SvgPicture.asset("assets/images/app-icon.svg"));
+        },
+      ),
       Divider(),
       ListTile(
           title: Text('You might be out of range'),
@@ -50,23 +65,30 @@ class TroubleshootingContentWidget extends StatelessWidget {
           leading: Icon(Icons.signal_cellular_null, color: Colors.orange)),
       Divider(),
       ListTile(
-          title: Text('Your lighthouse may be running an older unsupported software version.'),
-          subtitle: Text('Check to see if there is an update for your lighthouse.'),
+          title: Text(
+              'Your lighthouse may be running an older unsupported software version.'),
+          subtitle:
+              Text('Check to see if there is an update for your lighthouse.'),
           leading: Icon(Icons.update, color: Colors.cyan)),
       Divider(),
       ListTile(
-          title: Text('Sometimes a lighthouse reports it\'s own state as booting.'),
-          subtitle: Text('Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
+          title: Text(
+              'Sometimes a lighthouse reports it\'s own state as booting.'),
+          subtitle: Text(
+              'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
           leading: Icon(MaterialCommunityIcons.ray_start, color: Colors.pink)),
       Divider(),
       ListTile(
           title: Text('Sometimes the app needs a restart.'),
-          subtitle: Text('The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
+          subtitle: Text(
+              'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
           leading: Icon(Icons.replay, color: Colors.deepOrange)),
       Divider(),
       ListTile(
-          title: Text('Make sure no other app is communicating with the lighthouse.'),
-          subtitle: Text('The app cannot find the lighthouse if another app is already communicating with it.'),
+          title: Text(
+              'Make sure no other app is communicating with the lighthouse.'),
+          subtitle: Text(
+              'The app cannot find the lighthouse if another app is already communicating with it.'),
           leading: Icon(Icons.apps, color: Colors.greenAccent)),
       Divider(),
     ];
@@ -204,7 +226,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
         RawMaterialButton(
             onPressed: onTap,
             elevation: 2.0,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).buttonColor,
             padding: const EdgeInsets.all(8.0),
             shape: CircleBorder(),
             child: Icon(

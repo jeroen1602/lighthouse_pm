@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -14,6 +14,16 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// Get the firmware version of the device.
+  ///
+  String get firmwareVersion;
+
+  ///
+  /// Other reported info.
+  ///
+  Map<String, String> get otherMetadata;
+
+  ///
   /// Get the identifier for the device.
   ///
   LHDeviceIdentifier get deviceIdentifier;
@@ -25,7 +35,9 @@ abstract class LighthouseDevice {
     if (_powerStateSubscription != null) {
       await _powerStateSubscription.cancel();
     }
-    await this._powerState.close();
+    if (this._powerState != null) {
+      await this._powerState.close();
+    }
     await internalDisconnect();
   }
 
@@ -38,8 +50,7 @@ abstract class LighthouseDevice {
   ///
   /// Convert a device specific state byte to a global `LighthousePowerState`.
   ///
-  @protected
-  LighthousePowerState internalGetPowerStateFromByte(int byte);
+  LighthousePowerState powerStateFromByte(int byte);
 
   ///
   /// Get the update interval that this device supports.
@@ -70,23 +81,36 @@ abstract class LighthouseDevice {
   /// Get the power state of the device as a device specific int.
   Stream<int> get powerState {
     this._startPowerStateStream();
-    return this._powerState.stream;
+    return _powerState.stream;
   }
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
   Stream<LighthousePowerState> get powerStateEnum => this.powerState.map((e) {
-        return internalGetPowerStateFromByte(e);
+        return powerStateFromByte(e);
       });
 
+  // ignore: close_sinks
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
   StreamSubscription /* ? */ _powerStateSubscription;
-  final Mutex _transaction = Mutex();
+
+  ///
+  /// This is the mutex used for transactions.
+  /// It should only be used fox extra calls, [DeviceExtensions] may add the
+  /// need to add extra transaction calls to the device.
+  ///
+  /// [internalChangeState], and [getCurrentState] are already protected by this
+  /// mutex and thus there is no need to add it extra. The app will deadlock
+  /// itself if you do try to obtain the mutex in these functions.
+  ///
+  ///
+  @protected
+  final Mutex transactionMutex = Mutex();
 
   ///Change the state of the device.
   ///
   /// The only valid options are:
   ///  - [LighthousePowerState.ON]
-  ///  - [LighthousePowerState.STANDBY]
+  ///  - [LighthousePowerState.SLEEP]
   ///
   /// When an invalid [newState] is given then this will only be logged in the
   /// console and `return` immediately.
@@ -102,11 +126,20 @@ abstract class LighthouseDevice {
       return;
     }
     try {
-      await _transaction.acquire();
+      await transactionMutex.acquire();
       await internalChangeState(newState);
     } finally {
-      _transaction.release();
+      transactionMutex.release();
     }
+  }
+
+  /// Show an extra window for the user to fill in extra info needed for the
+  /// lighthouse device.
+  /// Will not show a dialog if the device is already excepted.
+  /// Returns a [Future] with a [bool] if the device is now able to change the
+  /// state.
+  Future<bool> showExtraInfoWidget(BuildContext context) async {
+    return true;
   }
 
   /// Start the power state stream.
@@ -114,6 +147,7 @@ abstract class LighthouseDevice {
   /// If this method is called while there is already an active stream then it
   /// will do nothing.
   void _startPowerStateStream() {
+    int retryCount = 0;
     if (this._powerStateSubscription != null) {
       if (this._powerStateSubscription.isPaused) {
         this._powerStateSubscription.resume();
@@ -124,9 +158,10 @@ abstract class LighthouseDevice {
     _powerStateSubscription =
         Stream.periodic(getUpdateInterval()).listen((_) async {
       if (hasOpenConnection) {
-        if (!_transaction.isLocked) {
+        if (!transactionMutex.isLocked) {
+          retryCount = 0;
           try {
-            await _transaction.acquire();
+            await transactionMutex.acquire();
             final data = await getCurrentState();
             if (this._powerState.isClosed) {
               await this.disconnect();
@@ -139,7 +174,12 @@ abstract class LighthouseDevice {
             debugPrint('$e');
             debugPrint('$s');
           } finally {
-            _transaction.release();
+            transactionMutex.release();
+          }
+        } else {
+          if (retryCount++ > 5) {
+            debugPrint(
+                'Unable to get power state because the mutex has been locked for a while ($retryCount). $transactionMutex');
           }
         }
       } else {

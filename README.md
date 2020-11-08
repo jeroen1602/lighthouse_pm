@@ -7,7 +7,9 @@ And if your computer doesn't have a bluetooth adapter then it is useless. Sadly 
 to the system and thus can't be used for that. Fortunately most phones do have bluetooth support, so I made this app to
 easily change the power state of a Lighthouse.
 
-<img src="docs/lighthouse_pm_screenshot.png" alt="lighthouse pm in action" width="300"/>
+The app now also supports Vive Base stations, this is in Beta though.
+
+<img src="docs/lighthouse_pm_screenshot_dark.png" alt="lighthouse pm in action" width="300"/>
 
 **This project gives no warranty that you won't brick your lighthouses!**
 
@@ -27,10 +29,12 @@ Almost all phones made after 2013 support this.
 
 #### Android
 
- - Bluetooth low energy support (as stated abovo modern devices probably support it).
+ - Bluetooth low energy support (as stated above modern devices probably support it).
  - Android 4.4 (API level 19) and up.
 
 ### Google Play
+
+**NOTE** The Google Play version may be behind by a version because of the approval process.
 
 <a href="https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm" target="_blank">
 <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google play" width="250"></a>
@@ -39,8 +43,7 @@ Almost all phones made after 2013 support this.
 
 ### Sideload
 
-After that you can grab the `APK` from the [releases](https://github.com/jeroen1602/lighthouse_pm/releases) 
-page and [sideload](https://www.howtogeek.com/313433/how-to-sideload-apps-on-android/) this onto your device.
+Another way is to install the app using sideloading. Grab the `APK` from the [releases](https://github.com/jeroen1602/lighthouse_pm/releases) page and [sideload](https://www.howtogeek.com/313433/how-to-sideload-apps-on-android/) this onto your device.
 
 ### iOS
 
@@ -48,3 +51,16 @@ Since the app is made in Flutter it should be able to run on iOS device with a m
 tweaking. I however don't have any Apple device so I can't test this.
 
 If there is anyone who does want to pick this up and support that part then please look at [contributing](CONTRIBUTING.md).
+
+There has been a little bit of validating on the iOS version. So if you are able to and really want to you can try "[sideloading](https://beebom.com/how-to-sideload-apps-iphone-ios-10-without-jailbreak/)" it onto your iDevice.
+
+## Building
+
+Because the app uses generated code you will first need to run `flutter packages pub run build_runner build` or `flutter packages pub run build_runner watch` before the app can be build.
+
+While the app is in development there may be changes to the local database, there will not be any migrations written unless it's between actual versions. So you may need to clear the app storage before some new features start working.
+
+### Release build
+
+Sometimes before you can create a release build you will need to assemble the Android component before an Android build can be created.
+Run `./gradlew assemble` inside the `./android` folder before running `flutter build apk`/ `flutter build appbundle`

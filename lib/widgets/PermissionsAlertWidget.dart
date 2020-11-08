@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/pages/AboutPage.dart';
-import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
   @override
@@ -11,33 +9,31 @@ class PermissionsAlertWidget extends StatelessWidget {
         content: RichText(
             text: TextSpan(children: <InlineSpan>[
           TextSpan(
-              style: Theme.of(context).primaryTextTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               text:
                   "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
           TextSpan(
             text: "More info.",
-            style: Theme.of(context).primaryTextTheme.bodyText1.copyWith(
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
                 color: Colors.blue, decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AboutPage()));
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PrivacyPage()));
+                Navigator.pushNamed(context, '/settings');
+                Navigator.pushNamed(context, '/settings/privacy');
               },
           )
         ])),
         actions: <Widget>[
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Allow permissions"),
             onPressed: () {
-              Navigator.of(context).pop(true);
+              Navigator.pop(context, true);
             },
           ),
-          FlatButton(
+          SimpleDialogOption(
             child: Text("Cancel"),
             onPressed: () {
-              Navigator.of(context).pop(false);
+              Navigator.pop(context, false);
             },
           )
         ]);

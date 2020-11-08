@@ -10,6 +10,8 @@
         android:required="true" />
     <application
         android:name="io.flutter.app.FlutterApplication"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="Lighthouse PM"
         android:roundIcon="@mipmap/ic_launcher_round">

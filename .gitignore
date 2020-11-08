@@ -45,3 +45,6 @@ app.*.map.json
 
 #gradle
 .gradle
+
+# Ingore generated dart files
+*.g.dart

@@ -1,24 +1,28 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/BLEDeviceProvider.dart';
+import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
+import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
+import 'backEnd/LighthouseBackEnd.dart';
+import 'ble/DeviceIdentifier.dart';
 import 'timeout/TimeoutContainer.dart';
 
-///A provider for getting all [LighthouseDevice]s in the region.
+///A provider for getting all [LighthouseDevice]s in the area.
 ///
-/// The provider uses [FlutterBlue] and "overrides" the [startScan] and
-/// [stopScan] methods.
+/// Before the provider actually becomes useful you will need to add at least
+/// on [LighthouseBackEnd] to provide the provider with a back end to use. These
+/// back ends must be provided with at least 1 [LighthouseProvider] or else the
+/// back end won't know what devices are valid.
 ///
 /// For basic usage:
 /// Get an instance using [LighthouseProvider.instance].
 /// Get a stream of valid [LighthouseDevice]s using [lighthouseDevices].\
-/// Start scanning using [startScan]. (not the startScan form [FlutterBlue].
-/// Stop scanning using [StopScan]. (not The stopScan from [FlutterBlue].
+/// Start scanning using [startScan]. (not the startScan form the [LighthouseBackEnd].
+/// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackEnd].
 ///
 class LighthouseProvider {
   LighthouseProvider._();
@@ -45,19 +49,70 @@ class LighthouseProvider {
   }
 
   static final LighthouseProvider _instance = LighthouseProvider._();
-  Set<LHDeviceIdentifier> _connectingDevices = Set();
-  Set<LHDeviceIdentifier> _rejectedDevices = Set();
+  final Mutex _lighthouseDeviceMutex = Mutex();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
-  StreamSubscription /* ? */ _scanResultSubscription;
-  Set<BLEDeviceProvider> _bleDeviceProviders = Set();
+  StreamSubscription /* ? */ _backEndResultSubscription;
+  Set<LighthouseBackEnd> _backEndSet = Set();
 
-  void addBLEDeviceProvider(BLEDeviceProvider bleDeviceProvider) {
-    _bleDeviceProviders.add(bleDeviceProvider);
+  BehaviorSubject<bool> _isScanningBehavior = BehaviorSubject.seeded(false);
+  StreamSubscription /* ? */ _isScanningSubscription;
+
+  Stream<bool> get isScanning => _isScanningBehavior.stream;
+
+  /// Add a back end for providing data.
+  void addBackEnd(LighthouseBackEnd backEnd) {
+    backEnd.updateLastSeen = _updateLastSeen;
+    _backEndSet.add(backEnd);
   }
 
-  void removeBLEDeviceProvider(BLEDeviceProvider bleDeviceProvider) {
-    _bleDeviceProviders.remove(bleDeviceProvider);
+  /// Remove a back end for providing data.
+  void removeBackEnd(LighthouseBackEnd backEnd) {
+    if (_backEndSet.remove(backEnd)) {
+      backEnd.updateLastSeen = null;
+    }
+  }
+
+  /// Get a list of all the back ends that this [DeviceProvider] can be used with.
+  List<LighthouseBackEnd> _getBackEndForDeviceProvider(
+      DeviceProvider provider) {
+    final List<LighthouseBackEnd> backEndList = List<LighthouseBackEnd>();
+    for (final backEnd in _backEndSet) {
+      if (backEnd.isMyProviderType(provider)) {
+        backEndList.add(backEnd);
+      }
+    }
+    return backEndList;
+  }
+
+  /// Add a [DeviceProvider] to every [LighthouseBackEnd] that supports it.
+  ///
+  /// Will throw a [UnsupportedError] if no valid back end could be found for the
+  /// [DeviceProvider].
+  void addProvider(DeviceProvider provider) {
+    final backEndList = _getBackEndForDeviceProvider(provider);
+    if (backEndList == null || backEndList.isEmpty) {
+      throw UnsupportedError(
+          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
+    }
+    for (final backEnd in backEndList) {
+      backEnd.addProvider(provider);
+    }
+  }
+
+  /// Remove a [DeviceProvider] from every [LighthouseBackEnd] that supports it.
+  ///
+  /// Will throw a [UnsupportedError] if no valid back end could be found for the
+  /// [DeviceProvider].
+  void removeProvider(DeviceProvider provider) {
+    final backEndList = _getBackEndForDeviceProvider(provider);
+    if (backEndList == null || backEndList.isEmpty) {
+      throw UnsupportedError(
+          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
+    }
+    for (final backEnd in backEndList) {
+      backEnd.removeProvider(provider);
+    }
   }
 
   /// Start scanning for [LighthouseDevice]s.
@@ -66,15 +121,14 @@ class LighthouseProvider {
   /// for new ones.
   ///
   /// Will call the [cleanUp] function before starting the scan.
-  /// Will call the [FlutterBlue.startScan] function in the background.
-  Future startScan({
-    ScanMode scanMode = ScanMode.lowLatency,
-    Duration timeout,
-  }) async {
+  Future startScan({@required Duration timeout}) async {
+    await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
-    await FlutterBlue.instance
-        .startScan(scanMode: scanMode, timeout: timeout, allowDuplicates: true);
+    for (final backEnd in _backEndSet) {
+      // may need to add await back again depending on how the providers react to being multi-threaded.
+      backEnd.startScan(timeout: timeout);
+    }
   }
 
   ///
@@ -84,9 +138,13 @@ class LighthouseProvider {
   Future cleanUp() async {
     await stopScan();
     await _disconnectOpenDevices();
+    for (final backEnd in _backEndSet) {
+      await backEnd.cleanUp();
+    }
     _lightHouseDevices.add(List());
-    _connectingDevices.clear();
-    _rejectedDevices.clear();
+    if (_lighthouseDeviceMutex.isLocked) {
+      _lighthouseDeviceMutex.release();
+    }
   }
 
   /// Stop scanning for [LighthouseDevice]s.
@@ -95,31 +153,66 @@ class LighthouseProvider {
   /// [lighthouseDevices] will still contain the (at the time of stopping)
   /// valid [LighthouseDevice]s.
   Future stopScan() async {
-    if (this._scanResultSubscription != null) {
-      this._scanResultSubscription.pause();
+    if (this._backEndResultSubscription != null) {
+      this._backEndResultSubscription.pause();
     }
-    await FlutterBlue.instance.stopScan();
+    for (final backEnd in _backEndSet) {
+      await backEnd.stopScan();
+    }
   }
 
-  /// Get the index of a found device based on the scan result.
-  ///
-  /// Wil return the index of the device in the [_lightHouseDevices.value]
-  /// [List] or `-1` if not found.
-  int _foundDeviceIndex(LHDeviceIdentifier deviceIdentifier) {
-    int index = 0;
-    for (final activeDevice in this._lightHouseDevices.value) {
-      if (deviceIdentifier == activeDevice.data.deviceIdentifier) {
-        return index;
-      }
-      index++;
+  /// Start combining all [isScanning] from the back end providers.
+  Future<void> _startIsScanningSubscription() async {
+    if (_isScanningSubscription != null) {
+      await _isScanningSubscription.cancel();
+      _isScanningSubscription = null;
     }
-    return -1;
+
+    final List<Stream<Tuple2<int, bool>>> streams = _backEndSet
+        .map((element) => element.isScanning)
+        .where((stream) => stream != null)
+        .toList(growable: false)
+        .asMap()
+        .entries
+        .map((entry) =>
+            entry.value.map((event) => Tuple2<int, bool>(entry.key, event)))
+        .toList(growable: false);
+
+    final List<bool> scanResults = List<bool>(streams.length);
+    for (var i = 0; i < scanResults.length; i++) {
+      scanResults[i] = false;
+    }
+
+    _isScanningSubscription =
+        MergeStream<Tuple2<int, bool>>(streams).map<bool>((scanning) {
+      if (scanning.item1 >= 0 && scanning.item1 < scanResults.length) {
+        scanResults[scanning.item1] = scanning.item2;
+      }
+      return scanResults.reduce((value, element) => value || element);
+    }).listen((isScanning) {
+      this._isScanningBehavior.add(isScanning);
+    });
+  }
+
+  /// Update the last time a device has been seen.
+  ///
+  /// This will update the last time a device with teh [deviceIdentifier] has
+  /// been seen and return a bool if this was successful.
+  bool _updateLastSeen(LHDeviceIdentifier deviceIdentifier) {
+    final device = _lightHouseDevices.value.firstWhere(
+        (element) => element.data.deviceIdentifier == deviceIdentifier,
+        orElse: () => null);
+    if (device == null) {
+      return false;
+    }
+    device.lastSeen = DateTime.now();
+    return true;
   }
 
   /// Disconnect from all known and open devices.
   Future _disconnectOpenDevices() async {
-    for (final bleDeviceProvider in _bleDeviceProviders) {
-      await bleDeviceProvider.disconnectRunningDiscoveries();
+    for (final backEnd in _backEndSet) {
+      await backEnd.disconnectOpenDevices();
     }
     final list = this._lightHouseDevices.value;
     for (final device in list) {
@@ -127,91 +220,49 @@ class LighthouseProvider {
     }
   }
 
-  /// Start the stream for listening to the [LighthouseDevice]s.
+  /// Combine the output streams from all the back-ends and add combine all their
+  /// returned [LighthouseDevice]s.
   Future _startListeningScanResults() async {
-    if (_scanResultSubscription != null) {
-      if (!_scanResultSubscription.isPaused) {
-        _scanResultSubscription.pause();
+    if (_backEndResultSubscription != null) {
+      if (!_backEndResultSubscription.isPaused) {
+        _backEndResultSubscription.pause();
       }
-      await _scanResultSubscription.cancel();
-      _scanResultSubscription = null;
+      await _backEndResultSubscription.cancel();
+      _backEndResultSubscription = null;
     }
 
-    _scanResultSubscription = FlutterBlue.instance.scanResults
-        .map((scanResults) {
-          // Filter out all devices that don't have a correct name.
-          final List<ScanResult> output = List();
-          for (final scanResult in scanResults) {
-            for (final bleDeviceProviders in _bleDeviceProviders) {
-              if (bleDeviceProviders.nameCheck(scanResult.device.name)) {
-                output.add(scanResult);
-                break;
-              }
-            }
-          }
-          return output;
-        })
-        // Give the listener at least 2ms to process the data before firing again.
-        .debounce((_) => TimerStream(true, Duration(milliseconds: 2)))
-        .listen((scanResults) {
-          if (scanResults.isEmpty) {
-            return;
-          }
-          for (final scanResult in scanResults) {
-            if (this._connectingDevices.contains(
-                LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id))) {
-              continue;
-            }
-            if (this._rejectedDevices.contains(
-                LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id))) {
-              continue;
-            }
-            // Update the last seen item.
-            final index = this._foundDeviceIndex(
-                LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id));
-            if (index >= 0) {
-              this._lightHouseDevices.value[index].lastSeen = DateTime.now();
-              continue;
-            }
-            // Possibly a new lighthouse, let's make sure it's valid.
-            this
-                ._connectingDevices
-                .add(LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id));
-            _getLighthouseDevice(scanResult.device).then((lighthouseDevice) {
-              if (lighthouseDevice == null) {
-                debugPrint(
-                    'Found a non valid device! Mac: ${scanResult.device.id.toString()}');
-                this._rejectedDevices.add(
-                    LHDeviceIdentifier.fromFlutterBlue(scanResult.device.id));
-              } else {
-                final list = this._lightHouseDevices.value;
-                list.add(TimeoutContainer<LighthouseDevice>(lighthouseDevice));
-                this._lightHouseDevices.add(list);
-              }
-              this._connectingDevices.remove(scanResult.device.id);
-            });
-          }
-        });
-    // Clean-up for when the stream is canceled.
-    _scanResultSubscription.onDone(() {
-      this._scanResultSubscription = null;
+    final streams = <Stream<LighthouseDevice /* ? */ >>[];
+    for (final backEnd in _backEndSet) {
+      streams.add(backEnd.lighthouseStream);
+    }
+
+    _backEndResultSubscription = MergeStream(streams).listen((newDevice) async {
+      if (newDevice == null) {
+        return;
+      }
+      try {
+        await _lighthouseDeviceMutex.acquire();
+        final list = this._lightHouseDevices.value;
+        // Check if this device is already in the list, which should never happen.
+        if (list.firstWhere((element) => element.data == newDevice,
+                orElse: () => null) !=
+            null) {
+          debugPrint(
+              'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+          return;
+        }
+        list.add(TimeoutContainer<LighthouseDevice>(newDevice));
+        this._lightHouseDevices.add(list);
+        this._lightHouseDevices.add(list);
+      } finally {
+        if (_lighthouseDeviceMutex.isLocked) {
+          _lighthouseDeviceMutex.release();
+        }
+      }
     });
-  }
-
-  ///
-  /// Will return `null` if no device provider could validate the device.
-  Future<LighthouseDevice /* ? */> _getLighthouseDevice(BluetoothDevice device) async {
-    debugPrint('Trying to connect to device with name: ${device.name}');
-    for (final bLEDeviceProvider in _bleDeviceProviders) {
-      if (!bLEDeviceProvider.nameCheck(device.name)) {
-        continue;
-      }
-      final LighthouseDevice lighthouseDevice =
-          await bLEDeviceProvider.getDevice(device);
-      if (lighthouseDevice != null) {
-        return lighthouseDevice;
-      }
-    }
-    return null;
+    // Clean-up for when the stream is canceled.
+    _backEndResultSubscription.onDone(() {
+      this._backEndResultSubscription = null;
+    });
   }
 }
