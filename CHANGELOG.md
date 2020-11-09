@@ -1,4 +1,8 @@
 
+# Version 1.1.2+7 RC
+
+- (iOS) Fixed automatic detection of "System Theme" availability.
+
 # Version 1.1.1+6 02-10-2020
 
  - Added mutex to back end so no device shows up twice.
