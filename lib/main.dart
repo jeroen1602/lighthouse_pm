@@ -62,7 +62,7 @@ class LighthousePMApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<ThemeMode>(
-      stream: _bloc(context).settings.getPreferedThemeAsStream(),
+      stream: _bloc(context).settings.getPreferredThemeAsStream(),
       initialData: ThemeMode.system,
       builder: (BuildContext context, AsyncSnapshot<ThemeMode> themeSnapshot) =>
           MaterialApp(
