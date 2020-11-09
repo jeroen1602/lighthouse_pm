@@ -175,8 +175,8 @@ class SettingsBloc {
       }
     } else if (Platform.isIOS) {
       final ios = await deviceInfo.iosInfo;
-      // TODO: check what systemVersion returns on an actual iOS device.
-      if (int.tryParse(ios.systemVersion, radix: 10) >= 13 /* iOS 13*/) {
+      var iosVersion = double.tryParse(ios.systemVersion);
+      if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
     }
