@@ -134,16 +134,16 @@ class SettingsPage extends StatelessWidget {
                     }
                     return StreamBuilder<ThemeMode>(
                       stream:
-                          _bloc(context).settings.getPreferedThemeAsStream(),
+                          _bloc(context).settings.getPreferredThemeAsStream(),
                       builder: (BuildContext context,
                           AsyncSnapshot<ThemeMode> snapshot) {
                         return DropdownMenuListTile<ThemeMode>(
-                          title: Text('Set prefered theme'),
+                          title: Text('Set preferred theme'),
                           value: snapshot.data,
                           onChanged: (ThemeMode theme) async =>
                               await _bloc(context)
                                   .settings
-                                  .setPreferedTheme(theme),
+                                  .setPreferredTheme(theme),
                           items: supportedThemesSnapshot.data
                               .map<DropdownMenuItem<ThemeMode>>(
                                   (ThemeMode theme) =>
