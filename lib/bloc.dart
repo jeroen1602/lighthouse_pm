@@ -59,7 +59,7 @@ class SettingsBloc {
   static const DEFAULT_SLEEP_STATE_ID = 1;
   static const VIVE_BASE_STATION_ENABLED_ID = 2;
   static const SCAN_DURATION_ID = 3;
-  static const PREFERED_THEME_ID = 4;
+  static const PREFERRED_THEME_ID = 4;
 
   // endregion
 
@@ -135,9 +135,9 @@ class SettingsBloc {
         mode: InsertMode.insertOrReplace);
   }
 
-  Stream<ThemeMode> getPreferedThemeAsStream() {
+  Stream<ThemeMode> getPreferredThemeAsStream() {
     return (db.select(db.simpleSettings)
-          ..where((tbl) => tbl.settingsId.equals(PREFERED_THEME_ID)))
+          ..where((tbl) => tbl.settingsId.equals(PREFERRED_THEME_ID)))
         .watch()
         .asyncMap((event) async {
       if (event.length == 1 && event[0].data != null) {
@@ -158,10 +158,10 @@ class SettingsBloc {
     });
   }
 
-  Future<void> setPreferedTheme(ThemeMode theme) {
+  Future<void> setPreferredTheme(ThemeMode theme) {
     return db.into(db.simpleSettings).insert(
         SimpleSetting(
-            settingsId: PREFERED_THEME_ID, data: '${theme.index.toRadixString(10)}'),
+            settingsId: PREFERRED_THEME_ID, data: '${theme.index.toRadixString(10)}'),
         mode: InsertMode.insertOrReplace);
   }
 
