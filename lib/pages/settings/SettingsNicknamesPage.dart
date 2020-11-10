@@ -40,17 +40,17 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
   }
 
   Future _deleteItem(String macAddress) {
-    return blocWithoutListen.deleteNicknames([macAddress]);
+    return blocWithoutListen.nicknames.deleteNicknames([macAddress]);
   }
 
   Future _updateItem(Nickname nickname) {
-    return blocWithoutListen.insertNickname(nickname);
+    return blocWithoutListen.nicknames.insertNickname(nickname);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<NicknamesLastSeenJoin>>(
-      stream: bloc.watchSavedNicknamesWithLastSeen(),
+      stream: bloc.nicknames.watchSavedNicknamesWithLastSeen(),
       builder: (BuildContext _,
           AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
         Widget body = Center(
@@ -86,7 +86,7 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
                   icon: Icon(Icons.delete),
                   tooltip: 'Delete selected',
                   onPressed: () async {
-                    await blocWithoutListen
+                    await blocWithoutListen.nicknames
                         .deleteNicknames(selected.map((e) => e.id).toList());
                     setState(() {
                       selected.clear();
@@ -233,16 +233,16 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                bloc.insertNickname(Nickname(
+                bloc.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FF",
                     nickname: "This is a test nickname1"));
-                bloc.insertNickname(Nickname(
+                bloc.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FE",
                     nickname: "This is a test nickname2"));
-                bloc.insertNickname(Nickname(
+                bloc.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FD",
                     nickname: "This is a test nickname3"));
-                bloc.insertNickname(Nickname(
+                bloc.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FC",
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,

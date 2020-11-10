@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';

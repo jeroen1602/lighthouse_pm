@@ -37,9 +37,9 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
         nickname: currentNickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await _blocWithoutListen.deleteNicknames([newNickname.macAddress]);
+        await _blocWithoutListen.nicknames.deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.insertNickname(newNickname);
+        await _blocWithoutListen.nicknames.insertNickname(newNickname);
       }
     }
   }
@@ -68,7 +68,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
 
     body.add(StreamBuilder<Nickname>(
-      stream: _bloc.watchNicknameForMacAddress(
+      stream: _bloc.nicknames.watchNicknameForMacAddress(
           widget.device.deviceIdentifier.toString()),
       builder: (BuildContext context, AsyncSnapshot<Nickname> snapshot) {
         if (snapshot.hasData) {

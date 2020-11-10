@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
@@ -82,7 +83,7 @@ class SettingsPage extends StatelessWidget {
                       if (await ClearLastSeenAlertWidget.showCustomDialog(
                               context) ==
                           true) {
-                        await _bloc(context).deleteAllLastSeen();
+                        await _bloc(context).nicknames.deleteAllLastSeen();
                         Toast.show('Cleared up all last seen items', context,
                             duration: Toast.LENGTH_SHORT,
                             gravity: Toast.BOTTOM);

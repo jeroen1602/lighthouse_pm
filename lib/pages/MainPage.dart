@@ -51,7 +51,7 @@ Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
   final lighthouseDevices = List<LighthouseDevice>();
 
   return MergeStream<List<dynamic>>([
-    bloc.watchSavedNicknames,
+    bloc.nicknames.watchSavedNicknames,
     LighthouseProvider.instance.lighthouseDevices
   ]).map((event) {
     if (event is List<Nickname>) {
@@ -253,7 +253,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           );
                         }
                         final device = list[index];
-                        bloc.insertLastSeenDevice(LastSeenDevice(
+                        bloc.nicknames.insertLastSeenDevice(LastSeenDevice(
                             macAddress: device.deviceIdentifier.toString(),
                             lastSeen: null));
                         final nickname = nicknames.singleWhere(
@@ -315,9 +315,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       if (newNickname != null) {
                         if (newNickname.nickname == null) {
                           blocWithoutListen
-                              .deleteNicknames([newNickname.macAddress]);
+                              .nicknames.deleteNicknames([newNickname.macAddress]);
                         } else {
-                          blocWithoutListen.insertNickname(newNickname);
+                          blocWithoutListen.nicknames.insertNickname(newNickname);
                         }
                         selected.remove(item);
                       }
