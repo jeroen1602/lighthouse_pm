@@ -50,7 +50,7 @@ class LighthouseGuid {
     String five =
         _bytes.getUint32(10, Endian.big).toRadixString(16).padLeft(8, '0') +
             _bytes.getUint16(14, Endian.big).toRadixString(16).padLeft(4, '0');
-    return "$one-$two-$three-$four-$five";
+    return "$one-$two-$three-$four-$five".toUpperCase();
   }
 
   operator ==(other) =>

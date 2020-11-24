@@ -24,7 +24,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue: ^0.7.2
+  flutter_blue: ^0.7.3
   rxdart: ^0.24.1
   package_info: ^0.4.3
   permission_handler: ^5.0.1
@@ -55,6 +55,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: ^1.15.4
   moor_generator: ^3.4.0
   build_runner: 1.10.4
 
