@@ -8,14 +8,23 @@ import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
-class SettingsNicknamesPage extends StatefulWidget {
+import '../BasePage.dart';
+
+class SettingsNicknamesPage extends BasePage {
   @override
-  State<StatefulWidget> createState() {
-    return _NicknamesPage();
+  Widget buildPage(BuildContext context) {
+    return _SettingsNicknamesPageContent();
   }
 }
 
-class _NicknamesPage extends State<SettingsNicknamesPage> {
+class _SettingsNicknamesPageContent extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _NicknamesPageState();
+  }
+}
+
+class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   final Set<LHDeviceIdentifier> selected = Set();
 
   LighthousePMBloc get bloc => Provider.of<LighthousePMBloc>(context);

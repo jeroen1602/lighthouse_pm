@@ -4,15 +4,25 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
-class SettingsViveBaseStationIdsPage extends StatefulWidget {
+import '../BasePage.dart';
+
+class SettingsViveBaseStationIdsPage extends BasePage {
+  @override
+  Widget buildPage(BuildContext context) {
+    return _SettingsViveBaseStationIdsPageContent();
+  }
+  
+}
+
+class _SettingsViveBaseStationIdsPageContent extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _SettingsViveBaseStationIdsPage();
+    return _SettingsViveBaseStationIdsPageState();
   }
 }
 
-class _SettingsViveBaseStationIdsPage
-    extends State<SettingsViveBaseStationIdsPage> {
+class _SettingsViveBaseStationIdsPageState
+    extends State<_SettingsViveBaseStationIdsPageContent> {
   final Set<int> selected = Set();
 
   LighthousePMBloc get bloc => Provider.of<LighthousePMBloc>(context);

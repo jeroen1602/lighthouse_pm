@@ -11,7 +11,9 @@ import 'package:lighthouse_pm/pages/HelpPage.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
+import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
+import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc.dart';
@@ -66,26 +68,36 @@ class LighthousePMApp extends StatelessWidget {
       initialData: ThemeMode.system,
       builder: (BuildContext context, AsyncSnapshot<ThemeMode> themeSnapshot) =>
           MaterialApp(
-              debugShowCheckedModeBanner: true,
-              title: 'Lighthouse PM',
-              theme: ThemeData(
-                colorScheme: ColorScheme.light(),
-                primarySwatch: Colors.blueGrey,
-                selectedRowColor: Colors.grey,
-              ),
-              darkTheme: ThemeData(
-                colorScheme: ColorScheme.dark(),
-                primarySwatch: Colors.blueGrey,
-                selectedRowColor: Colors.blueGrey,
-              ),
-              themeMode: themeSnapshot.data,
-              routes: {
+        debugShowCheckedModeBanner: true,
+        title: 'Lighthouse PM',
+        theme: ThemeData(
+          colorScheme: ColorScheme.light(),
+          primarySwatch: Colors.blueGrey,
+          selectedRowColor: Colors.grey,
+        ),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.dark(),
+          primarySwatch: Colors.blueGrey,
+          selectedRowColor: Colors.blueGrey,
+        ),
+        themeMode: themeSnapshot.data,
+        onGenerateRoute: (RouteSettings settings) {
+          // Make sure all these pages extend the Base page or else shortcut
+          // handling won't work!
+          final routes = <String, WidgetBuilder>{
             '/': (context) => MainPage(),
             '/settings': (context) => SettingsPage(),
             '/settings/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),
             '/help': (context) => HelpPage(),
-          }),
+            '/shortcutHandler': (context) => SimpleBasePage(
+                Text('YES ${(settings.arguments as ShortcutHandle).data}'),
+                shortcutHandleArgument: (settings.arguments as ShortcutHandle)),
+          };
+          WidgetBuilder builder = routes[settings.name];
+          return MaterialPageRoute(builder: (ctx) => builder(ctx));
+        },
+      ),
     );
   }
 }

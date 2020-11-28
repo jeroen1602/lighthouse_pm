@@ -8,6 +8,13 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
 
+    private val shortcut: Shortcut by lazy { Shortcut() }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        shortcut.handleIntent(intent)
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NAME).setMethodCallHandler { call, result ->
@@ -27,6 +34,7 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+        shortcut.init(flutterEngine, this, intent)
 
     }
 
@@ -52,6 +60,7 @@ class MainActivity : FlutterActivity() {
 
     companion object {
         private const val CHANNEL_NAME = "com.jeroen1602.lighthouse_pm/bluetooth"
+        private const val TAG = "lighthouseMainActivity"
     }
 
 }

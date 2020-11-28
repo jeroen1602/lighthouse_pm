@@ -21,6 +21,8 @@ class LighthouseWidget extends StatelessWidget {
         sleepState == LighthousePowerState.SLEEP ||
             sleepState == LighthousePowerState.STANDBY,
         'The sleep state may not be ${sleepState.text.toUpperCase()}');
+
+    this.lighthouseDevice.nickname = this.nickname;
   }
 
   final LighthouseDevice lighthouseDevice;

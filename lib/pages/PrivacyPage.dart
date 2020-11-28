@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import './BasePage.dart';
 
-class PrivacyPage extends StatelessWidget {
+class PrivacyPage extends BasePage {
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Privacy'),

@@ -14,9 +14,11 @@ import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import './BasePage.dart';
+
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends BasePage {
   LighthousePMBloc _bloc(BuildContext context) =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 
@@ -42,7 +44,7 @@ class SettingsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(

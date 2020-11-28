@@ -22,6 +22,8 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
+import 'BasePage.dart';
+
 const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
 
 Future _startScan(Duration scanDuration) async {
@@ -65,12 +67,12 @@ Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
   });
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends BasePage {
   LighthousePMBloc _bloc(BuildContext context) =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     return StreamBuilder<MainPageSettings>(
       stream: MainPageSettings.mainPageSettingsStream(_bloc(context)),
       initialData: MainPageSettings.DEFAULT_MAIN_PAGE_SETTINGS,
@@ -314,10 +316,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                   nickname == null ? null : nickname.nickname);
                       if (newNickname != null) {
                         if (newNickname.nickname == null) {
-                          blocWithoutListen
-                              .nicknames.deleteNicknames([newNickname.macAddress]);
+                          blocWithoutListen.nicknames
+                              .deleteNicknames([newNickname.macAddress]);
                         } else {
-                          blocWithoutListen.nicknames.insertNickname(newNickname);
+                          blocWithoutListen.nicknames
+                              .insertNickname(newNickname);
                         }
                         selected.remove(item);
                       }

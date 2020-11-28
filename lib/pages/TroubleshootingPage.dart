@@ -12,14 +12,16 @@ import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import 'BasePage.dart';
+
 const double _TROUBLESHOOTING_SCROLL_PADDING = 20;
 
 ///
 /// A widget showing the a material scaffold with the troubleshooting widget.
 ///
-class TroubleshootingPage extends StatelessWidget {
+class TroubleshootingPage extends BasePage {
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Troubleshooting')),
         body: TroubleshootingContentWidget());

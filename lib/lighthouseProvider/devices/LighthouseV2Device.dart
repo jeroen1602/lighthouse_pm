@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtension.dart';
 
 import '../LighthousePowerState.dart';
 import '../ble/BluetoothCharacteristic.dart';
@@ -28,10 +30,9 @@ const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   LighthouseV2Device(LHBluetoothDevice device) : super(device) {
-    // Add a part of the [DeviceExtenion]s the rest are added after [afterIsValid].
+    // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
-
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
   LHBluetoothCharacteristic /* ? */ _characteristic;
@@ -184,6 +185,16 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         changeState: changeState, powerStateStream: powerStateEnum));
     deviceExtensions.add(OnExtension(
         changeState: changeState, powerStateStream: powerStateEnum));
+
+    if (Platform.isAndroid) {
+      // TODO: check if shortcuts are support on this Android version.
+      deviceExtensions.add(ShortcutExtension(deviceIdentifier.toString(), () {
+        if (nicknameInternal != null) {
+          return nicknameInternal;
+        }
+        return name;
+      }));
+    }
   }
 
   @override

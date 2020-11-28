@@ -2,15 +2,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import './BasePage.dart';
+
 const _GITHUB_ISSUES_URL =
     "https://github.com/jeroen1602/lighthouse_pm/issues/";
 
 ///
 /// A widget showing the a material scaffold with some help items the user may need.
 ///
-class HelpPage extends StatelessWidget {
+class HelpPage extends BasePage {
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     final textTheme =
         Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 14);
     final textThemeBold = textTheme.copyWith(fontWeight: FontWeight.bold);
