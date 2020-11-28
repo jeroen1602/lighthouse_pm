@@ -6,11 +6,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.graphics.*
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.util.Log
+import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.security.MessageDigest
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 /**
  * A class for handling the shortcut requests made by the platform.
@@ -117,10 +126,18 @@ class Shortcut {
         }
 
         // Create the shortcut info
-        // TODO: add an icon.
+        val foreground = context.resources.getDrawable(R.drawable.ic_launcher_foreground, context.theme)
+        foreground.setTint(stringToGradientColor(action!!))
+        val background = context.resources.getDrawable(R.drawable.ic_launcher_background, context.theme)
+        background.setTint(Color.WHITE)
+        val adaptiveIconDrawable = AdaptiveIconDrawable(background, foreground)
+
+        val bitmap = drawableToBitmap(adaptiveIconDrawable, context)
+        val icon = Icon.createWithAdaptiveBitmap(bitmap)
         val pinShortcutInfo = ShortcutInfo.Builder(context, action)
                 .setShortLabel(name ?: "null")
                 .setLongLabel("Change ${name ?: "null"}")
+                .setIcon(icon)
                 .setIntent(intent)
                 .build()
 
@@ -141,6 +158,7 @@ class Shortcut {
 
         // TODO: handle the success callback
         result.success(true)
+        bitmap.recycle()
     }
 
     /**
@@ -203,11 +221,91 @@ class Shortcut {
         }
     }
 
+    /**
+     * Convert a string into a color somewhere on a gradient. The gradient used is the one used for
+     * the app theme.
+     */
+    @ColorInt
+    private fun stringToGradientColor(string: String): Int {
+        // Because I didn't feel like finding a gradient implementation I decide to use the included
+        // gradient implementation from Android.
+
+        // Create a bitmap
+        val bitmap = Bitmap.createBitmap(GRADIENT_RESOLUTION, 1, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        val gradient = LinearGradient(0f, 0f, bitmap.width.toFloat(), 0f,
+                intArrayOf(
+                        Color.rgb(0xFF, 0x5A, 0x66),
+                        Color.rgb(0xA5, 0x00, 0xFB),
+                        Color.rgb(0x0E, 0x8B, 0xFF),
+                        Color.rgb(0x00, 0xDF, 0xAB),
+                ),
+                floatArrayOf(
+                        0f,
+                        0.3315374f,
+                        0.6444612f,
+                        1f
+                ),
+                Shader.TileMode.CLAMP)
+        paint.shader = gradient
+        // Draw the gradient inside of the bitmap.
+        canvas.drawPaint(paint)
+
+        // Pick a color from the bitmap (that now contains the gradient) based on the hash.
+        var hash: Int = (md5ToNumber(string) % bitmap.width).toInt()
+        if (hash < 0) {
+            hash += bitmap.width
+        }
+        val color = bitmap.getPixel(hash, 0)
+        // Cleanup
+        bitmap.recycle()
+
+        return color
+    }
+
+    /**
+     * Convert a string to a md5 digest but storing it all into a single number.
+     */
+    private fun md5ToNumber(string: String): Long {
+        // md5 is a hashing algorithm that shouldn't be used anymore. But because I only want to
+        // create a summary (hash) of a string that won't be used for security and I don't want the
+        // result to be counting up (what hashcode would do) I think it is ok.
+        val md = MessageDigest.getInstance("MD5")
+        md.update(string.toByteArray())
+        val digest = md.digest()
+        // Compress the digest into a single number.
+        var counter: Long = 0
+        for ((index, item) in digest.withIndex()) {
+            counter = ((item * 2.0.pow(index).toLong()) + counter)
+        }
+        return counter
+    }
+
+    /**
+     * Create a bitmap from an adaptive icon drawable.
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun drawableToBitmap(drawable: AdaptiveIconDrawable, context: Context): Bitmap {
+        val screenDensity = context.resources.displayMetrics.density
+        val adaptiveIconOuterSides = (ADAPTIVE_ICON_OUTER_SIDES_DP * screenDensity).roundToInt()
+        val bitmap = Bitmap.createBitmap(adaptiveIconOuterSides, adaptiveIconOuterSides, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.background.setBounds(0, 0, adaptiveIconOuterSides, adaptiveIconOuterSides)
+        drawable.background.draw(canvas)
+        drawable.foreground.setBounds(0, 0, adaptiveIconOuterSides, adaptiveIconOuterSides)
+        drawable.foreground.draw(canvas)
+        return bitmap
+    }
+
     companion object {
         private const val SHORTCUT_ID = "com.jeroen1602.lighthouse_pm/shortcut"
         private const val TOGGLE_EXTRA = "com.jeroen1602.lighthouse_pm.shortcut.toggleExtra"
         private const val TOGGLE_HANDLED = "com.jeroen1602.lighthouse_pm.shortcut.toggleHandled"
         private const val TAG = "Shortcut handler"
+
+        private const val ADAPTIVE_ICON_OUTER_SIDES_DP = 108
+        private const val GRADIENT_RESOLUTION = 100
 
         enum class ErrorCodes {
             SHORTCUT_NOT_SUPPORTED,
