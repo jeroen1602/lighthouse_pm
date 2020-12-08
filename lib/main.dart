@@ -7,10 +7,12 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
+import 'package:lighthouse_pm/pages/BasePage.dart';
 import 'package:lighthouse_pm/pages/HelpPage.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
 import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
+import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
@@ -57,14 +59,14 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class LighthousePMApp extends StatelessWidget {
-  LighthousePMBloc _bloc(BuildContext context) =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
+/// The same as a [WidgetBuilder] only require it to return a [BasePage].
+typedef PageBuilder = BasePage Function(BuildContext context);
 
+class LighthousePMApp extends StatelessWidget with WithBlocStateless {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<ThemeMode>(
-      stream: _bloc(context).settings.getPreferredThemeAsStream(),
+      stream: blocWithoutListen(context).settings.getPreferredThemeAsStream(),
       initialData: ThemeMode.system,
       builder: (BuildContext context, AsyncSnapshot<ThemeMode> themeSnapshot) =>
           MaterialApp(
@@ -84,15 +86,16 @@ class LighthousePMApp extends StatelessWidget {
         onGenerateRoute: (RouteSettings settings) {
           // Make sure all these pages extend the Base page or else shortcut
           // handling won't work!
-          final routes = <String, WidgetBuilder>{
+          final routes = <String, PageBuilder>{
             '/': (context) => MainPage(),
+            // '/': _createShortcutDebugPage,
+            // Uncomment the line above if you need to debug the shortcut handler.
             '/settings': (context) => SettingsPage(),
             '/settings/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),
             '/help': (context) => HelpPage(),
-            '/shortcutHandler': (context) => SimpleBasePage(
-                Text('YES ${(settings.arguments as ShortcutHandle).data}'),
-                shortcutHandleArgument: (settings.arguments as ShortcutHandle)),
+            '/shortcutHandler': (context) =>
+                ShortcutHandlerPage(settings.arguments),
           };
           WidgetBuilder builder = routes[settings.name];
           return MaterialPageRoute(builder: (ctx) => builder(ctx));
@@ -100,4 +103,16 @@ class LighthousePMApp extends StatelessWidget {
       ),
     );
   }
+}
+
+///
+/// A simple shortcut handle debug page. Change the mac address if you need to
+/// test it.
+///
+BasePage _createShortcutDebugPage(BuildContext context) {
+  if (!kReleaseMode) {
+    return ShortcutHandlerPage(
+        ShortcutHandle(ShortcutTypes.MAC_TYPE, "00:00:00:00:00:00"));
+  }
+  return SimpleBasePage(Text('This should not be here.'));
 }

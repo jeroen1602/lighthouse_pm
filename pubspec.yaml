@@ -33,7 +33,7 @@ dependencies:
   flutter_icons: ^1.1.0
   mutex: ^1.1.0
   convert: ^2.1.1
-  vibration: ^1.7.2
+  vibration: ^1.7.3
   toast: ^0.1.5
   moor_flutter: ^3.1.0
   sqlite3_flutter_libs: ^0.2.0
@@ -55,7 +55,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.15.4
+  test: ^1.15.7
   moor_generator: ^3.4.0
   build_runner: 1.10.4
 

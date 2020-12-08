@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
 import '../BasePage.dart';
@@ -11,7 +10,6 @@ class SettingsViveBaseStationIdsPage extends BasePage {
   Widget buildPage(BuildContext context) {
     return _SettingsViveBaseStationIdsPageContent();
   }
-  
 }
 
 class _SettingsViveBaseStationIdsPageContent extends StatefulWidget {
@@ -24,11 +22,6 @@ class _SettingsViveBaseStationIdsPageContent extends StatefulWidget {
 class _SettingsViveBaseStationIdsPageState
     extends State<_SettingsViveBaseStationIdsPageContent> {
   final Set<int> selected = Set();
-
-  LighthousePMBloc get bloc => Provider.of<LighthousePMBloc>(context);
-
-  LighthousePMBloc get blocWithoutListen =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
 
   void _selectItem(int id) {
     setState(() {
@@ -194,9 +187,6 @@ class _EmptyPage extends StatefulWidget {
 
 class _EmptyState extends State<_EmptyPage> {
   static const int _TAP_TOP = 10;
-
-  LighthousePMBloc get bloc =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
   int tapCounter = 0;
 
   @override

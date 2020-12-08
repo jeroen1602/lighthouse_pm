@@ -25,10 +25,6 @@ class LighthouseMetadataPage extends StatefulWidget {
 }
 
 class LighthouseMetadataState extends State<LighthouseMetadataPage> {
-  LighthousePMBloc get _bloc => Provider.of<LighthousePMBloc>(context);
-
-  LighthousePMBloc get _blocWithoutListen =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
 
   Future<void> changeNicknameHandler(String currentNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
@@ -37,9 +33,9 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
         nickname: currentNickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await _blocWithoutListen.nicknames.deleteNicknames([newNickname.macAddress]);
+        await blocWithoutListen.nicknames.deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.nicknames.insertNickname(newNickname);
+        await blocWithoutListen.nicknames.insertNickname(newNickname);
       }
     }
   }
@@ -68,7 +64,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
 
     body.add(StreamBuilder<Nickname>(
-      stream: _bloc.nicknames.watchNicknameForMacAddress(
+      stream: bloc.nicknames.watchNicknameForMacAddress(
           widget.device.deviceIdentifier.toString()),
       builder: (BuildContext context, AsyncSnapshot<Nickname> snapshot) {
         if (snapshot.hasData) {

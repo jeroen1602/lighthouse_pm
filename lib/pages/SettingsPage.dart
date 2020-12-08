@@ -10,7 +10,6 @@ import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ViveBaseStationAlertWidget.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,10 +17,7 @@ import './BasePage.dart';
 
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
-class SettingsPage extends BasePage {
-  LighthousePMBloc _bloc(BuildContext context) =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
-
+class SettingsPage extends BasePage with WithBlocStateless {
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
     if (await SettingsBloc.supportsThemeModeSystem) {
       return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
@@ -85,7 +81,9 @@ class SettingsPage extends BasePage {
                       if (await ClearLastSeenAlertWidget.showCustomDialog(
                               context) ==
                           true) {
-                        await _bloc(context).nicknames.deleteAllLastSeen();
+                        await blocWithoutListen(context)
+                            .nicknames
+                            .deleteAllLastSeen();
                         Toast.show('Cleared up all last seen items', context,
                             duration: Toast.LENGTH_SHORT,
                             gravity: Toast.BOTTOM);
@@ -93,7 +91,9 @@ class SettingsPage extends BasePage {
                     }),
                 Divider(),
                 StreamBuilder<LighthousePowerState>(
-                  stream: _bloc(context).settings.getSleepStateAsStream(),
+                  stream: blocWithoutListen(context)
+                      .settings
+                      .getSleepStateAsStream(),
                   builder: (BuildContext c,
                       AsyncSnapshot<LighthousePowerState> snapshot) {
                     final state = snapshot.hasData &&
@@ -102,23 +102,27 @@ class SettingsPage extends BasePage {
                       title: Text('Use STANDBY instead of SLEEP'),
                       value: state,
                       onChanged: (value) {
-                        _bloc(context).settings.insertSleepState(value
-                            ? LighthousePowerState.STANDBY
-                            : LighthousePowerState.SLEEP);
+                        blocWithoutListen(context).settings.insertSleepState(
+                            value
+                                ? LighthousePowerState.STANDBY
+                                : LighthousePowerState.SLEEP);
                       },
                     );
                   },
                 ),
                 Divider(),
                 StreamBuilder<int>(
-                  stream: _bloc(context).settings.getScanDurationsAsStream(),
+                  stream: blocWithoutListen(context)
+                      .settings
+                      .getScanDurationsAsStream(),
                   builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
                     return DropdownMenuListTile<int>(
                         title: Text('Set scan duration'),
                         value: snapshot.data,
-                        onChanged: (int value) async => await _bloc(context)
-                            .settings
-                            .setScanDuration(value),
+                        onChanged: (int value) async =>
+                            await blocWithoutListen(context)
+                                .settings
+                                .setScanDuration(value),
                         items: SettingsBloc.SCAN_DURATION_VALUES
                             .map<DropdownMenuItem<int>>((int value) =>
                                 DropdownMenuItem<int>(
@@ -136,15 +140,16 @@ class SettingsPage extends BasePage {
                       return CircularProgressIndicator();
                     }
                     return StreamBuilder<ThemeMode>(
-                      stream:
-                          _bloc(context).settings.getPreferredThemeAsStream(),
+                      stream: blocWithoutListen(context)
+                          .settings
+                          .getPreferredThemeAsStream(),
                       builder: (BuildContext context,
                           AsyncSnapshot<ThemeMode> snapshot) {
                         return DropdownMenuListTile<ThemeMode>(
                           title: Text('Set preferred theme'),
                           value: snapshot.data,
                           onChanged: (ThemeMode theme) async =>
-                              await _bloc(context)
+                              await blocWithoutListen(context)
                                   .settings
                                   .setPreferredTheme(theme),
                           items: supportedThemesSnapshot.data
@@ -185,7 +190,9 @@ class SettingsPage extends BasePage {
                   onTap: () async {
                     if (await ViveBaseStationClearIds.showCustomDialog(
                         context)) {
-                      await _bloc(context).viveBaseStation.deleteIds();
+                      await blocWithoutListen(context)
+                          .viveBaseStation
+                          .deleteIds();
                       Toast.show('Cleared up all Base station ids', context,
                           duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
                     }
@@ -193,7 +200,7 @@ class SettingsPage extends BasePage {
                 ),
                 Divider(),
                 StreamBuilder<bool>(
-                  stream: _bloc(context)
+                  stream: blocWithoutListen(context)
                       .settings
                       .getViveBaseStationsEnabledStream(),
                   initialData: false,
@@ -208,7 +215,7 @@ class SettingsPage extends BasePage {
                           enabled = await ViveBaseStationBetaAlertWidget
                               .showCustomDialog(context);
                         }
-                        await _bloc(context)
+                        await blocWithoutListen(context)
                             .settings
                             .setViveBaseStationEnabled(enabled);
                         if (enabled) {

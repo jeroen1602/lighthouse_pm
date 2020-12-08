@@ -10,13 +10,15 @@ import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
 ///
 abstract class BasePage extends StatelessWidget {
   final ShortcutHandle /* ? */ shortcutHandleArgument;
+  final bool replace;
 
-  const BasePage({Key key, this.shortcutHandleArgument}) : super(key: key);
+  const BasePage({Key key, this.shortcutHandleArgument, this.replace = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return _ShortcutLaunchHandleWidget(
-        buildPage(context), this.shortcutHandleArgument);
+        buildPage(context), this.shortcutHandleArgument, replace);
   }
 
   Widget buildPage(BuildContext context);
@@ -25,8 +27,10 @@ abstract class BasePage extends StatelessWidget {
 class _ShortcutLaunchHandleWidget extends StatefulWidget {
   final Widget body;
   final ShortcutHandle /* ? */ handle;
+  final bool replace;
 
-  const _ShortcutLaunchHandleWidget(this.body, this.handle, {Key key})
+  const _ShortcutLaunchHandleWidget(this.body, this.handle, this.replace,
+      {Key key})
       : super(key: key);
 
   @override
@@ -55,8 +59,13 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             if (shortcutSnapshot.data != null &&
                 shortcutSnapshot.data != widget.handle) {
-              Navigator.pushNamed(context, '/shortcutHandler',
-                  arguments: shortcutSnapshot.data);
+              if (widget.replace) {
+                Navigator.pushReplacementNamed(context, '/shortcutHandler',
+                    arguments: shortcutSnapshot.data);
+              } else {
+                Navigator.pushNamed(context, '/shortcutHandler',
+                    arguments: shortcutSnapshot.data);
+              }
             }
           });
           return widget.body;

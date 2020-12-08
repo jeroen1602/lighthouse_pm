@@ -10,7 +10,6 @@ import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 
 import 'BasePage.dart';
 
@@ -33,10 +32,8 @@ class TroubleshootingPage extends BasePage {
 /// It also has a few platform specific troubleshooting steps like location
 /// permissions for Android.
 ///
-class TroubleshootingContentWidget extends StatelessWidget {
-  LighthousePMBloc _bloc(BuildContext context) =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
-
+class TroubleshootingContentWidget extends StatelessWidget
+    with WithBlocStateless {
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
@@ -47,7 +44,9 @@ class TroubleshootingContentWidget extends StatelessWidget {
       Divider(),
       StreamBuilder<bool>(
         initialData: false,
-        stream: _bloc(context).settings.getViveBaseStationsEnabledStream(),
+        stream: blocWithoutListen(context)
+            .settings
+            .getViveBaseStationsEnabledStream(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           final data = snapshot.hasData && snapshot.data;
           return ListTile(

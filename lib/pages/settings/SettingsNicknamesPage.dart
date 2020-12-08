@@ -5,7 +5,6 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
-import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
 import '../BasePage.dart';
@@ -26,11 +25,6 @@ class _SettingsNicknamesPageContent extends StatefulWidget {
 
 class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   final Set<LHDeviceIdentifier> selected = Set();
-
-  LighthousePMBloc get bloc => Provider.of<LighthousePMBloc>(context);
-
-  LighthousePMBloc get blocWithoutListen =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
 
   void _selectItem(String macAddress) {
     setState(() {
@@ -222,9 +216,6 @@ class _EmptyNicknamePage extends StatefulWidget {
 
 class _EmptyNicknameState extends State<_EmptyNicknamePage> {
   static const int _TAP_TOP = 10;
-
-  LighthousePMBloc get bloc =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
   int tapCounter = 0;
 
   @override

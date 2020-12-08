@@ -11,41 +11,17 @@ import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
-import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:lighthouse_pm/widgets/MainPageDrawer.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
+import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 import 'BasePage.dart';
 
 const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
-
-Future _startScan(Duration scanDuration) async {
-  await LighthouseProvider.instance.startScan(timeout: scanDuration);
-}
-
-Future _startScanWithCheck(Duration scanDuration,
-    {String failMessage = ""}) async {
-  if (await BLEPermissionsHelper.hasBLEPermissions() ==
-      PermissionStatus.granted) {
-    await _startScan(scanDuration);
-  } else if (failMessage != null && failMessage.isNotEmpty && !kReleaseMode) {
-    debugPrint(failMessage);
-  }
-}
-
-Future _stopScan() async => await LighthouseProvider.instance.stopScan();
-
-Future _cleanUp() async => await LighthouseProvider.instance.cleanUp();
-
-Future<bool> _hasConnectedDevices() async =>
-    ((await LighthouseProvider.instance.lighthouseDevices.first).length > 0);
 
 Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
     _mergeNicknameAndLighthouseDevice(LighthousePMBloc bloc) {
@@ -67,27 +43,14 @@ Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
   });
 }
 
-class MainPage extends BasePage {
-  LighthousePMBloc _bloc(BuildContext context) =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
+class MainPage extends BasePage with WithBlocStateless {
+  MainPage({Key key}) : super(key: key, replace: true);
 
   @override
   Widget buildPage(BuildContext context) {
-    return StreamBuilder<MainPageSettings>(
-      stream: MainPageSettings.mainPageSettingsStream(_bloc(context)),
-      initialData: MainPageSettings.DEFAULT_MAIN_PAGE_SETTINGS,
-      builder:
-          (BuildContext c, AsyncSnapshot<MainPageSettings> settingsSnapshot) {
-        if (settingsSnapshot.hasData) {
-          if (settingsSnapshot.data.viveBaseStationsEnabled) {
-            LighthouseProvider.instance
-                .addProvider(ViveBaseStationDeviceProvider.instance);
-          } else {
-            LighthouseProvider.instance
-                .removeProvider(ViveBaseStationDeviceProvider.instance);
-          }
-        }
-
+    return MainPageSettings.mainPageSettingsStreamBuilder(
+      bloc: blocWithoutListen(context),
+      builder: (context, settings) {
         return StreamBuilder<BluetoothState>(
             stream: FlutterBlue.instance.state,
             initialData: BluetoothState.unknown,
@@ -95,20 +58,15 @@ class MainPage extends BasePage {
                 (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
               final state = snapshot.data;
               return state == BluetoothState.on
-                  ? ScanDevicesPage(
-                      settings: settingsSnapshot.data,
-                    )
-                  : BluetoothOffScreen(
-                      state: state,
-                      settings: settingsSnapshot.data,
-                    );
+                  ? ScanDevicesPage(settings: settings)
+                  : BluetoothOffScreen(state: state, settings: settings);
             });
       },
     );
   }
 }
 
-class _ScanFloatingButtonWidget extends StatelessWidget {
+class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
   _ScanFloatingButtonWidget({Key key, @required this.settings})
       : super(key: key);
 
@@ -124,7 +82,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
         if (snapshot.data) {
           return FloatingActionButton(
             child: Icon(Icons.stop),
-            onPressed: () => _stopScan(),
+            onPressed: () => stopScan(),
             backgroundColor: Colors.red,
           );
         } else {
@@ -133,7 +91,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget {
             onPressed: () async {
               if (await LocationPermissionDialogFlow
                   .showLocationPermissionDialogFlow(context)) {
-                await _startScan(Duration(seconds: settings.scanDuration));
+                await startScan(Duration(seconds: settings.scanDuration));
               }
             },
           );
@@ -155,20 +113,15 @@ class ScanDevicesPage extends StatefulWidget {
 }
 
 class _ScanDevicesPage extends State<ScanDevicesPage>
-    with WidgetsBindingObserver {
-  LighthousePMBloc get bloc => Provider.of<LighthousePMBloc>(context);
-
+    with WidgetsBindingObserver, ScanningMixin {
   final selected = Set<LHDeviceIdentifier>();
-
-  LighthousePMBloc get blocWithoutListen =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
   var updates = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
+    startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
         failMessage:
             "Could not start scan because the permission has not been granted");
   }
@@ -179,28 +132,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
-    if (selected.isNotEmpty) {
-      setState(() {
-        selected.clear();
-      });
-      return false;
-    }
-    // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
-    if (Platform.isAndroid) {
-      if (await FlutterBlue.instance.isScanning.first ||
-          await _hasConnectedDevices()) {
-        await _cleanUp();
-        await Future.delayed(Duration(milliseconds: 100));
-      }
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop,
+    return buildScanPopScope(
         child: StreamBuilder<Tuple2<List<Nickname>, List<LighthouseDevice>>>(
             stream: _mergeNicknameAndLighthouseDevice(bloc),
             initialData: const Tuple2(const [], const []),
@@ -351,11 +285,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 floatingActionButton: _ScanFloatingButtonWidget(
                   settings: widget.settings,
                 ),
-                drawer: MainPageDrawer(_cleanUp, ({String failMessage}) {
-                  return _startScanWithCheck(
-                      Duration(seconds: widget.settings.scanDuration),
-                      failMessage: failMessage);
-                }),
+                drawer: MainPageDrawer(
+                    Duration(seconds: widget.settings.scanDuration)),
                 body: body,
               );
             }));
@@ -369,10 +300,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
           this.updates = 0;
           selected.clear();
         });
-        _cleanUp();
+        cleanUp();
         break;
       case AppLifecycleState.resumed:
-        _startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
+        startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
             failMessage:
                 "Could not start scan because the permission has not been granted on resume.");
         break;
@@ -384,7 +315,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 }
 
-class BluetoothOffScreen extends StatelessWidget {
+class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
       {Key key, @required this.state, @required this.settings})
       : super(key: key);
@@ -414,10 +345,7 @@ class BluetoothOffScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue,
-      drawer: MainPageDrawer(_cleanUp, ({String failMessage}) {
-        return _startScanWithCheck(Duration(seconds: settings.scanDuration),
-            failMessage: failMessage);
-      }),
+      drawer: MainPageDrawer(Duration(seconds: settings.scanDuration)),
       appBar: AppBar(
         title: Text('Lighthouse PM'),
       ),
