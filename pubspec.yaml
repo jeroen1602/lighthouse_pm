@@ -27,7 +27,7 @@ dependencies:
   flutter_blue: ^0.7.3
   rxdart: ^0.24.1
   package_info: ^0.4.3
-  permission_handler: ^5.0.1
+  permission_handler: ^5.1.0+2
   flutter_svg: ^0.19.1
   url_launcher: ^5.7.10
   flutter_icons: ^1.1.0
@@ -36,9 +36,9 @@ dependencies:
   vibration: ^1.7.3
   toast: ^0.1.5
   moor_flutter: ^3.1.0
-  sqlite3_flutter_libs: ^0.2.0
-  path_provider: ^1.6.24
-  provider: ^4.3.2+2
+  sqlite3_flutter_libs: ^0.3.0
+  path_provider: ^1.6.27
+  provider: ^4.3.3
   tuple: ^1.0.3
   intl: ^0.16.1
   device_info: ^1.0.0
@@ -56,8 +56,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.15.7
-  moor_generator: ^3.4.0
-  build_runner: 1.10.4
+  moor_generator: ^3.4.1
+  build_runner: 1.10.13
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

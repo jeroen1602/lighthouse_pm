@@ -2,6 +2,7 @@
 # Version 1.1.2+7 RC
 
  - (iOS) Fixed automatic detection of "System Theme" availability.
+ - Open metadata page by tapping on lighthouse instead of holding power button (holding the power button still works).
  - (Android) BETA added shortcut
 
 # Version 1.1.1+6 02-10-2020
