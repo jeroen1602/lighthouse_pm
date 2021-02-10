@@ -27,7 +27,7 @@ dependencies:
   flutter_blue: ^0.7.3
   rxdart: ^0.24.1
   package_info: ^0.4.3
-  permission_handler: ^5.0.1
+  permission_handler: ^5.1.0+2
   flutter_svg: ^0.19.1
   url_launcher: ^5.7.10
   flutter_icons: ^1.1.0
