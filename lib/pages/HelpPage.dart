@@ -27,7 +27,9 @@ class HelpPage extends StatelessWidget {
                     text: 'Every device has some metadata and extra actions'
                         ' that you may want to access. Like changing the state to '
                         'standby without changing the global setting.\n\n'),
-                TextSpan(text: 'To access this feature just '),
+                TextSpan(text: 'There are two ways to access this feature The first is to '),
+                    TextSpan(text: 'tap', style:textThemeBold),
+                TextSpan(text: ' on the lighthouse item. The second option is to '),
                 TextSpan(text: 'hold', style: textThemeBold),
                 TextSpan(text: ' the '),
                 WidgetSpan(
@@ -36,7 +38,7 @@ class HelpPage extends StatelessWidget {
                   size: textTheme.fontSize + 4,
                   color: textThemeBold.color,
                 )),
-                TextSpan(text: 'button', style: textThemeBold),
+                TextSpan(text: ' button', style: textThemeBold),
                 TextSpan(
                     text:
                         ' of the device you want access the metadata page for.'),
