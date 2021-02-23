@@ -9,7 +9,7 @@ easily change the power state of a Lighthouse.
 
 The app now also supports Vive Base stations, this is in Beta though.
 
-<img src="docs/lighthouse_pm_screenshot_dark.png" alt="lighthouse pm in action" width="300"/>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/lighthouse_pm_screenshot_dark.png" alt="lighthouse pm in action" width="300"/>
 
 **This project gives no warranty that you won't brick your lighthouses!**
 
