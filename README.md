@@ -36,7 +36,7 @@ Almost all phones made after 2013 support this.
 
 **NOTE** F-Droid will build the app from sources so it may be up to 24 hours behind on a release from Github. Also F-Droid sings the app with their own key, so you can't upgrade from a Github/ Google Play release to an F-Droid release.
 
-<a href="#" target="_blank">
+<a href="https://f-droid.org/packages/com.jeroen1602.lighthouse_pm/" target="_blank">
 <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="96"></a>
 
 
