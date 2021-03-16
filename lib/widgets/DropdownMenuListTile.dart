@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 
 class DropdownMenuListTile<T> extends StatelessWidget {
   DropdownMenuListTile(
-      {Key key,
+      {Key? key,
       this.title,
       this.subTitle,
-      @required this.value,
+      required this.value,
       this.icon,
       this.iconSize = 24.0,
       this.elevation = 8,
-      @required this.onChanged,
-      @required this.items})
+      required this.onChanged,
+      required this.items})
       : super(key: key);
 
-  final Widget title;
-  final Widget subTitle;
-  final Widget icon;
+  final Widget? title;
+  final Widget? subTitle;
+  final Widget? icon;
   final double iconSize;
   final int elevation;
   final T value;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T?> onChanged;
   final List<DropdownMenuItem<T>> items;
 
   @override

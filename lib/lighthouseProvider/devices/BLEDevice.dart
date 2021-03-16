@@ -54,12 +54,12 @@ abstract class BLEDevice extends LighthouseDevice {
   Future<void> checkCharacteristicForDefaultValue(
       List<DefaultCharacteristics> supportedCharacteristic,
       LHBluetoothCharacteristic characteristic,
-      Map<String, String> metadataMap) async {
+      Map<String, String?> metadataMap) async {
     LighthouseGuid uuid = characteristic.uuid;
     for (final defaultCharacteristic in supportedCharacteristic) {
       if (defaultCharacteristic.isEqualToGuid(uuid)) {
         try {
-          String response;
+          String? response;
           switch (defaultCharacteristic.type) {
             case int:
               final responseInt = await characteristic.readUint32();

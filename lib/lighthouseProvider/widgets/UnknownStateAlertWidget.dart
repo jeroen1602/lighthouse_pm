@@ -15,7 +15,7 @@ const _GITHUB_ISSUE_URL =
 
 /// Am alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
-  UnknownStateAlertWidget(this.device, this.currentState, {Key key})
+  UnknownStateAlertWidget(this.device, this.currentState, {Key? key})
       : super(key: key);
 
   final LighthouseDevice device;
@@ -67,7 +67,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
             ),
             TextSpan(
               text: "Help out.",
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(
                   color: Colors.blue, decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
@@ -80,7 +80,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
         actions: actions);
   }
 
-  static Future<LighthousePowerState /* ? */ > showCustomDialog(
+  static Future<LighthousePowerState?> showCustomDialog(
       BuildContext context, LighthouseDevice device, int currentState) {
     return showDialog(
         context: context,
@@ -92,7 +92,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
 /// A dialog to ask the user to help out with unknown states
 class UnknownStateHelpOutAlertWidget extends StatelessWidget {
-  UnknownStateHelpOutAlertWidget(this.device, this.currentState, {Key key})
+  UnknownStateHelpOutAlertWidget(this.device, this.currentState, {Key? key})
       : super(key: key);
 
   final LighthouseDevice device;
@@ -109,11 +109,11 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
     return CustomLongPressGestureRecognizer()
       ..onLongPress = () async {
         Clipboard.setData(ClipboardData(text: _getClipboardString(version)));
-        if (await Vibration.hasVibrator()) {
+        if (await Vibration.hasVibrator() == true) {
           Vibration.vibrate(duration: 200);
         }
         Toast.show('Copied to clipboard', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+            duration: Toast.lengthShort, gravity: Toast.bottom);
       };
   }
 
@@ -124,8 +124,10 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
       content: FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
-          final recognizer = createRecognizer(
-              context, snapshot.hasData ? snapshot.data.version : null);
+          final version = snapshot.data;
+          final recognizer = version != null
+              ? createRecognizer(context, version.version)
+              : null;
           return RichText(
               text: TextSpan(children: <InlineSpan>[
             TextSpan(
@@ -142,10 +144,9 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                 TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyText2!
                       .copyWith(fontWeight: FontWeight.bold),
-                  text:
-                      '${snapshot.hasData ? snapshot.data.version : "Loading"}\n',
+                  text: '${version != null ? version.version : "Loading"}\n',
                   recognizer: recognizer,
                 ),
                 TextSpan(
@@ -156,7 +157,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                 TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyText2!
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '${device.runtimeType}\n',
                   recognizer: recognizer,
@@ -169,7 +170,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                 TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyText2!
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '${device.firmwareVersion}\n',
                   recognizer: recognizer,
@@ -182,7 +183,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                 TextSpan(
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyText2!
                       .copyWith(fontWeight: FontWeight.bold),
                   text: '0x${currentState.toRadixString(16).padLeft(2, '0')}\n',
                   recognizer: recognizer,
@@ -209,7 +210,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
     );
   }
 
-  static Future<Null> showCustomDialog(
+  static Future<void> showCustomDialog(
       BuildContext context, LighthouseDevice device, int currentState) {
     return showDialog(
         context: context,

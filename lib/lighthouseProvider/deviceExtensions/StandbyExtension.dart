@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
+import 'DeviceExtension.dart';
 import 'DeviceWithExtensions.dart';
 import 'StateExtension.dart';
 
@@ -11,8 +11,8 @@ import 'StateExtension.dart';
 ///
 class StandbyExtension extends StateExtension {
   StandbyExtension(
-      {@required ChangeStateFunction changeState,
-      @required Stream<LighthousePowerState> powerStateStream})
+      {required ChangeStateFunction changeState,
+      required Stream<LighthousePowerState> powerStateStream})
       : super(
             toolTip: "Standby",
             icon:
@@ -28,7 +28,7 @@ extension StandbyExtensionExtensions on LighthouseDevice {
       return false;
     }
     final device = this as DeviceWithExtensions;
-    return device.deviceExtensions.firstWhere(
+    return device.deviceExtensions.cast<DeviceExtension?>().firstWhere(
             (element) => element is StandbyExtension,
             orElse: () => null) !=
         null;

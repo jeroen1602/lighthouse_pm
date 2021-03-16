@@ -12,7 +12,7 @@ abstract class LHBluetoothDevice implements LowLevelDevice {
 
   Stream<LHBluetoothDeviceState> get state;
 
-  Future<void> connect({Duration timeout});
+  Future<void> connect({Duration? timeout});
 
   Future<void> disconnect();
 

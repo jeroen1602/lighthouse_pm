@@ -29,12 +29,6 @@ void main() {
         throwsA(TypeMatcher<FormatException>()));
   });
 
-  test('Should throw an exception when string Is null', () {
-    // This test can probably be removed in the future since the null check will be done at compile time
-    expect(() => LighthouseGuid.fromString(null),
-        throwsA(TypeMatcher<ArgumentError>()));
-  });
-
   // region Guid32
   test('Should be able to create empty GUID32', () {
     final guid = Guid32.empty();

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
-  const ViveBaseStationExtraInfoAlertWidget({Key key, this.existingIdEnd})
+  const ViveBaseStationExtraInfoAlertWidget(
+      {Key? key, required this.existingIdEnd})
       : super(key: key);
 
   final int existingIdEnd;
@@ -11,7 +12,7 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
     return _ViveBaseStationExtraInfoAlertState();
   }
 
-  static Future<String /* ? */ > showCustomDialog(
+  static Future<String?> showCustomDialog(
       BuildContext context, int existingIdEnd) {
     return showDialog(
         context: context,
@@ -40,7 +41,10 @@ class _ViveBaseStationExtraInfoAlertState
   /// Checks that the id is parsable as HEX.
   /// Checks that the last 4 digits (lower 2 bytes) match the [widget.existingIdEnd]
   /// (if length is 8).
-  String /* ? */ _validateId(String value) {
+  String? _validateId(String? value) {
+    if (value == null) {
+      value = "";
+    }
     value = value.trim().toUpperCase();
     if (value.isEmpty) {
       return 'Please enter the id';
@@ -78,14 +82,13 @@ class _ViveBaseStationExtraInfoAlertState
           TextSpan(
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1
+                  .bodyText1!
                   .copyWith(fontWeight: FontWeight.bold),
               text: widget.existingIdEnd
                   .toRadixString(16)
                   .padLeft(4, '0')
                   .toUpperCase()),
-          TextSpan(
-              style: Theme.of(context).textTheme.bodyText1, text: '.'),
+          TextSpan(style: Theme.of(context).textTheme.bodyText1, text: '.'),
         ]),
       ),
       content: Form(
@@ -93,7 +96,7 @@ class _ViveBaseStationExtraInfoAlertState
           child: TextFormField(
             validator: _validateId,
             onChanged: (String value) {
-              _formKey.currentState.validate();
+              _formKey.currentState?.validate();
             },
             controller: _textController,
           )),
@@ -102,7 +105,7 @@ class _ViveBaseStationExtraInfoAlertState
           child: Text('Set'),
           onPressed: () {
             final text = _textController.text.trim();
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState?.validate() == true) {
               Navigator.pop(context, text);
             }
           },

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
 
 import '../ble/BluetoothDevice.dart';
@@ -12,9 +13,9 @@ import 'BLEDeviceProvider.dart';
 class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ViveBaseStationDeviceProvider._();
 
-  ViveBaseStationBloc /* ? */ _bloc;
+  ViveBaseStationBloc? _bloc;
 
-  static ViveBaseStationDeviceProvider _instance;
+  static late ViveBaseStationDeviceProvider _instance;
 
   ///
   /// Get the instance of this [DeviceProvider].
@@ -38,7 +39,10 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return ViveBaseStationDevice(device, _bloc);
+    if (this._bloc == null && !kReleaseMode) {
+      throw StateError('Bloc is null, how?');
+    }
+    return ViveBaseStationDevice(device, _bloc!);
   }
 
   ///

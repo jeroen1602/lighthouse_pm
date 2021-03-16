@@ -34,9 +34,9 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
-  LHBluetoothCharacteristic /* ? */ _characteristic;
-  LHBluetoothCharacteristic /* ? */ _identifyCharacteristic;
-  String /* ? */ _firmwareVersion;
+  LHBluetoothCharacteristic? _characteristic;
+  LHBluetoothCharacteristic? _identifyCharacteristic;
+  String? _firmwareVersion;
   final Map<String, String> _otherMetadata = Map();
   static const _SUPPORTED_CHARACTERISTICS_LIST = const [
     DefaultCharacteristics.MODEL_NUMBER_STRING_CHARACTERISTIC,
@@ -51,10 +51,11 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   String get firmwareVersion {
-    if (_firmwareVersion == null) {
+    final firmwareVersion = _firmwareVersion;
+    if (firmwareVersion == null) {
       return "UNKNOWN";
     } else {
-      return _firmwareVersion;
+      return firmwareVersion;
     }
   }
 
@@ -62,15 +63,16 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   Map<String, String> get otherMetadata => _otherMetadata;
 
   @override
-  Future<int /*?*/ > getCurrentState() async {
-    if (_characteristic == null) {
+  Future<int?> getCurrentState() async {
+    final characteristic = _characteristic;
+    if (characteristic == null) {
       return null;
     }
     if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
-    final dataArray = await _characteristic.read();
+    final dataArray = await characteristic.read();
     if (dataArray.length >= 1) {
       return dataArray[0];
     }
@@ -154,11 +156,9 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
           try {
-            this._firmwareVersion = await characteristic.readString();
-            this._firmwareVersion = this
-                ._firmwareVersion
-                .replaceAll('\r', '')
-                .replaceAll('\n', ' ');
+            final firmware = await characteristic.readString();
+            this._firmwareVersion =
+                firmware.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
             debugPrint('Unable to get firmware version because: $e');
             debugPrint('$s');
@@ -198,16 +198,17 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   Future internalChangeState(LighthousePowerState newState) async {
-    if (this._characteristic != null) {
+    final characteristic = this._characteristic;
+    if (characteristic != null) {
       switch (newState) {
         case LighthousePowerState.ON:
-          await this._characteristic.write([0x01], withoutResponse: true);
+          await characteristic.write([0x01], withoutResponse: true);
           break;
         case LighthousePowerState.SLEEP:
-          await this._characteristic.write([0x00], withoutResponse: true);
+          await characteristic.write([0x00], withoutResponse: true);
           break;
         case LighthousePowerState.STANDBY:
-          await this._characteristic.write([0x02], withoutResponse: true);
+          await characteristic.write([0x02], withoutResponse: true);
           break;
       }
     }
@@ -215,14 +216,15 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   /// Identify the current lighthouse by way of blinking the front LED.
   Future<void> identify() async {
-    if (this._identifyCharacteristic == null) {
+    final identifyCharacteristic = _identifyCharacteristic;
+    if (identifyCharacteristic == null) {
       debugPrint('No identify characteristic set!');
       return;
     }
     try {
       await transactionMutex.acquire();
       // Write any byte to the characteristic to start the identify option.
-      await this._identifyCharacteristic.write([0x00], withoutResponse: true);
+      await identifyCharacteristic.write([0x00], withoutResponse: true);
     } finally {
       transactionMutex.release();
     }

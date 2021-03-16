@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
@@ -9,7 +8,7 @@ import 'fake/FakeBluetoothDevice.dart';
 
 class FakeBLEBackEnd extends BLELighthouseBackEnd {
 // Make sure there is always only one instance.
-  static FakeBLEBackEnd /* ? */ _instance;
+  static late FakeBLEBackEnd _instance;
 
   FakeBLEBackEnd._();
 
@@ -22,11 +21,11 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
 
   final random = Random();
 
-  BehaviorSubject<LighthouseDevice /* ? */ > _foundDeviceSubject =
+  BehaviorSubject<LighthouseDevice?> _foundDeviceSubject =
       BehaviorSubject.seeded(null);
 
   @override
-  Stream<LighthouseDevice> get lighthouseStream => _foundDeviceSubject.stream;
+  Stream<LighthouseDevice?> get lighthouseStream => _foundDeviceSubject.stream;
 
   @override
   Future<void> stopScan() async {
@@ -35,7 +34,7 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> startScan({@required Duration timeout}) async {
+  Future<void> startScan({required Duration timeout}) async {
     await super.startScan(timeout: timeout);
     _isScanningSubject.add(true);
     for (int i = 0; i < 2; i++) {

@@ -14,7 +14,7 @@ import 'flutterBlue/FlutterBlueBluetoothDevice.dart';
 /// A back end that provides devices using [FlutterBlue].
 class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   // Make sure there is always only one instance.
-  static FlutterBlueLighthouseBackEnd /* ? */ _instance;
+  static late FlutterBlueLighthouseBackEnd _instance;
 
   FlutterBlueLighthouseBackEnd._();
 
@@ -30,20 +30,19 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   Set<LHDeviceIdentifier> _connectingDevices = Set();
   Set<LHDeviceIdentifier> _rejectedDevices = Set();
 
-  BehaviorSubject<LighthouseDevice /* ? */ > _foundDeviceSubject =
+  BehaviorSubject<LighthouseDevice?> _foundDeviceSubject =
       BehaviorSubject.seeded(null);
-  StreamSubscription /* ? */ _scanResultSubscription;
+  StreamSubscription? _scanResultSubscription;
 
   @override
-  Stream<LighthouseDevice /* ? */ > get lighthouseStream =>
-      _foundDeviceSubject.stream;
+  Stream<LighthouseDevice?> get lighthouseStream => _foundDeviceSubject.stream;
 
   ///
   /// Start scanning for [LighthouseDevice]s using [BLEDeviceProvider]s.
   ///
   /// Will call the [FlutterBlue.startScan] function in the background.
   @override
-  Future<void> startScan({@required Duration timeout}) async {
+  Future<void> startScan({required Duration timeout}) async {
     await super.startScan(timeout: timeout);
     await _startListeningScanResults();
     await FlutterBlue.instance.startScan(
@@ -52,9 +51,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
 
   @override
   Future<void> stopScan() async {
-    if (this._scanResultSubscription != null) {
-      this._scanResultSubscription.pause();
-    }
+    this._scanResultSubscription?.pause();
     await FlutterBlue.instance.stopScan();
   }
 
@@ -69,19 +66,20 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   }
 
   Future<void> _startListeningScanResults() async {
-    if (_scanResultSubscription != null) {
-      if (!_scanResultSubscription.isPaused) {
-        _scanResultSubscription.pause();
+    var scanResultSubscription = _scanResultSubscription;
+    if (scanResultSubscription != null) {
+      if (!scanResultSubscription.isPaused) {
+        scanResultSubscription.pause();
       }
-      await _scanResultSubscription.cancel();
+      await scanResultSubscription.cancel();
       _scanResultSubscription = null;
     }
 
-    _scanResultSubscription = FlutterBlue.instance.scanResults
+    scanResultSubscription = FlutterBlue.instance.scanResults
         .map((scanResults) {
           //TODO: Maybe move this to be a bit more generic.
           // Filter out all devices that don't have a correct name.
-          final List<ScanResult> output = List();
+          final List<ScanResult> output = <ScanResult>[];
           for (final scanResult in scanResults) {
             for (final deviceProvider in providers) {
               if (deviceProvider.nameCheck(scanResult.device.name)) {
@@ -109,7 +107,9 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
               continue;
             }
             // Update the last seen item.
-            if (updateLastSeen(deviceIdentifier)) {
+            final privateUpdateLastSeen = updateLastSeen;
+            if (privateUpdateLastSeen != null &&
+                privateUpdateLastSeen(deviceIdentifier)) {
               continue;
             }
             // Possibly a new lighthouse, let's make sure it's valid.
@@ -140,9 +140,10 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
           }
         });
     // Clean-up for when the stream is canceled.
-    _scanResultSubscription.onDone(() {
+    scanResultSubscription.onDone(() {
       this._scanResultSubscription = null;
     });
+    this._scanResultSubscription = scanResultSubscription;
   }
 
   @override

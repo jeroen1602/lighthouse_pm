@@ -18,12 +18,11 @@ class LocationPermissionDialogFlow {
   /// explaining again why it is needed and redirecting the user to the app
   /// settings.
   ///
-  /// This flow works only on Android!.
+  /// This flow works only on Android!
   static Future<bool> showLocationPermissionDialogFlow(
       BuildContext context) async {
     switch (await BLEPermissionsHelper.hasBLEPermissions()) {
       case PermissionStatus.denied:
-      case PermissionStatus.undetermined:
       case PermissionStatus.restricted:
         // expression can be `null`
         if (await PermissionsAlertWidget.showCustomDialog(context) != true) {
@@ -37,11 +36,10 @@ class LocationPermissionDialogFlow {
           default:
             return false;
         }
-        break;
       granted:
       case PermissionStatus.granted:
+      case PermissionStatus.limited:
         return true;
-        break;
       permanentlyDenied:
       case PermissionStatus.permanentlyDenied:
         // expression can be `null`
@@ -51,8 +49,6 @@ class LocationPermissionDialogFlow {
           openAppSettings();
         }
         return false;
-        break;
     }
-    return true;
   }
 }

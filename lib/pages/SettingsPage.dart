@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
 class SettingsPage extends StatelessWidget {
-  LighthousePMBloc _bloc(BuildContext context) =>
+  LighthousePMBloc? _bloc(BuildContext context) =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
@@ -45,6 +45,8 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final bloc = _bloc(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
@@ -60,7 +62,7 @@ class SettingsPage extends StatelessWidget {
                     height: 24.0,
                   ),
                   title: Text('Lighthouse Power management',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -83,69 +85,93 @@ class SettingsPage extends StatelessWidget {
                       if (await ClearLastSeenAlertWidget.showCustomDialog(
                               context) ==
                           true) {
-                        await _bloc(context).nicknames.deleteAllLastSeen();
-                        Toast.show('Cleared up all last seen items', context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.BOTTOM);
+                        final localBloc = _bloc(context);
+                        if (localBloc != null) {
+                          await localBloc.nicknames.deleteAllLastSeen();
+                          Toast.show('Cleared up all last seen items', context,
+                              duration: Toast.lengthShort,
+                              gravity: Toast.bottom);
+                        }
                       }
                     }),
                 Divider(),
-                StreamBuilder<LighthousePowerState>(
-                  stream: _bloc(context).settings.getSleepStateAsStream(),
-                  builder: (BuildContext c,
-                      AsyncSnapshot<LighthousePowerState> snapshot) {
-                    final state = snapshot.hasData &&
-                        snapshot.data == LighthousePowerState.STANDBY;
-                    return SwitchListTile(
-                      title: Text('Use STANDBY instead of SLEEP'),
-                      value: state,
-                      onChanged: (value) {
-                        _bloc(context).settings.insertSleepState(value
-                            ? LighthousePowerState.STANDBY
-                            : LighthousePowerState.SLEEP);
-                      },
-                    );
-                  },
-                ),
+                (bloc == null)
+                    ? Container()
+                    : (StreamBuilder<LighthousePowerState>(
+                        stream: bloc.settings.getSleepStateAsStream(),
+                        builder: (BuildContext c,
+                            AsyncSnapshot<LighthousePowerState> snapshot) {
+                          final state =
+                              snapshot.data == LighthousePowerState.STANDBY;
+                          return SwitchListTile(
+                            title: Text('Use STANDBY instead of SLEEP'),
+                            value: state,
+                            onChanged: (value) {
+                              final localBloc = _bloc(context);
+                              if (localBloc != null) {
+                                localBloc.settings.insertSleepState(value
+                                    ? LighthousePowerState.STANDBY
+                                    : LighthousePowerState.SLEEP);
+                              }
+                            },
+                          );
+                        },
+                      )),
                 Divider(),
-                StreamBuilder<int>(
-                  stream: _bloc(context).settings.getScanDurationsAsStream(),
-                  builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
-                    return DropdownMenuListTile<int>(
-                        title: Text('Set scan duration'),
-                        value: snapshot.data,
-                        onChanged: (int value) async => await _bloc(context)
-                            .settings
-                            .setScanDuration(value),
-                        items: SettingsBloc.SCAN_DURATION_VALUES
-                            .map<DropdownMenuItem<int>>((int value) =>
-                                DropdownMenuItem<int>(
-                                    value: value,
-                                    child: Text('$value seconds')))
-                            .toList());
-                  },
-                ),
+                (bloc == null)
+                    ? Container()
+                    : (StreamBuilder<int>(
+                        stream: bloc.settings.getScanDurationsAsStream(),
+                        builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+                          return DropdownMenuListTile<int>(
+                              title: Text('Set scan duration'),
+                              value: snapshot.requireData,
+                              onChanged: (int? value) async {
+                                if (value != null) {
+                                  final localBloc = _bloc(context);
+                                  if (localBloc != null) {
+                                    await localBloc.settings
+                                        .setScanDuration(value);
+                                  }
+                                }
+                              },
+                              items: SettingsBloc.SCAN_DURATION_VALUES
+                                  .map<DropdownMenuItem<int>>((int value) =>
+                                      DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text('$value seconds')))
+                                  .toList());
+                        },
+                      )),
                 Divider(),
                 FutureBuilder<List<ThemeMode>>(
                   future: _getSupportedThemeModes(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot) {
-                    if (!supportedThemesSnapshot.hasData) {
+                    final supportedThemes = supportedThemesSnapshot.data;
+                    if (supportedThemes == null) {
                       return CircularProgressIndicator();
                     }
+                    if (bloc == null) {
+                      return Container();
+                    }
                     return StreamBuilder<ThemeMode>(
-                      stream:
-                          _bloc(context).settings.getPreferredThemeAsStream(),
+                      stream: bloc.settings.getPreferredThemeAsStream(),
                       builder: (BuildContext context,
                           AsyncSnapshot<ThemeMode> snapshot) {
                         return DropdownMenuListTile<ThemeMode>(
                           title: Text('Set preferred theme'),
-                          value: snapshot.data,
-                          onChanged: (ThemeMode theme) async =>
-                              await _bloc(context)
-                                  .settings
-                                  .setPreferredTheme(theme),
-                          items: supportedThemesSnapshot.data
+                          value: snapshot.requireData,
+                          onChanged: (ThemeMode? theme) async {
+                            if (theme != null) {
+                              final localBloc = _bloc(context);
+                              if (localBloc != null) {
+                                await localBloc.settings
+                                    .setPreferredTheme(theme);
+                              }
+                            }
+                          },
+                          items: supportedThemes
                               .map<DropdownMenuItem<ThemeMode>>(
                                   (ThemeMode theme) =>
                                       DropdownMenuItem<ThemeMode>(
@@ -162,7 +188,7 @@ class SettingsPage extends StatelessWidget {
                 // region Vive Base station
                 ListTile(
                   title: Text('Vive Base station | BETA',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -183,47 +209,54 @@ class SettingsPage extends StatelessWidget {
                   onTap: () async {
                     if (await ViveBaseStationClearIds.showCustomDialog(
                         context)) {
-                      await _bloc(context).viveBaseStation.deleteIds();
-                      Toast.show('Cleared up all Base station ids', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                      final localBloc = _bloc(context);
+                      if (localBloc != null) {
+                        await localBloc.viveBaseStation.deleteIds();
+                        Toast.show('Cleared up all Base station ids', context,
+                            duration: Toast.lengthShort, gravity: Toast.bottom);
+                      }
                     }
                   },
                 ),
                 Divider(),
-                StreamBuilder<bool>(
-                  stream: _bloc(context)
-                      .settings
-                      .getViveBaseStationsEnabledStream(),
-                  initialData: false,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    return SwitchListTile(
-                      title:
-                          Text('BETA: enable support for Vive Base stations'),
-                      value: snapshot.data,
-                      onChanged: (enabled) async {
-                        if (enabled) {
-                          enabled = await ViveBaseStationBetaAlertWidget
-                              .showCustomDialog(context);
-                        }
-                        await _bloc(context)
-                            .settings
-                            .setViveBaseStationEnabled(enabled);
-                        if (enabled) {
-                          Toast.show(
-                              'Thanks for participating in the beta', context,
-                              duration: Toast.LENGTH_LONG);
-                        }
-                      },
-                    );
-                  },
-                ),
+                (bloc == null)
+                    ? Container()
+                    : (StreamBuilder<bool>(
+                        stream:
+                            bloc.settings.getViveBaseStationsEnabledStream(),
+                        initialData: false,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshot) {
+                          return SwitchListTile(
+                            title: Text(
+                                'BETA: enable support for Vive Base stations'),
+                            value: snapshot.requireData,
+                            onChanged: (enabled) async {
+                              if (enabled) {
+                                enabled = await ViveBaseStationBetaAlertWidget
+                                    .showCustomDialog(context);
+                              }
+                              final localBloc = _bloc(context);
+                              if (localBloc != null) {
+                                await localBloc.settings
+                                    .setViveBaseStationEnabled(enabled);
+                              }
+                              if (enabled) {
+                                Toast.show(
+                                    'Thanks for participating in the beta',
+                                    context,
+                                    duration: Toast.lengthShort);
+                              }
+                            },
+                          );
+                        },
+                      )),
                 Divider(),
                 // endregion
                 // region about
                 ListTile(
                   title: Text('About',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -260,25 +293,24 @@ class SettingsPage extends StatelessWidget {
                 FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (_, snapshot) {
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    }
                     if (snapshot.hasError) {
                       return ListTile(
                         title: Text('Version'),
                         subtitle: Text('${snapshot.error}'),
                       );
                     }
-                    final data = snapshot.data;
+                    final packageInfo = snapshot.data;
+                    if (packageInfo == null) {
+                      return CircularProgressIndicator();
+                    }
                     return ListTile(
                       title: Text('Version'),
-                      subtitle: Text('${data.version}'),
+                      subtitle: Text('${packageInfo.version}'),
                       onLongPress: () async {
                         await Clipboard.setData(
-                            ClipboardData(text: data.version));
+                            ClipboardData(text: packageInfo.version));
                         Toast.show('Copied to clipboard', context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.BOTTOM);
+                            duration: Toast.lengthShort, gravity: Toast.bottom);
                       },
                     );
                   },

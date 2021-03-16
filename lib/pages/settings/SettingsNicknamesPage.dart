@@ -56,8 +56,8 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
         Widget body = Center(
           child: CircularProgressIndicator(),
         );
-        if (snapshot.hasData) {
-          final data = snapshot.data;
+        final data = snapshot.data;
+        if (data != null) {
           data.sort((a, b) {
             return a.macAddress.compareTo(b.macAddress);
           });
@@ -95,7 +95,7 @@ class _NicknamesPage extends State<SettingsNicknamesPage> {
                   },
                 )
               ];
-        final Widget leading = selected.isEmpty
+        final Widget? leading = selected.isEmpty
             ? null
             : IconButton(
                 tooltip: 'Cancel selection',
@@ -128,14 +128,14 @@ typedef Future _UpdateItem(Nickname nickname);
 
 class _DataNicknamePage extends StatelessWidget {
   _DataNicknamePage(
-      {Key key,
-      this.selecting,
-      this.nicknames,
-      this.selectItem,
-      this.isSelected,
-      this.deselectItem,
-      this.deleteItem,
-      this.updateItem})
+      {Key? key,
+      required this.selecting,
+      required this.nicknames,
+      required this.selectItem,
+      required this.isSelected,
+      required this.deselectItem,
+      required this.deleteItem,
+      required this.updateItem})
       : super(key: key);
 
   final bool selecting;
@@ -154,7 +154,7 @@ class _DataNicknamePage extends StatelessWidget {
       if (newNickname.nickname == null) {
         await deleteItem(newNickname.macAddress);
       } else {
-        await updateItem(newNickname);
+        await updateItem(newNickname.toNickname()!);
       }
     }
   }
@@ -165,6 +165,7 @@ class _DataNicknamePage extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = nicknames[index];
         final selected = isSelected(item.macAddress);
+        final lastSeen = item.lastSeen;
         return Column(
           children: [
             Container(
@@ -174,7 +175,7 @@ class _DataNicknamePage extends StatelessWidget {
               child: ListTile(
                 title: Text(item.nickname),
                 subtitle: Text(
-                    '${item.macAddress}${item.lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(item.lastSeen) : ''}'),
+                    '${item.macAddress}${lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(lastSeen) : ''}'),
                 onLongPress: () {
                   if (!selecting) {
                     selectItem(item.macAddress);
@@ -246,7 +247,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                     macAddress: "FF:FF:FF:FF:FF:FC",
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,
-                    duration: Toast.LENGTH_LONG);
+                    duration: Toast.lengthShort);
                 tapCounter++;
               }
             },

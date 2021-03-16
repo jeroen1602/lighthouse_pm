@@ -4,7 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
 
 import '../Database.dart';
 
@@ -14,6 +14,7 @@ class SettingsBloc {
   SettingsBloc(this.db);
 
   static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
+
   // region IDS
   //IDS
   static const DEFAULT_SLEEP_STATE_ID = 1;
@@ -26,12 +27,12 @@ class SettingsBloc {
   Stream<LighthousePowerState> getSleepStateAsStream(
       {LighthousePowerState defaultValue = LighthousePowerState.SLEEP}) {
     return (db.select(db.simpleSettings)
-      ..where((tbl) => tbl.settingsId.equals(DEFAULT_SLEEP_STATE_ID)))
+          ..where((tbl) => tbl.settingsId.equals(DEFAULT_SLEEP_STATE_ID)))
         .watch()
         .map((event) {
       if (event.length >= 1 && event[0].data != null) {
         try {
-          final data = int.parse(event[0].data, radix: 10);
+          final data = int.parse(event[0].data!, radix: 10);
           return LighthousePowerState.fromId(data);
         } on FormatException {
           debugPrint('Could not convert data returned to a string');
@@ -43,9 +44,9 @@ class SettingsBloc {
 
   Future<void> insertSleepState(LighthousePowerState sleepState) {
     assert(
-    sleepState == LighthousePowerState.SLEEP ||
-        sleepState == LighthousePowerState.STANDBY,
-    'The new sleep state cannot be ${sleepState.text.toUpperCase()}');
+        sleepState == LighthousePowerState.SLEEP ||
+            sleepState == LighthousePowerState.STANDBY,
+        'The new sleep state cannot be ${sleepState.text.toUpperCase()}');
     return db.into(db.simpleSettings).insert(
         SimpleSetting(
             settingsId: DEFAULT_SLEEP_STATE_ID, data: sleepState.id.toString()),
@@ -54,7 +55,7 @@ class SettingsBloc {
 
   Stream<bool> getViveBaseStationsEnabledStream() {
     return (db.select(db.simpleSettings)
-      ..where((tbl) => tbl.settingsId.equals(VIVE_BASE_STATION_ENABLED_ID)))
+          ..where((tbl) => tbl.settingsId.equals(VIVE_BASE_STATION_ENABLED_ID)))
         .watch()
         .map((event) {
       if (event.isEmpty) {
@@ -71,37 +72,41 @@ class SettingsBloc {
   Future<void> setViveBaseStationEnabled(bool enabled) {
     return db.into(db.simpleSettings).insert(
         SimpleSetting(
-            settingsId: VIVE_BASE_STATION_ENABLED_ID, data: enabled ? '1' : '0'),
+            settingsId: VIVE_BASE_STATION_ENABLED_ID,
+            data: enabled ? '1' : '0'),
         mode: InsertMode.insertOrReplace);
   }
 
   Stream<int> getScanDurationsAsStream({int defaultValue = 5}) {
     return (db.select(db.simpleSettings)
-      ..where((tbl) => tbl.settingsId.equals(SCAN_DURATION_ID)))
+          ..where((tbl) => tbl.settingsId.equals(SCAN_DURATION_ID)))
         .watch()
         .map((event) {
       if (event.length == 1 && event[0].data != null) {
-        return int.tryParse(event[0].data, radix: 10);
-      } else {
-        return defaultValue;
+        final number = int.tryParse(event[0].data!, radix: 10);
+        if (number != null) {
+          return number;
+        }
       }
+      return defaultValue;
     });
   }
 
   Future<void> setScanDuration(int duration) {
     assert(duration > 0, 'duration should be higher than 0');
     return db.into(db.simpleSettings).insert(
-        SimpleSetting(settingsId: SCAN_DURATION_ID, data: duration.toRadixString(10)),
+        SimpleSetting(
+            settingsId: SCAN_DURATION_ID, data: duration.toRadixString(10)),
         mode: InsertMode.insertOrReplace);
   }
 
   Stream<ThemeMode> getPreferredThemeAsStream() {
     return (db.select(db.simpleSettings)
-      ..where((tbl) => tbl.settingsId.equals(PREFERRED_THEME_ID)))
+          ..where((tbl) => tbl.settingsId.equals(PREFERRED_THEME_ID)))
         .watch()
         .asyncMap((event) async {
       if (event.length == 1 && event[0].data != null) {
-        final themeIndex = int.tryParse(event[0].data, radix: 10);
+        final themeIndex = int.tryParse(event[0].data!, radix: 10);
         if (themeIndex != null &&
             themeIndex >= 0 &&
             themeIndex < ThemeMode.values.length) {
@@ -121,7 +126,8 @@ class SettingsBloc {
   Future<void> setPreferredTheme(ThemeMode theme) {
     return db.into(db.simpleSettings).insert(
         SimpleSetting(
-            settingsId: PREFERRED_THEME_ID, data: '${theme.index.toRadixString(10)}'),
+            settingsId: PREFERRED_THEME_ID,
+            data: '${theme.index.toRadixString(10)}'),
         mode: InsertMode.insertOrReplace);
   }
 

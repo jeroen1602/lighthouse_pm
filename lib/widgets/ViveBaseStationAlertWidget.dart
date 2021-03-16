@@ -32,7 +32,7 @@ class ViveBaseStationBetaAlertWidget extends StatelessWidget {
       if (value == null) {
         return false;
       }
-      return true;
+      return value;
     });
   }
 }
@@ -66,7 +66,7 @@ class ViveBaseStationClearIds extends StatelessWidget {
       if (value == null) {
         return false;
       }
-      return true;
+      return value;
     });
   }
 }

@@ -23,7 +23,7 @@ class ClearLastSeenAlertWidget extends StatelessWidget {
     );
   }
 
-  static Future<bool /* ? */ > showCustomDialog(BuildContext context) {
+  static Future<bool?> showCustomDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
