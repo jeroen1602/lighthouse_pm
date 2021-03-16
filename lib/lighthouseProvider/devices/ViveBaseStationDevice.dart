@@ -46,7 +46,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
   }
 
-  late int _deviceIdEnd;
+  int? _deviceIdEnd;
   String? _firmwareVersion;
   BehaviorSubject<bool> _hasDeviceIdSubject = BehaviorSubject.seeded(false);
   final Map<String, String?> _otherMetadata = Map();
@@ -161,7 +161,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
     final bloc = _bloc;
     if (bloc != null) {
-      this._deviceId = await bloc.getIdOnSubset(_deviceIdEnd);
+      this._deviceId = await bloc.getIdOnSubset(_deviceIdEnd!);
       if (this._deviceId == null) {
         debugPrint('Device Id not set yet for "$name"');
       }
@@ -223,7 +223,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (bloc != null) {
       deviceExtensions.add(ClearIdExtension(
           bloc: bloc,
-          deviceIdEnd: _deviceIdEnd,
+          deviceIdEnd: _deviceIdEnd!,
           clearId: () => _deviceId = null));
     }
     deviceExtensions.add(SleepExtension(
@@ -259,18 +259,18 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
 
     return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-            context, _deviceIdEnd)
+            context, _deviceIdEnd!)
         .then((value) async {
       if (value == null) {
         return false;
       }
       value = value.toUpperCase();
       if (value.length == 4) {
-        value += _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
+        value += _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase();
       }
       if (value.length == 8) {
         if (value.substring(3) ==
-            _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase()) {
+            _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase()) {
           debugPrint('End of the device did not match');
           return false;
         }

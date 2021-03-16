@@ -9,7 +9,7 @@ import 'BLEDeviceProvider.dart';
 class LighthouseV2DeviceProvider extends BLEDeviceProvider {
   LighthouseV2DeviceProvider._();
 
-  static late LighthouseV2DeviceProvider _instance;
+  static LighthouseV2DeviceProvider? _instance;
 
   ///
   /// Get the instance of this [DeviceProvider].
@@ -18,7 +18,7 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
     if (_instance == null) {
       _instance = LighthouseV2DeviceProvider._();
     }
-    return _instance;
+    return _instance!;
   }
 
   ///

@@ -8,7 +8,7 @@ import 'fake/FakeBluetoothDevice.dart';
 
 class FakeBLEBackEnd extends BLELighthouseBackEnd {
 // Make sure there is always only one instance.
-  static late FakeBLEBackEnd _instance;
+  static FakeBLEBackEnd? _instance;
 
   FakeBLEBackEnd._();
 
@@ -16,7 +16,7 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
     if (_instance == null) {
       _instance = FakeBLEBackEnd._();
     }
-    return _instance;
+    return _instance!;
   }
 
   final random = Random();

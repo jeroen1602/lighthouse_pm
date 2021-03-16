@@ -15,7 +15,7 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
 
   ViveBaseStationBloc? _bloc;
 
-  static late ViveBaseStationDeviceProvider _instance;
+  static ViveBaseStationDeviceProvider? _instance;
 
   ///
   /// Get the instance of this [DeviceProvider].
@@ -24,7 +24,7 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
     if (_instance == null) {
       _instance = ViveBaseStationDeviceProvider._();
     }
-    return _instance;
+    return _instance!;
   }
 
   ///

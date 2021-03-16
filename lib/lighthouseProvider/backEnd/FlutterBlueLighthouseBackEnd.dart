@@ -14,7 +14,7 @@ import 'flutterBlue/FlutterBlueBluetoothDevice.dart';
 /// A back end that provides devices using [FlutterBlue].
 class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   // Make sure there is always only one instance.
-  static late FlutterBlueLighthouseBackEnd _instance;
+  static FlutterBlueLighthouseBackEnd? _instance;
 
   FlutterBlueLighthouseBackEnd._();
 
@@ -22,7 +22,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
     if (_instance == null) {
       _instance = FlutterBlueLighthouseBackEnd._();
     }
-    return _instance;
+    return _instance!;
   }
 
   // Some state variables.
