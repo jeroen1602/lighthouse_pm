@@ -43,6 +43,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
 
+    final bloc = _bloc(context);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
@@ -58,7 +60,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                     height: 24.0,
                   ),
                   title: Text('Lighthouse Power management',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -136,8 +138,12 @@ class SettingsPage extends BasePage with WithBlocStateless {
                   future: _getSupportedThemeModes(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot) {
-                    if (!supportedThemesSnapshot.hasData) {
+                    final supportedThemes = supportedThemesSnapshot.data;
+                    if (supportedThemes == null) {
                       return CircularProgressIndicator();
+                    }
+                    if (bloc == null) {
+                      return Container();
                     }
                     return StreamBuilder<ThemeMode>(
                       stream: blocWithoutListen(context)
@@ -169,7 +175,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 // region Vive Base station
                 ListTile(
                   title: Text('Vive Base station | BETA',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -232,7 +238,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 // region about
                 ListTile(
                   title: Text('About',
-                      style: theme.textTheme.headline6
+                      style: theme.textTheme.headline6!
                           .copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Divider(
@@ -269,25 +275,24 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
                   builder: (_, snapshot) {
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    }
                     if (snapshot.hasError) {
                       return ListTile(
                         title: Text('Version'),
                         subtitle: Text('${snapshot.error}'),
                       );
                     }
-                    final data = snapshot.data;
+                    final packageInfo = snapshot.data;
+                    if (packageInfo == null) {
+                      return CircularProgressIndicator();
+                    }
                     return ListTile(
                       title: Text('Version'),
-                      subtitle: Text('${data.version}'),
+                      subtitle: Text('${packageInfo.version}'),
                       onLongPress: () async {
                         await Clipboard.setData(
-                            ClipboardData(text: data.version));
+                            ClipboardData(text: packageInfo.version));
                         Toast.show('Copied to clipboard', context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.BOTTOM);
+                            duration: Toast.lengthShort, gravity: Toast.bottom);
                       },
                     );
                   },

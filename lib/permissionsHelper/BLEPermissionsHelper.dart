@@ -29,7 +29,7 @@ class BLEPermissionsHelper {
     if (Platform.isAndroid) {
       return await Permission.locationWhenInUse.status;
     }
-    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError("ERROR: unsupported platform! $Platform");
   }
 
   ///
@@ -48,7 +48,7 @@ class BLEPermissionsHelper {
     if (Platform.isIOS) {
       return PermissionStatus.granted;
     }
-    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError("ERROR: unsupported platform! $Platform");
   }
 
   ///
@@ -59,15 +59,21 @@ class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
     if (Platform.isAndroid) {
-      return _channel.invokeMethod("openBLESettings");
+      return _channel.invokeMethod("openBLESettings").then((value) {
+        if (value is bool) {
+          return value;
+        } else {
+          throw TypeError();
+        }
+      });
     }
     if (Platform.isIOS) {
-      // According to[(this](https://stackoverflow.com/a/43754366/13324337) you
+      // According to [this](https://stackoverflow.com/a/43754366/13324337) you
       // aren't allowed to open settings on ios.
       debugPrint("Can't open settings because iOS doesn't support it.");
       return false;
     }
-    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError("ERROR: unsupported platform! $Platform");
   }
 
   ///
@@ -78,14 +84,20 @@ class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
     if (Platform.isAndroid) {
-      return _channel.invokeMethod("enableBluetooth");
+      return _channel.invokeMethod("enableBluetooth").then((value) {
+        if (value is bool) {
+          return value;
+        } else {
+          throw TypeError();
+        }
+      });
     }
     if (Platform.isIOS) {
       // iOS doesn't have an API that can handle enable bluetooth for us.
       debugPrint("Can't enable BLE on iOS since there is no api.");
       return false;
     }
-    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError("ERROR: unsupported platform! $Platform");
   }
 
   ///
@@ -96,13 +108,19 @@ class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
     if (Platform.isAndroid) {
-      return _channel.invokeMethod("openLocationSettings");
+      return _channel.invokeMethod("openLocationSettings").then((value) {
+        if (value is bool) {
+          return value;
+        } else {
+          throw TypeError();
+        }
+      });
     }
     if (Platform.isIOS) {
       // iOS doesn't have an API that can open location settings
       debugPrint("Can't open location settings on iOS since there is no api.");
       return false;
     }
-    throw new UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError("ERROR: unsupported platform! $Platform");
   }
 }

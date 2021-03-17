@@ -5,7 +5,9 @@ import 'DeviceExtension.dart';
 
 class ClearIdExtension extends DeviceExtension {
   ClearIdExtension(
-      {ViveBaseStationBloc bloc, int deviceIdEnd, VoidCallback clearId})
+      {required ViveBaseStationBloc bloc,
+      required int deviceIdEnd,
+      required VoidCallback clearId})
       : super(
             toolTip: 'Clear id',
             icon: Text('ID'),

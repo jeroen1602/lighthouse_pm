@@ -26,7 +26,7 @@ class DefaultCharacteristics {
     if (!(guid is Guid32)) {
       guid = Guid32.fromLighthouseGuid(guid);
     }
-    final Guid32 guid32 = guid as Guid32;
+    final Guid32 guid32 = guid;
     return guid32.isEqualToInt32(uuid);
   }
 }

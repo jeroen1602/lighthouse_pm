@@ -1,0 +1,8 @@
+You can no longer build the code at version 1.1.1+6 because Flutter has been updated and the Build_runner version defined in that version doesn't work anymore. Because of this we need to create a new release with updated dependencies, or else F-droid won't be able to build our source.
+
+Changes:
+<ul>
+<li>Open metadata page by tapping on lighthouse instead of holding power button (holding the power button still works).</li>
+<li>Added support for F-droid.</li>
+<li>Updated dependencies.</li>
+</ul>

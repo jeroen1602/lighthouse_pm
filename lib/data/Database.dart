@@ -17,7 +17,7 @@ class NicknamesLastSeenJoin {
 
   final String macAddress;
   final String nickname;
-  final DateTime /* ? */ lastSeen;
+  final DateTime? lastSeen;
 }
 
 // This file required generated files.
@@ -43,14 +43,12 @@ class LighthouseDatabase extends _$LighthouseDatabase {
   @override
   int get schemaVersion => 2;
 
-
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
-    return m.createAll();
-  }, onUpgrade: (Migrator m, int from, int to) async {
-    if (from == 1 && to == 2) {
-      await m.renameColumn(simpleSettings, 'id', simpleSettings.settingsId);
-    }
-  });
-
+        return m.createAll();
+      }, onUpgrade: (Migrator m, int from, int to) async {
+        if (from == 1 && to == 2) {
+          await m.renameColumn(simpleSettings, 'id', simpleSettings.settingsId);
+        }
+      });
 }

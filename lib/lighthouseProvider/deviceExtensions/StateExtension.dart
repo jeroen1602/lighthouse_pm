@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
@@ -11,14 +10,17 @@ typedef ChangeStateFunction = Future<void> Function(
 ///
 abstract class StateExtension extends DeviceExtension {
   StateExtension(
-      {@required String toolTip,
-      @required Widget icon,
-      @required ChangeStateFunction changeState,
-      @required this.powerStateStream,
-      @required this.toState})
+      {required String toolTip,
+      required Widget icon,
+      required ChangeStateFunction changeState,
+      required this.powerStateStream,
+      required this.toState})
       : super(toolTip: toolTip, icon: icon, onTap: () => changeState(toState)) {
     super.streamEnabledFunction = _enabledStream;
-    assert(toState != LighthousePowerState.UNKNOWN && toState != LighthousePowerState.BOOTING, 'Cannot have a StateExtension that sets the power state to ${toState.text.toUpperCase()}');
+    assert(
+        toState != LighthousePowerState.UNKNOWN &&
+            toState != LighthousePowerState.BOOTING,
+        'Cannot have a StateExtension that sets the power state to ${toState.text.toUpperCase()}');
   }
 
   final Stream<LighthousePowerState> powerStateStream;

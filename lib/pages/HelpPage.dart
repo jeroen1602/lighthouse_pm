@@ -14,7 +14,7 @@ class HelpPage extends BasePage {
   @override
   Widget buildPage(BuildContext context) {
     final textTheme =
-        Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 14);
+        Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 14);
     final textThemeBold = textTheme.copyWith(fontWeight: FontWeight.bold);
 
     return Scaffold(
@@ -29,15 +29,18 @@ class HelpPage extends BasePage {
                     text: 'Every device has some metadata and extra actions'
                         ' that you may want to access. Like changing the state to '
                         'standby without changing the global setting.\n\n'),
-                TextSpan(text: 'There are two ways to access this feature The first is to '),
-                    TextSpan(text: 'tap', style:textThemeBold),
-                TextSpan(text: ' on the lighthouse item. The second option is to '),
+                TextSpan(
+                    text:
+                        'There are two ways to access this feature The first is to '),
+                TextSpan(text: 'tap', style: textThemeBold),
+                TextSpan(
+                    text: ' on the lighthouse item. The second option is to '),
                 TextSpan(text: 'hold', style: textThemeBold),
                 TextSpan(text: ' the '),
                 WidgetSpan(
                     child: Icon(
                   Icons.power_settings_new,
-                  size: textTheme.fontSize + 4,
+                  size: textTheme.fontSize! + 4,
                   color: textThemeBold.color,
                 )),
                 TextSpan(text: ' button', style: textThemeBold),
@@ -61,7 +64,7 @@ class HelpPage extends BasePage {
                 WidgetSpan(
                     child: Icon(
                   Icons.edit_attributes,
-                  size: textTheme.fontSize + 4,
+                  size: textTheme.fontSize! + 4,
                   color: textThemeBold.color,
                 )),
                 TextSpan(text: 'button', style: textThemeBold),
@@ -102,7 +105,7 @@ class HelpPage extends BasePage {
 }
 
 class _HelpItem extends StatelessWidget {
-  _HelpItem({Key key, @required this.title, @required this.body})
+  _HelpItem({Key? key, required this.title, required this.body})
       : super(key: key);
 
   final String title;

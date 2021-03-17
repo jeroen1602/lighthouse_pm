@@ -1,11 +1,10 @@
 class TimeoutContainer<T> {
-  TimeoutContainer(this.data, {DateTime /* ? */ lastSeen}) {
-    if (lastSeen == null) {
-      lastSeen = DateTime.now();
+  TimeoutContainer(this.data, {DateTime? lastSeen}) {
+    if (lastSeen != null) {
+      this.lastSeen = lastSeen;
     }
-    this.lastSeen = lastSeen;
   }
 
   T data;
-  DateTime lastSeen;
+  DateTime lastSeen = DateTime.now();
 }

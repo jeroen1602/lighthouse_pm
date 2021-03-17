@@ -35,7 +35,7 @@ abstract class LighthouseDevice {
   ///
   /// Other reported info.
   ///
-  Map<String, String> get otherMetadata;
+  Map<String, String?> get otherMetadata;
 
   ///
   /// Get the identifier for the device.
@@ -46,12 +46,8 @@ abstract class LighthouseDevice {
   /// Disconnect from the device and clean up the connection.
   ///
   Future disconnect() async {
-    if (_powerStateSubscription != null) {
-      await _powerStateSubscription.cancel();
-    }
-    if (this._powerState != null) {
-      await this._powerState.close();
-    }
+    await _powerStateSubscription?.cancel();
+    await this._powerState?.close();
     await internalDisconnect();
   }
 
@@ -78,7 +74,7 @@ abstract class LighthouseDevice {
   /// Get the current power state as a device specific byte.
   ///
   @protected
-  Future<int /*?*/ > getCurrentState();
+  Future<int?> getCurrentState();
 
   ///
   /// Change the actual state of the device.
@@ -95,7 +91,7 @@ abstract class LighthouseDevice {
   /// Get the power state of the device as a device specific int.
   Stream<int> get powerState {
     this._startPowerStateStream();
-    return _powerState.stream;
+    return this._powerState.stream;
   }
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
@@ -105,7 +101,7 @@ abstract class LighthouseDevice {
 
   // ignore: close_sinks
   BehaviorSubject<int> _powerState = BehaviorSubject.seeded(0xFF);
-  StreamSubscription /* ? */ _powerStateSubscription;
+  StreamSubscription? _powerStateSubscription;
 
   ///
   /// This is the mutex used for transactions.
@@ -162,14 +158,15 @@ abstract class LighthouseDevice {
   /// will do nothing.
   void _startPowerStateStream() {
     int retryCount = 0;
-    if (this._powerStateSubscription != null) {
-      if (this._powerStateSubscription.isPaused) {
-        this._powerStateSubscription.resume();
+    var powerStateSubscription = this._powerStateSubscription;
+    if (powerStateSubscription != null) {
+      if (powerStateSubscription.isPaused) {
+        powerStateSubscription.resume();
         return;
       }
       return;
     }
-    _powerStateSubscription =
+    powerStateSubscription =
         Stream.periodic(getUpdateInterval()).listen((_) async {
       if (hasOpenConnection) {
         if (!transactionMutex.isLocked) {
@@ -198,15 +195,13 @@ abstract class LighthouseDevice {
         }
       } else {
         debugPrint('Cleaning-up old subscription!');
-        final subscription = this._powerStateSubscription;
-        if (subscription != null) {
-          subscription.cancel();
-        }
+        this._powerStateSubscription?.cancel();
       }
     });
-    _powerStateSubscription.onDone(() {
+    powerStateSubscription.onDone(() {
       debugPrint('Cleaning-up power state subscription!');
       _powerStateSubscription = null;
     });
+    this._powerStateSubscription = powerStateSubscription;
   }
 }

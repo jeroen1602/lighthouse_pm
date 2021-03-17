@@ -13,9 +13,9 @@ typedef MainPageSettingsWidgetBuilder = Widget Function(
 
 class MainPageSettings {
   const MainPageSettings._(
-      {@required this.sleepState,
-      @required this.viveBaseStationsEnabled,
-      @required this.scanDuration});
+      {required this.sleepState,
+      required this.viveBaseStationsEnabled,
+      required this.scanDuration});
 
   final LighthousePowerState sleepState;
   final bool viveBaseStationsEnabled;

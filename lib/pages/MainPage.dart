@@ -25,8 +25,8 @@ const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
 
 Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
     _mergeNicknameAndLighthouseDevice(LighthousePMBloc bloc) {
-  final nicknames = List<Nickname>();
-  final lighthouseDevices = List<LighthouseDevice>();
+  final nicknames = <Nickname>[];
+  final lighthouseDevices = <LighthouseDevice>[];
 
   return MergeStream<List<dynamic>>([
     bloc.nicknames.watchSavedNicknames,
@@ -79,7 +79,8 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
       stream: LighthouseProvider.instance.isScanning,
       initialData: false,
       builder: (c, snapshot) {
-        if (snapshot.data) {
+        final isScanning = snapshot.data;
+        if (isScanning == true) {
           return FloatingActionButton(
             child: Icon(Icons.stop),
             onPressed: () => stopScan(),
@@ -102,7 +103,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 }
 
 class ScanDevicesPage extends StatefulWidget {
-  ScanDevicesPage({Key key, @required this.settings}) : super(key: key);
+  ScanDevicesPage({Key? key, required this.settings}) : super(key: key);
 
   final MainPageSettings settings;
 
@@ -128,7 +129,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -140,7 +141,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
             initialData: const Tuple2(const [], const []),
             builder: (c, snapshot) {
               updates++;
-              final tuple = snapshot.data;
+              final tuple = snapshot.requireData;
               final list = tuple.item2;
               if (list.isNotEmpty) {
                 list.sort((a, b) =>
@@ -158,7 +159,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       initialData: true,
                       builder: (context, scanningSnapshot) {
                         final scanning = scanningSnapshot.data;
-                        if (scanning) {
+                        if (scanning == true) {
                           return Container();
                         } else {
                           return Column(
@@ -189,14 +190,18 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           );
                         }
                         final device = list[index];
-                        bloc.nicknames.insertLastSeenDevice(LastSeenDevice(
-                            macAddress: device.deviceIdentifier.toString(),
-                            lastSeen: null));
-                        final nickname = nicknames.singleWhere(
-                            (element) =>
-                                element.macAddress ==
-                                device.deviceIdentifier.toString(),
-                            orElse: () => null);
+                        bloc.nicknames.insertLastSeenDevice(
+                            LastSeenDevicesCompanion.insert(
+                                macAddress:
+                                    device.deviceIdentifier.toString()));
+                        final nickname =
+                            nicknames.cast<Nickname?>().singleWhere((element) {
+                          if (element != null) {
+                            return element.macAddress ==
+                                device.deviceIdentifier.toString();
+                          }
+                          return false;
+                        }, orElse: () => null);
                         if (selectedCopy.contains(device.deviceIdentifier)) {
                           selected.add(device.deviceIdentifier);
                         }
@@ -221,7 +226,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     );
 
               final List<Widget> actions = [];
-              Color actionBarColor;
+              Color? actionBarColor;
               if (selectedCopy.length == 1) {
                 actionBarColor = Theme.of(context).selectedRowColor;
                 actions.add(IconButton(
@@ -230,24 +235,31 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   onPressed: () async {
                     if (selected.length == 1) {
                       final item = selected.first;
-                      final device = list.singleWhere(
-                          (element) => element.deviceIdentifier == item,
-                          orElse: () => null);
+                      final device =
+                          list.cast<LighthouseDevice?>().singleWhere((element) {
+                        if (element != null) {
+                          return element.deviceIdentifier == item;
+                        }
+                        return false;
+                      }, orElse: () => null);
                       if (device == null) {
                         debugPrint(
                             'Could not find a device for the nickname dialog!');
                         return;
                       }
-                      final Nickname /* ? */ nickname = nicknames.singleWhere(
-                          (element) => element.macAddress == item.toString(),
-                          orElse: () => null);
+                      final Nickname? nickname =
+                          nicknames.cast<Nickname?>().singleWhere((element) {
+                        if (element != null) {
+                          return element.macAddress == item.toString();
+                        }
+                        return false;
+                      }, orElse: () => null);
 
                       final newNickname =
                           await NicknameAlertWidget.showCustomDialog(context,
                               macAddress: device.deviceIdentifier.toString(),
                               deviceName: device.name,
-                              nickname:
-                                  nickname == null ? null : nickname.nickname);
+                              nickname: nickname?.nickname);
                       if (newNickname != null) {
                         if (newNickname.nickname == null) {
                           blocWithoutListen.nicknames
@@ -262,7 +274,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   },
                 ));
               }
-              final Widget leading = selectedCopy.isEmpty
+              final Widget? leading = selectedCopy.isEmpty
                   ? null
                   : IconButton(
                       tooltip: 'Cancel selection',
@@ -317,15 +329,15 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
-      {Key key, @required this.state, @required this.settings})
+      {Key? key, required this.state, required this.settings})
       : super(key: key);
 
-  final BluetoothState state;
+  final BluetoothState? state;
   final MainPageSettings settings;
 
   Widget _toSettingsButton(BuildContext context) {
     if (Platform.isAndroid && state == BluetoothState.off) {
-      return RaisedButton(
+      return ElevatedButton(
           onPressed: () async {
             await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
                 context);
@@ -334,7 +346,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
             'Enable Bluetooth.',
             style: Theme.of(context)
                 .textTheme
-                .bodyText1
+                .bodyText1!
                 .copyWith(color: Colors.black),
           ));
     }
@@ -362,14 +374,14 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
               'Bluetooth is ${state != null ? state.toString().substring(15) : 'not available'}.',
               style: Theme.of(context)
                   .textTheme
-                  .headline6
+                  .headline6!
                   .copyWith(color: Colors.white),
             ),
             Text(
               'Bluetooth needs to be enabled to talk to the lighthouses',
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),

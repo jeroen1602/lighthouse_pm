@@ -5,7 +5,7 @@ import 'DeviceExtension.dart';
 
 /// A device extension that allow the device to be identified.
 class IdentifyDeviceExtension extends DeviceExtension {
-  IdentifyDeviceExtension({FutureCallback onTap})
+  IdentifyDeviceExtension({required FutureCallback onTap})
       : super(
             onTap: onTap,
             toolTip: 'Identify',
@@ -17,22 +17,28 @@ class IdentifyDeviceExtension extends DeviceExtension {
     super.streamEnabledFunction = _enabledStream;
   }
 
-  BehaviorSubject<bool> _enabledSubject = BehaviorSubject.seeded(true);
+  BehaviorSubject<bool>? _enabledSubject = BehaviorSubject.seeded(true);
 
   Stream<bool> _enabledStream() {
+    return _nonNullEnabledSubject().stream;
+  }
+
+  BehaviorSubject<bool> _nonNullEnabledSubject() {
     if (_enabledSubject == null) {
       _enabledSubject = BehaviorSubject.seeded(true);
     }
-    return _enabledSubject.stream;
+    return _enabledSubject!;
   }
 
   void setEnabled(bool enabled) {
-    _enabledSubject.add(enabled);
+    _nonNullEnabledSubject().add(enabled);
   }
 
   Future<void> close() async {
-    if (_enabledSubject != null) {
-      await _enabledSubject.close();
+    final enabledSubject = _enabledSubject;
+    if (enabledSubject != null) {
+      await enabledSubject.close();
+      _enabledSubject = null;
     }
   }
 }

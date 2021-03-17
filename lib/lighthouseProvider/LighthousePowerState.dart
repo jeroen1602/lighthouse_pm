@@ -1,6 +1,7 @@
 /// A enum that describes the current power state of a lighthouse beacon.
 class LighthousePowerState {
   final String text;
+
   ///
   /// This is for storing into the data base. These should all be unique and
   /// not change between versions!
@@ -14,9 +15,8 @@ class LighthousePowerState {
   static const BOOTING = const LighthousePowerState._internal('Booting', 3);
   static const STANDBY = const LighthousePowerState._internal('Standby', 4);
 
-
   static LighthousePowerState fromId(int id) {
-    switch(id) {
+    switch (id) {
       case 0:
         return SLEEP;
       case 1:
@@ -28,9 +28,7 @@ class LighthousePowerState {
       case 4:
         return STANDBY;
       default:
-        assert(false, 'Unknown id provided!');
-        return null;
+        throw ArgumentError('Unknown id provided!');
     }
   }
-
 }

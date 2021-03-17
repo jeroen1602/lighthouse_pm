@@ -14,7 +14,7 @@ class PermissionsAlertWidget extends StatelessWidget {
                   "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
           TextSpan(
             text: "More info.",
-            style: Theme.of(context).textTheme.bodyText1.copyWith(
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(
                 color: Colors.blue, decoration: TextDecoration.underline),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
@@ -39,7 +39,7 @@ class PermissionsAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool /* ? */ > showCustomDialog(BuildContext context) {
+  static Future<bool?> showCustomDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {

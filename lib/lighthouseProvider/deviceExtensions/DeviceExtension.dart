@@ -6,9 +6,9 @@ typedef StreamEnabledFunction = Stream<bool> Function();
 //A single device extension to add extra functionality to a device.
 abstract class DeviceExtension {
   DeviceExtension(
-      {@required this.toolTip,
-      @required this.icon,
-      @required this.onTap,
+      {required this.toolTip,
+      required this.icon,
+      required this.onTap,
       this.updateListAfter = false,
       this.streamEnabledFunction});
 
@@ -17,11 +17,12 @@ abstract class DeviceExtension {
   final FutureCallback onTap;
   final bool updateListAfter;
   @protected
-  StreamEnabledFunction streamEnabledFunction;
+  StreamEnabledFunction? streamEnabledFunction;
 
   Stream<bool> get enabledStream {
-    if (streamEnabledFunction != null) {
-      return streamEnabledFunction();
+    final enabledFunction = streamEnabledFunction;
+    if (enabledFunction != null) {
+      return enabledFunction();
     } else {
       return Stream.value(true);
     }

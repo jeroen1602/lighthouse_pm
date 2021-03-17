@@ -17,7 +17,7 @@ extension ByteDataFunctions on ByteData {
   }
 
   List<int> _toByteList(_GetByte getByte) {
-    final List<int> bytes = List<int>(this.lengthInBytes);
+    final List<int> bytes = List<int>.filled(this.lengthInBytes, 0x00);
     for (int i = 0; i < this.lengthInBytes; i++) {
       bytes[i] = getByte(i);
     }

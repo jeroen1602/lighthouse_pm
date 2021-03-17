@@ -13,7 +13,7 @@ class FlutterBlueBluetoothDevice extends LHBluetoothDevice {
   final BluetoothDevice device;
 
   @override
-  Future<void> connect({Duration timeout}) {
+  Future<void> connect({Duration? timeout}) {
     return device.connect(timeout: timeout);
   }
 

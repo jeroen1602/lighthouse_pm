@@ -1,9 +1,15 @@
+# Version 1.1.3+8 R.C.
 
-# Version 1.1.2+7 RC
+ - Updated flutter, now with null safety.
+ - Updated dependencies.
+ - (Android) BETA added shortcut
+
+# Version 1.1.2+7 23-02-2021
 
  - (iOS) Fixed automatic detection of "System Theme" availability.
  - Open metadata page by tapping on lighthouse instead of holding power button (holding the power button still works).
- - (Android) BETA added shortcut
+ - Added support for F-droid.
+ - Updated dependencies.
 
 # Version 1.1.1+6 02-10-2020
 
