@@ -72,9 +72,7 @@ class LighthouseWidget extends StatelessWidget {
                                             this.lighthouseDevice.powerState,
                                         initialData: 0xFF,
                                         builder: (c, snapshot) {
-                                          final data = snapshot.hasData
-                                              ? snapshot.requireData
-                                              : 0xFF;
+                                          final data = snapshot.data ?? 0xFF;
                                           return _LHItemPowerStateWidget(
                                             powerStateByte: data,
                                             toPowerState: lighthouseDevice
