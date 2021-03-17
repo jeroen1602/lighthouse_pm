@@ -134,7 +134,7 @@ class _MetadataInkWell extends StatelessWidget {
       child: ListTile(
         title: Text(name),
         subtitle: Text(
-          value != null ? value! : 'Not set',
+          value ?? 'Not set',
           style: value != null
               ? null
               : theme.textTheme.bodyText2!.copyWith(
@@ -195,9 +195,8 @@ class _ExtraActionsWidget extends StatelessWidget {
                             return RawMaterialButton(
                               onPressed: () async {
                                 await extensions[index].onTap();
-                                if (extensions[index].updateListAfter &&
-                                    updateList != null) {
-                                  updateList!();
+                                if (extensions[index].updateListAfter) {
+                                  updateList?.call();
                                 }
                               },
                               enableFeedback: enabled,

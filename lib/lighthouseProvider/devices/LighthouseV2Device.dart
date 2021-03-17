@@ -51,12 +51,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   String get firmwareVersion {
-    final firmwareVersion = _firmwareVersion;
-    if (firmwareVersion == null) {
-      return "UNKNOWN";
-    } else {
-      return firmwareVersion;
-    }
+    return _firmwareVersion ?? "UNKNOWN";
   }
 
   @override

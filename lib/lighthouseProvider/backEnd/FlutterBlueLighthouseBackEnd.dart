@@ -107,9 +107,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
               continue;
             }
             // Update the last seen item.
-            final privateUpdateLastSeen = updateLastSeen;
-            if (privateUpdateLastSeen != null &&
-                privateUpdateLastSeen(deviceIdentifier)) {
+            if (updateLastSeen?.call(deviceIdentifier) == true) {
               continue;
             }
             // Possibly a new lighthouse, let's make sure it's valid.

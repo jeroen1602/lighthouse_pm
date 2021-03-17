@@ -252,27 +252,25 @@ class LighthouseProvider {
       }
       try {
         await _lighthouseDeviceMutex.acquire();
-        final List<TimeoutContainer<LighthouseDevice>>? list =
-            this._lightHouseDevices.value;
-        if (list != null) {
-          // Check if this device is already in the list, which should never happen.
-          if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
-                  (element) {
-                if (element != null) {
-                  return element.data == newDevice;
-                }
-                return false;
-              }, orElse: () => null) !=
-              null) {
-            debugPrint(
-                'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
-            return;
-          }
-
-          list.add(TimeoutContainer<LighthouseDevice>(newDevice));
-          this._lightHouseDevices.add(list);
-          this._lightHouseDevices.add(list);
+        final List<TimeoutContainer<LighthouseDevice>> list =
+            this._lightHouseDevices.value ?? [];
+        // Check if this device is already in the list, which should never happen.
+        if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
+                (element) {
+              if (element != null) {
+                return element.data == newDevice;
+              }
+              return false;
+            }, orElse: () => null) !=
+            null) {
+          debugPrint(
+              'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+          return;
         }
+
+        list.add(TimeoutContainer<LighthouseDevice>(newDevice));
+        this._lightHouseDevices.add(list);
+        this._lightHouseDevices.add(list);
       } finally {
         if (_lighthouseDeviceMutex.isLocked) {
           _lighthouseDeviceMutex.release();

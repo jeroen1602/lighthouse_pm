@@ -31,7 +31,7 @@ class EnableBluetoothDialogFlow {
                 },
               )));
         } else {
-          print(
+          debugPrint(
               'Could not enable bluetooth, but no snack bar was shown because of a setting');
         }
       }

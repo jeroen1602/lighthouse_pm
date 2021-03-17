@@ -326,8 +326,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           await NicknameAlertWidget.showCustomDialog(context,
                               macAddress: device.deviceIdentifier.toString(),
                               deviceName: device.name,
-                              nickname:
-                                  nickname == null ? null : nickname.nickname);
+                              nickname: nickname?.nickname);
                       if (newNickname != null) {
                         if (newNickname.nickname == null) {
                           blocWithoutListen.nicknames

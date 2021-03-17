@@ -146,7 +146,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
                       .textTheme
                       .bodyText2!
                       .copyWith(fontWeight: FontWeight.bold),
-                  text: '${version != null ? version.version : "Loading"}\n',
+                  text: '${version?.version ?? "Loading"}\n',
                   recognizer: recognizer,
                 ),
                 TextSpan(

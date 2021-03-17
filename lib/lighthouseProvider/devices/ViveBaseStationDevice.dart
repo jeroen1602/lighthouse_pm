@@ -65,12 +65,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   String get firmwareVersion {
-    final firmwareVersion = _firmwareVersion;
-    if (firmwareVersion == null) {
-      return "UNKNOWN";
-    } else {
-      return firmwareVersion;
-    }
+    return _firmwareVersion ?? "UNKNOWN";
   }
 
   @override
@@ -113,7 +108,8 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (characteristic == null) {
       return;
     }
-    if (this._deviceId == null) {
+    final deviceId = this._deviceId;
+    if (deviceId == null) {
       debugPrint("Device id is null for $name (${device.id})");
       return;
     }
@@ -131,7 +127,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, _deviceId!, Endian.little);
+    command.setUint32(4, deviceId, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
   }

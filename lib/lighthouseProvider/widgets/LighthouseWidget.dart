@@ -57,7 +57,7 @@ class LighthouseWidget extends StatelessWidget {
                                 child: Row(
                                   children: <Widget>[
                                     Text(
-                                        '${this.nickname != null ? this.nickname : this.lighthouseDevice.name}',
+                                        '${this.nickname ?? this.lighthouseDevice.name}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline4)
@@ -91,7 +91,7 @@ class LighthouseWidget extends StatelessWidget {
                       stream: this.lighthouseDevice.powerState,
                       initialData: 0xFF,
                       builder: (c, snapshot) {
-                        final data = snapshot.hasData ? snapshot.requireData : 0xFF;
+                        final data = snapshot.data ?? 0xFF;
                         return _LHItemButtonWidget(
                           powerState: data,
                           toPowerState: lighthouseDevice.powerStateFromByte,
