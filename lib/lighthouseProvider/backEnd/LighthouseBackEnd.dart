@@ -18,7 +18,7 @@ typedef UpdateLastSeen = bool Function(LHDeviceIdentifier deviceIdentifier);
 /// incoming [Stream] of unknown devices, check if any of it's set [providers]
 /// can communicate with it and return all valid device as a [lighthouseStream].
 ///
-/// The bac end is not responsible for keeping a list of connected devices,
+/// The back end is not responsible for keeping a list of connected devices,
 /// when the back end has been added to the [LighthouseProvider] it will set the
 /// [updateLastSeen] function which can be used to check if the unknown device
 /// is already known.
@@ -51,7 +51,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   ///
   /// Any back end that implements this method MUST await the super function first.
   @mustCallSuper
-  Future<void> startScan({@required Duration timeout}) async {
+  Future<void> startScan({required Duration timeout}) async {
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
@@ -82,20 +82,20 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   }
 
   /// A stream that returns all scanned devices.
-  Stream<LighthouseDevice /* ? */ > get lighthouseStream;
+  Stream<LighthouseDevice?> get lighthouseStream;
 
   /// IMPORTANT the [LighthouseProvider] should set this value when registering a back end!
-  UpdateLastSeen /* ? */ updateLastSeen;
+  UpdateLastSeen? updateLastSeen;
 
   /// Will return `null` if no device provider could validate the device.
   @protected
-  Future<LighthouseDevice /* ? */ > getLighthouseDevice(D device) async {
+  Future<LighthouseDevice?> getLighthouseDevice(D device) async {
     debugPrint('Trying to connect to device with name: ${device.name}');
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {
         continue;
       }
-      final LighthouseDevice lighthouseDevice =
+      final LighthouseDevice? lighthouseDevice =
           await provider.getDevice(device);
       if (lighthouseDevice != null) {
         return lighthouseDevice;
@@ -106,5 +106,5 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
 
   /// A stream that updates if the current back end is scanning.
   /// Will return `null` if the back end doesn't support it.
-  Stream<bool> /* ? */ get isScanning => null;
+  Stream<bool>? get isScanning => null;
 }

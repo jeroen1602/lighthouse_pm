@@ -48,8 +48,8 @@ class _SettingsViveBaseStationIdsPage
         Widget body = Center(
           child: CircularProgressIndicator(),
         );
-        if (snapshot.hasData) {
-          final data = snapshot.data;
+        final data = snapshot.data;
+        if (data != null) {
           data.sort((a, b) {
             return a.compareTo(b);
           });
@@ -87,7 +87,7 @@ class _SettingsViveBaseStationIdsPage
                   },
                 )
               ];
-        final Widget leading = selected.isEmpty
+        final Widget? leading = selected.isEmpty
             ? null
             : IconButton(
                 tooltip: 'Cancel selection',
@@ -119,13 +119,13 @@ typedef Future _DeleteItem(int id);
 
 class _DataPage extends StatelessWidget {
   _DataPage(
-      {Key key,
-      this.selecting,
-      this.ids,
-      this.selectItem,
-      this.isSelected,
-      this.deselectItem,
-      this.deleteItem})
+      {Key? key,
+      required this.selecting,
+      required this.ids,
+      required this.selectItem,
+      required this.isSelected,
+      required this.deselectItem,
+      required this.deleteItem})
       : super(key: key);
 
   final bool selecting;
@@ -209,7 +209,7 @@ class _EmptyState extends State<_EmptyPage> {
                 bloc.viveBaseStation.insertId(0xFFFFFFFD);
                 bloc.viveBaseStation.insertId(0xFFFFFFFC);
                 Toast.show('Fake ids created!', context,
-                    duration: Toast.LENGTH_LONG);
+                    duration: Toast.lengthShort);
                 tapCounter++;
               }
             },

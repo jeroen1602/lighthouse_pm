@@ -1,5 +1,5 @@
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
 
 class NicknameBloc {
   final LighthouseDatabase db;
@@ -9,15 +9,16 @@ class NicknameBloc {
   Stream<List<Nickname>> get watchSavedNicknames =>
       db.select(db.nicknames).watch();
 
-  Stream<Nickname /* ? */> watchNicknameForMacAddress(String macAddress) {
+  Stream<Nickname?> watchNicknameForMacAddress(String macAddress) {
     macAddress = macAddress.toUpperCase();
-    return (db.select(db.nicknames)..where((n) => n.macAddress.equals(macAddress)))
+    return (db.select(db.nicknames)
+          ..where((n) => n.macAddress.equals(macAddress)))
         .watch()
         .map((list) {
-       if (list.isEmpty) {
-         return null;
-       }
-       return list[0];
+      if (list.isEmpty) {
+        return null;
+      }
+      return list[0];
     });
   }
 
@@ -33,8 +34,9 @@ class NicknameBloc {
         .go();
   }
 
-  Future<int> insertLastSeenDevice(LastSeenDevice lastSeen) {
-    return db.into(db.lastSeenDevices)
+  Future<int> insertLastSeenDevice(LastSeenDevicesCompanion lastSeen) {
+    return db
+        .into(db.lastSeenDevices)
         .insert(lastSeen, mode: InsertMode.insertOrReplace);
   }
 
@@ -48,8 +50,10 @@ class NicknameBloc {
     ]);
     return query.watch().map((rows) {
       return rows.map((row) {
-        return NicknamesLastSeenJoin(row.read(db.nicknames.macAddress),
-            row.read(db.nicknames.nickname), row.read(db.lastSeenDevices.lastSeen));
+        return NicknamesLastSeenJoin(
+            row.read(db.nicknames.macAddress)!,
+            row.read(db.nicknames.nickname)!,
+            row.read(db.lastSeenDevices.lastSeen));
       }).toList();
     });
   }
@@ -57,5 +61,4 @@ class NicknameBloc {
   Future<void> deleteAllLastSeen() {
     return db.delete(db.lastSeenDevices).go();
   }
-
 }

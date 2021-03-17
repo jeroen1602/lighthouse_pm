@@ -25,7 +25,7 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
         _name = name;
 
   @override
-  Future<void> connect({Duration timeout}) async {
+  Future<void> connect({Duration? timeout}) async {
     // do nothing
   }
 
@@ -191,7 +191,7 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
     }
   }
 
-  final random = new Random();
+  final random = Random();
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
@@ -216,10 +216,10 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
           break;
         }
         this.data[0] = byte;
-        Future.delayed(new Duration(milliseconds: 10)).then((value) async {
+        Future.delayed(Duration(milliseconds: 10)).then((value) async {
           // booting
           this.data[0] = 0x09;
-          await Future.delayed(new Duration(milliseconds: 1200));
+          await Future.delayed(Duration(milliseconds: 1200));
         }).then((value) {
           if (byte == 0x01) {
             this.data[0] = 0x0b; // on
@@ -279,9 +279,9 @@ List<int> _intListFromString(String data) {
 List<int> _intListFromNumber(int number) {
   final data = ByteData(8);
   data.setUint64(0, number, Endian.big);
-  final List<int> list = List<int>();
+  final List<int> list = List<int>.filled(data.lengthInBytes, 0);
   var nonZero = false;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < data.lengthInBytes; i++) {
     final byte = data.getUint8(i);
     if (byte > 0) {
       nonZero = true;

@@ -29,13 +29,13 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
-  final ViveBaseStationBloc /* ? */ _bloc;
-  LHBluetoothCharacteristic /* ? */ _characteristic;
-  int /* ? */ _deviceIdStorage;
+  final ViveBaseStationBloc? _bloc;
+  LHBluetoothCharacteristic? _characteristic;
+  int? _deviceIdStorage;
 
-  int /* ? */ get _deviceId => _deviceIdStorage;
+  int? get _deviceId => _deviceIdStorage;
 
-  set _deviceId(int /* ? */ id) {
+  set _deviceId(int? id) {
     _deviceIdStorage = id;
     _hasDeviceIdSubject.add(id != null);
     if (id == null) {
@@ -46,10 +46,10 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
   }
 
-  int /* ? */ _deviceIdEnd;
-  String /* ? */ _firmwareVersion;
+  int? _deviceIdEnd;
+  String? _firmwareVersion;
   BehaviorSubject<bool> _hasDeviceIdSubject = BehaviorSubject.seeded(false);
-  final Map<String, String> _otherMetadata = Map();
+  final Map<String, String?> _otherMetadata = Map();
   static const _SUPPORTED_CHARACTERISTICS_LIST = const [
     DefaultCharacteristics.MODEL_NUMBER_STRING_CHARACTERISTIC,
     DefaultCharacteristics.SERIAL_NUMBER_STRING_CHARACTERISTIC,
@@ -61,15 +61,11 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   String get name => device.name;
 
   @override
-  Map<String, String> get otherMetadata => _otherMetadata;
+  Map<String, String?> get otherMetadata => _otherMetadata;
 
   @override
   String get firmwareVersion {
-    if (_firmwareVersion == null) {
-      return "UNKNOWN";
-    } else {
-      return _firmwareVersion;
-    }
+    return _firmwareVersion ?? "UNKNOWN";
   }
 
   @override
@@ -78,15 +74,16 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   }
 
   @override
-  Future<int /* ? */ > getCurrentState() async {
-    if (_characteristic == null) {
+  Future<int?> getCurrentState() async {
+    final characteristic = this._characteristic;
+    if (characteristic == null) {
       return null;
     }
     if ((await this.device.state.first) != LHBluetoothDeviceState.connected) {
       await disconnect();
       return null;
     }
-    final byteArray = await _characteristic.readByteData();
+    final byteArray = await characteristic.readByteData();
 
     if (byteArray.lengthInBytes >= 2) {
       return byteArray.getUint8(1);
@@ -103,14 +100,16 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   }
 
   ///
-  ///
   /// May throw [UnsupportedError] if state is something else than [LighthousePowerState.ON] or [LighthousePowerState.STANDBY].
+  ///
   @override
   Future internalChangeState(LighthousePowerState newState) async {
-    if (_characteristic == null) {
+    final characteristic = this._characteristic;
+    if (characteristic == null) {
       return;
     }
-    if (_deviceId == null) {
+    final deviceId = this._deviceId;
+    if (deviceId == null) {
       debugPrint("Device id is null for $name (${device.id})");
       return;
     }
@@ -128,9 +127,9 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, _deviceId, Endian.little);
+    command.setUint32(4, deviceId, Endian.little);
 
-    await _characteristic.writeByteData(command, withoutResponse: true);
+    await characteristic.writeByteData(command, withoutResponse: true);
   }
 
   @override
@@ -156,9 +155,10 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       debugPrint('Could not get device id end from name. "$name"');
       return false;
     }
-    if (_bloc != null) {
-      _deviceId = await _bloc.getIdOnSubset(_deviceIdEnd);
-      if (_deviceId == null) {
+    final bloc = _bloc;
+    if (bloc != null) {
+      this._deviceId = await bloc.getIdOnSubset(_deviceIdEnd!);
+      if (this._deviceId == null) {
         debugPrint('Device Id not set yet for "$name"');
       }
     } else {
@@ -192,11 +192,9 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
         if (DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC
             .isEqualToGuid(uuid)) {
           try {
-            this._firmwareVersion = await characteristic.readString();
-            this._firmwareVersion = this
-                ._firmwareVersion
-                .replaceAll('\r', '')
-                .replaceAll('\n', ' ');
+            final firmwareVersion = await characteristic.readString();
+            this._firmwareVersion =
+                firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
             debugPrint('Unable to get firmware version because: $e');
             debugPrint('$s');
@@ -207,7 +205,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
             _SUPPORTED_CHARACTERISTICS_LIST, characteristic, _otherMetadata);
       }
     }
-    if (this._characteristic != null) {
+    if (hasOpenConnection) {
       return true;
     }
     await disconnect();
@@ -217,10 +215,11 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
-    if (_bloc != null) {
+    final bloc = _bloc;
+    if (bloc != null) {
       deviceExtensions.add(ClearIdExtension(
-          bloc: _bloc,
-          deviceIdEnd: _deviceIdEnd,
+          bloc: bloc,
+          deviceIdEnd: _deviceIdEnd!,
           clearId: () => _deviceId = null));
     }
     deviceExtensions.add(SleepExtension(
@@ -256,25 +255,26 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
 
     return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-            context, _deviceIdEnd)
+            context, _deviceIdEnd!)
         .then((value) async {
       if (value == null) {
         return false;
       }
       value = value.toUpperCase();
       if (value.length == 4) {
-        value += _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
+        value += _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase();
       }
       if (value.length == 8) {
         if (value.substring(3) ==
-            _deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase()) {
+            _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase()) {
           debugPrint('End of the device did not match');
           return false;
         }
         try {
           this._deviceId = int.parse(value, radix: 16);
-          if (_bloc != null) {
-            await _bloc.insertId(_deviceId);
+          final bloc = _bloc;
+          if (bloc != null) {
+            await bloc.insertId(_deviceId!);
           } else {
             debugPrint('Could not save device id because the bloc was null');
           }

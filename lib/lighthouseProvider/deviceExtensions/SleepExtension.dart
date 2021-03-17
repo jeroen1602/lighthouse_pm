@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../LighthousePowerState.dart';
@@ -9,14 +8,12 @@ import 'StateExtension.dart';
 ///
 class SleepExtension extends StateExtension {
   SleepExtension(
-      {@required ChangeStateFunction changeState,
-      @required Stream<LighthousePowerState> powerStateStream})
+      {required ChangeStateFunction changeState,
+      required Stream<LighthousePowerState> powerStateStream})
       : super(
             toolTip: "Sleep",
-            icon:
-                Icon(Icons.power_settings_new, size: 24, color: Colors.blue),
+            icon: Icon(Icons.power_settings_new, size: 24, color: Colors.blue),
             changeState: changeState,
             powerStateStream: powerStateStream,
             toState: LighthousePowerState.SLEEP);
 }
-

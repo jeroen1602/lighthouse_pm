@@ -9,7 +9,7 @@ import 'package:flutter/gestures.dart';
 ///
 class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   CustomLongPressGestureRecognizer(
-      {Object debugOwner, Duration duration = kLongPressTimeout})
+      {Object? debugOwner, Duration duration = kLongPressTimeout})
       : this._duration = duration,
         super(debugOwner: debugOwner) {
     super.onTapDown = _onTapDownHandler;
@@ -18,11 +18,12 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   }
 
   final Duration _duration;
+  Timer? _waitTimer;
 
-  GestureTapCallback onLongPress;
-  GestureTapCallback _internalOnTap;
-  GestureTapDownCallback _internalOnTapDown;
-  GestureTapUpCallback _internalOnTapUp;
+  GestureTapCallback? onLongPress;
+  GestureTapCallback? _internalOnTap;
+  GestureTapDownCallback? _internalOnTapDown;
+  GestureTapUpCallback? _internalOnTapUp;
 
   @override
   set onTapUp(_onTapUp) {
@@ -31,7 +32,7 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
 
   @override
   set onTapDown(_onTapDown) {
-    _internalOnTapDown = _onTapDown;
+    this._internalOnTapDown = _onTapDown;
   }
 
   @override
@@ -39,34 +40,21 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
     this._internalOnTap = onTap;
   }
 
-  Timer /* ? */ _waitTimer;
-
   void _onTapDownHandler(TapDownDetails details) {
     Timer(_duration, () {
       _waitTimer = null;
-      if (this.onLongPress != null) {
-        this.onLongPress.call();
-      }
+      this.onLongPress?.call();
     });
 
-    if (_internalOnTapDown != null) {
-      _internalOnTapDown.call(details);
-    }
+    this._internalOnTapDown?.call(details);
   }
 
   void _onTapUpHandler(TapUpDetails details) {
-    final timer = _waitTimer;
-    if (timer != null) {
-      _waitTimer.cancel();
-    }
-    if (_internalOnTapUp != null) {
-      _internalOnTapUp.call(details);
-    }
+    _waitTimer?.cancel();
+    this._internalOnTapUp?.call(details);
   }
 
   void _onTapHandler() {
-    if (this._internalOnTap != null) {
-      this._internalOnTap.call();
-    }
+    this._internalOnTap?.call();
   }
 }

@@ -47,12 +47,12 @@ class TroubleshootingContentWidget extends StatelessWidget {
         initialData: false,
         stream: _bloc(context).settings.getViveBaseStationsEnabledStream(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          final data = snapshot.hasData && snapshot.data;
+          final baseStationEnabled = snapshot.data == true;
           return ListTile(
-              title: Text(data
+              title: Text(baseStationEnabled
                   ? 'Vive Base station support is still in beta'
                   : 'Make sure that your lighthouses are V2 lighthouses and not V1/Vive'),
-              subtitle: Text(data
+              subtitle: Text(baseStationEnabled
                   ? 'The Vive Base station support is still in beta so it might not work correctly.'
                   : 'The Vive Base station support is still in beta and needs to be enabled.'),
               leading: SvgPicture.asset("assets/images/app-icon.svg"));
@@ -138,7 +138,8 @@ class TroubleshootingContentWidget extends StatelessWidget {
           FutureBuilder<PermissionStatus>(
             future: BLEPermissionsHelper.hasBLEPermissions(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data.isGranted) {
+              final permissionState = snapshot.data;
+              if (permissionState == PermissionStatus.granted) {
                 return Container();
               }
               return Column(
@@ -196,12 +197,12 @@ class TroubleshootingContentWidget extends StatelessWidget {
 ///
 class _TroubleshootingItemWithAction extends StatelessWidget {
   _TroubleshootingItemWithAction(
-      {Key key,
-      @required this.leadingIcon,
-      @required this.leadingColor,
-      @required this.actionIcon,
-      @required this.onTap,
-      @required this.title,
+      {Key? key,
+      required this.leadingIcon,
+      required this.leadingColor,
+      required this.actionIcon,
+      required this.onTap,
+      required this.title,
       this.subtitle})
       : super(key: key);
 
@@ -210,7 +211,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
   final IconData actionIcon;
   final VoidCallback onTap;
   final Widget title;
-  final Widget subtitle;
+  final Widget? subtitle;
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ import 'package:vibration/vibration.dart';
 import '../../bloc.dart';
 
 class LighthouseMetadataPage extends StatefulWidget {
-  LighthouseMetadataPage(this.device, {Key key}) : super(key: key);
+  LighthouseMetadataPage(this.device, {Key? key}) : super(key: key);
 
   final LighthouseDevice device;
   final BehaviorSubject<int> _updateSubject = BehaviorSubject.seeded(0);
@@ -30,22 +30,24 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
   LighthousePMBloc get _blocWithoutListen =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 
-  Future<void> changeNicknameHandler(String currentNickname) async {
+  Future<void> changeNicknameHandler(String? currentNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
         macAddress: widget.device.deviceIdentifier.toString(),
         deviceName: widget.device.name,
         nickname: currentNickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await _blocWithoutListen.nicknames.deleteNicknames([newNickname.macAddress]);
+        await _blocWithoutListen.nicknames
+            .deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.nicknames.insertNickname(newNickname);
+        await _blocWithoutListen.nicknames
+            .insertNickname(newNickname.toNickname()!);
       }
     }
   }
 
   List<Widget> _generateBody() {
-    Map<String, String> map = Map();
+    Map<String, String?> map = Map();
     map["Device type"] = "${widget.device.runtimeType}";
     map["Name"] = widget.device.name;
     map["Firmware version"] = widget.device.firmwareVersion;
@@ -58,7 +60,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       body.add(_ExtraActionsWidget(
         widget.device as DeviceWithExtensions,
         updateList: () {
-          widget._updateSubject.add(widget._updateSubject.value + 1);
+          widget._updateSubject.add((widget._updateSubject.value ?? 0) + 1);
         },
       ));
     }
@@ -67,16 +69,17 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       body.add(_MetadataInkWell(name: entries[i].key, value: entries[i].value));
     }
 
-    body.add(StreamBuilder<Nickname>(
+    body.add(StreamBuilder<Nickname?>(
       stream: _bloc.nicknames.watchNicknameForMacAddress(
           widget.device.deviceIdentifier.toString()),
-      builder: (BuildContext context, AsyncSnapshot<Nickname> snapshot) {
-        if (snapshot.hasData) {
+      builder: (BuildContext context, AsyncSnapshot<Nickname?> snapshot) {
+        final nickname = snapshot.data;
+        if (nickname != null) {
           return _MetadataInkWell(
             name: 'Nickname',
-            value: snapshot.data.nickname,
+            value: nickname.nickname,
             onTap: () {
-              changeNicknameHandler(snapshot.data.nickname);
+              changeNicknameHandler(nickname.nickname);
             },
           );
         } else {
@@ -86,9 +89,9 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
               title: Text('Nickname'),
               subtitle: Text(
                 'Not set',
-                style: theme.textTheme.bodyText2.copyWith(
+                style: theme.textTheme.bodyText2!.copyWith(
                     fontStyle: FontStyle.italic,
-                    color: theme.textTheme.caption.color),
+                    color: theme.textTheme.caption!.color),
               ),
               onTap: () {
                 changeNicknameHandler(null);
@@ -117,12 +120,12 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 }
 
 class _MetadataInkWell extends StatelessWidget {
-  _MetadataInkWell({Key key, this.name, this.value, this.onTap})
+  _MetadataInkWell({Key? key, required this.name, this.value, this.onTap})
       : super(key: key);
 
   final String name;
-  final String value;
-  final VoidCallback onTap;
+  final String? value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -131,21 +134,21 @@ class _MetadataInkWell extends StatelessWidget {
       child: ListTile(
         title: Text(name),
         subtitle: Text(
-          value != null ? value : 'Not set',
+          value ?? 'Not set',
           style: value != null
               ? null
-              : theme.textTheme.bodyText2.copyWith(
+              : theme.textTheme.bodyText2!.copyWith(
                   fontStyle: FontStyle.italic,
-                  color: theme.textTheme.caption.color),
+                  color: theme.textTheme.caption!.color),
         ),
       ),
       onLongPress: () async {
         Clipboard.setData(ClipboardData(text: value));
-        if (await Vibration.hasVibrator()) {
+        if (await Vibration.hasVibrator() == true) {
           Vibration.vibrate(duration: 200);
         }
         Toast.show('Copied to clipboard', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+            duration: Toast.lengthShort, gravity: Toast.bottom);
       },
       onTap: onTap,
     );
@@ -153,11 +156,11 @@ class _MetadataInkWell extends StatelessWidget {
 }
 
 class _ExtraActionsWidget extends StatelessWidget {
-  _ExtraActionsWidget(this.device, {Key key, this.updateList})
+  _ExtraActionsWidget(this.device, {Key? key, this.updateList})
       : super(key: key);
 
   final DeviceWithExtensions device;
-  final VoidCallback updateList;
+  final VoidCallback? updateList;
 
   @override
   Widget build(BuildContext context) {
@@ -188,17 +191,17 @@ class _ExtraActionsWidget extends StatelessWidget {
                           stream: extensions[index].enabledStream,
                           initialData: false,
                           builder: (c, snapshot) {
+                            final enabled = snapshot.data == true;
                             return RawMaterialButton(
                               onPressed: () async {
                                 await extensions[index].onTap();
-                                if (extensions[index].updateListAfter &&
-                                    updateList != null) {
-                                  updateList();
+                                if (extensions[index].updateListAfter) {
+                                  updateList?.call();
                                 }
                               },
-                              enableFeedback: snapshot.hasData && snapshot.data,
+                              enableFeedback: enabled,
                               elevation: 2.0,
-                              fillColor: (snapshot.hasData && snapshot.data)
+                              fillColor: enabled
                                   ? Theme.of(context).buttonColor
                                   : Theme.of(context).disabledColor,
                               padding: const EdgeInsets.all(2.0),

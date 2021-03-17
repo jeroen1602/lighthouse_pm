@@ -17,7 +17,7 @@ abstract class DeviceProvider<D extends LowLevelDevice> {
   /// [device] the specific device to connect to and test.
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
-  Future<LighthouseDevice /*?*/ > getDevice(D device);
+  Future<LighthouseDevice?> getDevice(D device);
 
   ///
   /// Close any open connections that may have been made for discovering devices.

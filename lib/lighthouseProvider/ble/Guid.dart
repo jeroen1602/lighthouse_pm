@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:lighthouse_pm/lighthouseProvider/helpers/ByteDataExtensions.dart';
+import '../helpers/ByteDataExtensions.dart';
 
 ///
 /// Guid for Bluetooth Low energy services and characteristics.
@@ -19,15 +19,11 @@ class LighthouseGuid {
   LighthouseGuid.empty() : this.fromBytes(ByteData(16));
 
   static ByteData _fromString(String input) {
-    if (input == null) {
-      throw new ArgumentError("Input was null");
-    }
-
     input = _removeNonHexCharacters(input);
     final byteArray = hex.decode(input);
 
     if (byteArray.length != 16) {
-      throw new FormatException("The format is invalid");
+      throw FormatException("The format is invalid");
     }
 
     final bytes = ByteData(byteArray.length);
@@ -39,15 +35,15 @@ class LighthouseGuid {
 
   @override
   String toString() {
-    String one =
+    final one =
         _bytes.getUint32(0, Endian.big).toRadixString(16).padLeft(8, '0');
-    String two =
+    final two =
         _bytes.getUint16(4, Endian.big).toRadixString(16).padLeft(4, '0');
-    String three =
+    final three =
         _bytes.getUint16(6, Endian.big).toRadixString(16).padLeft(4, '0');
-    String four =
+    final four =
         _bytes.getUint16(8, Endian.big).toRadixString(16).padLeft(4, '0');
-    String five =
+    final five =
         _bytes.getUint32(10, Endian.big).toRadixString(16).padLeft(8, '0') +
             _bytes.getUint16(14, Endian.big).toRadixString(16).padLeft(4, '0');
     return "$one-$two-$three-$four-$five".toUpperCase();

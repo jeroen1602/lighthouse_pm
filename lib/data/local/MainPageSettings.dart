@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
@@ -7,9 +6,9 @@ import 'package:tuple/tuple.dart';
 
 class MainPageSettings {
   const MainPageSettings._(
-      {@required this.sleepState,
-      @required this.viveBaseStationsEnabled,
-      @required this.scanDuration});
+      {required this.sleepState,
+      required this.viveBaseStationsEnabled,
+      required this.scanDuration});
 
   final LighthousePowerState sleepState;
   final bool viveBaseStationsEnabled;

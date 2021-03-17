@@ -18,7 +18,7 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
   @override
-  Future<LighthouseDevice /*?*/ > getDevice(LHBluetoothDevice device) async {
+  Future<LighthouseDevice?> getDevice(LHBluetoothDevice device) async {
     BLEDevice bleDevice = await this.internalGetDevice(device);
     this._bleDevicesDiscovering.add(bleDevice);
     try {

@@ -52,11 +52,11 @@ class LighthouseProvider {
   final Mutex _lighthouseDeviceMutex = Mutex();
   BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>> _lightHouseDevices =
       BehaviorSubject.seeded([]);
-  StreamSubscription /* ? */ _backEndResultSubscription;
+  StreamSubscription? _backEndResultSubscription;
   Set<LighthouseBackEnd> _backEndSet = Set();
 
   BehaviorSubject<bool> _isScanningBehavior = BehaviorSubject.seeded(false);
-  StreamSubscription /* ? */ _isScanningSubscription;
+  StreamSubscription? _isScanningSubscription;
 
   Stream<bool> get isScanning => _isScanningBehavior.stream;
 
@@ -76,7 +76,7 @@ class LighthouseProvider {
   /// Get a list of all the back ends that this [DeviceProvider] can be used with.
   List<LighthouseBackEnd> _getBackEndForDeviceProvider(
       DeviceProvider provider) {
-    final List<LighthouseBackEnd> backEndList = List<LighthouseBackEnd>();
+    final List<LighthouseBackEnd> backEndList = <LighthouseBackEnd>[];
     for (final backEnd in _backEndSet) {
       if (backEnd.isMyProviderType(provider)) {
         backEndList.add(backEnd);
@@ -91,7 +91,7 @@ class LighthouseProvider {
   /// [DeviceProvider].
   void addProvider(DeviceProvider provider) {
     final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList == null || backEndList.isEmpty) {
+    if (backEndList.isEmpty) {
       throw UnsupportedError(
           'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
     }
@@ -106,7 +106,7 @@ class LighthouseProvider {
   /// [DeviceProvider].
   void removeProvider(DeviceProvider provider) {
     final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList == null || backEndList.isEmpty) {
+    if (backEndList.isEmpty) {
       throw UnsupportedError(
           'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
     }
@@ -121,7 +121,7 @@ class LighthouseProvider {
   /// for new ones.
   ///
   /// Will call the [cleanUp] function before starting the scan.
-  Future startScan({@required Duration timeout}) async {
+  Future startScan({required Duration timeout}) async {
     await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
@@ -141,7 +141,7 @@ class LighthouseProvider {
     for (final backEnd in _backEndSet) {
       await backEnd.cleanUp();
     }
-    _lightHouseDevices.add(List());
+    _lightHouseDevices.add([]);
     if (_lighthouseDeviceMutex.isLocked) {
       _lighthouseDeviceMutex.release();
     }
@@ -153,9 +153,7 @@ class LighthouseProvider {
   /// [lighthouseDevices] will still contain the (at the time of stopping)
   /// valid [LighthouseDevice]s.
   Future stopScan() async {
-    if (this._backEndResultSubscription != null) {
-      this._backEndResultSubscription.pause();
-    }
+    this._backEndResultSubscription?.pause();
     for (final backEnd in _backEndSet) {
       await backEnd.stopScan();
     }
@@ -163,8 +161,9 @@ class LighthouseProvider {
 
   /// Start combining all [isScanning] from the back end providers.
   Future<void> _startIsScanningSubscription() async {
-    if (_isScanningSubscription != null) {
-      await _isScanningSubscription.cancel();
+    var isScanningSubscription = _isScanningSubscription;
+    if (isScanningSubscription != null) {
+      await isScanningSubscription.cancel();
       _isScanningSubscription = null;
     }
 
@@ -175,15 +174,15 @@ class LighthouseProvider {
         .asMap()
         .entries
         .map((entry) =>
-            entry.value.map((event) => Tuple2<int, bool>(entry.key, event)))
+            entry.value!.map((event) => Tuple2<int, bool>(entry.key, event)))
         .toList(growable: false);
 
-    final List<bool> scanResults = List<bool>(streams.length);
+    final List<bool> scanResults = List<bool>.filled(streams.length, false);
     for (var i = 0; i < scanResults.length; i++) {
       scanResults[i] = false;
     }
 
-    _isScanningSubscription =
+    isScanningSubscription =
         MergeStream<Tuple2<int, bool>>(streams).map<bool>((scanning) {
       if (scanning.item1 >= 0 && scanning.item1 < scanResults.length) {
         scanResults[scanning.item1] = scanning.item2;
@@ -192,6 +191,8 @@ class LighthouseProvider {
     }).listen((isScanning) {
       this._isScanningBehavior.add(isScanning);
     });
+
+    this._isScanningSubscription = isScanningSubscription;
   }
 
   /// Update the last time a device has been seen.
@@ -199,9 +200,17 @@ class LighthouseProvider {
   /// This will update the last time a device with teh [deviceIdentifier] has
   /// been seen and return a bool if this was successful.
   bool _updateLastSeen(LHDeviceIdentifier deviceIdentifier) {
-    final device = _lightHouseDevices.value.firstWhere(
-        (element) => element.data.deviceIdentifier == deviceIdentifier,
-        orElse: () => null);
+    final list = _lightHouseDevices.value;
+    if (list == null) {
+      return false;
+    }
+    final device =
+        list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere((element) {
+      if (element != null) {
+        return element.data.deviceIdentifier == deviceIdentifier;
+      }
+      return false;
+    }, orElse: () => null);
     if (device == null) {
       return false;
     }
@@ -215,7 +224,7 @@ class LighthouseProvider {
       await backEnd.disconnectOpenDevices();
     }
     final list = this._lightHouseDevices.value;
-    for (final device in list) {
+    for (final device in list ?? []) {
       await device.data.disconnect();
     }
   }
@@ -223,34 +232,42 @@ class LighthouseProvider {
   /// Combine the output streams from all the back-ends and add combine all their
   /// returned [LighthouseDevice]s.
   Future _startListeningScanResults() async {
-    if (_backEndResultSubscription != null) {
-      if (!_backEndResultSubscription.isPaused) {
-        _backEndResultSubscription.pause();
+    var backEndResultSubscription = this._backEndResultSubscription;
+    if (backEndResultSubscription != null) {
+      if (!backEndResultSubscription.isPaused) {
+        backEndResultSubscription.pause();
       }
-      await _backEndResultSubscription.cancel();
-      _backEndResultSubscription = null;
+      await backEndResultSubscription.cancel();
+      this._backEndResultSubscription = null;
     }
 
-    final streams = <Stream<LighthouseDevice /* ? */ >>[];
+    final streams = <Stream<LighthouseDevice?>>[];
     for (final backEnd in _backEndSet) {
       streams.add(backEnd.lighthouseStream);
     }
 
-    _backEndResultSubscription = MergeStream(streams).listen((newDevice) async {
+    backEndResultSubscription = MergeStream(streams).listen((newDevice) async {
       if (newDevice == null) {
         return;
       }
       try {
         await _lighthouseDeviceMutex.acquire();
-        final list = this._lightHouseDevices.value;
+        final List<TimeoutContainer<LighthouseDevice>> list =
+            this._lightHouseDevices.value ?? [];
         // Check if this device is already in the list, which should never happen.
-        if (list.firstWhere((element) => element.data == newDevice,
-                orElse: () => null) !=
+        if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
+                (element) {
+              if (element != null) {
+                return element.data == newDevice;
+              }
+              return false;
+            }, orElse: () => null) !=
             null) {
           debugPrint(
               'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
           return;
         }
+
         list.add(TimeoutContainer<LighthouseDevice>(newDevice));
         this._lightHouseDevices.add(list);
         this._lightHouseDevices.add(list);
@@ -261,8 +278,9 @@ class LighthouseProvider {
       }
     });
     // Clean-up for when the stream is canceled.
-    _backEndResultSubscription.onDone(() {
+    backEndResultSubscription.onDone(() {
       this._backEndResultSubscription = null;
     });
+    this._backEndResultSubscription = backEndResultSubscription;
   }
 }

@@ -14,7 +14,7 @@ class FlutterBlueBluetoothService extends LHBluetoothService {
   }
 
   final BluetoothService service;
-  final List<LHBluetoothCharacteristic> _characteristics = List();
+  final List<LHBluetoothCharacteristic> _characteristics = [];
 
   @override
   List<LHBluetoothCharacteristic> get characteristics => _characteristics;

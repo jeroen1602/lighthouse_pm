@@ -6,7 +6,7 @@ typedef Future _StartScanCallback({String failMessage});
 
 class MainPageDrawer extends StatelessWidget {
   MainPageDrawer(VoidCallback cleanUp, _StartScanCallback startScanWithCheck,
-      {Key key})
+      {Key? key})
       : _cleanUp = cleanUp,
         _startScanWithCheck = startScanWithCheck,
         super(key: key);
