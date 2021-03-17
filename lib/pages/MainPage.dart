@@ -44,30 +44,34 @@ Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
 }
 
 class MainPage extends BasePage with WithBlocStateless {
-  MainPage({Key key}) : super(key: key, replace: true);
+  MainPage({Key? key}) : super(key: key, replace: true);
 
   @override
   Widget buildPage(BuildContext context) {
     return MainPageSettings.mainPageSettingsStreamBuilder(
       bloc: blocWithoutListen(context),
       builder: (context, settings) {
-        return StreamBuilder<BluetoothState>(
-            stream: FlutterBlue.instance.state,
-            initialData: BluetoothState.unknown,
-            builder:
-                (BuildContext context, AsyncSnapshot<BluetoothState> snapshot) {
-              final state = snapshot.data;
-              return state == BluetoothState.on
-                  ? ScanDevicesPage(settings: settings)
-                  : BluetoothOffScreen(state: state, settings: settings);
-            });
+        if (settings != null) {
+          return StreamBuilder<BluetoothState>(
+              stream: FlutterBlue.instance.state,
+              initialData: BluetoothState.unknown,
+              builder: (BuildContext context,
+                  AsyncSnapshot<BluetoothState> snapshot) {
+                final state = snapshot.data;
+                return state == BluetoothState.on
+                    ? ScanDevicesPage(settings: settings)
+                    : BluetoothOffScreen(state: state, settings: settings);
+              });
+        } else {
+          return Text('Booting');
+        }
       },
     );
   }
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
-  _ScanFloatingButtonWidget({Key key, @required this.settings})
+  _ScanFloatingButtonWidget({Key? key, required this.settings})
       : super(key: key);
 
   final MainPageSettings settings;
@@ -121,7 +125,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
         failMessage:
             "Could not start scan because the permission has not been granted");
@@ -266,7 +270,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               .deleteNicknames([newNickname.macAddress]);
                         } else {
                           blocWithoutListen.nicknames
-                              .insertNickname(newNickname);
+                              .insertNickname(newNickname.toNickname()!);
                         }
                         selected.remove(item);
                       }

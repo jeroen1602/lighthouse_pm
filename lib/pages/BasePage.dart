@@ -9,10 +9,10 @@ import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
 /// For now it just handles the shortcuts
 ///
 abstract class BasePage extends StatelessWidget {
-  final ShortcutHandle /* ? */ shortcutHandleArgument;
+  final ShortcutHandle? shortcutHandleArgument;
   final bool replace;
 
-  const BasePage({Key key, this.shortcutHandleArgument, this.replace = false})
+  const BasePage({Key? key, this.shortcutHandleArgument, this.replace = false})
       : super(key: key);
 
   @override
@@ -26,11 +26,11 @@ abstract class BasePage extends StatelessWidget {
 
 class _ShortcutLaunchHandleWidget extends StatefulWidget {
   final Widget body;
-  final ShortcutHandle /* ? */ handle;
+  final ShortcutHandle? handle;
   final bool replace;
 
   const _ShortcutLaunchHandleWidget(this.body, this.handle, this.replace,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -44,19 +44,19 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
   void initState() {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       Shortcut.instance.readyForData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ShortcutHandle /* ? */ >(
+    return StreamBuilder<ShortcutHandle?>(
         stream: _shortcutStream(),
         initialData: null,
         builder: (BuildContext shortcutContext,
-            AsyncSnapshot<ShortcutHandle /* ? */ > shortcutSnapshot) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            AsyncSnapshot<ShortcutHandle?> shortcutSnapshot) {
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
             if (shortcutSnapshot.data != null &&
                 shortcutSnapshot.data != widget.handle) {
               if (widget.replace) {
@@ -73,7 +73,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
   }
 }
 
-Stream<ShortcutHandle /* ? */ > _shortcutStream() {
+Stream<ShortcutHandle?> _shortcutStream() {
   if (Platform.isAndroid) {
     return Shortcut.instance.changePowerStateMac;
   } else {

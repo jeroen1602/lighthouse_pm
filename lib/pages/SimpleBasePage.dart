@@ -11,7 +11,7 @@ import './BasePage.dart';
 class SimpleBasePage extends BasePage {
   final Widget _body;
 
-  SimpleBasePage(this._body, {Key key, ShortcutHandle shortcutHandleArgument})
+  SimpleBasePage(this._body, {Key? key, ShortcutHandle? shortcutHandleArgument})
       : super(key: key, shortcutHandleArgument: shortcutHandleArgument);
 
   @override

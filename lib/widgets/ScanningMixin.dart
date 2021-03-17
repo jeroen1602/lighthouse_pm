@@ -43,7 +43,7 @@ abstract class ScanningMixin {
 
   Future cleanUp() async => await LighthouseProvider.instance.cleanUp();
 
-  Widget buildScanPopScope({@required Widget child}) {
+  Widget buildScanPopScope({required Widget child}) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: child,

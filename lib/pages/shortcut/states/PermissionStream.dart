@@ -8,8 +8,8 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
     with ScanningMixin, CloseCurrentRouteMixin {
   PermissionsStream(
-      {Key key,
-      @required List<Object> upStream,
+      {Key? key,
+      required List<Object> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,
@@ -21,17 +21,18 @@ class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
     return FutureBuilder<PermissionStatus>(
         future: BLEPermissionsHelper.hasBLEPermissions(),
         builder: (context, AsyncSnapshot<PermissionStatus> permissionSnapshot) {
-          if (!permissionSnapshot.hasData) {
+          final permissions = permissionSnapshot.data;
+          if (permissions == null) {
             return Text('Loading...');
           }
           if (permissionSnapshot.data != PermissionStatus.granted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
+            WidgetsBinding.instance?.addPostFrameCallback((_) async {
               await closeCurrentRouteWithWait(context);
             });
             return Text('Permission has not been given!');
           }
           return buildScanPopScope(
-              child: getNextStreamDown(context, permissionSnapshot.data));
+              child: getNextStreamDown(context, permissions));
         });
   }
 
@@ -39,7 +40,7 @@ class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
     return (context, upStream, downStream) {
       return PermissionsStream(
         upStream: upStream,
-        downStreamBuilders: downStream,
+        downStreamBuilders: downStream.cast<DownStreamBuilder>(),
       );
     };
   }

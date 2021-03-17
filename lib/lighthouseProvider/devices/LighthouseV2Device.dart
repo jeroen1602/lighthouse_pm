@@ -33,6 +33,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
+
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
   LHBluetoothCharacteristic? _characteristic;
@@ -184,10 +185,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     if (Platform.isAndroid) {
       // TODO: check if shortcuts are support on this Android version.
       deviceExtensions.add(ShortcutExtension(deviceIdentifier.toString(), () {
-        if (nicknameInternal != null) {
-          return nicknameInternal;
-        }
-        return name;
+        return nicknameInternal ?? name;
       }));
     }
   }

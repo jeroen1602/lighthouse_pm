@@ -24,17 +24,16 @@ class Shortcut {
     }
   }
 
-  static Shortcut /* ? */ _instance;
+  static Shortcut? _instance;
 
   static Shortcut get instance {
     if (_instance == null) {
       _instance = Shortcut._();
     }
-    return _instance;
+    return _instance!;
   }
 
-  BehaviorSubject<ShortcutHandle /* ? */ > _changePowerStateMac =
-      BehaviorSubject();
+  BehaviorSubject<ShortcutHandle?> _changePowerStateMac = BehaviorSubject();
 
   static const _channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/shortcut");
@@ -55,7 +54,7 @@ class Shortcut {
     return _channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
       'action': "${type._part}/$shortCutString",
       'name': name
-    });
+    }).then((value) => value == true);
   }
 
   ///
@@ -71,7 +70,7 @@ class Shortcut {
   /// For example a [ShortcutTypes.MAC_TYPE] where the [ShortcutHandle.data]
   /// will contain the mac address of the device that should have it's power
   /// state toggled.
-  Stream<ShortcutHandle /* ? */ > get changePowerStateMac =>
+  Stream<ShortcutHandle?> get changePowerStateMac =>
       _changePowerStateMac.stream;
 
   ///
@@ -80,8 +79,8 @@ class Shortcut {
   static Future<void> _handleMacShortcut(
       Shortcut instance, MethodCall call) async {
     if (call.arguments != null && call.arguments is String) {
-      instance._changePowerStateMac.value =
-          ShortcutHandle(ShortcutTypes.MAC_TYPE, call.arguments as String);
+      instance._changePowerStateMac.add(
+          ShortcutHandle(ShortcutTypes.MAC_TYPE, call.arguments as String));
     } else {
       debugPrint("Could not handle mac shortcut callback because the argument "
           "was missing or of a wrong type");
@@ -139,5 +138,4 @@ class ShortcutHandle {
 
   @override
   int get hashCode => super.hashCode;
-
 }

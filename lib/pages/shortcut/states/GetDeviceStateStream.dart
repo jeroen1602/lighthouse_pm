@@ -14,8 +14,8 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
   final int settingsIndex;
 
   GetDeviceStateStream(this.settingsIndex,
-      {Key key,
-      @required List<Object> upStream,
+      {Key? key,
+      required List<Object> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,
@@ -75,11 +75,12 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
             device, Duration(seconds: settings.scanDuration + 2)),
         initialData: WithTimeout(LighthousePowerState.UNKNOWN, false),
         builder: (context, powerStateSnapshot) {
-          if (powerStateSnapshot.data.timeoutExpired) {
+          final powerState = powerStateSnapshot.requireData;
+          if (powerState.timeoutExpired) {
             closeCurrentRouteWithWait(context);
             return Text('Power state timeout reached!');
           }
-          switch (powerStateSnapshot.data.data) {
+          switch (powerState.data) {
             case LighthousePowerState.UNKNOWN:
               return Text('Found Device! Reading current state!');
             case LighthousePowerState.ON:
@@ -116,7 +117,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
       return GetDeviceStateStream(
         settingsIndex,
         upStream: upStream,
-        downStreamBuilders: downStream,
+        downStreamBuilders: downStream.cast<DownStreamBuilder>(),
       );
     };
   }

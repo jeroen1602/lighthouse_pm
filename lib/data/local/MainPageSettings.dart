@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
@@ -9,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 typedef MainPageSettingsWidgetBuilder = Widget Function(
-    BuildContext context, MainPageSettings settings);
+    BuildContext context, MainPageSettings? settings);
 
 class MainPageSettings {
   const MainPageSettings._(
@@ -71,22 +70,20 @@ class MainPageSettings {
   /// A little helper function for creating a [StreamBuilder] for getting the
   /// [MainPageSettings].
   static Widget mainPageSettingsStreamBuilder(
-      {@required LighthousePMBloc bloc,
-      @required MainPageSettingsWidgetBuilder builder}) {
+      {required LighthousePMBloc bloc,
+      required MainPageSettingsWidgetBuilder builder}) {
     return StreamBuilder<MainPageSettings>(
       stream: mainPageSettingsStream(bloc),
       initialData: MainPageSettings.DEFAULT_MAIN_PAGE_SETTINGS,
       builder: (BuildContext context,
           AsyncSnapshot<MainPageSettings> settingsSnapshot) {
         // Not sure if I want to keep this logic in here.
-        if (settingsSnapshot.hasData) {
-          if (settingsSnapshot.data.viveBaseStationsEnabled) {
-            LighthouseProvider.instance
-                .addProvider(ViveBaseStationDeviceProvider.instance);
-          } else {
-            LighthouseProvider.instance
-                .removeProvider(ViveBaseStationDeviceProvider.instance);
-          }
+        if (settingsSnapshot.data?.viveBaseStationsEnabled == true) {
+          LighthouseProvider.instance
+              .addProvider(ViveBaseStationDeviceProvider.instance);
+        } else {
+          LighthouseProvider.instance
+              .removeProvider(ViveBaseStationDeviceProvider.instance);
         }
         return builder(context, settingsSnapshot.data);
       },

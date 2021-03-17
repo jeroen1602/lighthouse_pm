@@ -97,7 +97,7 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
             '/shortcutHandler': (context) =>
                 ShortcutHandlerPage(settings.arguments),
           };
-          WidgetBuilder builder = routes[settings.name];
+          WidgetBuilder builder = routes[settings.name]!;
           return MaterialPageRoute(builder: (ctx) => builder(ctx));
         },
       ),

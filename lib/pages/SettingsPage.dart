@@ -43,8 +43,6 @@ class SettingsPage extends BasePage with WithBlocStateless {
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
 
-    final bloc = _bloc(context);
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
@@ -87,8 +85,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                             .nicknames
                             .deleteAllLastSeen();
                         Toast.show('Cleared up all last seen items', context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.BOTTOM);
+                            duration: Toast.lengthShort, gravity: Toast.bottom);
                       }
                     }),
                 Divider(),
@@ -120,11 +117,14 @@ class SettingsPage extends BasePage with WithBlocStateless {
                   builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
                     return DropdownMenuListTile<int>(
                         title: Text('Set scan duration'),
-                        value: snapshot.data,
-                        onChanged: (int value) async =>
+                        value: snapshot.requireData,
+                        onChanged: (int? value) async {
+                          if (value != null) {
                             await blocWithoutListen(context)
                                 .settings
-                                .setScanDuration(value),
+                                .setScanDuration(value);
+                          }
+                        },
                         items: SettingsBloc.SCAN_DURATION_VALUES
                             .map<DropdownMenuItem<int>>((int value) =>
                                 DropdownMenuItem<int>(
@@ -142,9 +142,6 @@ class SettingsPage extends BasePage with WithBlocStateless {
                     if (supportedThemes == null) {
                       return CircularProgressIndicator();
                     }
-                    if (bloc == null) {
-                      return Container();
-                    }
                     return StreamBuilder<ThemeMode>(
                       stream: blocWithoutListen(context)
                           .settings
@@ -153,12 +150,15 @@ class SettingsPage extends BasePage with WithBlocStateless {
                           AsyncSnapshot<ThemeMode> snapshot) {
                         return DropdownMenuListTile<ThemeMode>(
                           title: Text('Set preferred theme'),
-                          value: snapshot.data,
-                          onChanged: (ThemeMode theme) async =>
+                          value: snapshot.requireData,
+                          onChanged: (ThemeMode? theme) async {
+                            if (theme != null) {
                               await blocWithoutListen(context)
                                   .settings
-                                  .setPreferredTheme(theme),
-                          items: supportedThemesSnapshot.data
+                                  .setPreferredTheme(theme);
+                            }
+                          },
+                          items: supportedThemes
                               .map<DropdownMenuItem<ThemeMode>>(
                                   (ThemeMode theme) =>
                                       DropdownMenuItem<ThemeMode>(
@@ -200,7 +200,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                           .viveBaseStation
                           .deleteIds();
                       Toast.show('Cleared up all Base station ids', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                          duration: Toast.lengthShort, gravity: Toast.bottom);
                     }
                   },
                 ),
@@ -215,7 +215,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                     return SwitchListTile(
                       title:
                           Text('BETA: enable support for Vive Base stations'),
-                      value: snapshot.data,
+                      value: snapshot.requireData,
                       onChanged: (enabled) async {
                         if (enabled) {
                           enabled = await ViveBaseStationBetaAlertWidget
@@ -227,7 +227,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
                         if (enabled) {
                           Toast.show(
                               'Thanks for participating in the beta', context,
-                              duration: Toast.LENGTH_LONG);
+                              duration: Toast.lengthShort,
+                              gravity: Toast.bottom);
                         }
                       },
                     );

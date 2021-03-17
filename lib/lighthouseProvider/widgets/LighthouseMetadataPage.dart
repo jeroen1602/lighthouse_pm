@@ -69,7 +69,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
 
     body.add(StreamBuilder<Nickname?>(
-      stream: _bloc.nicknames.watchNicknameForMacAddress(
+      stream: bloc.nicknames.watchNicknameForMacAddress(
           widget.device.deviceIdentifier.toString()),
       builder: (BuildContext context, AsyncSnapshot<Nickname?> snapshot) {
         final nickname = snapshot.data;

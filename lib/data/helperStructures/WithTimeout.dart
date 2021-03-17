@@ -14,7 +14,7 @@
 /// );
 ///
 class WithTimeout<T> {
-  final T /* ? */ data;
+  final T? data;
   final bool timeoutExpired;
 
   WithTimeout(this.data, this.timeoutExpired);

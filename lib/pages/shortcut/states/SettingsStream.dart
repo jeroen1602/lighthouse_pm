@@ -6,8 +6,8 @@ import 'package:lighthouse_pm/widgets/WaterfallWidget.dart';
 class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     with WithBlocStateless {
   SettingsStream(
-      {Key key,
-      @required List<Object> upStream,
+      {Key? key,
+      required List<Object> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,
@@ -19,7 +19,7 @@ class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     return MainPageSettings.mainPageSettingsStreamBuilder(
         bloc: blocWithoutListen(context),
         builder: (context, settings) {
-          return getNextStreamDown(context, settings);
+          return getNextStreamDown(context, settings!);
         });
   }
 
@@ -27,7 +27,7 @@ class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     return (context, upStream, downStream) {
       return SettingsStream(
         upStream: upStream,
-        downStreamBuilders: downStream,
+        downStreamBuilders: downStream.cast<DownStreamBuilder>(),
       );
     };
   }

@@ -17,20 +17,19 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
   final int settingsIndex;
 
   GetDeviceStream(this.macAddress, this.settingsIndex,
-      {@required List<Object> upStream,
-        @required List<DownStreamBuilder> downStreamBuilders})
+      {required List<Object> upStream,
+      required List<DownStreamBuilder> downStreamBuilders})
       : super(upStream: upStream, downStreamBuilders: downStreamBuilders);
 
-  Stream<WithTimeout<LighthouseDevice /* ? */>> listenForDevice(
-      Duration timeout) {
+  Stream<WithTimeout<LighthouseDevice?>> listenForDevice(Duration timeout) {
     LHDeviceIdentifier identifier = LHDeviceIdentifier(macAddress);
 
     final timeoutStream = Stream.fromFutures(
         [Future.value(false), Future.delayed(timeout).then((value) => true)]);
 
     final deviceStream =
-    LighthouseProvider.instance.lighthouseDevices.map((devices) {
-      LighthouseDevice /* ? */ foundDevice;
+        LighthouseProvider.instance.lighthouseDevices.map((devices) {
+      LighthouseDevice? foundDevice;
       for (final device in devices) {
         if (device.deviceIdentifier == identifier) {
           foundDevice = device;
@@ -72,23 +71,24 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
       }
     }
     final settings = upStream[settingsIndex] as MainPageSettings;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       startScanWithCheck(Duration(seconds: settings.scanDuration),
           failMessage:
-          "Could not start scan because the permission has not been granted at shortcut handler.");
+              "Could not start scan because the permission has not been granted at shortcut handler.");
     });
-    return StreamBuilder<WithTimeout<LighthouseDevice /* ? */>>(
+    return StreamBuilder<WithTimeout<LighthouseDevice?>>(
         stream: listenForDevice(Duration(seconds: settings.scanDuration + 2)),
         initialData: WithTimeout.empty(),
         builder: (BuildContext context,
-            AsyncSnapshot<WithTimeout<LighthouseDevice /* ? */>> snapshot) {
-          if (snapshot.data.timeoutExpired) {
+            AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot) {
+          if (snapshot.requireData.timeoutExpired) {
             stopScan();
             closeCurrentRouteWithWait(context);
             return Text('Scan timeout reached!');
           }
-          if (snapshot.data.data != null) {
-            return getNextStreamDown(context, snapshot.data.data);
+          final data = snapshot.requireData.data;
+          if (data != null) {
+            return getNextStreamDown(context, data);
           } else {
             return Text('Searching!');
           }
@@ -104,7 +104,7 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
         macAddress,
         settingsIndex,
         upStream: upStream,
-        downStreamBuilders: downStream,
+        downStreamBuilders: downStream.cast<DownStreamBuilder>(),
       );
     };
   }

@@ -18,12 +18,12 @@ abstract class LighthouseDevice {
   /// changes it.
   ///
   @protected
-  String /* ? */ nicknameInternal;
+  String? nicknameInternal;
 
   ///
   /// Set the nickname of the device.
   ///
-  set nickname(String /* ? */ nickname) {
+  set nickname(String? nickname) {
     nicknameInternal = nickname;
   }
 
@@ -47,7 +47,9 @@ abstract class LighthouseDevice {
   ///
   Future disconnect() async {
     await _powerStateSubscription?.cancel();
-    await this._powerState?.close();
+    if (this._powerState != null) {
+      await this._powerState.close();
+    }
     await internalDisconnect();
   }
 
