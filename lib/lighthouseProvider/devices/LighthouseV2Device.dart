@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtension.dart';
 
+import '../../bloc.dart';
 import '../LighthousePowerState.dart';
 import '../ble/BluetoothCharacteristic.dart';
 import '../ble/BluetoothDevice.dart';
@@ -29,13 +30,16 @@ const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
-  LighthouseV2Device(LHBluetoothDevice device) : super(device) {
+  LighthouseV2Device(LHBluetoothDevice device, LighthousePMBloc? bloc)
+      : _bloc = bloc,
+        super(device) {
     // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
+  final LighthousePMBloc? _bloc;
   LHBluetoothCharacteristic? _characteristic;
   LHBluetoothCharacteristic? _identifyCharacteristic;
   String? _firmwareVersion;
@@ -183,10 +187,14 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         changeState: changeState, powerStateStream: powerStateEnum));
 
     if (Platform.isAndroid) {
-      // TODO: check if shortcuts are support on this Android version.
-      deviceExtensions.add(ShortcutExtension(deviceIdentifier.toString(), () {
-        return nicknameInternal ?? name;
-      }));
+      _bloc?.settings.getShortcutsEnabledStream().first.then((value) {
+        if (value == true) {
+          deviceExtensions
+              .add(ShortcutExtension(deviceIdentifier.toString(), () {
+            return nicknameInternal ?? name;
+          }));
+        }
+      });
     }
   }
 

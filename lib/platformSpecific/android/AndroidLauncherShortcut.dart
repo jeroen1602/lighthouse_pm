@@ -7,8 +7,8 @@ import 'package:rxdart/rxdart.dart';
 ///
 /// Code for handling and creating shortcuts.
 ///
-class Shortcut {
-  Shortcut._() {
+class AndroidLauncherShortcut {
+  AndroidLauncherShortcut._() {
     _channel.setMethodCallHandler((call) {
       for (final item in _InMethods.items) {
         if (item.functionName == call.method) {
@@ -24,11 +24,11 @@ class Shortcut {
     }
   }
 
-  static Shortcut? _instance;
+  static AndroidLauncherShortcut? _instance;
 
-  static Shortcut get instance {
+  static AndroidLauncherShortcut get instance {
     if (_instance == null) {
-      _instance = Shortcut._();
+      _instance = AndroidLauncherShortcut._();
     }
     return _instance!;
   }
@@ -49,6 +49,20 @@ class Shortcut {
     await _channel.invokeMethod('readyForData');
   }
 
+  ///
+  /// Check if shortcut pins are supported on the current device.
+  /// This should be true if the device is running Android 8.0 (Oreo api 26) or
+  /// higher, but it may also happen if the shortcut manager is `null`.
+  ///
+  Future<bool> shortcutSupported() async {
+    return _channel.invokeMethod('supportShortcut').then((value) {
+      if (value is bool) {
+        return value;
+      }
+      return false;
+    });
+  }
+
   Future<bool> _requestShortcut(
       ShortcutTypes type, String shortCutString, String name) {
     return _channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
@@ -60,7 +74,6 @@ class Shortcut {
   ///
   /// Request the user to a shortcut for a lighthouse.
   ///
-  ///
   Future<bool> requestShortcutLighthouse(String macAddress, String name) {
     return _requestShortcut(ShortcutTypes.MAC_TYPE, macAddress, name);
   }
@@ -70,6 +83,7 @@ class Shortcut {
   /// For example a [ShortcutTypes.MAC_TYPE] where the [ShortcutHandle.data]
   /// will contain the mac address of the device that should have it's power
   /// state toggled.
+  ///
   Stream<ShortcutHandle?> get changePowerStateMac =>
       _changePowerStateMac.stream;
 
@@ -77,7 +91,7 @@ class Shortcut {
   /// Handle the incoming mac callback.
   ///
   static Future<void> _handleMacShortcut(
-      Shortcut instance, MethodCall call) async {
+      AndroidLauncherShortcut instance, MethodCall call) async {
     if (call.arguments != null && call.arguments is String) {
       instance._changePowerStateMac.add(
           ShortcutHandle(ShortcutTypes.MAC_TYPE, call.arguments as String));
@@ -90,15 +104,15 @@ class Shortcut {
 }
 
 typedef _InMethodHandler = Future<dynamic> Function(
-    Shortcut instance, MethodCall call);
+    AndroidLauncherShortcut instance, MethodCall call);
 
 ///
 /// A list of "enums" with the information for the methods that the shortcut
 /// handler can receive
 ///
 class _InMethods {
-  static const HANDLE_MAC_SHORTCUT =
-      _InMethods._('handleMacShortcut', Shortcut._handleMacShortcut);
+  static const HANDLE_MAC_SHORTCUT = _InMethods._(
+      'handleMacShortcut', AndroidLauncherShortcut._handleMacShortcut);
 
   static const items = [HANDLE_MAC_SHORTCUT];
 

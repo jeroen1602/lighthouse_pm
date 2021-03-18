@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -45,14 +46,41 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   Future<void> startScan({required Duration timeout}) async {
     await super.startScan(timeout: timeout);
     await _startListeningScanResults();
-    await FlutterBlue.instance.startScan(
-        scanMode: ScanMode.lowLatency, timeout: timeout, allowDuplicates: true);
+    try {
+      await FlutterBlue.instance.startScan(
+          scanMode: ScanMode.lowLatency,
+          timeout: timeout,
+          allowDuplicates: true);
+    } catch (e, s) {
+      if (e is PlatformException) {
+        if (e.code == "bluetooth_unavailable") {
+          debugPrint("Bluetooth not available on this device!");
+          await this.cleanUp();
+          return;
+        }
+      }
+      debugPrint("Unhandled exception! $e");
+      debugPrint("$s");
+      throw e;
+    }
   }
 
   @override
   Future<void> stopScan() async {
     this._scanResultSubscription?.pause();
-    await FlutterBlue.instance.stopScan();
+    try {
+      await FlutterBlue.instance.stopScan();
+    } catch (e, s) {
+      if (e is PlatformException) {
+        if (e.code == "bluetooth_unavailable") {
+          debugPrint("Handled bluetooth unavailable error on stop scan");
+          return;
+        }
+      }
+      debugPrint("Unhandled exception! $e");
+      debugPrint("$s");
+      throw e;
+    }
   }
 
   @override

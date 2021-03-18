@@ -28,7 +28,7 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   }
 
   ///
-  /// Set the databased bloc for saving the ids of vive base stations.
+  /// Set the database bloc for saving the ids of vive base stations.
   ///
   void setViveBaseStationBloc(ViveBaseStationBloc bloc) {
     this._bloc = bloc;

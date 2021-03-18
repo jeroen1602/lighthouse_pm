@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/bloc.dart';
+
 import '../ble/BluetoothDevice.dart';
 import '../devices/BLEDevice.dart';
 import '../devices/LighthouseV2Device.dart';
@@ -11,6 +14,8 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
 
   static LighthouseV2DeviceProvider? _instance;
 
+  LighthousePMBloc? _bloc;
+
   ///
   /// Get the instance of this [DeviceProvider].
   ///
@@ -22,11 +27,21 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
   }
 
   ///
+  /// Set the database bloc for saving the ids of vive base stations.
+  ///
+  void setLighthousePMBloc(LighthousePMBloc bloc) {
+    this._bloc = bloc;
+  }
+
+  ///
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return LighthouseV2Device(device);
+    if (this._bloc == null && !kReleaseMode) {
+      throw StateError('Bloc is null');
+    }
+    return LighthouseV2Device(device, this._bloc!);
   }
 
   ///

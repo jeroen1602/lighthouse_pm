@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
 
 ///
 /// A base page that has some functions that every page should have.
@@ -45,7 +45,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      Shortcut.instance.readyForData();
+      AndroidLauncherShortcut.instance.readyForData();
     });
   }
 
@@ -75,7 +75,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
 
 Stream<ShortcutHandle?> _shortcutStream() {
   if (Platform.isAndroid) {
-    return Shortcut.instance.changePowerStateMac;
+    return AndroidLauncherShortcut.instance.changePowerStateMac;
   } else {
     // This platform doesn't support shortcuts so let's return an empty stream.
     return Stream.empty();

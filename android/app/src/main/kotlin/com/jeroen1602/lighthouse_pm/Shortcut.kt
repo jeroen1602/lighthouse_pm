@@ -30,8 +30,9 @@ class Shortcut {
     private lateinit var context: Context
     private val dataQue: MutableList<QueData> = ArrayDeque()
     private var initialized = false
+
     private val shortcutManager: ShortcutManager? by lazy {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             context.getSystemService(ShortcutManager::class.java)
         } else {
             null
@@ -66,11 +67,16 @@ class Shortcut {
      *
      * @return will return `false` if the [shortcutManager] is `null` and `true` if it is not.
      */
-    private fun hasManager(result: MethodChannel.Result): Boolean {
+    private fun hasManager(result: MethodChannel.Result?): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+            return false
+        }
         if (shortcutManager == null) {
-            result.error("${ErrorCodes.SHORTCUT_NOT_SUPPORTED.ordinal}",
-                    "ShortcutManager is not available on this device",
-                    NullPointerException("ShortcutManager is null"))
+            result?.error(
+                "${ErrorCodes.SHORTCUT_NOT_SUPPORTED.ordinal}",
+                "ShortcutManager is not available on this device",
+                NullPointerException("ShortcutManager is null")
+            )
             return false
         }
         return true
@@ -84,18 +90,29 @@ class Shortcut {
      * @return will return `false` if the [shortcutManager] is `null` or the Android version is
      * lower than O (26) otherwise it will return `true`.
      */
-    private fun isRequestPinShortcutSupported(result: MethodChannel.Result): Boolean {
+    private fun isRequestPinShortcutSupported(result: MethodChannel.Result?): Boolean {
         if (!hasManager(result)) {
             return false
         }
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O ||
-                !shortcutManager!!.isRequestPinShortcutSupported) {
-            result.error("${ErrorCodes.PIN_SHORTCUT_NOT_SUPPORTED.ordinal}",
-                    "Shortcut pin request is not supported on this device!",
-                    null)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+            !shortcutManager!!.isRequestPinShortcutSupported
+        ) {
+            result?.error(
+                "${ErrorCodes.PIN_SHORTCUT_NOT_SUPPORTED.ordinal}",
+                "Shortcut pin request is not supported on this device!",
+                null
+            )
             return false
         }
         return true
+    }
+
+    /**
+     * Use the [isRequestPinShortcutSupported] method to check if pin shortcuts are supported, but
+     * instead of throwing an error just return the `true`/ `false` as a result.
+     */
+    private fun supportsShortcut(call: MethodCall, result: MethodChannel.Result) {
+        result.success(isRequestPinShortcutSupported(null))
     }
 
     /**
@@ -126,35 +143,42 @@ class Shortcut {
         }
 
         // Create the shortcut info
-        val foreground = context.resources.getDrawable(R.drawable.ic_launcher_foreground, context.theme)
+        val foreground =
+            context.resources.getDrawable(R.drawable.ic_launcher_foreground, context.theme)
         foreground.setTint(stringToGradientColor(action!!))
-        val background = context.resources.getDrawable(R.drawable.ic_launcher_background, context.theme)
+        val background =
+            context.resources.getDrawable(R.drawable.ic_launcher_background, context.theme)
         background.setTint(Color.WHITE)
         val adaptiveIconDrawable = AdaptiveIconDrawable(background, foreground)
 
         val bitmap = drawableToBitmap(adaptiveIconDrawable, context)
         val icon = Icon.createWithAdaptiveBitmap(bitmap)
         val pinShortcutInfo = ShortcutInfo.Builder(context, action)
-                .setShortLabel(name ?: "null")
-                .setLongLabel("Change ${name ?: "null"}")
-                .setIcon(icon)
-                .setIntent(intent)
-                .build()
+            .setShortLabel(name ?: "null")
+            .setLongLabel("Change ${name ?: "null"}")
+            .setIcon(icon)
+            .setIntent(intent)
+            .build()
 
         // Create the PendingIntent object only if your app needs to be notified
         // that the user allowed the shortcut to be pinned. Note that, if the
         // pinning operation fails, your app isn't notified. We assume here that the
         // app has implemented a method called createShortcutResultIntent() that
         // returns a broadcast intent.
-        val pinnedShortcutCallbackIntent = shortcutManager!!.createShortcutResultIntent(pinShortcutInfo)
+        val pinnedShortcutCallbackIntent =
+            shortcutManager!!.createShortcutResultIntent(pinShortcutInfo)
 
         // Configure the intent so that your app's broadcast receiver gets
         // the callback successfully.For details, see PendingIntent.getBroadcast().
-        val successCallback = PendingIntent.getBroadcast(context, /* request code */ 0,
-                pinnedShortcutCallbackIntent, /* flags */ 0)
+        val successCallback = PendingIntent.getBroadcast(
+            context, /* request code */ 0,
+            pinnedShortcutCallbackIntent, /* flags */ 0
+        )
 
-        shortcutManager!!.requestPinShortcut(pinShortcutInfo,
-                successCallback.intentSender)
+        shortcutManager!!.requestPinShortcut(
+            pinShortcutInfo,
+            successCallback.intentSender
+        )
 
         // TODO: handle the success callback
         result.success(true)
@@ -234,20 +258,22 @@ class Shortcut {
         val bitmap = Bitmap.createBitmap(GRADIENT_RESOLUTION, 1, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
-        val gradient = LinearGradient(0f, 0f, bitmap.width.toFloat(), 0f,
-                intArrayOf(
-                        Color.rgb(0xFF, 0x5A, 0x66),
-                        Color.rgb(0xA5, 0x00, 0xFB),
-                        Color.rgb(0x0E, 0x8B, 0xFF),
-                        Color.rgb(0x00, 0xDF, 0xAB),
-                ),
-                floatArrayOf(
-                        0f,
-                        0.3315374f,
-                        0.6444612f,
-                        1f
-                ),
-                Shader.TileMode.CLAMP)
+        val gradient = LinearGradient(
+            0f, 0f, bitmap.width.toFloat(), 0f,
+            intArrayOf(
+                Color.rgb(0xFF, 0x5A, 0x66),
+                Color.rgb(0xA5, 0x00, 0xFB),
+                Color.rgb(0x0E, 0x8B, 0xFF),
+                Color.rgb(0x00, 0xDF, 0xAB),
+            ),
+            floatArrayOf(
+                0f,
+                0.3315374f,
+                0.6444612f,
+                1f
+            ),
+            Shader.TileMode.CLAMP
+        )
         paint.shader = gradient
         // Draw the gradient inside of the bitmap.
         canvas.drawPaint(paint)
@@ -289,7 +315,11 @@ class Shortcut {
     private fun drawableToBitmap(drawable: AdaptiveIconDrawable, context: Context): Bitmap {
         val screenDensity = context.resources.displayMetrics.density
         val adaptiveIconOuterSides = (ADAPTIVE_ICON_OUTER_SIDES_DP * screenDensity).roundToInt()
-        val bitmap = Bitmap.createBitmap(adaptiveIconOuterSides, adaptiveIconOuterSides, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(
+            adaptiveIconOuterSides,
+            adaptiveIconOuterSides,
+            Bitmap.Config.ARGB_8888
+        )
         val canvas = Canvas(bitmap)
         drawable.background.setBounds(0, 0, adaptiveIconOuterSides, adaptiveIconOuterSides)
         drawable.background.draw(canvas)
@@ -316,9 +346,13 @@ class Shortcut {
             HANDLE_MAC_SHORTCUT("handleMacShortcut");
         }
 
-        private enum class InMethods(val functionName: String, val handlerFunction: (Shortcut, MethodCall, MethodChannel.Result) -> Unit) {
+        private enum class InMethods(
+            val functionName: String,
+            val handlerFunction: (Shortcut, MethodCall, MethodChannel.Result) -> Unit
+        ) {
             REQUEST_SHORTCUT("requestShortcut", Shortcut::requestShortcut),
-            READY_FOR_DATA("readyForData", Shortcut::handleReadyForData)
+            READY_FOR_DATA("readyForData", Shortcut::handleReadyForData),
+            SUPPORTS_SHORTCUT("supportShortcut", Shortcut::supportsShortcut)
         }
 
         private data class QueData(val methodName: String, val data: Any?)

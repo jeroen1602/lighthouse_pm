@@ -21,6 +21,7 @@ class SettingsBloc {
   static const VIVE_BASE_STATION_ENABLED_ID = 2;
   static const SCAN_DURATION_ID = 3;
   static const PREFERRED_THEME_ID = 4;
+  static const SHORTCUTS_ENABLED_ID = 5;
 
   // endregion
 
@@ -74,6 +75,29 @@ class SettingsBloc {
         SimpleSetting(
             settingsId: VIVE_BASE_STATION_ENABLED_ID,
             data: enabled ? '1' : '0'),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  Stream<bool> getShortcutsEnabledStream() {
+    return (db.select(db.simpleSettings)
+          ..where((tbl) => tbl.settingsId.equals(SHORTCUTS_ENABLED_ID)))
+        .watch()
+        .map((event) {
+      if (event.isEmpty) {
+        return false;
+      }
+      if (event.length == 1 &&
+          (event[0].data == '0' || event[0].data == null)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  Future<void> setShortcutsEnabledStream(bool enabled) {
+    return db.into(db.simpleSettings).insert(
+        SimpleSetting(
+            settingsId: SHORTCUTS_ENABLED_ID, data: enabled ? '1' : '0'),
         mode: InsertMode.insertOrReplace);
   }
 

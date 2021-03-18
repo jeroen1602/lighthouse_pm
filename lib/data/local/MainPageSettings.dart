@@ -14,16 +14,19 @@ class MainPageSettings {
   const MainPageSettings._(
       {required this.sleepState,
       required this.viveBaseStationsEnabled,
-      required this.scanDuration});
+      required this.scanDuration,
+      required this.shortcutEnabled});
 
   final LighthousePowerState sleepState;
   final bool viveBaseStationsEnabled;
   final int scanDuration;
+  final bool shortcutEnabled;
 
   static const DEFAULT_MAIN_PAGE_SETTINGS = MainPageSettings._(
       sleepState: LighthousePowerState.SLEEP,
       viveBaseStationsEnabled: false,
-      scanDuration: 5);
+      scanDuration: 5,
+      shortcutEnabled: false);
 
   static Stream<MainPageSettings> mainPageSettingsStream(
       LighthousePMBloc bloc) {
@@ -31,6 +34,7 @@ class MainPageSettings {
     bool viveBaseStationsEnabled =
         DEFAULT_MAIN_PAGE_SETTINGS.viveBaseStationsEnabled;
     int scanDuration = DEFAULT_MAIN_PAGE_SETTINGS.scanDuration;
+    bool shortcutEnabled = DEFAULT_MAIN_PAGE_SETTINGS.shortcutEnabled;
 
     return MergeStream<Tuple2<int, dynamic>>([
       bloc.settings
@@ -40,7 +44,10 @@ class MainPageSettings {
           (state) => Tuple2(SettingsBloc.VIVE_BASE_STATION_ENABLED_ID, state)),
       bloc.settings
           .getScanDurationsAsStream(defaultValue: scanDuration)
-          .map((state) => Tuple2(SettingsBloc.SCAN_DURATION_ID, state))
+          .map((state) => Tuple2(SettingsBloc.SCAN_DURATION_ID, state)),
+      bloc.settings
+          .getShortcutsEnabledStream()
+          .map((state) => Tuple2(SettingsBloc.SHORTCUTS_ENABLED_ID, state)),
     ]).map((event) {
       switch (event.item1) {
         case SettingsBloc.DEFAULT_SLEEP_STATE_ID:
@@ -58,11 +65,16 @@ class MainPageSettings {
             scanDuration = event.item2 as int;
           }
           break;
+        case SettingsBloc.SHORTCUTS_ENABLED_ID:
+          if (event.item2 != null) {
+            shortcutEnabled = event.item2 as bool;
+          }
       }
       return MainPageSettings._(
           sleepState: sleepState,
           viveBaseStationsEnabled: viveBaseStationsEnabled,
-          scanDuration: scanDuration);
+          scanDuration: scanDuration,
+          shortcutEnabled: shortcutEnabled);
     });
   }
 

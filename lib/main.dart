@@ -15,7 +15,7 @@ import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
-import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc.dart';
@@ -54,6 +54,7 @@ class MainApp extends StatelessWidget {
     final mainBloc = LighthousePMBloc(db);
     ViveBaseStationDeviceProvider.instance
         .setViveBaseStationBloc(mainBloc.viveBaseStation);
+    LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
 
     return mainBloc;
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/platformSpecific/android/Shortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
 
 import './BasePage.dart';
 
