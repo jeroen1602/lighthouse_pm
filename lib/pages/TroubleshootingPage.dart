@@ -10,16 +10,17 @@ import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
+
+import 'BasePage.dart';
 
 const double _TROUBLESHOOTING_SCROLL_PADDING = 20;
 
 ///
 /// A widget showing the a material scaffold with the troubleshooting widget.
 ///
-class TroubleshootingPage extends StatelessWidget {
+class TroubleshootingPage extends BasePage {
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Troubleshooting')),
         body: TroubleshootingContentWidget());
@@ -31,10 +32,8 @@ class TroubleshootingPage extends StatelessWidget {
 /// It also has a few platform specific troubleshooting steps like location
 /// permissions for Android.
 ///
-class TroubleshootingContentWidget extends StatelessWidget {
-  LighthousePMBloc _bloc(BuildContext context) =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
-
+class TroubleshootingContentWidget extends StatelessWidget
+    with WithBlocStateless {
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
@@ -45,7 +44,9 @@ class TroubleshootingContentWidget extends StatelessWidget {
       Divider(),
       StreamBuilder<bool>(
         initialData: false,
-        stream: _bloc(context).settings.getViveBaseStationsEnabledStream(),
+        stream: blocWithoutListen(context)
+            .settings
+            .getViveBaseStationsEnabledStream(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           final baseStationEnabled = snapshot.data == true;
           return ListTile(

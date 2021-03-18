@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../../bloc.dart';
 import '../LighthousePowerState.dart';
 import '../ble/BluetoothCharacteristic.dart';
 import '../ble/BluetoothDevice.dart';
@@ -12,6 +14,7 @@ import '../deviceExtensions/DeviceExtension.dart';
 import '../deviceExtensions/DeviceWithExtensions.dart';
 import '../deviceExtensions/IdentifyDeviceExtension.dart';
 import '../deviceExtensions/OnExtension.dart';
+import '../deviceExtensions/ShortcutExtension.dart';
 import '../deviceExtensions/SleepExtension.dart';
 import '../deviceExtensions/StandbyExtension.dart';
 import 'BLEDevice.dart';
@@ -27,13 +30,16 @@ const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
-  LighthouseV2Device(LHBluetoothDevice device) : super(device) {
-    // Add a part of the [DeviceExtenion]s the rest are added after [afterIsValid].
+  LighthouseV2Device(LHBluetoothDevice device, LighthousePMBloc? bloc)
+      : _bloc = bloc,
+        super(device) {
+    // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
+  final LighthousePMBloc? _bloc;
   LHBluetoothCharacteristic? _characteristic;
   LHBluetoothCharacteristic? _identifyCharacteristic;
   String? _firmwareVersion;
@@ -179,6 +185,17 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         changeState: changeState, powerStateStream: powerStateEnum));
     deviceExtensions.add(OnExtension(
         changeState: changeState, powerStateStream: powerStateEnum));
+
+    if (Platform.isAndroid) {
+      _bloc?.settings.getShortcutsEnabledStream().first.then((value) {
+        if (value == true) {
+          deviceExtensions
+              .add(ShortcutExtension(deviceIdentifier.toString(), () {
+            return nicknameInternal ?? name;
+          }));
+        }
+      });
+    }
   }
 
   @override

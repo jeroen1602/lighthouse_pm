@@ -14,6 +14,20 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// The nickname of the device. This should be updated anytime the user
+  /// changes it.
+  ///
+  @protected
+  String? nicknameInternal;
+
+  ///
+  /// Set the nickname of the device.
+  ///
+  set nickname(String? nickname) {
+    nicknameInternal = nickname;
+  }
+
+  ///
   /// Get the firmware version of the device.
   ///
   String get firmwareVersion;
@@ -33,7 +47,9 @@ abstract class LighthouseDevice {
   ///
   Future disconnect() async {
     await _powerStateSubscription?.cancel();
-    await this._powerState?.close();
+    if (this._powerState != null) {
+      await this._powerState.close();
+    }
     await internalDisconnect();
   }
 

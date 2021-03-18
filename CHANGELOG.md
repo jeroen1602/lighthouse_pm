@@ -2,6 +2,7 @@
 
  - Updated flutter, now with null safety.
  - Updated dependencies.
+ - (Android) BETA added shortcut (Android 8.0+ (Oreo api 26))
 
 # Version 1.1.2+7 23-02-2021
 

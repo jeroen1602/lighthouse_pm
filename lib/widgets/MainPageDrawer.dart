@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
 
-typedef Future _StartScanCallback({String failMessage});
+class MainPageDrawer extends StatelessWidget with ScanningMixin {
+  MainPageDrawer(this.scanDuration, {Key? key}) : super(key: key);
 
-class MainPageDrawer extends StatelessWidget {
-  MainPageDrawer(VoidCallback cleanUp, _StartScanCallback startScanWithCheck,
-      {Key? key})
-      : _cleanUp = cleanUp,
-        _startScanWithCheck = startScanWithCheck,
-        super(key: key);
-
-  final VoidCallback _cleanUp;
-  final _StartScanCallback _startScanWithCheck;
+  final Duration scanDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +24,9 @@ class MainPageDrawer extends StatelessWidget {
             title: Text('Troubleshooting'),
             onTap: () async {
               Navigator.pop(context);
-              _cleanUp();
+              cleanUp();
               await Navigator.pushNamed(context, '/troubleshooting');
-              _startScanWithCheck(
+              startScanWithCheck(scanDuration,
                   failMessage:
                       "Could not start scan because permission has not been granted. On navigator pop");
             }),
@@ -41,9 +35,9 @@ class MainPageDrawer extends StatelessWidget {
           title: Text('Help'),
           onTap: () async {
             Navigator.pop(context);
-            _cleanUp();
+            cleanUp();
             await Navigator.pushNamed(context, '/help');
-            _startScanWithCheck(
+            startScanWithCheck(scanDuration,
                 failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
           },
@@ -53,9 +47,9 @@ class MainPageDrawer extends StatelessWidget {
           title: Text('Settings'),
           onTap: () async {
             Navigator.pop(context);
-            _cleanUp();
+            cleanUp();
             await Navigator.pushNamed(context, '/settings');
-            _startScanWithCheck(
+            startScanWithCheck(scanDuration,
                 failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
           },
