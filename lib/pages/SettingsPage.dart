@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,7 +6,8 @@ import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
-import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ShortcutAlertWidget.dart';
@@ -222,7 +221,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // endregion
 
     // region shortcut
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       items.add(FutureBuilder<bool>(
         future: AndroidLauncherShortcut.instance.shortcutSupported(),
         builder: (context, supportedSnapshot) {

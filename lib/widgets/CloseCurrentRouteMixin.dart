@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 const _EXIT_WAIT_TIME = 5;
 
@@ -14,10 +13,10 @@ abstract class CloseCurrentRouteMixin {
     Navigator.pop(context);
     bool canPop = Navigator.canPop(context);
     if (!canPop) {
-      if (Platform.isAndroid) {
+      if (LocalPlatform.isAndroid) {
         // This is not recommended for iOS but this code should only be run
         // on Android.
-        exit(0);
+        LocalPlatform.exit(0);
       } else {
         Navigator.pushNamed(context, Navigator.defaultRouteName);
       }

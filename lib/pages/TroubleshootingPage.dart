@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -9,6 +7,7 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'BasePage.dart';
@@ -94,7 +93,7 @@ class TroubleshootingContentWidget extends StatelessWidget
       Divider(),
     ];
 
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       children.insert(
           0,
           // FlutterBlue doesn't like it when you have two of the same streams

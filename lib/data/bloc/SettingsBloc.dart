@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:moor/moor.dart';
 
 import '../Database.dart';
@@ -158,12 +157,12 @@ class SettingsBloc {
   /// Check if the currently running device supports system mode theme.
   static Future<bool> get supportsThemeModeSystem async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       final android = await deviceInfo.androidInfo;
       if (android.version.sdkInt >= 29 /* Android 10 */) {
         return true;
       }
-    } else if (Platform.isIOS) {
+    } else if (LocalPlatform.isIOS) {
       final ios = await deviceInfo.iosInfo;
       final iosVersion = double.tryParse(ios.systemVersion);
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -13,6 +11,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/MainPageDrawer.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
@@ -340,7 +339,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   final MainPageSettings settings;
 
   Widget _toSettingsButton(BuildContext context) {
-    if (Platform.isAndroid && state == BluetoothState.off) {
+    if (LocalPlatform.isAndroid && state == BluetoothState.off) {
       return ElevatedButton(
           onPressed: () async {
             await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(

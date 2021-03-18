@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl_standalone.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
@@ -15,15 +13,14 @@ import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
-import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/Intl.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc.dart';
 
 void main() {
-  findSystemLocale().then((locale) async {
-    await initializeDateFormatting();
-  });
+  loadIntlStrings();
 
   LighthouseProvider.instance.addBackEnd(FlutterBlueLighthouseBackEnd.instance);
   if (!kReleaseMode) {
@@ -50,7 +47,7 @@ class MainApp extends StatelessWidget {
   }
 
   LighthousePMBloc _initializeDataBase() {
-    final db = LighthouseDatabase();
+    final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
     ViveBaseStationDeviceProvider.instance
         .setViveBaseStationBloc(mainBloc.viveBaseStation);

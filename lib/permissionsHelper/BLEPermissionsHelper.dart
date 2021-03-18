@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 ///
@@ -23,13 +22,14 @@ class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
-    if (Platform.isIOS) {
+    if (LocalPlatform.isIOS) {
       return PermissionStatus.granted;
     }
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       return await Permission.locationWhenInUse.status;
     }
-    throw UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError(
+        "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
 
   ///
@@ -42,13 +42,14 @@ class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       return await Permission.locationWhenInUse.request();
     }
-    if (Platform.isIOS) {
+    if (LocalPlatform.isIOS) {
       return PermissionStatus.granted;
     }
-    throw UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError(
+        "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
 
   ///
@@ -58,7 +59,7 @@ class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       return _channel.invokeMethod("openBLESettings").then((value) {
         if (value is bool) {
           return value;
@@ -67,13 +68,14 @@ class BLEPermissionsHelper {
         }
       });
     }
-    if (Platform.isIOS) {
+    if (LocalPlatform.isIOS) {
       // According to [this](https://stackoverflow.com/a/43754366/13324337) you
       // aren't allowed to open settings on ios.
       debugPrint("Can't open settings because iOS doesn't support it.");
       return false;
     }
-    throw UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError(
+        "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
 
   ///
@@ -83,7 +85,7 @@ class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       return _channel.invokeMethod("enableBluetooth").then((value) {
         if (value is bool) {
           return value;
@@ -92,12 +94,13 @@ class BLEPermissionsHelper {
         }
       });
     }
-    if (Platform.isIOS) {
+    if (LocalPlatform.isIOS) {
       // iOS doesn't have an API that can handle enable bluetooth for us.
       debugPrint("Can't enable BLE on iOS since there is no api.");
       return false;
     }
-    throw UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError(
+        "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
 
   ///
@@ -107,7 +110,7 @@ class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       return _channel.invokeMethod("openLocationSettings").then((value) {
         if (value is bool) {
           return value;
@@ -116,11 +119,12 @@ class BLEPermissionsHelper {
         }
       });
     }
-    if (Platform.isIOS) {
+    if (LocalPlatform.isIOS) {
       // iOS doesn't have an API that can open location settings
       debugPrint("Can't open location settings on iOS since there is no api.");
       return false;
     }
-    throw UnsupportedError("ERROR: unsupported platform! $Platform");
+    throw UnsupportedError(
+        "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
 }

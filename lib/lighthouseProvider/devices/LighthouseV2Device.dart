@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../bloc.dart';
 import '../LighthousePowerState.dart';
@@ -186,7 +186,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     deviceExtensions.add(OnExtension(
         changeState: changeState, powerStateStream: powerStateEnum));
 
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       _bloc?.settings.getShortcutsEnabledStream().first.then((value) {
         if (value == true) {
           deviceExtensions
