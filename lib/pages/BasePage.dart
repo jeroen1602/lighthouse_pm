@@ -44,9 +44,11 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
   void initState() {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      AndroidLauncherShortcut.instance.readyForData();
-    });
+    if (Platform.isAndroid) {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        AndroidLauncherShortcut.instance.readyForData();
+      });
+    }
   }
 
   @override

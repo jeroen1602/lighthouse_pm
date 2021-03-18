@@ -18,6 +18,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.security.MessageDigest
+import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -136,16 +137,16 @@ class Shortcut {
             error("Name was null or empty!")
         }
 
-        // Create an intent to launch the main function with some extra data.
+        // Create an intent to launch the main activity with some extra data.
         val intent = Intent(context, MainActivity::class.java).apply {
             putExtra(TOGGLE_EXTRA, action)
             setAction(Intent.ACTION_MAIN)
         }
 
-        // Create the shortcut info
+        // Create the shortcut icon
         val foreground =
             context.resources.getDrawable(R.drawable.ic_launcher_foreground, context.theme)
-        foreground.setTint(stringToGradientColor(action!!))
+        foreground.setTint(stringToGradientColor(action))
         val background =
             context.resources.getDrawable(R.drawable.ic_launcher_background, context.theme)
         background.setTint(Color.WHITE)
@@ -153,6 +154,7 @@ class Shortcut {
 
         val bitmap = drawableToBitmap(adaptiveIconDrawable, context)
         val icon = Icon.createWithAdaptiveBitmap(bitmap)
+        // Create the shortcut info.
         val pinShortcutInfo = ShortcutInfo.Builder(context, action)
             .setShortLabel(name ?: "null")
             .setLongLabel("Change ${name ?: "null"}")
@@ -160,24 +162,9 @@ class Shortcut {
             .setIntent(intent)
             .build()
 
-        // Create the PendingIntent object only if your app needs to be notified
-        // that the user allowed the shortcut to be pinned. Note that, if the
-        // pinning operation fails, your app isn't notified. We assume here that the
-        // app has implemented a method called createShortcutResultIntent() that
-        // returns a broadcast intent.
-        val pinnedShortcutCallbackIntent =
-            shortcutManager!!.createShortcutResultIntent(pinShortcutInfo)
-
-        // Configure the intent so that your app's broadcast receiver gets
-        // the callback successfully.For details, see PendingIntent.getBroadcast().
-        val successCallback = PendingIntent.getBroadcast(
-            context, /* request code */ 0,
-            pinnedShortcutCallbackIntent, /* flags */ 0
-        )
-
         shortcutManager!!.requestPinShortcut(
             pinShortcutInfo,
-            successCallback.intentSender
+            null
         )
 
         // TODO: handle the success callback
@@ -250,7 +237,7 @@ class Shortcut {
      * the app theme.
      */
     @ColorInt
-    private fun stringToGradientColor(string: String): Int {
+    private fun stringToGradientColor(string: String?): Int {
         // Because I didn't feel like finding a gradient implementation I decide to use the included
         // gradient implementation from Android.
 
@@ -279,7 +266,14 @@ class Shortcut {
         canvas.drawPaint(paint)
 
         // Pick a color from the bitmap (that now contains the gradient) based on the hash.
-        var hash: Int = (md5ToNumber(string) % bitmap.width).toInt()
+
+        var hash: Int = if (string != null) {
+            // convert the input string to an index in the gradient.
+            (md5ToNumber(string) % bitmap.width).toInt()
+        } else {
+            // string is null so just take a random position.
+            (Math.random() * (bitmap.width - 1)).toInt()
+        }
         if (hash < 0) {
             hash += bitmap.width
         }

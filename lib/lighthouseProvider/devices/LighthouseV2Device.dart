@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtension.dart';
 
 import '../../bloc.dart';
 import '../LighthousePowerState.dart';
@@ -15,6 +14,7 @@ import '../deviceExtensions/DeviceExtension.dart';
 import '../deviceExtensions/DeviceWithExtensions.dart';
 import '../deviceExtensions/IdentifyDeviceExtension.dart';
 import '../deviceExtensions/OnExtension.dart';
+import '../deviceExtensions/ShortcutExtension.dart';
 import '../deviceExtensions/SleepExtension.dart';
 import '../deviceExtensions/StandbyExtension.dart';
 import 'BLEDevice.dart';

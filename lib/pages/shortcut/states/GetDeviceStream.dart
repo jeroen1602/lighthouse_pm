@@ -17,7 +17,7 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
   final int settingsIndex;
 
   GetDeviceStream(this.macAddress, this.settingsIndex,
-      {required List<Object> upStream,
+      {required List<Object?> upStream,
       required List<DownStreamBuilder> downStreamBuilders})
       : super(upStream: upStream, downStreamBuilders: downStreamBuilders);
 
@@ -82,8 +82,9 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
         builder: (BuildContext context,
             AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot) {
           if (snapshot.requireData.timeoutExpired) {
-            stopScan();
-            closeCurrentRouteWithWait(context);
+            stopScan().then((_) {
+              closeCurrentRouteWithWait(context);
+            });
             return Text('Scan timeout reached!');
           }
           final data = snapshot.requireData.data;

@@ -15,7 +15,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
 
   GetDeviceStateStream(this.settingsIndex,
       {Key? key,
-      required List<Object> upStream,
+      required List<Object?> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,

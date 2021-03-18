@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
@@ -7,7 +8,7 @@ class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     with WithBlocStateless {
   SettingsStream(
       {Key? key,
-      required List<Object> upStream,
+      required List<Object?> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,
@@ -19,7 +20,10 @@ class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     return MainPageSettings.mainPageSettingsStreamBuilder(
         bloc: blocWithoutListen(context),
         builder: (context, settings) {
-          return getNextStreamDown(context, settings!);
+          if (settings == null) {
+            return CircularProgressIndicator();
+          }
+          return getNextStreamDown(context, settings);
         });
   }
 

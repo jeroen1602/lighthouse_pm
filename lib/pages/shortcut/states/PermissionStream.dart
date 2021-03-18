@@ -9,7 +9,7 @@ class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
     with ScanningMixin, CloseCurrentRouteMixin {
   PermissionsStream(
       {Key? key,
-      required List<Object> upStream,
+      required List<Object?> upStream,
       List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,

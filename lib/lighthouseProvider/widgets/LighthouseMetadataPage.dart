@@ -5,7 +5,6 @@ import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
-import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -25,10 +24,6 @@ class LighthouseMetadataPage extends StatefulWidget {
 }
 
 class LighthouseMetadataState extends State<LighthouseMetadataPage> {
-
-  LighthousePMBloc get _blocWithoutListen =>
-      Provider.of<LighthousePMBloc>(context, listen: false);
-
   Future<void> changeNicknameHandler(String? currentNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
         macAddress: widget.device.deviceIdentifier.toString(),
@@ -36,10 +31,10 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
         nickname: currentNickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await _blocWithoutListen.nicknames
+        await blocWithoutListen.nicknames
             .deleteNicknames([newNickname.macAddress]);
       } else {
-        await _blocWithoutListen.nicknames
+        await blocWithoutListen.nicknames
             .insertNickname(newNickname.toNickname()!);
       }
     }

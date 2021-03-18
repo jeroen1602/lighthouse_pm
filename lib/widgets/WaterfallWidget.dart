@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 
 typedef Name = Widget Function(BuildContext);
 typedef DownStreamBuilder<T> = WaterfallStreamWidget<T> Function(
-    BuildContext, List<Object> upStream, List<Object> downStreamBuilders);
+    BuildContext, List<Object?> upStream, List<Object> downStreamBuilders);
 
 abstract class WaterfallStreamWidget<T> extends StatelessWidget {
-  final List<Object> upStream;
+  final List<Object?> upStream;
   final List<DownStreamBuilder> downStreamBuilders;
 
   WaterfallStreamWidget(
@@ -13,16 +13,14 @@ abstract class WaterfallStreamWidget<T> extends StatelessWidget {
       : super(key: key);
 
   WaterfallStreamWidget getNextStreamDown(
-      BuildContext context, T upstreamData) {
+      BuildContext context, T? upstreamData) {
     if (downStreamBuilders.isEmpty) {
       throw Exception("Down stream builders shouldn't be empty if you want to "
           "create an item down stream!");
     }
-    final localUpStream = <Object>[];
+    final localUpStream = <Object?>[];
     localUpStream.addAll(upStream);
-    if (upstreamData != null) {
-      localUpStream.add(upstreamData);
-    }
+    localUpStream.add(upstreamData);
 
     return downStreamBuilders[0](
         context, localUpStream, downStreamBuilders.sublist(1));
