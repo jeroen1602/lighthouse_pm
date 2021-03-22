@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -100,18 +101,18 @@ class TroubleshootingContentWidget extends StatelessWidget
           // open at once, so for now convert it into a future.
           //StreamBuilder<BluetoothState>(
           //  stream: FlutterBlue.instance.state,
-          FutureBuilder<BluetoothState>(
-            future: FlutterBlue.instance.state.first,
-            initialData: BluetoothState.unknown,
+          FutureBuilder<BluetoothAdapterState>(
+            future: LighthouseProvider.instance.state.first,
+            initialData: BluetoothAdapterState.unknown,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
               final data = snapshot.data;
               switch (data) {
-                case BluetoothState.on:
-                case BluetoothState.turningOn:
-                case BluetoothState.unknown:
+                case BluetoothAdapterState.on:
+                case BluetoothAdapterState.turningOn:
+                case BluetoothAdapterState.unknown:
                   return Container();
                 default:
                   return Column(

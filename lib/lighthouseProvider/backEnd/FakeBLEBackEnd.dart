@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
@@ -62,4 +63,8 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
 
   @override
   Stream<bool> get isScanning => _isScanningSubject.stream;
+
+  @override
+  Stream<BluetoothAdapterState> get state =>
+      Stream.value(BluetoothAdapterState.on);
 }

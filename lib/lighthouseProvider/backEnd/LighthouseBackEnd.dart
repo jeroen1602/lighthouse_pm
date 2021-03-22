@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 
 import '../DeviceProvider.dart';
 import '../LighthouseDevice.dart';
@@ -83,6 +84,9 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
 
   /// A stream that returns all scanned devices.
   Stream<LighthouseDevice?> get lighthouseStream;
+
+  /// A stream that returns the state of the bluetooth adapter.
+  Stream<BluetoothAdapterState> get state;
 
   /// IMPORTANT the [LighthouseProvider] should set this value when registering a back end!
   UpdateLastSeen? updateLastSeen;

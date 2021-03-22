@@ -15,6 +15,7 @@ import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/Intl.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:provider/provider.dart';
 
 import 'bloc.dart';
@@ -22,7 +23,10 @@ import 'bloc.dart';
 void main() {
   loadIntlStrings();
 
-  LighthouseProvider.instance.addBackEnd(FlutterBlueLighthouseBackEnd.instance);
+  if (LocalPlatform.isIOS || LocalPlatform.isAndroid) {
+    LighthouseProvider.instance
+        .addBackEnd(FlutterBlueLighthouseBackEnd.instance);
+  }
   if (!kReleaseMode) {
     // Add this back if you need to test for devices you don't own.
     // you'll also need to

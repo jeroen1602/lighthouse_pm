@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
@@ -25,7 +27,9 @@ import 'timeout/TimeoutContainer.dart';
 /// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackEnd].
 ///
 class LighthouseProvider {
-  LighthouseProvider._();
+  LighthouseProvider._() {
+    WidgetsFlutterBinding.ensureInitialized();
+  }
 
   /// Get a stream with a [List] of valid [LighthouseDevice]s.
   ///
@@ -60,10 +64,29 @@ class LighthouseProvider {
 
   Stream<bool> get isScanning => _isScanningBehavior.stream;
 
+  Map<LighthouseBackEnd, StreamSubscription?> _stateSubscriptions = {};
+  Map<LighthouseBackEnd, BluetoothAdapterState> _savedStates = {};
+  BehaviorSubject<Map<LighthouseBackEnd, BluetoothAdapterState>> _state =
+      BehaviorSubject.seeded({});
+
+  Stream<BluetoothAdapterState> get state => _state.stream.map((map) {
+        if (map.isEmpty) {
+          return BluetoothAdapterState.unknown;
+        }
+        return map.values.reduce((value, element) {
+          if (value == BluetoothAdapterState.on ||
+              element == BluetoothAdapterState.on) {
+            return BluetoothAdapterState.on;
+          }
+          return element;
+        });
+      });
+
   /// Add a back end for providing data.
   void addBackEnd(LighthouseBackEnd backEnd) {
     backEnd.updateLastSeen = _updateLastSeen;
     _backEndSet.add(backEnd);
+    _addStateSubscription(backEnd);
   }
 
   /// Remove a back end for providing data.
@@ -71,6 +94,23 @@ class LighthouseProvider {
     if (_backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
     }
+    _removeStateSubscription(backEnd);
+  }
+
+  void _addStateSubscription(LighthouseBackEnd backEnd) {
+    if (_stateSubscriptions.containsKey(backEnd)) {
+      return;
+    }
+    _stateSubscriptions[backEnd] = backEnd.state.listen((newState) {
+      _savedStates[backEnd] = newState;
+      _state.add(_savedStates);
+    });
+  }
+
+  void _removeStateSubscription(LighthouseBackEnd backEnd) {
+    _stateSubscriptions[backEnd]?.cancel();
+    _savedStates.remove(backEnd);
+    _state.add(_savedStates);
   }
 
   /// Get a list of all the back ends that this [DeviceProvider] can be used with.
@@ -126,8 +166,12 @@ class LighthouseProvider {
     await cleanUp();
     await _startListeningScanResults();
     for (final backEnd in _backEndSet) {
-      // may need to add await back again depending on how the providers react to being multi-threaded.
-      backEnd.startScan(timeout: timeout);
+      /// Only start the scan if the back-end acknowledges that it's bluetooth
+      /// adapter state is on.
+      if (_savedStates[backEnd] == BluetoothAdapterState.on) {
+        // may need to add await back again depending on how the providers react to being multi-threaded.
+        backEnd.startScan(timeout: timeout);
+      }
     }
   }
 

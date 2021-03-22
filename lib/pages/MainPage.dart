@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
@@ -8,6 +7,7 @@ import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
@@ -51,13 +51,13 @@ class MainPage extends BasePage with WithBlocStateless {
       bloc: blocWithoutListen(context),
       builder: (context, settings) {
         if (settings != null) {
-          return StreamBuilder<BluetoothState>(
-              stream: FlutterBlue.instance.state,
-              initialData: BluetoothState.unknown,
+          return StreamBuilder<BluetoothAdapterState>(
+              stream: LighthouseProvider.instance.state,
+              initialData: BluetoothAdapterState.unknown,
               builder: (BuildContext context,
-                  AsyncSnapshot<BluetoothState> snapshot) {
+                  AsyncSnapshot<BluetoothAdapterState> snapshot) {
                 final state = snapshot.data;
-                return state == BluetoothState.on
+                return state == BluetoothAdapterState.on
                     ? ScanDevicesPage(settings: settings)
                     : BluetoothOffScreen(state: state, settings: settings);
               });
@@ -158,7 +158,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
               final Widget body = (list.isEmpty && updates > 2)
                   ? StreamBuilder<bool>(
-                      stream: FlutterBlue.instance.isScanning,
+                      stream: LighthouseProvider.instance.isScanning,
                       initialData: true,
                       builder: (context, scanningSnapshot) {
                         final scanning = scanningSnapshot.data;
@@ -335,11 +335,11 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
       {Key? key, required this.state, required this.settings})
       : super(key: key);
 
-  final BluetoothState? state;
+  final BluetoothAdapterState? state;
   final MainPageSettings settings;
 
   Widget _toSettingsButton(BuildContext context) {
-    if (LocalPlatform.isAndroid && state == BluetoothState.off) {
+    if (LocalPlatform.isAndroid && state == BluetoothAdapterState.off) {
       return ElevatedButton(
           onPressed: () async {
             await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
