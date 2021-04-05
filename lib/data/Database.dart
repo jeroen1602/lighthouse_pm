@@ -1,13 +1,16 @@
 import 'dart:io';
 
-import 'package:lighthouse_pm/data/tables/SimpleSettingsTable.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'dao/NicknameDao.dart';
+import 'dao/SettingsDao.dart';
+import 'dao/ViveBaseStationDao.dart';
 import 'tables/LastSeenDevicesTable.dart';
 import 'tables/NicknameTable.dart';
+import 'tables/SimpleSettingsTable.dart';
 import 'tables/ViveBaseStationIdTable.dart';
 
 part 'Database.g.dart';
@@ -35,8 +38,16 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(
-    tables: [Nicknames, LastSeenDevices, SimpleSettings, ViveBaseStationIds])
+@UseMoor(tables: [
+  Nicknames,
+  LastSeenDevices,
+  SimpleSettings,
+  ViveBaseStationIds,
+], daos: [
+  SettingsDao,
+  NicknameDao,
+  ViveBaseStationDao
+])
 class LighthouseDatabase extends _$LighthouseDatabase {
   LighthouseDatabase() : super(_openConnection());
 

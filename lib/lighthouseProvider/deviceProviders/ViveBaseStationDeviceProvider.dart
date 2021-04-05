@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+import 'package:lighthouse_pm/data/dao/ViveBaseStationDao.dart';
 
 import '../ble/BluetoothDevice.dart';
 import '../devices/BLEDevice.dart';
@@ -13,7 +13,7 @@ import 'BLEDeviceProvider.dart';
 class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ViveBaseStationDeviceProvider._();
 
-  ViveBaseStationBloc? _bloc;
+  ViveBaseStationDao? _viveDao;
 
   static ViveBaseStationDeviceProvider? _instance;
 
@@ -28,10 +28,10 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   }
 
   ///
-  /// Set the database bloc for saving the ids of vive base stations.
+  /// Set the database dao for saving the ids of vive base stations.
   ///
-  void setViveBaseStationBloc(ViveBaseStationBloc bloc) {
-    this._bloc = bloc;
+  void setViveBaseStationDao(ViveBaseStationDao dao) {
+    this._viveDao = dao;
   }
 
   ///
@@ -39,10 +39,10 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    if (this._bloc == null && !kReleaseMode) {
+    if (this._viveDao == null && !kReleaseMode) {
       throw StateError('Bloc is null, how?');
     }
-    return ViveBaseStationDevice(device, _bloc!);
+    return ViveBaseStationDevice(device, _viveDao!);
   }
 
   ///

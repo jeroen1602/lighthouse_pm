@@ -1,17 +1,19 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:moor/moor.dart';
 
 import '../Database.dart';
+import '../tables/SimpleSettingsTable.dart';
 
-class SettingsBloc {
-  final LighthouseDatabase db;
+part 'SettingsDao.g.dart';
 
-  SettingsBloc(this.db);
+@UseDao(tables: [SimpleSettings])
+class SettingsDao
+    extends DatabaseAccessor<LighthouseDatabase> with _$SettingsDaoMixin {
+  SettingsDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
 
   static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
 
@@ -22,12 +24,11 @@ class SettingsBloc {
   static const SCAN_DURATION_ID = 3;
   static const PREFERRED_THEME_ID = 4;
   static const SHORTCUTS_ENABLED_ID = 5;
-
   // endregion
 
   Stream<LighthousePowerState> getSleepStateAsStream(
       {LighthousePowerState defaultValue = LighthousePowerState.SLEEP}) {
-    return (db.select(db.simpleSettings)
+    return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(DEFAULT_SLEEP_STATE_ID)))
         .watch()
         .map((event) {
@@ -48,14 +49,14 @@ class SettingsBloc {
         sleepState == LighthousePowerState.SLEEP ||
             sleepState == LighthousePowerState.STANDBY,
         'The new sleep state cannot be ${sleepState.text.toUpperCase()}');
-    return db.into(db.simpleSettings).insert(
+    return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: DEFAULT_SLEEP_STATE_ID, data: sleepState.id.toString()),
         mode: InsertMode.insertOrReplace);
   }
 
   Stream<bool> getViveBaseStationsEnabledStream() {
-    return (db.select(db.simpleSettings)
+    return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(VIVE_BASE_STATION_ENABLED_ID)))
         .watch()
         .map((event) {
@@ -71,7 +72,7 @@ class SettingsBloc {
   }
 
   Future<void> setViveBaseStationEnabled(bool enabled) {
-    return db.into(db.simpleSettings).insert(
+    return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: VIVE_BASE_STATION_ENABLED_ID,
             data: enabled ? '1' : '0'),
@@ -79,7 +80,7 @@ class SettingsBloc {
   }
 
   Stream<bool> getShortcutsEnabledStream() {
-    return (db.select(db.simpleSettings)
+    return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(SHORTCUTS_ENABLED_ID)))
         .watch()
         .map((event) {
@@ -95,14 +96,14 @@ class SettingsBloc {
   }
 
   Future<void> setShortcutsEnabledStream(bool enabled) {
-    return db.into(db.simpleSettings).insert(
+    return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: SHORTCUTS_ENABLED_ID, data: enabled ? '1' : '0'),
         mode: InsertMode.insertOrReplace);
   }
 
   Stream<int> getScanDurationsAsStream({int defaultValue = 5}) {
-    return (db.select(db.simpleSettings)
+    return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(SCAN_DURATION_ID)))
         .watch()
         .map((event) {
@@ -118,14 +119,14 @@ class SettingsBloc {
 
   Future<void> setScanDuration(int duration) {
     assert(duration > 0, 'duration should be higher than 0');
-    return db.into(db.simpleSettings).insert(
+    return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: SCAN_DURATION_ID, data: duration.toRadixString(10)),
         mode: InsertMode.insertOrReplace);
   }
 
   Stream<ThemeMode> getPreferredThemeAsStream() {
-    return (db.select(db.simpleSettings)
+    return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(PREFERRED_THEME_ID)))
         .watch()
         .asyncMap((event) async {
@@ -148,7 +149,7 @@ class SettingsBloc {
   }
 
   Future<void> setPreferredTheme(ThemeMode theme) {
-    return db.into(db.simpleSettings).insert(
+    return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: PREFERRED_THEME_ID,
             data: '${theme.index.toRadixString(10)}'),
