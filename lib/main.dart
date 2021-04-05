@@ -8,9 +8,9 @@ import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBa
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/pages/BasePage.dart';
+import 'package:lighthouse_pm/pages/DatabaseTestPage.dart';
 import 'package:lighthouse_pm/pages/HelpPage.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
-import 'package:lighthouse_pm/pages/PrivacyPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
@@ -60,9 +60,6 @@ class MainApp extends StatelessWidget {
   }
 }
 
-/// The same as a [WidgetBuilder] only require it to return a [BasePage].
-typedef PageBuilder = BasePage Function(BuildContext context);
-
 class LighthousePMApp extends StatelessWidget with WithBlocStateless {
   @override
   Widget build(BuildContext context) {
@@ -92,12 +89,20 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
             // '/': _createShortcutDebugPage,
             // Uncomment the line above if you need to debug the shortcut handler.
             '/settings': (context) => SettingsPage(),
-            '/settings/privacy': (context) => PrivacyPage(),
             '/troubleshooting': (context) => TroubleshootingPage(),
             '/help': (context) => HelpPage(),
             '/shortcutHandler': (context) =>
                 ShortcutHandlerPage(settings.arguments),
           };
+
+          routes.addAll(SettingsPage.getSubPages('/settings'));
+
+          if (!kReleaseMode) {
+            routes.addAll(<String, PageBuilder>{
+              '/databaseTest': (context) => DatabaseTestPage()
+            });
+            routes.addAll(DatabaseTestPage.getSubPages('/databaseTest'));
+          }
           WidgetBuilder builder = routes[settings.name]!;
           return MaterialPageRoute(builder: (ctx) => builder(ctx));
         },

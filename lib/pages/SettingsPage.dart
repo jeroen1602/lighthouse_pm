@@ -6,8 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
-import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
 import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
@@ -18,6 +16,9 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import './BasePage.dart';
+import 'settings/PrivacyPage.dart';
+import 'settings/SettingsNicknamesPage.dart';
+import 'settings/SettingsViveBaseStationIdsPage.dart';
 
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
@@ -64,8 +65,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ListTile(
         title: Text('Lighthouses with nicknames'),
         trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => SettingsNicknamesPage())),
+        onTap: () => Navigator.pushNamed(context, '/settings/nicknames'),
       ),
       Divider(),
       ListTile(
@@ -174,10 +174,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ListTile(
         title: Text('Vive Base station ids'),
         trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => SettingsViveBaseStationIdsPage())),
+        onTap: () => Navigator.pushNamed(context, '/settings/vive'),
       ),
       Divider(),
       ListTile(
@@ -354,5 +351,21 @@ class SettingsPage extends BasePage with WithBlocStateless {
     return Scaffold(
         appBar: AppBar(title: Text('Settings')),
         body: ListView(children: [Column(children: items)]));
+  }
+
+  static Map<String, PageBuilder> _subPages = {
+    '/nicknames': (context) => SettingsNicknamesPage(),
+    '/vive': (context) => SettingsViveBaseStationIdsPage(),
+    '/privacy': (context) => PrivacyPage(),
+  };
+
+  static Map<String, PageBuilder> getSubPages(String parentPath) {
+    Map<String, PageBuilder> subPages = {};
+
+    for (final subPage in _subPages.entries) {
+      subPages['$parentPath${subPage.key}'] = subPage.value;
+    }
+
+    return subPages;
   }
 }

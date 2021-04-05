@@ -2,7 +2,8 @@
 
  - Updated flutter, now with null safety.
  - Updated dependencies.
- - (Android) BETA added shortcut (Android 8.0+ (Oreo api 26))
+ - (Android) BETA added shortcut (Android 8.0+ (Oreo api 26)).
+ - Removed unused fonts (-0.6MB save).
 
 # Version 1.1.2+7 23-02-2021
 

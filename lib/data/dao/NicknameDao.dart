@@ -42,6 +42,8 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   Stream<List<LastSeenDevice>> get watchLastSeenDevices =>
       select(lastSeenDevices).watch();
 
+  Stream<List<Nickname>> get watchNicknames => select(nicknames).watch();
+
   Stream<List<NicknamesLastSeenJoin>> watchSavedNicknamesWithLastSeen() {
     final query = select(nicknames).join([
       leftOuterJoin(lastSeenDevices,
@@ -57,5 +59,11 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> deleteAllLastSeen() {
     return delete(lastSeenDevices).go();
+  }
+
+  Future<void> deleteLastSeen(LastSeenDevice lastSeen) {
+    return (delete(lastSeenDevices)
+          ..where((tbl) => tbl.macAddress.equals(lastSeen.macAddress)))
+        .go();
   }
 }

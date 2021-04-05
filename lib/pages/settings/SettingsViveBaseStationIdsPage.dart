@@ -204,10 +204,10 @@ class _EmptyState extends State<_EmptyPage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                bloc.viveBaseStation.insertId(0xFFFFFFFF);
-                bloc.viveBaseStation.insertId(0xFFFFFFFE);
-                bloc.viveBaseStation.insertId(0xFFFFFFFD);
-                bloc.viveBaseStation.insertId(0xFFFFFFFC);
+                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFF);
+                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFE);
+                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFD);
+                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFC);
                 Toast.show('Fake ids created!', context,
                     duration: Toast.lengthShort);
                 tapCounter++;
