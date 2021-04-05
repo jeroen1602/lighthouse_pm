@@ -286,7 +286,7 @@ List<int> _intListFromNumber(int number) {
     if (byte > 0) {
       nonZero = true;
     }
-    list.add(byte);
+    list[i] = byte;
   }
   if (nonZero) {
     // Trim the list at the end.

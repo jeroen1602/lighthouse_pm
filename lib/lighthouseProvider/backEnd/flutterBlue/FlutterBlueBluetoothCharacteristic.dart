@@ -1,2 +1,2 @@
 export 'FlutterBlueBluetoothCharacteristicUnsupported.dart'
-    if (dart.library.io) 'FlutterBlueBluetoothCharacteristicUnsupportedIO.dart';
+    if (dart.library.io) 'FlutterBlueBluetoothCharacteristicIO.dart';
