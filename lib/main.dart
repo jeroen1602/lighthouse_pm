@@ -54,7 +54,7 @@ class MainApp extends StatelessWidget {
     final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
     ViveBaseStationDeviceProvider.instance
-        .setViveBaseStationBloc(mainBloc.viveBaseStation);
+        .setViveBaseStationDao(mainBloc.viveBaseStation);
     LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
 
     return mainBloc;

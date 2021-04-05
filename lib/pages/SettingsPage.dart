@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
-import 'package:lighthouse_pm/data/bloc/SettingsBloc.dart';
+import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
@@ -22,7 +22,7 @@ const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
 
 class SettingsPage extends BasePage with WithBlocStateless {
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
-    if (await SettingsBloc.supportsThemeModeSystem) {
+    if (await SettingsDao.supportsThemeModeSystem) {
       return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
     } else {
       return [ThemeMode.light, ThemeMode.dark];
@@ -114,7 +114,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                       .setScanDuration(value);
                 }
               },
-              items: SettingsBloc.SCAN_DURATION_VALUES
+              items: SettingsDao.SCAN_DURATION_VALUES
                   .map<DropdownMenuItem<int>>((int value) =>
                       DropdownMenuItem<int>(
                           value: value, child: Text('$value seconds')))

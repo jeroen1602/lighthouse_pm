@@ -28,7 +28,7 @@ class LocalPlatform {
   static void _throwUnsupportedError() {
     if (!kReleaseMode) {
       throw UnsupportedError(
-          "Hey developer this platform doesn't support shortcuts!");
+          "Hey developer this platform doesn't support platform determination!");
     }
   }
 }

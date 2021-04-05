@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+import 'package:lighthouse_pm/data/dao/ViveBaseStationDao.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthousePowerState.dart';
@@ -23,13 +23,13 @@ import 'BLEDevice.dart';
 const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
 class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
-  ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationBloc bloc)
-      : _bloc = bloc,
+  ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationDao dao)
+      : _viveDao = dao,
         super(device);
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
-  final ViveBaseStationBloc? _bloc;
+  final ViveBaseStationDao? _viveDao;
   LHBluetoothCharacteristic? _characteristic;
   int? _deviceIdStorage;
 
@@ -155,9 +155,9 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       debugPrint('Could not get device id end from name. "$name"');
       return false;
     }
-    final bloc = _bloc;
-    if (bloc != null) {
-      this._deviceId = await bloc.getIdOnSubset(_deviceIdEnd!);
+    final viveDao = _viveDao;
+    if (viveDao != null) {
+      this._deviceId = await viveDao.getIdOnSubset(_deviceIdEnd!);
       if (this._deviceId == null) {
         debugPrint('Device Id not set yet for "$name"');
       }
@@ -215,10 +215,10 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
-    final bloc = _bloc;
-    if (bloc != null) {
+    final viveDao = _viveDao;
+    if (viveDao != null) {
       deviceExtensions.add(ClearIdExtension(
-          bloc: bloc,
+          viveDao: viveDao,
           deviceIdEnd: _deviceIdEnd!,
           clearId: () => _deviceId = null));
     }
@@ -272,11 +272,11 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
         }
         try {
           this._deviceId = int.parse(value, radix: 16);
-          final bloc = _bloc;
-          if (bloc != null) {
-            await bloc.insertId(_deviceId!);
+          final viveDao = _viveDao;
+          if (viveDao != null) {
+            await viveDao.insertId(_deviceId!);
           } else {
-            debugPrint('Could not save device id because the bloc was null');
+            debugPrint('Could not save device id because the dao was null');
           }
           return true;
         } on FormatException {

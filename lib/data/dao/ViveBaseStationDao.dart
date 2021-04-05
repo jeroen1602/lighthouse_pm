@@ -1,17 +1,20 @@
-import 'dart:async';
-
-import 'package:lighthouse_pm/data/Database.dart';
 import 'package:moor/moor.dart';
 
-class ViveBaseStationBloc {
-  ViveBaseStationBloc(this.db);
+import '../Database.dart';
+import '../tables/ViveBaseStationIdTable.dart';
 
-  final LighthouseDatabase db;
+part 'ViveBaseStationDao.g.dart';
+
+@UseDao(tables: [ViveBaseStationIds])
+class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
+    with _$ViveBaseStationDaoMixin {
+  ViveBaseStationDao(LighthouseDatabase attachedDatabase)
+      : super(attachedDatabase);
 
   Future<int?> getIdOnSubset(int subset) {
     assert((subset & 0xFFFF) == subset,
         'Subset should only be the lower 2 bytes. Subset was: 0x${subset.toRadixString(16)}');
-    return db.select(db.viveBaseStationIds).get().then((baseStationIds) {
+    return select(viveBaseStationIds).get().then((baseStationIds) {
       for (final baseStationId in baseStationIds) {
         if ((baseStationId.id & 0xFFFF) == subset) {
           return baseStationId.id;
@@ -22,7 +25,7 @@ class ViveBaseStationBloc {
   }
 
   Stream<List<int>> getIdsAsStream() {
-    return db.select(db.viveBaseStationIds).watch().map((event) {
+    return select(viveBaseStationIds).watch().map((event) {
       if (event == null || event.isEmpty) {
         return [];
       }
@@ -38,8 +41,7 @@ class ViveBaseStationBloc {
     assert((id & 0xFFFFFFFF) == id,
         'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16)}');
 
-    return db
-        .into(db.viveBaseStationIds)
+    return into(viveBaseStationIds)
         .insert(ViveBaseStationId(id: id), mode: InsertMode.insertOrReplace);
   }
 
@@ -47,11 +49,10 @@ class ViveBaseStationBloc {
     assert((id & 0xFFFFFFFF) == id,
         'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16)}');
 
-    return (db.delete(db.viveBaseStationIds)..where((tbl) => tbl.id.equals(id)))
-        .go();
+    return (delete(viveBaseStationIds)..where((tbl) => tbl.id.equals(id))).go();
   }
 
   Future<void> deleteIds() {
-    return db.delete(db.viveBaseStationIds).go();
+    return delete(viveBaseStationIds).go();
   }
 }

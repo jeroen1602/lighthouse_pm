@@ -1,22 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:lighthouse_pm/data/bloc/NicknameBloc.dart';
-import 'package:lighthouse_pm/data/bloc/ViveBaseStationBloc.dart';
+import 'package:lighthouse_pm/data/dao/NicknameDao.dart';
+import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
+import 'package:lighthouse_pm/data/dao/ViveBaseStationDao.dart';
 import 'package:provider/provider.dart';
-
-import 'data/bloc/SettingsBloc.dart';
 
 class LighthousePMBloc {
   final LighthouseDatabase db;
-  final SettingsBloc settings;
-  final ViveBaseStationBloc viveBaseStation;
-  final NicknameBloc nicknames;
+  SettingsDao get settings => db.settingsDao;
+  ViveBaseStationDao get viveBaseStation => db.viveBaseStationDao;
+  NicknameDao get nicknames => db.nicknameDao;
 
   LighthousePMBloc(LighthouseDatabase db)
-      : db = db,
-        settings = SettingsBloc(db),
-        viveBaseStation = ViveBaseStationBloc(db),
-        nicknames = NicknameBloc(db);
+      : db = db;
 
   void close() {
     db.close();
@@ -38,4 +34,3 @@ extension WithBlocState on State {
   LighthousePMBloc get blocWithoutListen =>
       Provider.of<LighthousePMBloc>(context, listen: false);
 }
-
