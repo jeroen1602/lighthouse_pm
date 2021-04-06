@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:moor/moor.dart';
 
 import '../Database.dart';
@@ -30,8 +31,8 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
         return [];
       }
       final out = List<int>.filled(event.length, 0);
-      for (final item in event) {
-        out.add(item.id);
+      for (int i = 0; i < event.length; i++) {
+        out[i] = event[i].id;
       }
       return out;
     });
@@ -54,5 +55,24 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> deleteIds() {
     return delete(viveBaseStationIds).go();
+  }
+
+  Stream<List<ViveBaseStationId>> get watchViveBaseStationIds {
+    debugPrint(
+        'WARNING using watchSimpleSettings, this should not happen in release mode!');
+    return select(viveBaseStationIds).watch();
+  }
+
+  Future<void> insertIdNoValidate(int id) {
+    debugPrint(
+        'WARNING using insertIdNoValidate, this should not happen in release mode!');
+    return into(viveBaseStationIds)
+        .insert(ViveBaseStationId(id: id), mode: InsertMode.insertOrReplace);
+  }
+
+  Future<void> deleteIdNoValidate(int id) {
+    debugPrint(
+        'WARNING using deleteIdNoValidate, this should not happen in release mode!');
+    return (delete(viveBaseStationIds)..where((tbl) => tbl.id.equals(id))).go();
   }
 }

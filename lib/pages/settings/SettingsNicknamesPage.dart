@@ -234,16 +234,16 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                bloc.nicknames.insertNickname(Nickname(
+                blocWithoutListen.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FF",
                     nickname: "This is a test nickname1"));
-                bloc.nicknames.insertNickname(Nickname(
+                blocWithoutListen.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FE",
                     nickname: "This is a test nickname2"));
-                bloc.nicknames.insertNickname(Nickname(
+                blocWithoutListen.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FD",
                     nickname: "This is a test nickname3"));
-                bloc.nicknames.insertNickname(Nickname(
+                blocWithoutListen.nicknames.insertNickname(Nickname(
                     macAddress: "FF:FF:FF:FF:FF:FC",
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,

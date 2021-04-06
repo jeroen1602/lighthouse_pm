@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:moor/moor.dart';
@@ -11,8 +12,8 @@ import '../tables/SimpleSettingsTable.dart';
 part 'SettingsDao.g.dart';
 
 @UseDao(tables: [SimpleSettings])
-class SettingsDao
-    extends DatabaseAccessor<LighthouseDatabase> with _$SettingsDaoMixin {
+class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
+    with _$SettingsDaoMixin {
   SettingsDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
 
   static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
@@ -24,20 +25,24 @@ class SettingsDao
   static const SCAN_DURATION_ID = 3;
   static const PREFERRED_THEME_ID = 4;
   static const SHORTCUTS_ENABLED_ID = 5;
+
   // endregion
 
   Stream<LighthousePowerState> getSleepStateAsStream(
       {LighthousePowerState defaultValue = LighthousePowerState.SLEEP}) {
     return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(DEFAULT_SLEEP_STATE_ID)))
-        .watch()
+        .watchSingleOrNull()
         .map((event) {
-      if (event.length >= 1 && event[0].data != null) {
+      if (event != null && event.data != null) {
         try {
-          final data = int.parse(event[0].data!, radix: 10);
+          final data = int.parse(event.data!, radix: 10);
           return LighthousePowerState.fromId(data);
         } on FormatException {
           debugPrint('Could not convert data returned to a string');
+        } on ArgumentError {
+          debugPrint(
+              'Could not convert data returned to Lighthouse power state');
         }
       }
       return defaultValue;
@@ -105,10 +110,10 @@ class SettingsDao
   Stream<int> getScanDurationsAsStream({int defaultValue = 5}) {
     return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(SCAN_DURATION_ID)))
-        .watch()
+        .watchSingleOrNull()
         .map((event) {
-      if (event.length == 1 && event[0].data != null) {
-        final number = int.tryParse(event[0].data!, radix: 10);
+      if (event != null && event.data != null) {
+        final number = int.tryParse(event.data!, radix: 10);
         if (number != null) {
           return number;
         }
@@ -128,10 +133,10 @@ class SettingsDao
   Stream<ThemeMode> getPreferredThemeAsStream() {
     return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(PREFERRED_THEME_ID)))
-        .watch()
+        .watchSingleOrNull()
         .asyncMap((event) async {
-      if (event.length == 1 && event[0].data != null) {
-        final themeIndex = int.tryParse(event[0].data!, radix: 10);
+      if (event != null && event.data != null) {
+        final themeIndex = int.tryParse(event.data!, radix: 10);
         if (themeIndex != null &&
             themeIndex >= 0 &&
             themeIndex < ThemeMode.values.length) {
@@ -181,5 +186,30 @@ class SettingsDao
       return ThemeMode.system;
     }
     return ThemeMode.light;
+  }
+
+  Stream<List<SimpleSetting>> get watchSimpleSettings {
+    debugPrint(
+        'WARNING using watchSimpleSettings, this should not happen in release mode!');
+    return select(simpleSettings).watch();
+  }
+
+  Future<void> deleteSimpleSettingId(int settingId) {
+    debugPrint(
+        'WARNING using deleteSimpleSettingId, this should not happen in release mode!');
+    return (delete(simpleSettings)
+          ..where((tbl) => tbl.settingsId.equals(settingId)))
+        .go();
+  }
+
+  Future<void> deleteSimpleSetting(SimpleSetting setting) {
+    return deleteSimpleSettingId(setting.settingsId);
+  }
+
+  Future<void> insertSimpleSetting(SimpleSetting setting) {
+    debugPrint(
+        'WARNING using insertSimpleSetting, this should not happen in release mode!');
+    return into(simpleSettings)
+        .insert(setting, mode: InsertMode.insertOrReplace);
   }
 }

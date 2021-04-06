@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
-import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
+import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -77,7 +77,7 @@ class TroubleshootingContentWidget extends StatelessWidget
               'Sometimes a lighthouse reports it\'s own state as booting.'),
           subtitle: Text(
               'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
-          leading: Icon(MaterialCommunityIcons.ray_start, color: Colors.pink)),
+          leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
       Divider(),
       ListTile(
           title: Text('Sometimes the app needs a restart.'),
