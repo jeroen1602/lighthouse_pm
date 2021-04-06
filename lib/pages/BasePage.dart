@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
+/// The same as a [WidgetBuilder] only require it to return a [BasePage].
+typedef PageBuilder = BasePage Function(BuildContext context);
+
 ///
 /// A base page that has some functions that every page should have.
 ///

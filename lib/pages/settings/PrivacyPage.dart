@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './BasePage.dart';
+import '../BasePage.dart';
 
 class PrivacyPage extends BasePage {
   @override

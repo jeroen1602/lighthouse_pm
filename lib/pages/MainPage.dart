@@ -4,7 +4,7 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
-import 'package:lighthouse_pm/dialogs/LocationPermissonDialogFlow.dart';
+import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
