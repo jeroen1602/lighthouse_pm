@@ -61,7 +61,7 @@ class _DaoSimpleChangeStringAlertWidget
           TextSpan(
               style: Theme.of(context).textTheme.bodyText1,
               text: ".\n"
-                  "NOTE doing this may force the app in an illegal state."),
+                  "NOTE doing this may force the app into an illegal state."),
         ],
       )),
       content: TextField(

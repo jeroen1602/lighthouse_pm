@@ -194,9 +194,7 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
   @override
   void initState() {
     super.initState();
-    if (widget.item.autoIncrement) {
-      autoIncrementEnabled = true;
-    }
+    autoIncrementEnabled = widget.item.autoIncrement;
   }
 
   @override
