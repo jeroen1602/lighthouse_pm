@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
 import 'package:toast/toast.dart';
@@ -49,7 +50,18 @@ class _ViveBaseStationIdConverter
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
-    Toast.show('TODO: implement add item dialog', context);
+    final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
+      DaoDataCreateAlertIntDecorator('Base station id', null, autoIncrement: false),
+    ];
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    if (saveNewItem) {
+      final int? id = (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
+      if (id == null) {
+        Toast.show('No id set!', context);
+        return;
+      }
+      await bloc.viveBaseStation.insertIdNoValidate(id);
+    }
   }
 }
 

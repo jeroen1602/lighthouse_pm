@@ -3,6 +3,7 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
 import 'package:toast/toast.dart';
@@ -120,7 +121,20 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
-    Toast.show('TODO: implement add item dialog', context);
+    final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
+      DaoDataCreateAlertIntDecorator('Id', null, autoIncrement: false),
+      DaoDataCreateAlertStringDecorator('Value', null),
+    ];
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    if (saveNewItem) {
+      final int? id = (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
+      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (id == null) {
+        Toast.show('No id set!', context);
+        return;
+      }
+      await bloc.settings.insertSimpleSetting(SimpleSetting(settingsId: id, data: value));
+    }
   }
 }
 

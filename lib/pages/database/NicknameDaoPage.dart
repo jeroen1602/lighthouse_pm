@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
 import 'package:moor/moor.dart' as moor;
@@ -43,7 +45,31 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
-    Toast.show('TODO: implement add item dialog', context);
+    final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
+      DaoDataCreateAlertStringDecorator('Mac address', null,
+          validator: MacValidator.macValidator),
+      DaoDataCreateAlertStringDecorator('Nickname', null),
+    ];
+    final saveNewItem =
+        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    if (saveNewItem) {
+      final String? mac = (decorators[0] as DaoDataCreateAlertStringDecorator)
+          .getNewValue()
+          ?.trim()
+          .toUpperCase();
+      final String? value =
+          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (mac == null) {
+        Toast.show('No mac set!', context);
+        return;
+      }
+      if (value == null) {
+        Toast.show('No nickname set!', context);
+        return;
+      }
+      await bloc.nicknames
+          .insertNickname(Nickname(macAddress: mac, nickname: value));
+    }
   }
 }
 
@@ -88,9 +114,37 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
-    Toast.show('TODO: implement add item dialog', context);
+    final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
+      DaoDataCreateAlertStringDecorator('Mac address', null,
+          validator: MacValidator.macValidator),
+      // TODO: use date picker
+      DaoDataCreateAlertStringDecorator(
+          'Last seen', DateTime.now().toIso8601String()),
+    ];
+    final saveNewItem =
+        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    if (saveNewItem) {
+      final String? mac = (decorators[0] as DaoDataCreateAlertStringDecorator)
+          .getNewValue()
+          ?.trim()
+          .toUpperCase();
+      final String? value =
+          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (mac == null) {
+        Toast.show('No mac set!', context);
+        return;
+      }
+      DateTime? date;
+      if (value != null && value.trim() != '') {
+        date = DateTime.tryParse(value);
+      }
+      if (date == null) {
+        date = DateTime.now();
+      }
+      await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
+          macAddress: mac, lastSeen: moor.Value(date)));
+    }
   }
-
 }
 
 class NicknameDaoPage extends BasePage with WithBlocStateless {
