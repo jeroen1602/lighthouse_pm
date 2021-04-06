@@ -10,15 +10,15 @@ class EnableBluetoothAlertWidget extends StatelessWidget {
         content: Text('Do you want to enable Bluetooth?'),
         actions: <Widget>[
           SimpleDialogOption(
-            child: Text("Enable Bluetooth"),
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-          ),
-          SimpleDialogOption(
             child: Text("Cancel"),
             onPressed: () {
               Navigator.pop(context, false);
+            },
+          ),
+          SimpleDialogOption(
+            child: Text("Enable Bluetooth"),
+            onPressed: () {
+              Navigator.pop(context, true);
             },
           ),
         ]);

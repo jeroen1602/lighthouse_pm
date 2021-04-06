@@ -8,17 +8,17 @@ class ClearLastSeenAlertWidget extends StatelessWidget {
       content: Text('Are you sure you want to clear the last seen devices?\nThis is just for displaying when the app has last seen the device and has no effect on functionality.'),
       actions: <Widget>[
         SimpleDialogOption(
+          child: Text('No'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SimpleDialogOption(
           child: Text('Yes'),
           onPressed: () {
             Navigator.pop(context, true);
           },
         ),
-        SimpleDialogOption(
-          child: Text('No'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        )
       ],
     );
   }

@@ -25,17 +25,17 @@ class PermissionsAlertWidget extends StatelessWidget {
         ])),
         actions: <Widget>[
           SimpleDialogOption(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+          SimpleDialogOption(
             child: Text("Allow permissions"),
             onPressed: () {
               Navigator.pop(context, true);
             },
           ),
-          SimpleDialogOption(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-          )
         ]);
   }
 

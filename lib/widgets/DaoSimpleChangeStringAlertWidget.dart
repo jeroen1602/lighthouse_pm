@@ -70,16 +70,16 @@ class _DaoSimpleChangeStringAlertWidget
       ),
       actions: <Widget>[
         SimpleDialogOption(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SimpleDialogOption(
           child: Text('Save'),
           onPressed: () {
             final text = textController.text;
             Navigator.pop(context, text);
-          },
-        ),
-        SimpleDialogOption(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.pop(context);
           },
         ),
       ],
