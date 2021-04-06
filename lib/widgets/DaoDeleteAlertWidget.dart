@@ -16,16 +16,17 @@ class DaoDeleteAlertWidget extends StatelessWidget {
     return AlertDialog(
       title: RichText(
           text: TextSpan(children: [
-        TextSpan(text: 'Do you want to delete: '),
+        TextSpan(
+            text: 'Do you want to delete: ', style: theme.textTheme.bodyText1),
         TextSpan(
             text: '$title',
             style: theme.textTheme.bodyText1!
                 .copyWith(fontWeight: FontWeight.bold)),
-        TextSpan(text: '?'),
+        TextSpan(text: '?', style: theme.textTheme.bodyText1),
       ])),
       content: RichText(
           text: TextSpan(children: [
-        TextSpan(text: 'This will delete:\n'),
+        TextSpan(text: 'This will delete:\n', style: theme.textTheme.bodyText1),
         TextSpan(
             text: '$title\n',
             style: theme.textTheme.bodyText1!
@@ -35,9 +36,9 @@ class DaoDeleteAlertWidget extends StatelessWidget {
             style: theme.textTheme.bodyText1!
                 .copyWith(fontWeight: FontWeight.bold)),
         TextSpan(
-            text:
-                'from the database.\n'
-                    'Since this is a test page it may break stuff if you do this!'),
+            text: 'from the database.\n'
+                'Since this is a test page it may break stuff if you do this!',
+            style: theme.textTheme.bodyText1),
       ])),
       actions: [
         SimpleDialogOption(

@@ -5,9 +5,11 @@ import 'package:moor/moor.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'dao/GroupDao.dart';
 import 'dao/NicknameDao.dart';
 import 'dao/SettingsDao.dart';
 import 'dao/ViveBaseStationDao.dart';
+import 'tables/GroupTable.dart';
 import 'tables/LastSeenDevicesTable.dart';
 import 'tables/NicknameTable.dart';
 import 'tables/SimpleSettingsTable.dart';
@@ -43,23 +45,32 @@ LazyDatabase _openConnection() {
   LastSeenDevices,
   SimpleSettings,
   ViveBaseStationIds,
+  Groups,
+  GroupEntries,
 ], daos: [
   SettingsDao,
   NicknameDao,
-  ViveBaseStationDao
+  ViveBaseStationDao,
+  GroupDao,
 ])
 class LighthouseDatabase extends _$LighthouseDatabase {
   LighthouseDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
         return m.createAll();
       }, onUpgrade: (Migrator m, int from, int to) async {
-        if (from == 1 && to == 2) {
+        if (from == 1 && (to >= 2 && to <= 3)) {
           await m.renameColumn(simpleSettings, 'id', simpleSettings.settingsId);
         }
+        if ((from >= 1 && from <= 2) && (to == 3)) {
+          await m.createTable(groups);
+          await m.createTable(groupEntries);
+        }
+      }, beforeOpen: (details) async {
+        await this.customStatement('PRAGMA foreign_keys = ON');
       });
 }
