@@ -73,6 +73,12 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
       ),
       actions: <Widget>[
         SimpleDialogOption(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SimpleDialogOption(
           child: Text('Save'),
           onPressed: () {
             final text = textController.text.trim();
@@ -83,12 +89,6 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
               Navigator.pop(context,
                   NicknamesHelper(macAddress: widget.macAddress, nickname: text));
             }
-          },
-        ),
-        SimpleDialogOption(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.pop(context);
           },
         ),
       ],

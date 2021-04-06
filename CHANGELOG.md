@@ -5,6 +5,7 @@
  - (Android) BETA added shortcut (Android 8.0+ (Oreo api 26)).
  - Removed unused fonts (-0.6MB save).
  - (Debug only )Added database test for debugging.
+ - Standardized dialog button order (sorry for the inconvenience).
 
 # Version 1.1.2+7 23-02-2021
 

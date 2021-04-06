@@ -25,9 +25,9 @@ class UnknownStateAlertWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = <Widget>[
       SimpleDialogOption(
-        child: Text("On"),
+        child: Text("Cancel"),
         onPressed: () {
-          Navigator.pop(context, LighthousePowerState.ON);
+          Navigator.pop(context, null);
         },
       ),
       SimpleDialogOption(
@@ -37,9 +37,9 @@ class UnknownStateAlertWidget extends StatelessWidget {
         },
       ),
       SimpleDialogOption(
-        child: Text("Cancel"),
+        child: Text("On"),
         onPressed: () {
-          Navigator.pop(context, null);
+          Navigator.pop(context, LighthousePowerState.ON);
         },
       ),
     ];
@@ -47,7 +47,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
     // Add standby, but only if it's supported
     if (device.hasStandbyExtension) {
       actions.insert(
-          1,
+          2,
           SimpleDialogOption(
             child: Text("Standby"),
             onPressed: () {
