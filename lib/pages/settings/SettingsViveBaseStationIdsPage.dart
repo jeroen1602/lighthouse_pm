@@ -70,9 +70,9 @@ class _SettingsViveBaseStationIdsPageState
           }
         }
 
-        final Color scaffoldColor = selected.isNotEmpty
+        final Color? scaffoldColor = selected.isNotEmpty
             ? Theme.of(context).selectedRowColor
-            : Theme.of(context).primaryColor;
+            : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [

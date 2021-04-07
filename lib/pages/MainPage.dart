@@ -294,8 +294,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 appBar: AppBar(
                   title: Text('Lighthouse PM'),
                   actions: actions,
-                  backgroundColor:
-                      actionBarColor ?? Theme.of(context).primaryColor,
+                  backgroundColor: actionBarColor,
                   leading: leading,
                 ),
                 floatingActionButton: _ScanFloatingButtonWidget(
