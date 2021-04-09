@@ -6,11 +6,13 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
+import 'package:lighthouse_pm/data/tables/GroupTable.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseGroupWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/widgets/MainPageDrawer.dart';
@@ -23,23 +25,20 @@ import 'BasePage.dart';
 
 const double _DEVICE_LIST_SCROLL_PADDING = 80.0;
 
-Stream<Tuple2<List<Nickname>, List<LighthouseDevice>>>
+Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
     _mergeNicknameAndLighthouseDevice(LighthousePMBloc bloc) {
-  final nicknames = <Nickname>[];
-  final lighthouseDevices = <LighthouseDevice>[];
-
-  return MergeStream<List<dynamic>>([
-    bloc.nicknames.watchSavedNicknames,
-    LighthouseProvider.instance.lighthouseDevices
-  ]).map((event) {
-    if (event is List<Nickname>) {
-      nicknames.clear();
-      nicknames.addAll(event);
-    } else if (event is List<LighthouseDevice>) {
-      lighthouseDevices.clear();
-      lighthouseDevices.addAll(event);
-    }
-    return Tuple2(nicknames, lighthouseDevices);
+  return Rx.combineLatest3<
+          List<Nickname>,
+          List<LighthouseDevice>,
+          List<GroupWithEntries>,
+          Tuple3<List<Nickname>, List<LighthouseDevice>,
+              List<GroupWithEntries>>>(
+      MergeStream([Stream.value([]), bloc.nicknames.watchSavedNicknames]),
+      MergeStream(
+          [Stream.value([]), LighthouseProvider.instance.lighthouseDevices]),
+      MergeStream([Stream.value([]), bloc.groups.watchGroups()]),
+      (nicknames, devices, groups) {
+    return Tuple3(nicknames, devices, groups);
   });
 }
 
@@ -137,27 +136,60 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     super.dispose();
   }
 
+  Map<String, String> _nicknamesToMap(List<Nickname> nicknames) {
+    return Map.fromEntries(nicknames
+        .map((nickname) => MapEntry(nickname.macAddress, nickname.nickname)));
+  }
+
+  List<LighthouseDevice> _devicesNotInAGroup(
+      List<LighthouseDevice> devices, List<GroupWithEntries> groups) {
+    List<LighthouseDevice> output = [];
+
+    for (final device in devices) {
+      bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
+          macAddress: device.deviceIdentifier.toString()));
+      bool found = false;
+      for (final group in groups) {
+        if (group.macs.contains(device.deviceIdentifier.toString())) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        output.add(device);
+      }
+    }
+
+    return output;
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildScanPopScope(
-        child: StreamBuilder<Tuple2<List<Nickname>, List<LighthouseDevice>>>(
+        child: StreamBuilder<
+                Tuple3<List<Nickname>, List<LighthouseDevice>,
+                    List<GroupWithEntries>>>(
             stream: _mergeNicknameAndLighthouseDevice(bloc),
-            initialData: const Tuple2(const [], const []),
+            initialData: const Tuple3(const [], const [], const []),
             builder: (c, snapshot) {
               updates++;
               final tuple = snapshot.requireData;
-              final list = tuple.item2;
-              if (list.isNotEmpty) {
-                list.sort((a, b) =>
+              final devices = tuple.item2;
+              if (devices.isNotEmpty) {
+                devices.sort((a, b) =>
                     a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id));
               }
-              final nicknames = tuple.item1;
+              final nicknames = _nicknamesToMap(tuple.item1);
+              final groups = tuple.item3;
+              final notGroupedDevices = _devicesNotInAGroup(devices, groups);
               // Make sure a device hasn't left
               final selectedCopy = Set<LHDeviceIdentifier>();
               selectedCopy.addAll(selected);
               selected.clear();
 
-              final Widget body = (list.isEmpty && updates > 2)
+              final listLength = groups.length + notGroupedDevices.length;
+
+              final Widget body = (devices.isEmpty && updates > 2)
                   ? StreamBuilder<bool>(
                       stream: FlutterBlue.instance.isScanning,
                       initialData: true,
@@ -186,33 +218,34 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     )
                   : ListView.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        if (index == list.length) {
+                        if (index == listLength) {
                           // Add an extra container at the bottom to stop the floating
                           // button from obstructing the last item.
                           return Container(
                             height: _DEVICE_LIST_SCROLL_PADDING,
                           );
                         }
-                        final device = list[index];
-                        bloc.nicknames.insertLastSeenDevice(
-                            LastSeenDevicesCompanion.insert(
-                                macAddress:
-                                    device.deviceIdentifier.toString()));
+                        if (index < groups.length) {
+                          return LighthouseGroupWidget(
+                            group: groups[index],
+                            devices: devices,
+                            nicknameMap: nicknames,
+                            sleepState: widget.settings.sleepState,
+                          );
+                        }
+
+                        index -= groups.length;
+                        final device = notGroupedDevices[index];
+
                         final nickname =
-                            nicknames.cast<Nickname?>().singleWhere((element) {
-                          if (element != null) {
-                            return element.macAddress ==
-                                device.deviceIdentifier.toString();
-                          }
-                          return false;
-                        }, orElse: () => null);
+                            nicknames[device.deviceIdentifier.toString()];
                         if (selectedCopy.contains(device.deviceIdentifier)) {
                           selected.add(device.deviceIdentifier);
                         }
                         return LighthouseWidget(
                           device,
                           selected: selected.contains(device.deviceIdentifier),
-                          onLongPress: () {
+                          onSelected: () {
                             setState(() {
                               if (selected.contains(device.deviceIdentifier)) {
                                 selected.remove(device.deviceIdentifier);
@@ -222,11 +255,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               }
                             });
                           },
-                          nickname: nickname != null ? nickname.nickname : null,
+                          nickname: nickname,
                           sleepState: widget.settings.sleepState,
                         );
                       },
-                      itemCount: list.length + 1,
+                      itemCount: listLength + 1,
                     );
 
               final List<Widget> actions = [];
@@ -239,8 +272,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   onPressed: () async {
                     if (selected.length == 1) {
                       final item = selected.first;
-                      final device =
-                          list.cast<LighthouseDevice?>().singleWhere((element) {
+                      final device = devices
+                          .cast<LighthouseDevice?>()
+                          .singleWhere((element) {
                         if (element != null) {
                           return element.deviceIdentifier == item;
                         }
@@ -251,19 +285,13 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                             'Could not find a device for the nickname dialog!');
                         return;
                       }
-                      final Nickname? nickname =
-                          nicknames.cast<Nickname?>().singleWhere((element) {
-                        if (element != null) {
-                          return element.macAddress == item.toString();
-                        }
-                        return false;
-                      }, orElse: () => null);
+                      final String? nickname = nicknames[item.toString()];
 
                       final newNickname =
                           await NicknameAlertWidget.showCustomDialog(context,
                               macAddress: device.deviceIdentifier.toString(),
                               deviceName: device.name,
-                              nickname: nickname?.nickname);
+                              nickname: nickname);
                       if (newNickname != null) {
                         if (newNickname.nickname == null) {
                           blocWithoutListen.nicknames
@@ -349,8 +377,8 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
             'Enable Bluetooth.',
             style: Theme.of(context)
                 .textTheme
-                .bodyText1!
-                .copyWith(color: Colors.black),
+                .bodyText1
+                ?.copyWith(color: Colors.black),
           ));
     }
     return Container();
@@ -384,8 +412,8 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
               'Bluetooth needs to be enabled to talk to the lighthouses',
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1!
-                  .copyWith(color: Colors.white),
+                  .subtitle1
+                  ?.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             _toSettingsButton(context)

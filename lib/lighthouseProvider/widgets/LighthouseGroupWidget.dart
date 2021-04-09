@@ -1,0 +1,237 @@
+import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/tables/GroupTable.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthousePowerButtonWidget.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:toast/toast.dart';
+import 'package:tuple/tuple.dart';
+
+import '../LighthouseDevice.dart';
+import '../LighthousePowerState.dart';
+import 'OfflineLighthouseWidget.dart';
+
+/// A widget for showing lighthouses as a group.
+///
+class LighthouseGroupWidget extends StatelessWidget {
+  LighthouseGroupWidget(
+      {required this.group,
+      required this.devices,
+      required this.nicknameMap,
+      this.sleepState = LighthousePowerState.SLEEP,
+      Key? key})
+      : super(key: key);
+
+  final GroupWithEntries group;
+  final List<LighthouseDevice> devices;
+  final Map<String, String> nicknameMap;
+  final LighthousePowerState sleepState;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextDirection textDirection = Directionality.of(context);
+    final EdgeInsets groupItemPadding =
+        EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0).resolve(textDirection);
+
+    final onlineAndOfflineDevices = _getOnlineAndOfflineDevices();
+
+    return StreamBuilder<Map<String, Tuple2<int, LighthousePowerState>>>(
+      stream: _combinePowerStates(onlineAndOfflineDevices.item2),
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, Tuple2<int, LighthousePowerState>>>
+              powerStatesSnapshot) {
+        final powerStates = powerStatesSnapshot.data ?? {};
+        final averagePowerState = _getCombinedPowerState(powerStates);
+        return Column(
+          children: [
+            _LighthouseGroupWidgetHeader(
+              powerState: averagePowerState,
+              onSelected: () {
+                Toast.show('Select this group', context);
+              },
+              onPowerButtonPress: () {
+                Toast.show('This is where you change the state for the group',
+                    context);
+              },
+              selected: false,
+              group: group.group,
+            ),
+            Divider(thickness: 0.7),
+            Container(
+              margin: groupItemPadding,
+              child: Column(
+                  children: _getGroupItems(
+                      context, powerStates, onlineAndOfflineDevices)),
+            ),
+            Divider(
+              thickness: 1.5,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Get the the combined power state of all the online devices in the group.
+  /// It will return [LighthousePowerState.UNKNOWN] if all power states don't
+  /// match up. Will return the power state if all the devices have the same
+  /// power state.
+  LighthousePowerState _getCombinedPowerState(
+    Map<String, Tuple2<int, LighthousePowerState>> powerStates,
+  ) {
+    final states = powerStates.values.map((value) => value.item2).toList();
+    if (states.isEmpty) {
+      return LighthousePowerState.UNKNOWN;
+    }
+    final firstState = states[0];
+    for (final state in states) {
+      if (state != firstState) {
+        return LighthousePowerState.UNKNOWN;
+      }
+    }
+    return firstState;
+  }
+
+  /// Combine all the power state streams of the devices into a [Stream] which
+  /// returns a [Map] of the mac address and the power state of the
+  /// [LighthouseDevice]. Every device will start out with the state `0xFF`
+  /// ([LighthousePowerState.UNKNOWN]). The [Tuple2] contains the raw power
+  /// state [int] and the converted [LighthousePowerState].
+  Stream<Map<String, Tuple2<int, LighthousePowerState>>> _combinePowerStates(
+      List<LighthouseDevice> devices) {
+    final devicePowerStates = devices.map((device) {
+      final String mac = device.deviceIdentifier.toString();
+      return MergeStream([
+        Stream.value(MapEntry(mac, Tuple2(0xFF, LighthousePowerState.UNKNOWN))),
+        device.powerState.map((event) {
+          return MapEntry(mac, Tuple2(event, device.powerStateFromByte(event)));
+        })
+      ]);
+    });
+    return Rx.combineLatestList(devicePowerStates).map((items) {
+      return Map.fromEntries(items);
+    });
+  }
+
+  /// Get the group items for this group.
+  ///
+  /// [powerStates] should contain the states of [LighthouseDevice]s that are
+  /// already known.
+  /// [onlineAndOfflineDevices] contains a [Tuple2] of the online and offline
+  /// devices to add to the widget.
+  List<Widget> _getGroupItems(
+      BuildContext context,
+      Map<String, Tuple2<int, LighthousePowerState>> powerStates,
+      Tuple2<List<String>, List<LighthouseDevice>> onlineAndOfflineDevices) {
+    if (group.macs.isEmpty) {
+      return [
+        ListTile(
+          title: Text('No group items yet'),
+        )
+      ];
+    }
+    final List<Widget> children = [];
+    // First the online devices.
+    final onlineDevices = onlineAndOfflineDevices.item2;
+    for (final device in onlineDevices.asMap().entries) {
+      final mac = device.value.deviceIdentifier.toString();
+      final powerState = powerStates[mac]?.item1 ?? 0xFF;
+      children.add(LighthouseWidgetContent(
+        device.value,
+        powerState,
+        onSelected: () {
+          Toast.show('Select this item plz!', context);
+        },
+        selected: false,
+        nickname: nicknameMap[mac],
+      ));
+      if (device.key < onlineDevices.length - 1 ||
+          (device.key == onlineDevices.length - 1 &&
+              onlineDevices.isNotEmpty)) {
+        children.add(Divider());
+      }
+    }
+
+    final offlineDevices = onlineAndOfflineDevices.item1;
+    for (final offlineDevice in offlineDevices.asMap().entries) {
+      children.add(OfflineLighthouseWidget(
+        offlineDevice.value,
+        onLongPress: () {},
+        selected: false,
+        nickname: nicknameMap[offlineDevice.value],
+      ));
+      if (offlineDevice.key < offlineDevices.length - 1) {
+        children.add(Divider());
+      }
+    }
+
+    return children;
+  }
+
+  /// Get a [Tuple2] with a list of offline and online devices. The first item
+  /// is offline and the second item is online.
+  Tuple2<List<String>, List<LighthouseDevice>> _getOnlineAndOfflineDevices() {
+    final List<String> offlineMacs = List.from(group.macs);
+    final List<LighthouseDevice> foundDevices = devices.where((device) {
+      final index = offlineMacs.indexWhere(
+          (mac) => mac.toUpperCase() == device.deviceIdentifier.toString());
+      if (index >= 0) {
+        offlineMacs.removeAt(index);
+        return true;
+      }
+      return false;
+    }).toList();
+
+    return Tuple2(offlineMacs, foundDevices);
+  }
+}
+
+/// The header for the group widget.
+///
+/// This widget shows the group name and a power button with the average state
+/// of the devices in the group.
+class _LighthouseGroupWidgetHeader extends StatelessWidget {
+  const _LighthouseGroupWidgetHeader(
+      {Key? key,
+      required this.powerState,
+      required this.onPowerButtonPress,
+      required this.onSelected,
+      required this.selected,
+      required this.group})
+      : super(key: key);
+
+  final LighthousePowerState powerState;
+  final VoidCallback onPowerButtonPress;
+  final VoidCallback onSelected;
+  final bool selected;
+  final Group group;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return Container(
+      color: selected ? theme.selectedRowColor : Colors.transparent,
+      child: InkWell(
+          onLongPress: onSelected,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Text(
+                    group.name,
+                    style: theme.textTheme.headline4
+                        ?.copyWith(color: theme.textTheme.bodyText1?.color),
+                  ),
+                )),
+                LighthousePowerButtonWidget(
+                    powerState: powerState, onPress: onPowerButtonPress)
+              ],
+            ),
+          )),
+    );
+  }
+}
