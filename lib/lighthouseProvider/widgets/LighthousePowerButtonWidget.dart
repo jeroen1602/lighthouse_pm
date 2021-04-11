@@ -9,14 +9,17 @@ class LighthousePowerButtonWidget extends StatelessWidget {
     required this.powerState,
     required this.onPress,
     this.onLongPress,
+    this.disabled = false,
   }) : super(key: key);
   final LighthousePowerState powerState;
   final VoidCallback onPress;
   final VoidCallback? onLongPress;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
-    var color = Colors.grey;
+    final theme = Theme.of(context);
+    Color color = Colors.grey;
     switch (powerState) {
       case LighthousePowerState.ON:
         color = Colors.green;
@@ -34,15 +37,15 @@ class LighthousePowerButtonWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: RawMaterialButton(
-          onPressed: onPress,
+          onPressed: disabled ? () {} : onPress,
           onLongPress: onLongPress,
-          elevation: 2.0,
-          fillColor: Theme.of(context).buttonColor,
+          elevation: disabled ? 0.0 : 2.0,
+          fillColor: disabled ? theme.disabledColor : theme.buttonColor,
           padding: const EdgeInsets.all(2.0),
           shape: CircleBorder(),
           child: Icon(
             Icons.power_settings_new,
-            color: color,
+            color: disabled ? Colors.grey : color,
             size: 24.0,
           )),
     );

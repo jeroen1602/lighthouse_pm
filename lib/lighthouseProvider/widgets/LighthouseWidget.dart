@@ -91,6 +91,7 @@ class LighthouseWidgetContent extends StatelessWidget {
   Future<void> _switchToSleepState() async {
     if (lighthouseDevice.hasStandbyExtension) {
       await this.lighthouseDevice.changeState(this.sleepState);
+      return;
     }
     debugPrint(
         'The device doesn\'t support STANDBY so SLEEP will always be used.');
@@ -161,6 +162,7 @@ class LighthouseWidget extends StatelessWidget {
           onSelected: onSelected,
           selected: selected,
           nickname: nickname,
+          sleepState: sleepState,
         );
       },
     );

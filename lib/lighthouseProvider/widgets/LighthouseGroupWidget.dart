@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/tables/GroupTable.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthousePowerButtonWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,15 +11,18 @@ import 'package:tuple/tuple.dart';
 
 import '../LighthouseDevice.dart';
 import '../LighthousePowerState.dart';
+import 'OfflineGroupItemAlertWidget.dart';
 import 'OfflineLighthouseWidget.dart';
+import 'UnknownGroupStateAlertWidget.dart';
 
 /// A widget for showing lighthouses as a group.
 ///
-class LighthouseGroupWidget extends StatelessWidget {
+class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   LighthouseGroupWidget(
       {required this.group,
       required this.devices,
       required this.nicknameMap,
+      required this.showOfflineWarning,
       this.sleepState = LighthousePowerState.SLEEP,
       Key? key})
       : super(key: key);
@@ -26,6 +31,7 @@ class LighthouseGroupWidget extends StatelessWidget {
   final List<LighthouseDevice> devices;
   final Map<String, String> nicknameMap;
   final LighthousePowerState sleepState;
+  final bool showOfflineWarning;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,8 @@ class LighthouseGroupWidget extends StatelessWidget {
           AsyncSnapshot<Map<String, Tuple2<int, LighthousePowerState>>>
               powerStatesSnapshot) {
         final powerStates = powerStatesSnapshot.data ?? {};
-        final averagePowerState = _getCombinedPowerState(powerStates);
+        final combinedPowerStateTuple = _getCombinedPowerState(powerStates);
+        final averagePowerState = combinedPowerStateTuple.item2;
         return Column(
           children: [
             _LighthouseGroupWidgetHeader(
@@ -49,12 +56,18 @@ class LighthouseGroupWidget extends StatelessWidget {
               onSelected: () {
                 Toast.show('Select this group', context);
               },
-              onPowerButtonPress: () {
-                Toast.show('This is where you change the state for the group',
-                    context);
+              onPowerButtonPress: () async {
+                await _handleGroupPowerButton(
+                  context,
+                  combinedState: averagePowerState,
+                  isStateUniversal: combinedPowerStateTuple.item1,
+                  onlineDevices: onlineAndOfflineDevices.item2,
+                  hasOfflineDevices: onlineAndOfflineDevices.item1.isNotEmpty,
+                );
               },
               selected: false,
               group: group.group,
+              stateButtonDisabled: onlineAndOfflineDevices.item2.isEmpty,
             ),
             Divider(thickness: 0.7),
             Container(
@@ -75,21 +88,22 @@ class LighthouseGroupWidget extends StatelessWidget {
   /// Get the the combined power state of all the online devices in the group.
   /// It will return [LighthousePowerState.UNKNOWN] if all power states don't
   /// match up. Will return the power state if all the devices have the same
-  /// power state.
-  LighthousePowerState _getCombinedPowerState(
+  /// power state. It also returns a boolean if the returned state is universal
+  /// or if [LighthousePowerState.UNKNOWN] was returned early.
+  Tuple2<bool, LighthousePowerState> _getCombinedPowerState(
     Map<String, Tuple2<int, LighthousePowerState>> powerStates,
   ) {
     final states = powerStates.values.map((value) => value.item2).toList();
     if (states.isEmpty) {
-      return LighthousePowerState.UNKNOWN;
+      return Tuple2(true, LighthousePowerState.UNKNOWN);
     }
     final firstState = states[0];
     for (final state in states) {
       if (state != firstState) {
-        return LighthousePowerState.UNKNOWN;
+        return Tuple2(false, LighthousePowerState.UNKNOWN);
       }
     }
-    return firstState;
+    return Tuple2(true, firstState);
   }
 
   /// Combine all the power state streams of the devices into a [Stream] which
@@ -144,6 +158,7 @@ class LighthouseGroupWidget extends StatelessWidget {
         },
         selected: false,
         nickname: nicknameMap[mac],
+        sleepState: this.sleepState,
       ));
       if (device.key < onlineDevices.length - 1 ||
           (device.key == onlineDevices.length - 1 &&
@@ -184,6 +199,85 @@ class LighthouseGroupWidget extends StatelessWidget {
 
     return Tuple2(offlineMacs, foundDevices);
   }
+
+  /// Check if the devices in [onlineDevices] support
+  /// [LighthousePowerState.STANDBY]. This will return `true` if one of the
+  /// devices supports [LighthousePowerState.STANDBY]. It can happen that one
+  /// of the devices doesn't support it though.
+  bool _supportsStandby(List<LighthouseDevice> onlineDevices) {
+    for (final device in onlineDevices) {
+      if (device.hasStandbyExtension) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Handle the power button for a group. This will check the current state
+  /// and switch over to the opposite one.
+  Future<void> _handleGroupPowerButton(
+    BuildContext context, {
+    required LighthousePowerState combinedState,
+    required bool isStateUniversal,
+    required List<LighthouseDevice> onlineDevices,
+    required bool hasOfflineDevices,
+  }) async {
+    if (hasOfflineDevices && this.showOfflineWarning) {
+      final returnValue =
+          await OfflineGroupItemAlertWidget.showCustomDialog(context);
+      if (returnValue.dialogCanceled) {
+        return; // The dialog was canceled so do nothing.
+      }
+      if (returnValue.disableWarning) {
+        // Disable the dialog in the future.
+        await blocWithoutListen(context)
+            .settings
+            .setGroupOfflineWarningEnabled(false);
+      }
+    }
+    var newState = combinedState;
+    if (combinedState == LighthousePowerState.UNKNOWN) {
+      final state = await UnknownGroupStateAlertWidget.showCustomDialog(
+          context, _supportsStandby(onlineDevices), isStateUniversal);
+      if (state == null) {
+        return;
+      }
+      newState = state;
+    } else if (combinedState == LighthousePowerState.ON) {
+      newState = this.sleepState;
+    } else if (combinedState == LighthousePowerState.BOOTING) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+          content: Text('Lighthouse is already booting!'),
+          action: SnackBarAction(
+            label: 'I\'m sure',
+            onPressed: () async {
+              await this._switchStateAll(onlineDevices, this.sleepState);
+            },
+          )));
+    } else {
+      newState = LighthousePowerState.ON;
+    }
+    await _switchStateAll(onlineDevices, newState);
+  }
+
+  /// Switch the state of all the online devices.
+  /// This will also check if the [LighthousePowerState.STANDBY] is supported
+  /// for the current device.
+  Future<void> _switchStateAll(List<LighthouseDevice> onlineDevices,
+      LighthousePowerState newState) async {
+    List<Future<void>> futures = [];
+    for (final device in onlineDevices) {
+      var state = newState;
+      if (state == LighthousePowerState.STANDBY &&
+          !device.hasStandbyExtension) {
+        state = LighthousePowerState.SLEEP;
+        debugPrint(
+            'The device doesn\'t support STANDBY so SLEEP will always be used.');
+      }
+      futures.add(device.changeState(state));
+    }
+    await Future.wait(futures);
+  }
 }
 
 /// The header for the group widget.
@@ -191,20 +285,22 @@ class LighthouseGroupWidget extends StatelessWidget {
 /// This widget shows the group name and a power button with the average state
 /// of the devices in the group.
 class _LighthouseGroupWidgetHeader extends StatelessWidget {
-  const _LighthouseGroupWidgetHeader(
-      {Key? key,
-      required this.powerState,
-      required this.onPowerButtonPress,
-      required this.onSelected,
-      required this.selected,
-      required this.group})
-      : super(key: key);
+  const _LighthouseGroupWidgetHeader({
+    Key? key,
+    required this.powerState,
+    required this.onPowerButtonPress,
+    required this.onSelected,
+    required this.selected,
+    required this.group,
+    required this.stateButtonDisabled,
+  }) : super(key: key);
 
   final LighthousePowerState powerState;
   final VoidCallback onPowerButtonPress;
   final VoidCallback onSelected;
   final bool selected;
   final Group group;
+  final bool stateButtonDisabled;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +324,10 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
                   ),
                 )),
                 LighthousePowerButtonWidget(
-                    powerState: powerState, onPress: onPowerButtonPress)
+                  powerState: powerState,
+                  onPress: onPowerButtonPress,
+                  disabled: stateButtonDisabled,
+                )
               ],
             ),
           )),

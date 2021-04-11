@@ -231,6 +231,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                             devices: devices,
                             nicknameMap: nicknames,
                             sleepState: widget.settings.sleepState,
+                            showOfflineWarning: widget.settings.groupShowOfflineWarning,
                           );
                         }
 

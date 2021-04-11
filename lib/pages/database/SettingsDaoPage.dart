@@ -27,6 +27,8 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         return 'PREFERRED_THEME_ID';
       case SettingsDao.SHORTCUTS_ENABLED_ID:
         return 'SHORTCUTS_ENABLED_ID';
+      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
+        return 'GROUP_SHOW_OFFLINE_WARNING';
       default:
         return 'UNKNOWN';
     }
@@ -40,7 +42,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
     } else if (data == null) {
       return 'DEFAULT';
     } else {
-      return 'UNKNOWN STATE';
+      return 'true (UNKNOWN STATE)';
     }
   }
 
@@ -84,6 +86,8 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         final themeMode = ThemeMode.values[value];
         return themeMode.toString();
       case SettingsDao.SHORTCUTS_ENABLED_ID:
+        return convertToBoolean(data);
+      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
         return convertToBoolean(data);
       default:
         return 'UNKNOWN CONVERSION';

@@ -20,11 +20,10 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
         (List<Group> groups, List<GroupEntry> entries) {
       final combinedGroups = <GroupWithEntries>[];
       for (final group in groups) {
-        final macs = <String>[];
-        for (final entry
-            in entries.takeWhile((value) => value.groupId == group.id)) {
-          macs.add(entry.macAddress);
-        }
+        final macs = entries
+            .where((value) => value.groupId == group.id)
+            .map((e) => e.macAddress)
+            .toList();
         combinedGroups.add(GroupWithEntries(group, macs));
       }
       return combinedGroups;
@@ -96,7 +95,7 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> insertGroupEntry(GroupEntry groupEntry) {
-    return into(groupEntries).insert(groupEntry, mode: InsertMode.insertOrReplace);
+    return into(groupEntries)
+        .insert(groupEntry, mode: InsertMode.insertOrReplace);
   }
-
 }

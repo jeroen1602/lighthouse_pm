@@ -48,6 +48,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
 
+    // region header
     final items = <Widget>[
       ListTile(
         leading: SvgPicture.asset(
@@ -62,6 +63,11 @@ class SettingsPage extends BasePage with WithBlocStateless {
       Divider(
         thickness: 1.5,
       ),
+    ];
+    // endregion
+
+    // region main settings
+    items.addAll([
       ListTile(
         title: Text('Lighthouses with nicknames'),
         trailing: Icon(Icons.arrow_forward_ios),
@@ -91,7 +97,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             title: Text('Use STANDBY instead of SLEEP'),
             value: state,
             onChanged: (value) {
-              blocWithoutListen(context).settings.insertSleepState(value
+              blocWithoutListen(context).settings.setSleepState(value
                   ? LighthousePowerState.STANDBY
                   : LighthousePowerState.SLEEP);
             },
@@ -161,7 +167,27 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
-    ];
+      StreamBuilder(
+        stream: blocWithoutListen(context)
+            .settings
+            .getGroupOfflineWarningEnabledStream(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return SwitchListTile(
+              title: Text('Show group devices offline warning'),
+              value: snapshot.requireData,
+              onChanged: (value) {
+                blocWithoutListen(context)
+                    .settings
+                    .setGroupOfflineWarningEnabled(value);
+              });
+        },
+      ),
+      Divider(),
+    ]);
+    // endregion
 
     // region Vive Base station
     items.addAll([

@@ -13,7 +13,7 @@ import 'package:vibration/vibration.dart';
 const _GITHUB_ISSUE_URL =
     "https://github.com/jeroen1602/lighthouse_pm/issues/40";
 
-/// Am alert dialog to ask the user what to do since the state is unknown.
+/// An alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
   UnknownStateAlertWidget(this.device, this.currentState, {Key? key})
       : super(key: key);
