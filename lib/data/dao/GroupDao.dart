@@ -77,6 +77,10 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     return into(groups).insert(group, mode: InsertMode.insertOrReplace);
   }
 
+  Future<int> insertJustGroup(Group group) {
+      return into(groups).insert(group, mode: InsertMode.insertOrReplace);
+  }
+
   Future<void> deleteGroup(int groupId) {
     return transaction(() async {
       // Delete entries

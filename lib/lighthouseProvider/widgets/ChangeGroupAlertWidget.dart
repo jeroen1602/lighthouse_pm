@@ -85,7 +85,13 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
     }
     list.add(DropdownMenuItem(
         child: Row(
-      children: [Icon(Icons.add), VerticalDivider(), Text('Add item')],
+      children: [
+        Icon(Icons.add),
+        VerticalDivider(
+          color: Colors.transparent,
+        ),
+        Text('Add item')
+      ],
     )));
 
     list.insert(
@@ -95,7 +101,9 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
             child: Row(
               children: [
                 Icon(Icons.clear),
-                VerticalDivider(),
+                VerticalDivider(
+                  color: Colors.transparent,
+                ),
                 Text('No Group')
               ],
             )));

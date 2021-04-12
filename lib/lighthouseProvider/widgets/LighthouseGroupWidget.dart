@@ -28,6 +28,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       required this.onSelectedDevice,
       required this.onGroupSelected,
       required this.selectedDevices,
+      required this.selectedGroup,
       this.sleepState = LighthousePowerState.SLEEP,
       Key? key})
       : super(key: key);
@@ -40,6 +41,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   final SelectedDeviceFunction onSelectedDevice;
   final VoidCallback onGroupSelected;
   final Set<LHDeviceIdentifier> selectedDevices;
+  final Group? selectedGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,9 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
             _LighthouseGroupWidgetHeader(
               powerState: averagePowerState,
               onSelected: this.onGroupSelected,
+              selected: this.isSelected(),
+              selecting:
+                  this.selectedDevices.isNotEmpty || this.selectedGroup != null,
               onPowerButtonPress: () async {
                 await _handleGroupPowerButton(
                   context,
@@ -69,9 +74,10 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
                   isStateUniversal: combinedPowerStateTuple.item1,
                   onlineDevices: onlineAndOfflineDevices.item2,
                   hasOfflineDevices: onlineAndOfflineDevices.item1.isNotEmpty,
+                  states: powerStates
+                      .map((key, value) => MapEntry(key, value.item2)),
                 );
               },
-              selected: false,
               group: group.group,
               stateButtonDisabled: onlineAndOfflineDevices.item2.isEmpty,
             ),
@@ -164,7 +170,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
           onSelectedDevice(device.value.deviceIdentifier);
         },
         selected: selectedDevices.contains(device.value.deviceIdentifier),
-        selecting: selectedDevices.isNotEmpty,
+        selecting: selectedDevices.isNotEmpty || selectedGroup != null,
         nickname: nicknameMap[mac],
         sleepState: this.sleepState,
       ));
@@ -234,6 +240,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     required bool isStateUniversal,
     required List<LighthouseDevice> onlineDevices,
     required bool hasOfflineDevices,
+    required Map<String, LighthousePowerState> states,
   }) async {
     if (hasOfflineDevices && this.showOfflineWarning) {
       final returnValue =
@@ -264,22 +271,31 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
           action: SnackBarAction(
             label: 'I\'m sure',
             onPressed: () async {
-              await this._switchStateAll(onlineDevices, this.sleepState);
+              await this
+                  ._switchStateAll(onlineDevices, this.sleepState, states);
             },
           )));
     } else {
       newState = LighthousePowerState.ON;
     }
-    await _switchStateAll(onlineDevices, newState);
+    await _switchStateAll(onlineDevices, newState, states);
   }
 
   /// Switch the state of all the online devices.
   /// This will also check if the [LighthousePowerState.STANDBY] is supported
   /// for the current device.
-  Future<void> _switchStateAll(List<LighthouseDevice> onlineDevices,
-      LighthousePowerState newState) async {
+  Future<void> _switchStateAll(
+    List<LighthouseDevice> onlineDevices,
+    LighthousePowerState newState,
+    Map<String, LighthousePowerState> states,
+  ) async {
     List<Future<void>> futures = [];
     for (final device in onlineDevices) {
+      final currentState = states[device.deviceIdentifier.toString()];
+      if (currentState == newState) {
+        debugPrint('Device is already in the correct state.');
+        continue;
+      }
       var state = newState;
       if (state == LighthousePowerState.STANDBY &&
           !device.hasStandbyExtension) {
@@ -290,6 +306,30 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       futures.add(device.changeState(state));
     }
     await Future.wait(futures);
+  }
+
+  bool isSelected() {
+    final selected = isGroupSelected(this.group.macs,
+        this.selectedDevices.map((e) => e.toString()).toList());
+    if (!selected) {
+      return this.group.group.id == this.selectedGroup?.id;
+    }
+    return selected;
+  }
+
+  static bool isGroupSelected(List<String> macs, List<String> selected) {
+    if (macs.isEmpty) {
+      return false;
+    }
+    if (macs.length != selected.length) {
+      return false;
+    }
+    for (final mac in macs) {
+      if (!selected.contains(mac)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
@@ -304,6 +344,7 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
     required this.onPowerButtonPress,
     required this.onSelected,
     required this.selected,
+    required this.selecting,
     required this.group,
     required this.stateButtonDisabled,
   }) : super(key: key);
@@ -312,6 +353,7 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
   final VoidCallback onPowerButtonPress;
   final VoidCallback onSelected;
   final bool selected;
+  final bool selecting;
   final Group group;
   final bool stateButtonDisabled;
 
@@ -323,6 +365,7 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
       color: selected ? theme.selectedRowColor : Colors.transparent,
       child: InkWell(
           onLongPress: onSelected,
+          onTap: this.selecting ? onSelected : null,
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,

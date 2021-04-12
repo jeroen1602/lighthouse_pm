@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -13,6 +14,8 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/ChangeGroupAlertWidget.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/ChangeGroupNameAlertWidget.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/DeleteGroupAlertWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/DifferentGroupItemTypesAlertWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseGroupWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
@@ -122,6 +125,7 @@ class ScanDevicesPage extends StatefulWidget {
 class _ScanDevicesPage extends State<ScanDevicesPage>
     with WidgetsBindingObserver, ScanningMixin {
   final selected = Set<LHDeviceIdentifier>();
+  Group? selectedGroup;
   var updates = 0;
 
   @override
@@ -183,7 +187,18 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   @override
   Widget build(BuildContext context) {
+    final selecting = selected.isNotEmpty || selectedGroup != null;
     return buildScanPopScope(
+        beforeWillPop: () async {
+          if (selecting) {
+            setState(() {
+              selected.clear();
+              selectedGroup = null;
+            });
+            return false;
+          }
+          return true;
+        },
         child: StreamBuilder<
                 Tuple3<List<Nickname>, List<LighthouseDevice>,
                     List<GroupWithEntries>>>(
@@ -200,7 +215,6 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final nicknames = _nicknamesToMap(tuple.item1);
               final groups = tuple.item3;
               final notGroupedDevices = _devicesNotInAGroup(devices, groups);
-
               final listLength = groups.length + notGroupedDevices.length;
 
               final Widget body = (devices.isEmpty && updates > 2)
@@ -244,13 +258,38 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                             group: groups[index],
                             devices: devices,
                             selectedDevices: selected,
+                            selectedGroup: selectedGroup,
                             nicknameMap: nicknames,
                             sleepState: widget.settings.sleepState,
                             showOfflineWarning:
                                 widget.settings.groupShowOfflineWarning,
-                            onGroupSelected: () {},
+                            onGroupSelected: () {
+                              setState(() {
+                                if (groups[index].macs.isEmpty) {
+                                  selectedGroup = groups[index].group;
+                                  selected.clear();
+                                  return;
+                                }
+                                if (LighthouseGroupWidget.isGroupSelected(
+                                    groups[index].macs,
+                                    this
+                                        .selected
+                                        .map((e) => e.toString())
+                                        .toList())) {
+                                  selected.clear();
+                                  selectedGroup = null;
+                                } else {
+                                  selected.clear();
+                                  selected.addAll(groups[index]
+                                      .macs
+                                      .map((e) => LHDeviceIdentifier(e)));
+                                  selectedGroup = null;
+                                }
+                              });
+                            },
                             onSelectedDevice: (LHDeviceIdentifier device) {
                               setState(() {
+                                selectedGroup = null;
                                 if (selected.contains(device)) {
                                   selected.remove(device);
                                 } else {
@@ -269,9 +308,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                         return LighthouseWidget(
                           device,
                           selected: selected.contains(device.deviceIdentifier),
-                          selecting: selected.isNotEmpty,
+                          selecting: selecting,
                           onSelected: () {
                             setState(() {
+                              selectedGroup = null;
                               if (selected.contains(device.deviceIdentifier)) {
                                 selected.remove(device.deviceIdentifier);
                               } else {
@@ -288,25 +328,36 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
               final List<Widget> actions = [];
               Color? actionBarColor;
-              if (selected.isNotEmpty) {
+              if (selecting) {
                 actionBarColor = Theme.of(context).selectedRowColor;
                 if (selected.length == 1) {
                   actions.add(
                       _getChangeNicknameAction(context, devices, nicknames));
                 }
-                actions.add(_getChangeGroupAction(context, groups, devices));
+                if (selected.isNotEmpty) {
+                  actions.add(_getChangeGroupAction(context, groups, devices));
+                }
+                final Group? currentlySelectedGroup =
+                    _getSelectedGroupFromSelected(groups);
+                if (currentlySelectedGroup != null) {
+                  actions.add(_getChangeGroupNameAction(
+                      context, currentlySelectedGroup));
+                  actions.add(_getDeleteGroupNameAction(
+                      context, currentlySelectedGroup));
+                }
               }
-              final Widget? leading = selected.isEmpty
-                  ? null
-                  : IconButton(
+              final Widget? leading = selecting
+                  ? IconButton(
                       tooltip: 'Cancel selection',
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
                         setState(() {
+                          this.selectedGroup = null;
                           this.selected.clear();
                         });
                       },
-                    );
+                    )
+                  : null;
 
               return Scaffold(
                 appBar: AppBar(
@@ -325,6 +376,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
             }));
   }
 
+  /// Get the change nickname action, this action is only for a single item.
   IconButton _getChangeNicknameAction(
     BuildContext context,
     List<LighthouseDevice> devices,
@@ -365,6 +417,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     );
   }
 
+  /// Get the action for changing a group.
   IconButton _getChangeGroupAction(BuildContext context,
       List<GroupWithEntries> groups, List<LighthouseDevice> devices) {
     return IconButton(
@@ -406,11 +459,42 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     .insertGroup(GroupWithEntries(newGroup, items.toList()));
               }
             }
+            selected.clear();
           }
-          selected.clear();
         });
   }
 
+  /// Get the change name action for a group.
+  IconButton _getChangeGroupNameAction(BuildContext context, Group group) {
+    return IconButton(
+        tooltip: 'Rename group',
+        icon: Icon(CommunityMaterialIcons.account_edit),
+        onPressed: () async {
+          final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
+              context,
+              initialGroupName: group.name);
+          if (newName != null) {
+            await blocWithoutListen.groups
+                .insertJustGroup(Group(id: group.id, name: newName));
+          }
+        });
+  }
+
+  /// Get the action for deleting a group.
+  IconButton _getDeleteGroupNameAction(BuildContext context, Group group) {
+    return IconButton(
+        tooltip: 'Delete group',
+        icon: Icon(CommunityMaterialIcons.account_multiple_remove),
+        onPressed: () async {
+          if (await DeleteGroupAlertWidget.showCustomDialog(context,
+              group: group)) {
+            await blocWithoutListen.groups.deleteGroup(group.id);
+          }
+        });
+  }
+
+  /// Get the group in common between all the selected groups. If not all the
+  /// devices are the same or there are no devices the nit will return `null`
   Group? _getGroupFromSelected(List<GroupWithEntries> groups) {
     Group? firstGroup;
     for (final selectedDevice in selected) {
@@ -431,6 +515,24 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       }
     }
     return firstGroup;
+  }
+
+  /// Get the currently selected group if a group is selected.
+  /// A group is selected if all it's devices are selected, or if it doesn't
+  /// have any devices it is the current [selectedGroup].
+  Group? _getSelectedGroupFromSelected(List<GroupWithEntries> groups) {
+    if (selected.isEmpty) {
+      return selectedGroup;
+    }
+    selectedGroup = null;
+    for (final group in groups) {
+      if (LighthouseGroupWidget.isGroupSelected(
+          group.macs, selected.map((e) => e.toString()).toList())) {
+        return group.group;
+      }
+    }
+
+    return null;
   }
 
   /// Check if all the devices in the selected group are of the same type.
