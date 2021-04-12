@@ -66,13 +66,14 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
 
       // Insert all the new entries.
       for (final item in entry.macs) {
-        await into(groupEntries)
-            .insert(GroupEntry(macAddress: item, groupId: group.id));
+        await into(groupEntries).insert(
+            GroupEntry(macAddress: item, groupId: group.id),
+            mode: InsertMode.insertOrReplace);
       }
     });
   }
 
-  Future<void> insertEmptyGroup(GroupsCompanion group) {
+  Future<int> insertEmptyGroup(GroupsCompanion group) {
     return into(groups).insert(group, mode: InsertMode.insertOrReplace);
   }
 
@@ -91,6 +92,11 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
   Future<void> deleteGroupEntry(String macAddress) {
     return (delete(groupEntries)
           ..where((entry) => entry.macAddress.equals(macAddress)))
+        .go();
+  }
+
+  Future<void> deleteGroupEntries(List<String> entries) {
+    return (delete(groupEntries)..where((tbl) => tbl.macAddress.isIn(entries)))
         .go();
   }
 

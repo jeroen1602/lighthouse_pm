@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/tables/GroupTable.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthousePowerButtonWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:toast/toast.dart';
 import 'package:tuple/tuple.dart';
 
 import '../LighthouseDevice.dart';
@@ -14,6 +14,8 @@ import '../LighthousePowerState.dart';
 import 'OfflineGroupItemAlertWidget.dart';
 import 'OfflineLighthouseWidget.dart';
 import 'UnknownGroupStateAlertWidget.dart';
+
+typedef SelectedDeviceFunction = void Function(LHDeviceIdentifier identifier);
 
 /// A widget for showing lighthouses as a group.
 ///
@@ -23,6 +25,9 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       required this.devices,
       required this.nicknameMap,
       required this.showOfflineWarning,
+      required this.onSelectedDevice,
+      required this.onGroupSelected,
+      required this.selectedDevices,
       this.sleepState = LighthousePowerState.SLEEP,
       Key? key})
       : super(key: key);
@@ -32,6 +37,9 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   final Map<String, String> nicknameMap;
   final LighthousePowerState sleepState;
   final bool showOfflineWarning;
+  final SelectedDeviceFunction onSelectedDevice;
+  final VoidCallback onGroupSelected;
+  final Set<LHDeviceIdentifier> selectedDevices;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +61,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
           children: [
             _LighthouseGroupWidgetHeader(
               powerState: averagePowerState,
-              onSelected: () {
-                Toast.show('Select this group', context);
-              },
+              onSelected: this.onGroupSelected,
               onPowerButtonPress: () async {
                 await _handleGroupPowerButton(
                   context,
@@ -134,9 +140,10 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   /// [onlineAndOfflineDevices] contains a [Tuple2] of the online and offline
   /// devices to add to the widget.
   List<Widget> _getGroupItems(
-      BuildContext context,
-      Map<String, Tuple2<int, LighthousePowerState>> powerStates,
-      Tuple2<List<String>, List<LighthouseDevice>> onlineAndOfflineDevices) {
+    BuildContext context,
+    Map<String, Tuple2<int, LighthousePowerState>> powerStates,
+    Tuple2<List<String>, List<LighthouseDevice>> onlineAndOfflineDevices,
+  ) {
     if (group.macs.isEmpty) {
       return [
         ListTile(
@@ -154,9 +161,10 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
         device.value,
         powerState,
         onSelected: () {
-          Toast.show('Select this item plz!', context);
+          onSelectedDevice(device.value.deviceIdentifier);
         },
-        selected: false,
+        selected: selectedDevices.contains(device.value.deviceIdentifier),
+        selecting: selectedDevices.isNotEmpty,
         nickname: nicknameMap[mac],
         sleepState: this.sleepState,
       ));
@@ -169,10 +177,15 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
 
     final offlineDevices = onlineAndOfflineDevices.item1;
     for (final offlineDevice in offlineDevices.asMap().entries) {
+      final LHDeviceIdentifier deviceIdentifier =
+          LHDeviceIdentifier(offlineDevice.value);
       children.add(OfflineLighthouseWidget(
         offlineDevice.value,
-        onLongPress: () {},
-        selected: false,
+        onSelected: () {
+          onSelectedDevice(deviceIdentifier);
+        },
+        selected: selectedDevices.contains(deviceIdentifier),
+        selecting: selectedDevices.isNotEmpty,
         nickname: nicknameMap[offlineDevice.value],
       ));
       if (offlineDevice.key < offlineDevices.length - 1) {

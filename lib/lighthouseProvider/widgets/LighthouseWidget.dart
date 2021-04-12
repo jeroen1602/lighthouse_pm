@@ -15,6 +15,7 @@ class LighthouseWidgetContent extends StatelessWidget {
   LighthouseWidgetContent(this.lighthouseDevice, this.powerStateData,
       {required this.onSelected,
       required this.selected,
+      required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.SLEEP,
       Key? key})
@@ -33,6 +34,7 @@ class LighthouseWidgetContent extends StatelessWidget {
   final bool selected;
   final String? nickname;
   final LighthousePowerState sleepState;
+  final bool selecting;
 
   Future _openMetadataPage(BuildContext context) async {
     return await Navigator.push(
@@ -48,7 +50,13 @@ class LighthouseWidgetContent extends StatelessWidget {
         color: selected ? theme.selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onSelected,
-            onTap: () => _openMetadataPage(context),
+            onTap: () {
+              if (selecting) {
+                onSelected();
+              } else {
+                _openMetadataPage(context);
+              }
+            },
             child: IntrinsicHeight(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -138,6 +146,7 @@ class LighthouseWidget extends StatelessWidget {
   LighthouseWidget(this.lighthouseDevice,
       {required this.onSelected,
       required this.selected,
+      required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.SLEEP,
       Key? key})
@@ -148,6 +157,7 @@ class LighthouseWidget extends StatelessWidget {
   final bool selected;
   final String? nickname;
   final LighthousePowerState sleepState;
+  final bool selecting;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +173,7 @@ class LighthouseWidget extends StatelessWidget {
           selected: selected,
           nickname: nickname,
           sleepState: sleepState,
+          selecting: selecting,
         );
       },
     );

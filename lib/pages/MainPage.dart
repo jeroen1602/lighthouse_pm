@@ -12,6 +12,8 @@ import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/ChangeGroupAlertWidget.dart';
+import 'package:lighthouse_pm/lighthouseProvider/widgets/DifferentGroupItemTypesAlertWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseGroupWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
@@ -38,6 +40,7 @@ Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
           [Stream.value([]), LighthouseProvider.instance.lighthouseDevices]),
       MergeStream([Stream.value([]), bloc.groups.watchGroups()]),
       (nicknames, devices, groups) {
+    groups.sort((a, b) => a.group.name.compareTo(b.group.name));
     return Tuple3(nicknames, devices, groups);
   });
 }
@@ -144,21 +147,36 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   List<LighthouseDevice> _devicesNotInAGroup(
       List<LighthouseDevice> devices, List<GroupWithEntries> groups) {
     List<LighthouseDevice> output = [];
+    final selectedCopy = Set<LHDeviceIdentifier>();
+    selectedCopy.addAll(selected);
+    final newSelected = Set<LHDeviceIdentifier>();
 
     for (final device in devices) {
       bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
           macAddress: device.deviceIdentifier.toString()));
+      // Make sure a device hasn't left
+      if (selectedCopy.contains(device.deviceIdentifier)) {
+        newSelected.add(device.deviceIdentifier);
+      }
+
       bool found = false;
       for (final group in groups) {
-        if (group.macs.contains(device.deviceIdentifier.toString())) {
-          found = true;
-          break;
+        for (final mac in group.macs) {
+          final deviceIdentifier = LHDeviceIdentifier(mac);
+          if (selectedCopy.contains(deviceIdentifier)) {
+            newSelected.add(deviceIdentifier);
+          }
+          if (deviceIdentifier == device.deviceIdentifier) {
+            found = true;
+          }
         }
       }
       if (!found) {
         output.add(device);
       }
     }
+    selected.clear();
+    selected.addAll(newSelected);
 
     return output;
   }
@@ -182,10 +200,6 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final nicknames = _nicknamesToMap(tuple.item1);
               final groups = tuple.item3;
               final notGroupedDevices = _devicesNotInAGroup(devices, groups);
-              // Make sure a device hasn't left
-              final selectedCopy = Set<LHDeviceIdentifier>();
-              selectedCopy.addAll(selected);
-              selected.clear();
 
               final listLength = groups.length + notGroupedDevices.length;
 
@@ -229,9 +243,21 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                           return LighthouseGroupWidget(
                             group: groups[index],
                             devices: devices,
+                            selectedDevices: selected,
                             nicknameMap: nicknames,
                             sleepState: widget.settings.sleepState,
-                            showOfflineWarning: widget.settings.groupShowOfflineWarning,
+                            showOfflineWarning:
+                                widget.settings.groupShowOfflineWarning,
+                            onGroupSelected: () {},
+                            onSelectedDevice: (LHDeviceIdentifier device) {
+                              setState(() {
+                                if (selected.contains(device)) {
+                                  selected.remove(device);
+                                } else {
+                                  selected.add(device);
+                                }
+                              });
+                            },
                           );
                         }
 
@@ -240,18 +266,15 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
                         final nickname =
                             nicknames[device.deviceIdentifier.toString()];
-                        if (selectedCopy.contains(device.deviceIdentifier)) {
-                          selected.add(device.deviceIdentifier);
-                        }
                         return LighthouseWidget(
                           device,
                           selected: selected.contains(device.deviceIdentifier),
+                          selecting: selected.isNotEmpty,
                           onSelected: () {
                             setState(() {
                               if (selected.contains(device.deviceIdentifier)) {
                                 selected.remove(device.deviceIdentifier);
                               } else {
-                                selected.clear();
                                 selected.add(device.deviceIdentifier);
                               }
                             });
@@ -265,49 +288,15 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
               final List<Widget> actions = [];
               Color? actionBarColor;
-              if (selectedCopy.length == 1) {
+              if (selected.isNotEmpty) {
                 actionBarColor = Theme.of(context).selectedRowColor;
-                actions.add(IconButton(
-                  tooltip: 'Change nickname',
-                  icon: Icon(Icons.edit_attributes),
-                  onPressed: () async {
-                    if (selected.length == 1) {
-                      final item = selected.first;
-                      final device = devices
-                          .cast<LighthouseDevice?>()
-                          .singleWhere((element) {
-                        if (element != null) {
-                          return element.deviceIdentifier == item;
-                        }
-                        return false;
-                      }, orElse: () => null);
-                      if (device == null) {
-                        debugPrint(
-                            'Could not find a device for the nickname dialog!');
-                        return;
-                      }
-                      final String? nickname = nicknames[item.toString()];
-
-                      final newNickname =
-                          await NicknameAlertWidget.showCustomDialog(context,
-                              macAddress: device.deviceIdentifier.toString(),
-                              deviceName: device.name,
-                              nickname: nickname);
-                      if (newNickname != null) {
-                        if (newNickname.nickname == null) {
-                          blocWithoutListen.nicknames
-                              .deleteNicknames([newNickname.macAddress]);
-                        } else {
-                          blocWithoutListen.nicknames
-                              .insertNickname(newNickname.toNickname()!);
-                        }
-                        selected.remove(item);
-                      }
-                    }
-                  },
-                ));
+                if (selected.length == 1) {
+                  actions.add(
+                      _getChangeNicknameAction(context, devices, nicknames));
+                }
+                actions.add(_getChangeGroupAction(context, groups, devices));
               }
-              final Widget? leading = selectedCopy.isEmpty
+              final Widget? leading = selected.isEmpty
                   ? null
                   : IconButton(
                       tooltip: 'Cancel selection',
@@ -334,6 +323,133 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 body: body,
               );
             }));
+  }
+
+  IconButton _getChangeNicknameAction(
+    BuildContext context,
+    List<LighthouseDevice> devices,
+    Map<String, String> nicknames,
+  ) {
+    return IconButton(
+      tooltip: 'Change nickname',
+      icon: Icon(Icons.edit_attributes),
+      onPressed: () async {
+        if (selected.length == 1) {
+          final item = selected.first;
+          final name = devices.cast<LighthouseDevice?>().singleWhere((element) {
+                if (element != null) {
+                  return element.deviceIdentifier == item;
+                }
+                return false;
+              }, orElse: () => null)?.name ??
+              item.toString();
+          final String? nickname = nicknames[item.toString()];
+
+          final newNickname = await NicknameAlertWidget.showCustomDialog(
+              context,
+              macAddress: item.toString(),
+              deviceName: name,
+              nickname: nickname);
+          if (newNickname != null) {
+            if (newNickname.nickname == null) {
+              blocWithoutListen.nicknames
+                  .deleteNicknames([newNickname.macAddress]);
+            } else {
+              blocWithoutListen.nicknames
+                  .insertNickname(newNickname.toNickname()!);
+            }
+            selected.remove(item);
+          }
+        }
+      },
+    );
+  }
+
+  IconButton _getChangeGroupAction(BuildContext context,
+      List<GroupWithEntries> groups, List<LighthouseDevice> devices) {
+    return IconButton(
+        tooltip: 'Change group',
+        icon: Icon(Icons.group),
+        onPressed: () async {
+          final Group? commonGroup = _getGroupFromSelected(groups);
+          final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
+              context,
+              groups: groups,
+              selectedGroup: commonGroup);
+          if (newGroup != null) {
+            if (newGroup.id == ChangeGroupAlertWidget.REMOVE_GROUP_ID) {
+              await blocWithoutListen.groups.deleteGroupEntries(
+                  selected.map((e) => e.toString()).toList());
+            } else if (newGroup.id == ChangeGroupAlertWidget.NEW_GROUP_ID) {
+              final int newGroupId = await blocWithoutListen.groups
+                  .insertEmptyGroup(
+                      GroupsCompanion.insert(name: newGroup.name));
+              final insertGroup = Group(id: newGroupId, name: newGroup.name);
+
+              await blocWithoutListen.groups.insertGroup(GroupWithEntries(
+                  insertGroup, selected.map((e) => e.toString()).toList()));
+            } else {
+              final foundGroup = groups
+                  .firstWhere((element) => element.group.id == newGroup.id);
+              final Set<String> items = Set<String>();
+              items.addAll(foundGroup.macs);
+              items.addAll(selected.map((e) => e.toString()));
+              bool saveChanges = true;
+              final allTheSame = _allSameDeviceType(items, devices);
+              if (!allTheSame) {
+                saveChanges =
+                    await DifferentGroupItemTypesAlertWidget.showCustomDialog(
+                        context);
+              }
+              if (saveChanges) {
+                await blocWithoutListen.groups
+                    .insertGroup(GroupWithEntries(newGroup, items.toList()));
+              }
+            }
+          }
+          selected.clear();
+        });
+  }
+
+  Group? _getGroupFromSelected(List<GroupWithEntries> groups) {
+    Group? firstGroup;
+    for (final selectedDevice in selected) {
+      bool found = false;
+      for (final group in groups) {
+        if (group.macs.contains(selectedDevice.toString())) {
+          if (firstGroup == null) {
+            firstGroup = group.group;
+          } else if (firstGroup.id != group.group.id) {
+            return null;
+          }
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return null;
+      }
+    }
+    return firstGroup;
+  }
+
+  /// Check if all the devices in the selected group are of the same type.
+  /// If they aren't we should show a warning.
+  bool _allSameDeviceType(
+      Set<String> deviceIds, List<LighthouseDevice> devices) {
+    final foundTypes = Set<String>();
+    for (final deviceId in deviceIds) {
+      final device = devices.cast<LighthouseDevice?>().firstWhere(
+          (element) => element?.deviceIdentifier.toString() == deviceId,
+          orElse: () => null);
+      if (device != null) {
+        foundTypes.add(device.runtimeType.toString());
+        if (foundTypes.length > 1) {
+          return false;
+        }
+      }
+    }
+    return foundTypes.length <= 1;
   }
 
   @override

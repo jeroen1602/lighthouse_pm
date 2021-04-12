@@ -5,15 +5,17 @@ import '../LighthouseDevice.dart';
 /// A widget for showing an OFFLINE [LighthouseDevice] in a list.
 class OfflineLighthouseWidget extends StatelessWidget {
   OfflineLighthouseWidget(this.macAddress,
-      {required this.onLongPress,
+      {required this.onSelected,
       required this.selected,
+        required this.selecting,
       this.nickname,
       Key? key})
       : super(key: key);
 
   final String macAddress;
-  final GestureLongPressCallback onLongPress;
+  final VoidCallback onSelected;
   final bool selected;
+  final bool selecting;
   final String? nickname;
 
   @override
@@ -27,7 +29,10 @@ class OfflineLighthouseWidget extends StatelessWidget {
         color:
             selected ? Theme.of(context).selectedRowColor : Colors.transparent,
         child: InkWell(
-            onLongPress: onLongPress,
+            onLongPress: onSelected,
+            onTap: selecting ? () {
+              onSelected();
+            } : null,
             child: IntrinsicHeight(
               child: Padding(
                   padding: const EdgeInsets.all(6.0),
