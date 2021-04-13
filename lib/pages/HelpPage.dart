@@ -65,10 +65,11 @@ class HelpPage extends BasePage {
                 TextSpan(text: 'selection mode', style: textThemeBold),
                 TextSpan(text: '. After entering selection mode click the '),
                 WidgetSpan(
-                    child: Icon(
-                  Icons.edit_attributes,
-                  size: iconSize,
+                    child: SvgPicture.asset(
+                  'assets/images/nickname-icon.svg',
                   color: textThemeBold.color,
+                  width: iconSize,
+                  height: iconSize,
                 )),
                 TextSpan(text: 'button', style: textThemeBold),
                 TextSpan(
@@ -95,7 +96,7 @@ class HelpPage extends BasePage {
                             'group. Click on the '),
                     WidgetSpan(
                         child: SvgPicture.asset(
-                      'assets/images/group-icon.svg',
+                      'assets/images/group-add-icon.svg',
                       color: textThemeBold.color,
                       width: iconSize,
                       height: iconSize,
