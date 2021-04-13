@@ -88,6 +88,7 @@ flutter:
     - assets/images/group-icon.svg
     - assets/images/group-edit-icon.svg
     - assets/images/group-delete-icon.svg
+    - assets/images/nickname-icon.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

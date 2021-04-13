@@ -393,7 +393,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   ) {
     return IconButton(
       tooltip: 'Change nickname',
-      icon: Icon(Icons.edit_attributes),
+      icon: SvgPicture.asset('assets/images/nickname-icon.svg',
+          color: Theme.of(context).appBarTheme.iconTheme?.color),
       onPressed: () async {
         if (selected.length == 1) {
           final item = selected.first;
