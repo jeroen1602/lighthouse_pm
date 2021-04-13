@@ -4,6 +4,7 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
@@ -433,7 +434,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       List<GroupWithEntries> groups, List<LighthouseDevice> devices) {
     return IconButton(
         tooltip: 'Change group',
-        icon: Icon(Icons.group),
+        icon: SvgPicture.asset('assets/images/group-icon.svg',
+            color: Theme.of(context).appBarTheme.iconTheme?.color),
         onPressed: () async {
           final Group? commonGroup = _getGroupFromSelected(groups);
           final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
@@ -494,7 +496,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   IconButton _getChangeGroupNameAction(BuildContext context, Group group) {
     return IconButton(
         tooltip: 'Rename group',
-        icon: Icon(CommunityMaterialIcons.account_edit),
+        icon: SvgPicture.asset('assets/images/group-edit-icon.svg',
+            color: Theme.of(context).appBarTheme.iconTheme?.color),
         onPressed: () async {
           final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
               context,
@@ -513,7 +516,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   IconButton _getDeleteGroupNameAction(BuildContext context, Group group) {
     return IconButton(
         tooltip: 'Delete group',
-        icon: Icon(CommunityMaterialIcons.account_multiple_remove),
+        icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
+            color: Theme.of(context).appBarTheme.iconTheme?.color
+        ),
         onPressed: () async {
           if (await DeleteGroupAlertWidget.showCustomDialog(context,
               group: group)) {
