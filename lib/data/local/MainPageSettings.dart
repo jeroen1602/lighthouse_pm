@@ -11,22 +11,27 @@ typedef MainPageSettingsWidgetBuilder = Widget Function(
     BuildContext context, MainPageSettings? settings);
 
 class MainPageSettings {
-  const MainPageSettings._(
-      {required this.sleepState,
-      required this.viveBaseStationsEnabled,
-      required this.scanDuration,
-      required this.shortcutEnabled});
+  const MainPageSettings._({
+    required this.sleepState,
+    required this.viveBaseStationsEnabled,
+    required this.scanDuration,
+    required this.shortcutEnabled,
+    required this.groupShowOfflineWarning,
+  });
 
   final LighthousePowerState sleepState;
   final bool viveBaseStationsEnabled;
   final int scanDuration;
   final bool shortcutEnabled;
+  final bool groupShowOfflineWarning;
 
   static const DEFAULT_MAIN_PAGE_SETTINGS = MainPageSettings._(
-      sleepState: LighthousePowerState.SLEEP,
-      viveBaseStationsEnabled: false,
-      scanDuration: 5,
-      shortcutEnabled: false);
+    sleepState: LighthousePowerState.SLEEP,
+    viveBaseStationsEnabled: false,
+    scanDuration: 5,
+    shortcutEnabled: false,
+    groupShowOfflineWarning: true,
+  );
 
   static Stream<MainPageSettings> mainPageSettingsStream(
       LighthousePMBloc bloc) {
@@ -35,6 +40,8 @@ class MainPageSettings {
         DEFAULT_MAIN_PAGE_SETTINGS.viveBaseStationsEnabled;
     int scanDuration = DEFAULT_MAIN_PAGE_SETTINGS.scanDuration;
     bool shortcutEnabled = DEFAULT_MAIN_PAGE_SETTINGS.shortcutEnabled;
+    bool groupShowOfflineWarning =
+        DEFAULT_MAIN_PAGE_SETTINGS.groupShowOfflineWarning;
 
     return MergeStream<Tuple2<int, dynamic>>([
       bloc.settings
@@ -48,6 +55,8 @@ class MainPageSettings {
       bloc.settings
           .getShortcutsEnabledStream()
           .map((state) => Tuple2(SettingsDao.SHORTCUTS_ENABLED_ID, state)),
+      bloc.settings.getGroupOfflineWarningEnabledStream().map(
+          (state) => Tuple2(SettingsDao.GROUP_SHOW_OFFLINE_WARNING, state)),
     ]).map((event) {
       switch (event.item1) {
         case SettingsDao.DEFAULT_SLEEP_STATE_ID:
@@ -69,12 +78,20 @@ class MainPageSettings {
           if (event.item2 != null) {
             shortcutEnabled = event.item2 as bool;
           }
+          break;
+        case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
+          if (event.item2 != null) {
+            groupShowOfflineWarning = event.item2 as bool;
+          }
+          break;
       }
       return MainPageSettings._(
-          sleepState: sleepState,
-          viveBaseStationsEnabled: viveBaseStationsEnabled,
-          scanDuration: scanDuration,
-          shortcutEnabled: shortcutEnabled);
+        sleepState: sleepState,
+        viveBaseStationsEnabled: viveBaseStationsEnabled,
+        scanDuration: scanDuration,
+        shortcutEnabled: shortcutEnabled,
+        groupShowOfflineWarning: groupShowOfflineWarning,
+      );
     });
   }
 

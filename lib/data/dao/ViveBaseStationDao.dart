@@ -27,7 +27,7 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<List<int>> getIdsAsStream() {
     return select(viveBaseStationIds).watch().map((event) {
-      if (event == null || event.isEmpty) {
+      if (event.isEmpty) {
         return [];
       }
       final out = List<int>.filled(event.length, 0);

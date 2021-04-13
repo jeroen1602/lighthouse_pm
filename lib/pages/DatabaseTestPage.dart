@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/pages/database/GroupDaoPage.dart';
+import 'package:toast/toast.dart';
 
 import 'BasePage.dart';
 import 'database/NicknameDaoPage.dart';
@@ -42,10 +45,73 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
       ),
       Divider(),
       ListTile(
-        title: Text('Tables'),
+        title: Text('Known tables'),
         subtitle: Text(_getTables(bloc)),
+        onLongPress: () async {
+          await Clipboard.setData(ClipboardData(text: _getTables(bloc)));
+          Toast.show('Copied to clipboard', context,
+              duration: Toast.lengthShort, gravity: Toast.bottom);
+        },
         isThreeLine: true,
       ),
+      Divider(),
+      FutureBuilder<String>(
+          future: _getInstalledTables(bloc),
+          builder: (context, snapshot) {
+            final data = snapshot.data;
+            if (snapshot.hasError) {
+              final error = snapshot.error;
+              return ListTile(
+                title: Text('Error!'),
+                subtitle: Text(error.toString()),
+              );
+            } else if (data != null) {
+              final knownTables = _getTables(bloc).split('\n');
+              final installedTables = data.split('\n');
+              // Check if the lists are equal, if they are not show a warning.
+              if (listEquals(knownTables, installedTables)) {
+                return ListTile(
+                  title: Text('Installed tables'),
+                  subtitle: Text(data),
+                  onLongPress: () async {
+                    await Clipboard.setData(ClipboardData(text: data));
+                    Toast.show('Copied to clipboard', context,
+                        duration: Toast.lengthShort, gravity: Toast.bottom);
+                  },
+                );
+              } else {
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text('Installed tables'),
+                      subtitle: Text(data),
+                      onLongPress: () async {
+                        await Clipboard.setData(ClipboardData(text: data));
+                        Toast.show('Copied to clipboard', context,
+                            duration: Toast.lengthShort, gravity: Toast.bottom);
+                      },
+                    ),
+                    Divider(),
+                    ListTile(
+                      title: Text(
+                          'WARNING installed tables do not match known tables!'
+                          '\nYou should create a migration!',
+                          style: theme.textTheme.headline5?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.textTheme.bodyText1!.color)),
+                      leading: Icon(
+                        Icons.warning,
+                        color: Colors.orange,
+                        size: 30,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            } else {
+              return CircularProgressIndicator();
+            }
+          }),
       Divider(),
       ListTile(
         title: Text('Daos',
@@ -84,18 +150,31 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
   }
 
   String _getTables(LighthousePMBloc bloc) {
+    final tableList = bloc.getKnownTables();
     var tables = '';
-    for (final table in bloc.db.allTables) {
-      tables += '${table.actualTableName}\n';
+    for (final table in tableList) {
+      tables += '$table\n';
     }
 
-    return tables;
+    return tables.trim();
+  }
+
+  Future<String> _getInstalledTables(LighthousePMBloc bloc) async {
+    return bloc.getInstalledTables().then((tableList) {
+      var tables = '';
+      for (final table in tableList) {
+        tables += '$table\n';
+      }
+
+      return tables.trim();
+    });
   }
 
   static Map<String, PageBuilder> _subPages = {
     '/nicknameDao': (context) => NicknameDaoPage(),
     '/settingsDao': (context) => SettingsDaoPage(),
     '/viveBaseStationDao': (context) => ViveBaseStationDaoPage(),
+    '/groupDao': (context) => GroupDaoPage(),
   };
 
   static Map<String, PageBuilder> getSubPages(String parentPath) {
@@ -124,5 +203,8 @@ class _DaoContainer {
         daoDescription: 'A dao that handles storage of settings'),
     _DaoContainer('ViveBaseStationDao', '/viveBaseStationDao',
         daoDescription: 'A dao that handles storage of vive base station ids'),
+    _DaoContainer('GroupDao', '/groupDao',
+        daoDescription:
+            'A dao that handles the storage and linking of groups to lighthouses')
   ];
 }
