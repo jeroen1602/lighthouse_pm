@@ -434,7 +434,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       List<GroupWithEntries> groups, List<LighthouseDevice> devices) {
     return IconButton(
         tooltip: 'Change group',
-        icon: SvgPicture.asset('assets/images/group-icon.svg',
+        icon: SvgPicture.asset('assets/images/group-add-icon.svg',
             color: Theme.of(context).appBarTheme.iconTheme?.color),
         onPressed: () async {
           final Group? commonGroup = _getGroupFromSelected(groups);

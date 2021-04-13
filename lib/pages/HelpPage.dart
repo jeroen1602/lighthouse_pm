@@ -96,7 +96,7 @@ class HelpPage extends BasePage {
                             'group. Click on the '),
                     WidgetSpan(
                         child: SvgPicture.asset(
-                      'assets/images/group-icon.svg',
+                      'assets/images/group-add-icon.svg',
                       color: textThemeBold.color,
                       width: iconSize,
                       height: iconSize,

@@ -85,7 +85,7 @@ flutter:
     - assets/images/github-dark.svg
     - assets/images/github-light.svg
     - assets/images/drawer-image.png
-    - assets/images/group-icon.svg
+    - assets/images/group-add-icon.svg
     - assets/images/group-edit-icon.svg
     - assets/images/group-delete-icon.svg
     - assets/images/nickname-icon.svg
