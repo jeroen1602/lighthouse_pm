@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -517,8 +516,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     return IconButton(
         tooltip: 'Delete group',
         icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
-            color: Theme.of(context).appBarTheme.iconTheme?.color
-        ),
+            color: Theme.of(context).appBarTheme.iconTheme?.color),
         onPressed: () async {
           if (await DeleteGroupAlertWidget.showCustomDialog(context,
               group: group)) {
