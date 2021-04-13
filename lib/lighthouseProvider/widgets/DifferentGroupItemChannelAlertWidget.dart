@@ -34,11 +34,11 @@ class _DifferentGroupItemChannelAlertWidgetContent
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Some devices have the same channel'),
-      content: Text(
-          'Some of the devices you have selected use the same channel.'
-          ' This will cause problems with Steam VR, you should switch some of '
-          'the devices.'
-          '\nAre you sure you want to do this?'),
+      content:
+          Text('Some of the devices you have selected use the same channel.'
+              ' This will cause problems with Steam VR, you should switch the '
+              'channel from some of the devices.'
+              '\nAre you sure you want to do this?'),
       actions: [
         SimpleDialogOption(
           child: Text('Cancel'),

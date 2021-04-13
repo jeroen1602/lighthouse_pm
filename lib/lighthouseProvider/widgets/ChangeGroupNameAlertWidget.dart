@@ -62,13 +62,18 @@ class _ChangeGroupNameAlertWidgetContent
         SimpleDialogOption(
           child: Text('Cancel'),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, null);
           },
         ),
         SimpleDialogOption(
           child: Text(widget.initialGroupName == null ? 'Set' : 'Save'),
           onPressed: () {
-            Navigator.pop(context, textController.text.trim());
+            final text = textController.text.trim();
+            if (text.isEmpty) {
+              Navigator.pop(context, null);
+            } else {
+              Navigator.pop(context, text);
+            }
           },
         ),
       ],

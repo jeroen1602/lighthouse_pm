@@ -545,7 +545,6 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         return false;
       }
     }
-    // if (!_allSameDeviceType())
     return true;
   }
 
@@ -580,7 +579,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the group in common between all the selected groups. If not all the
-  /// devices are the same or there are no devices the nit will return `null`
+  /// devices are in the same group or no devices are selected then it will
+  /// return `null`.
   Group? _getGroupFromSelected(List<GroupWithEntries> groups) {
     Group? firstGroup;
     for (final selectedDevice in selected) {

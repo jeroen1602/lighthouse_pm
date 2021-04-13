@@ -30,7 +30,7 @@ class LighthouseWidgetContent extends StatelessWidget {
 
   final LighthouseDevice lighthouseDevice;
   final int powerStateData;
-  final GestureLongPressCallback onSelected;
+  final VoidCallback onSelected;
   final bool selected;
   final String? nickname;
   final LighthousePowerState sleepState;
@@ -153,7 +153,7 @@ class LighthouseWidget extends StatelessWidget {
       : super(key: key);
 
   final LighthouseDevice lighthouseDevice;
-  final GestureLongPressCallback onSelected;
+  final VoidCallback onSelected;
   final bool selected;
   final String? nickname;
   final LighthousePowerState sleepState;
