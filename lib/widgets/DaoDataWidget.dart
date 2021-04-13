@@ -10,7 +10,7 @@ abstract class DaoTableDataConverter<T> {
 
   Future<void> openChangeDialog(BuildContext context, T data);
 
- Future<void> openAddNewItemDialog(BuildContext context);
+  Future<void> openAddNewItemDialog(BuildContext context);
 
   Future<void> deleteItem(T item);
 }
@@ -37,7 +37,14 @@ class DaoTableDataWidget<T> extends StatelessWidget {
             subtitle: Text('Entries: ${data?.length ?? 'loading'}'),
             trailing: RawMaterialButton(
                 onPressed: () async {
-                  await converter.openAddNewItemDialog(context);
+                  try {
+                    await converter.openAddNewItemDialog(context);
+                  } catch (e, s) {
+                    debugPrint('$e');
+                    debugPrint('$s');
+                    Toast.show('Error: $e', context,
+                        backgroundColor: Colors.red, duration: 8);
+                  }
                 },
                 elevation: 2.0,
                 fillColor: Colors.orange,
@@ -68,15 +75,29 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                   title: Text(converter.getDataTitle(item)),
                   subtitle: Text(converter.getDataSubtitle(item)),
                   onTap: () async {
-                    await converter.openChangeDialog(context, item);
+                    try {
+                      await converter.openChangeDialog(context, item);
+                    } catch (e, s) {
+                      debugPrint('$e');
+                      debugPrint('$s');
+                      Toast.show('Error: $e', context,
+                          backgroundColor: Colors.red, duration: 8);
+                    }
                   },
                   trailing: RawMaterialButton(
                       onPressed: () async {
                         if (await DaoDeleteAlertWidget.showCustomDialog(context,
                             title: converter.getDataTitle(item),
                             subTitle: converter.getDataSubtitle(item))) {
-                          await converter.deleteItem(item);
-                          Toast.show('Deleted!', context);
+                          try {
+                            await converter.deleteItem(item);
+                            Toast.show('Deleted!', context);
+                          } catch (e, s) {
+                            debugPrint('$e');
+                            debugPrint('$s');
+                            Toast.show('Error: $e', context,
+                                backgroundColor: Colors.red, duration: 8);
+                          }
                         }
                       },
                       elevation: 2.0,
@@ -87,8 +108,7 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                         Icons.delete_forever,
                         color: Colors.black,
                         size: 24.0,
-                      ))
-              ),
+                      ))),
               Divider(
                 thickness: (i == data.length - 1) ? 2 : null,
               ),

@@ -49,22 +49,20 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme.bodyText1;
+
     return AlertDialog(
       title: RichText(
           text: TextSpan(
         children: <InlineSpan>[
+          TextSpan(style: textTheme, text: "Set a nickname for "),
           TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text: "Set a nickname for "),
-          TextSpan(
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontWeight: FontWeight.bold),
+              style: textTheme?.copyWith(fontWeight: FontWeight.bold),
               text: widget.deviceName == null
                   ? widget.macAddress
                   : widget.deviceName),
-          TextSpan(style: Theme.of(context).textTheme.bodyText1, text: "."),
+          TextSpan(style: textTheme, text: "."),
         ],
       )),
       content: TextField(
@@ -73,22 +71,26 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
       ),
       actions: <Widget>[
         SimpleDialogOption(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        SimpleDialogOption(
           child: Text('Save'),
           onPressed: () {
             final text = textController.text.trim();
             if (text.isEmpty) {
-              Navigator.pop(context,
-                  NicknamesHelper(macAddress: widget.macAddress, nickname: null));
+              Navigator.pop(
+                  context,
+                  NicknamesHelper(
+                      macAddress: widget.macAddress, nickname: null));
             } else {
-              Navigator.pop(context,
-                  NicknamesHelper(macAddress: widget.macAddress, nickname: text));
+              Navigator.pop(
+                  context,
+                  NicknamesHelper(
+                      macAddress: widget.macAddress, nickname: text));
             }
-          },
-        ),
-        SimpleDialogOption(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.pop(context);
           },
         ),
       ],

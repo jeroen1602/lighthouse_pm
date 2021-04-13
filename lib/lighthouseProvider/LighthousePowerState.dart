@@ -1,4 +1,4 @@
-/// A enum that describes the current power state of a lighthouse beacon.
+/// An enum that describes the current power state of a lighthouse beacon.
 class LighthousePowerState {
   final String text;
 

@@ -13,7 +13,7 @@ import 'package:vibration/vibration.dart';
 const _GITHUB_ISSUE_URL =
     "https://github.com/jeroen1602/lighthouse_pm/issues/40";
 
-/// Am alert dialog to ask the user what to do since the state is unknown.
+/// An alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
   UnknownStateAlertWidget(this.device, this.currentState, {Key? key})
       : super(key: key);
@@ -25,9 +25,9 @@ class UnknownStateAlertWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = <Widget>[
       SimpleDialogOption(
-        child: Text("On"),
+        child: Text("Cancel"),
         onPressed: () {
-          Navigator.pop(context, LighthousePowerState.ON);
+          Navigator.pop(context, null);
         },
       ),
       SimpleDialogOption(
@@ -37,9 +37,9 @@ class UnknownStateAlertWidget extends StatelessWidget {
         },
       ),
       SimpleDialogOption(
-        child: Text("Cancel"),
+        child: Text("On"),
         onPressed: () {
-          Navigator.pop(context, null);
+          Navigator.pop(context, LighthousePowerState.ON);
         },
       ),
     ];
@@ -47,7 +47,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
     // Add standby, but only if it's supported
     if (device.hasStandbyExtension) {
       actions.insert(
-          1,
+          2,
           SimpleDialogOption(
             child: Text("Standby"),
             onPressed: () {

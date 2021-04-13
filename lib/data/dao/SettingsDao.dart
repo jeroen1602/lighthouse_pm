@@ -24,6 +24,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   static const SCAN_DURATION_ID = 3;
   static const PREFERRED_THEME_ID = 4;
   static const SHORTCUTS_ENABLED_ID = 5;
+  static const GROUP_SHOW_OFFLINE_WARNING = 6;
 
   // endregion
 
@@ -48,7 +49,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     });
   }
 
-  Future<void> insertSleepState(LighthousePowerState sleepState) {
+  Future<void> setSleepState(LighthousePowerState sleepState) {
     assert(
         sleepState == LighthousePowerState.SLEEP ||
             sleepState == LighthousePowerState.STANDBY,
@@ -59,16 +60,34 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         mode: InsertMode.insertOrReplace);
   }
 
+  Stream<bool> getGroupOfflineWarningEnabledStream() {
+    return (select(simpleSettings)
+          ..where((tbl) => tbl.settingsId.equals(GROUP_SHOW_OFFLINE_WARNING)))
+        .watchSingleOrNull()
+        .map((event) {
+      if (event == null) {
+        return true;
+      }
+      if (event.data == '0' || event.data == null) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  Future<void> setGroupOfflineWarningEnabled(bool enabled) {
+    return into(simpleSettings).insert(
+        SimpleSetting(
+            settingsId: GROUP_SHOW_OFFLINE_WARNING, data: enabled ? '1' : '0'),
+        mode: InsertMode.insertOrReplace);
+  }
+
   Stream<bool> getViveBaseStationsEnabledStream() {
     return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(VIVE_BASE_STATION_ENABLED_ID)))
-        .watch()
+        .watchSingleOrNull()
         .map((event) {
-      if (event.isEmpty) {
-        return false;
-      }
-      if (event.length == 1 &&
-          (event[0].data == '0' || event[0].data == null)) {
+      if (event == null || event.data == '0' || event.data == null) {
         return false;
       }
       return true;
@@ -86,13 +105,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   Stream<bool> getShortcutsEnabledStream() {
     return (select(simpleSettings)
           ..where((tbl) => tbl.settingsId.equals(SHORTCUTS_ENABLED_ID)))
-        .watch()
+        .watchSingleOrNull()
         .map((event) {
-      if (event.isEmpty) {
-        return false;
-      }
-      if (event.length == 1 &&
-          (event[0].data == '0' || event[0].data == null)) {
+      if (event == null || event.data == '0' || event.data == null) {
         return false;
       }
       return true;

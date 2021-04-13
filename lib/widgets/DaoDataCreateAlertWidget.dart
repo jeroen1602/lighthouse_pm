@@ -54,11 +54,12 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
 
     return AlertDialog(
       title: Text('Create new item!'),
-      content: Form(
-          key: _formKey,
-          child: Column(
-            children: children,
-          )),
+      content: IntrinsicHeight(
+          child: Form(
+              key: _formKey,
+              child: Column(
+                children: children,
+              ))),
       actions: <Widget>[
         SimpleDialogOption(
           child: Text('Cancel'),
