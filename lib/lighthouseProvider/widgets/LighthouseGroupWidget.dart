@@ -191,7 +191,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
           onSelectedDevice(deviceIdentifier);
         },
         selected: selectedDevices.contains(deviceIdentifier),
-        selecting: selectedDevices.isNotEmpty,
+        selecting: selectedDevices.isNotEmpty || selectedGroup != null,
         nickname: nicknameMap[offlineDevice.value],
       ));
       if (offlineDevice.key < offlineDevices.length - 1) {
