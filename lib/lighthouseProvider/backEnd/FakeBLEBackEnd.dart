@@ -35,8 +35,8 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> startScan({required Duration timeout}) async {
-    await super.startScan(timeout: timeout);
+  Future<void> startScan({required Duration timeout, required Duration? updateInterval}) async {
+    await super.startScan(timeout: timeout, updateInterval: updateInterval);
     _isScanningSubject.add(true);
     for (int i = 0; i < 2; i++) {
       await Future.delayed(Duration(milliseconds: random.nextInt(500) + 200));

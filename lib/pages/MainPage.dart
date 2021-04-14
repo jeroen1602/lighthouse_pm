@@ -101,7 +101,10 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
             onPressed: () async {
               if (await LocationPermissionDialogFlow
                   .showLocationPermissionDialogFlow(context)) {
-                await startScan(Duration(seconds: settings.scanDuration));
+                await startScan(
+                  Duration(seconds: settings.scanDuration),
+                  updateInterval: Duration(seconds: settings.updateInterval),
+                );
               }
             },
           );
@@ -138,6 +141,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
     startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
+        updateInterval: Duration(seconds: widget.settings.updateInterval),
         failMessage:
             "Could not start scan because the permission has not been granted");
   }
@@ -378,7 +382,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   settings: widget.settings,
                 ),
                 drawer: MainPageDrawer(
-                    Duration(seconds: widget.settings.scanDuration)),
+                    Duration(seconds: widget.settings.scanDuration),
+                    Duration(seconds: widget.settings.updateInterval)),
                 body: body,
               );
             }));
@@ -633,6 +638,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         break;
       case AppLifecycleState.resumed:
         startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
+            updateInterval: Duration(seconds: widget.settings.updateInterval),
             failMessage:
                 "Could not start scan because the permission has not been granted on resume.");
         break;
@@ -674,7 +680,8 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue,
-      drawer: MainPageDrawer(Duration(seconds: settings.scanDuration)),
+      drawer: MainPageDrawer(Duration(seconds: settings.scanDuration),
+          Duration(seconds: settings.updateInterval)),
       appBar: AppBar(
         title: Text('Lighthouse PM'),
       ),

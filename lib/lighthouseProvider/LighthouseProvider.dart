@@ -161,7 +161,8 @@ class LighthouseProvider {
   /// for new ones.
   ///
   /// Will call the [cleanUp] function before starting the scan.
-  Future startScan({required Duration timeout}) async {
+  Future startScan(
+      {required Duration timeout, Duration? updateInterval}) async {
     await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
@@ -170,7 +171,7 @@ class LighthouseProvider {
       /// adapter state is on.
       if (_savedStates[backEnd] == BluetoothAdapterState.on) {
         // may need to add await back again depending on how the providers react to being multi-threaded.
-        backEnd.startScan(timeout: timeout);
+        backEnd.startScan(timeout: timeout, updateInterval: updateInterval);
       }
     }
   }

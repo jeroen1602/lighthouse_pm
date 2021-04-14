@@ -6,9 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
 
 class MainPageDrawer extends StatelessWidget with ScanningMixin {
-  MainPageDrawer(this.scanDuration, {Key? key}) : super(key: key);
+  MainPageDrawer(this.scanDuration, this.updateInterval, {Key? key})
+      : super(key: key);
 
   final Duration scanDuration;
+  final Duration updateInterval;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
             cleanUp();
             await Navigator.pushNamed(context, '/troubleshooting');
             startScanWithCheck(scanDuration,
+                updateInterval: updateInterval,
                 failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
           }),
@@ -38,6 +41,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
           cleanUp();
           await Navigator.pushNamed(context, '/help');
           startScanWithCheck(scanDuration,
+              updateInterval: updateInterval,
               failMessage:
                   "Could not start scan because permission has not been granted. On navigator pop");
         },
@@ -50,6 +54,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
           cleanUp();
           await Navigator.pushNamed(context, '/settings');
           startScanWithCheck(scanDuration,
+              updateInterval: updateInterval,
               failMessage:
                   "Could not start scan because permission has not been granted. On navigator pop");
         },
@@ -65,6 +70,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
               cleanUp();
               await Navigator.pushNamed(context, '/databaseTest');
               startScanWithCheck(scanDuration,
+                  updateInterval: updateInterval,
                   failMessage:
                       "Could not start scan because permission has not been granted. On navigator pop");
             }),

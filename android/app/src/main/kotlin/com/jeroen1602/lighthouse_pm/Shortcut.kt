@@ -1,7 +1,6 @@
 package com.jeroen1602.lighthouse_pm
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -18,7 +17,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.security.MessageDigest
-import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.roundToInt
 

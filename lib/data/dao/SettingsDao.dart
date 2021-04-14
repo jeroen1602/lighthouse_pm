@@ -16,6 +16,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   SettingsDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
 
   static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
+  static const UPDATE_INTERVAL_VALUES = const [1, 2, 3, 4, 5, 10, 20, 30];
 
   // region IDS
   //IDS
@@ -24,7 +25,8 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   static const SCAN_DURATION_ID = 3;
   static const PREFERRED_THEME_ID = 4;
   static const SHORTCUTS_ENABLED_ID = 5;
-  static const GROUP_SHOW_OFFLINE_WARNING = 6;
+  static const GROUP_SHOW_OFFLINE_WARNING_ID = 6;
+  static const UPDATE_INTERVAL_ID = 7;
 
   // endregion
 
@@ -62,7 +64,8 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<bool> getGroupOfflineWarningEnabledStream() {
     return (select(simpleSettings)
-          ..where((tbl) => tbl.settingsId.equals(GROUP_SHOW_OFFLINE_WARNING)))
+          ..where(
+              (tbl) => tbl.settingsId.equals(GROUP_SHOW_OFFLINE_WARNING_ID)))
         .watchSingleOrNull()
         .map((event) {
       if (event == null) {
@@ -78,7 +81,8 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   Future<void> setGroupOfflineWarningEnabled(bool enabled) {
     return into(simpleSettings).insert(
         SimpleSetting(
-            settingsId: GROUP_SHOW_OFFLINE_WARNING, data: enabled ? '1' : '0'),
+            settingsId: GROUP_SHOW_OFFLINE_WARNING_ID,
+            data: enabled ? '1' : '0'),
         mode: InsertMode.insertOrReplace);
   }
 
@@ -128,7 +132,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         .map((event) {
       if (event != null && event.data != null) {
         final number = int.tryParse(event.data!, radix: 10);
-        if (number != null) {
+        if (number != null && SCAN_DURATION_VALUES.contains(number)) {
           return number;
         }
       }
@@ -141,6 +145,29 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     return into(simpleSettings).insert(
         SimpleSetting(
             settingsId: SCAN_DURATION_ID, data: duration.toRadixString(10)),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  Stream<int> getUpdateIntervalAsStream({int defaultUpdateInterval = 1}) {
+    return (select(simpleSettings)
+          ..where((tbl) => tbl.settingsId.equals(UPDATE_INTERVAL_ID)))
+        .watchSingleOrNull()
+        .map((event) {
+      if (event != null && event.data != null) {
+        final number = int.tryParse(event.data!, radix: 10);
+        if (number != null && UPDATE_INTERVAL_VALUES.contains(number)) {
+          return number;
+        }
+      }
+      return defaultUpdateInterval;
+    });
+  }
+
+  Future<void> setUpdateInterval(int updateInterval) {
+    assert(updateInterval > 0, 'update interval should be higher than 0');
+    return into(simpleSettings).insert(
+        SimpleSetting(
+            settingsId: UPDATE_INTERVAL_ID, data: updateInterval.toRadixString(10)),
         mode: InsertMode.insertOrReplace);
   }
 
