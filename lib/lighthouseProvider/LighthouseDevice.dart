@@ -73,13 +73,19 @@ abstract class LighthouseDevice {
   LighthousePowerState powerStateFromByte(int byte);
 
   ///
-  /// Get the update interval that this device supports.
+  /// Get the minimum update interval that this device supports.
   ///
   @protected
   Duration getMinUpdateInterval() {
     return const Duration(milliseconds: 1000);
   }
 
+  ///
+  /// Get the update interval for the device state.
+  /// The update interval will never be lower than [getMinUpdateInterval] since
+  /// that is the fastest interval that the device support and shouldn't be
+  /// exceeded.
+  ///
   @nonVirtual
   Duration getUpdateInterval() {
     final min = getMinUpdateInterval();
@@ -89,6 +95,11 @@ abstract class LighthouseDevice {
     return min;
   }
 
+  ///
+  /// Set the prefered update interval for this device.
+  /// The update interval may be higher than the prefered value bacuase of the
+  /// value returned by [getMinUpdateInterval].
+  ///
   @nonVirtual
   void setUpdateInterval(Duration interval) {
     this.updateInterval = interval;

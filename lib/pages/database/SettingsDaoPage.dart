@@ -28,7 +28,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
       case SettingsDao.SHORTCUTS_ENABLED_ID:
         return 'SHORTCUTS_ENABLED_ID';
       case SettingsDao.GROUP_SHOW_OFFLINE_WARNING_ID:
-        return 'GROUP_SHOW_OFFLINE_WARNING';
+        return 'GROUP_SHOW_OFFLINE_WARNING_ID';
       case SettingsDao.UPDATE_INTERVAL_ID:
         return 'UPDATE_INTERVAL_ID';
       default:

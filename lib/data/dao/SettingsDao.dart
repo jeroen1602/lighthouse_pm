@@ -17,7 +17,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   SettingsDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
 
   static const SCAN_DURATION_VALUES = const [5, 10, 15, 20];
-  static const UPDATE_INTERVAL_FREQUENCY_VALUES = const [1, 2, 3, 4, 5, 10, 20, 30];
+  static const UPDATE_INTERVAL_VALUES = const [1, 2, 3, 4, 5, 10, 20, 30];
 
   // region IDS
   //IDS
@@ -156,7 +156,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         .map((event) {
       if (event != null && event.data != null) {
         final number = int.tryParse(event.data!, radix: 10);
-        if (number != null && UPDATE_INTERVAL_FREQUENCY_VALUES.contains(number)) {
+        if (number != null && UPDATE_INTERVAL_VALUES.contains(number)) {
           return number;
         }
       }

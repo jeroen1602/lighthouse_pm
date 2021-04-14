@@ -147,7 +147,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                       .setUpdateInterval(value);
                 }
               },
-              items: SettingsDao.UPDATE_INTERVAL_FREQUENCY_VALUES
+              items: SettingsDao.UPDATE_INTERVAL_VALUES
                   .map<DropdownMenuItem<int>>((int value) => DropdownMenuItem<int>(
                   value: value, child: Text('$value seconds')))
                   .toList());

@@ -34,6 +34,8 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   @protected
   Set<T> providers = Set();
 
+  /// The prefered update interval to use with getting the device state.
+  /// If `null` a default value will be used.
   @protected
   Duration? updateInterval;
 
@@ -68,9 +70,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
             ' It\'s still in debug mode so FIX it!');
       }
     }
-    if (updateInterval != null) {
-      this.updateInterval = updateInterval;
-    }
+    this.updateInterval = updateInterval;
   }
 
   /// Stop scanning for devices using this back end.
