@@ -27,8 +27,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         return 'PREFERRED_THEME_ID';
       case SettingsDao.SHORTCUTS_ENABLED_ID:
         return 'SHORTCUTS_ENABLED_ID';
-      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
+      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING_ID:
         return 'GROUP_SHOW_OFFLINE_WARNING';
+      case SettingsDao.UPDATE_INTERVAL_ID:
+        return 'UPDATE_INTERVAL_ID';
       default:
         return 'UNKNOWN';
     }
@@ -87,8 +89,17 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         return themeMode.toString();
       case SettingsDao.SHORTCUTS_ENABLED_ID:
         return convertToBoolean(data);
-      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
+      case SettingsDao.GROUP_SHOW_OFFLINE_WARNING_ID:
         return convertToBoolean(data);
+      case SettingsDao.UPDATE_INTERVAL_ID:
+        if (data == null) {
+          return 'DEFAULT';
+        }
+        final value = int.tryParse(data, radix: 10);
+        if (value == null) {
+          return 'COULD-NOT-PARSE-VALUE';
+        }
+        return '$value seconds';
       default:
         return 'UNKNOWN CONVERSION';
     }

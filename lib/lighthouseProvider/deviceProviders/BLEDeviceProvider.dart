@@ -18,8 +18,12 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
   @override
-  Future<LighthouseDevice?> getDevice(LHBluetoothDevice device) async {
+  Future<LighthouseDevice?> getDevice(LHBluetoothDevice device,
+      {Duration? updateInterval}) async {
     BLEDevice bleDevice = await this.internalGetDevice(device);
+    if (updateInterval != null) {
+      bleDevice.setUpdateInterval(updateInterval);
+    }
     this._bleDevicesDiscovering.add(bleDevice);
     try {
       final valid = await bleDevice.isValid();

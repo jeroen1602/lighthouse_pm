@@ -15,6 +15,7 @@ class MainPageSettings {
     required this.sleepState,
     required this.viveBaseStationsEnabled,
     required this.scanDuration,
+    required this.updateInterval,
     required this.shortcutEnabled,
     required this.groupShowOfflineWarning,
   });
@@ -22,6 +23,7 @@ class MainPageSettings {
   final LighthousePowerState sleepState;
   final bool viveBaseStationsEnabled;
   final int scanDuration;
+  final int updateInterval;
   final bool shortcutEnabled;
   final bool groupShowOfflineWarning;
 
@@ -29,6 +31,7 @@ class MainPageSettings {
     sleepState: LighthousePowerState.SLEEP,
     viveBaseStationsEnabled: false,
     scanDuration: 5,
+    updateInterval: 1,
     shortcutEnabled: false,
     groupShowOfflineWarning: true,
   );
@@ -39,6 +42,7 @@ class MainPageSettings {
     bool viveBaseStationsEnabled =
         DEFAULT_MAIN_PAGE_SETTINGS.viveBaseStationsEnabled;
     int scanDuration = DEFAULT_MAIN_PAGE_SETTINGS.scanDuration;
+    int updateInterval = DEFAULT_MAIN_PAGE_SETTINGS.updateInterval;
     bool shortcutEnabled = DEFAULT_MAIN_PAGE_SETTINGS.shortcutEnabled;
     bool groupShowOfflineWarning =
         DEFAULT_MAIN_PAGE_SETTINGS.groupShowOfflineWarning;
@@ -53,10 +57,13 @@ class MainPageSettings {
           .getScanDurationsAsStream(defaultValue: scanDuration)
           .map((state) => Tuple2(SettingsDao.SCAN_DURATION_ID, state)),
       bloc.settings
+          .getUpdateIntervalAsStream(defaultUpdateInterval: updateInterval)
+          .map((state) => Tuple2(SettingsDao.UPDATE_INTERVAL_ID, state)),
+      bloc.settings
           .getShortcutsEnabledStream()
           .map((state) => Tuple2(SettingsDao.SHORTCUTS_ENABLED_ID, state)),
       bloc.settings.getGroupOfflineWarningEnabledStream().map(
-          (state) => Tuple2(SettingsDao.GROUP_SHOW_OFFLINE_WARNING, state)),
+          (state) => Tuple2(SettingsDao.GROUP_SHOW_OFFLINE_WARNING_ID, state)),
     ]).map((event) {
       switch (event.item1) {
         case SettingsDao.DEFAULT_SLEEP_STATE_ID:
@@ -74,12 +81,17 @@ class MainPageSettings {
             scanDuration = event.item2 as int;
           }
           break;
+        case SettingsDao.UPDATE_INTERVAL_ID:
+          if (event.item2 != null) {
+            updateInterval = event.item2 as int;
+          }
+          break;
         case SettingsDao.SHORTCUTS_ENABLED_ID:
           if (event.item2 != null) {
             shortcutEnabled = event.item2 as bool;
           }
           break;
-        case SettingsDao.GROUP_SHOW_OFFLINE_WARNING:
+        case SettingsDao.GROUP_SHOW_OFFLINE_WARNING_ID:
           if (event.item2 != null) {
             groupShowOfflineWarning = event.item2 as bool;
           }
@@ -89,6 +101,7 @@ class MainPageSettings {
         sleepState: sleepState,
         viveBaseStationsEnabled: viveBaseStationsEnabled,
         scanDuration: scanDuration,
+        updateInterval: updateInterval,
         shortcutEnabled: shortcutEnabled,
         groupShowOfflineWarning: groupShowOfflineWarning,
       );

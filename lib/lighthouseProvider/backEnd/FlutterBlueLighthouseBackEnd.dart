@@ -43,8 +43,9 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   ///
   /// Will call the [FlutterBlue.startScan] function in the background.
   @override
-  Future<void> startScan({required Duration timeout}) async {
-    await super.startScan(timeout: timeout);
+  Future<void> startScan(
+      {required Duration timeout, Duration? updateInterval}) async {
+    await super.startScan(timeout: timeout, updateInterval: updateInterval);
     await _startListeningScanResults();
     try {
       await FlutterBlue.instance.startScan(

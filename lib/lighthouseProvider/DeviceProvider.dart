@@ -15,9 +15,10 @@ abstract class DeviceProvider<D extends LowLevelDevice> {
   /// Connect to a device and return a super class of [LighthouseDevice].
   ///
   /// [device] the specific device to connect to and test.
+  /// [updateInterval] The update time for the underlying devices.
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
-  Future<LighthouseDevice?> getDevice(D device);
+  Future<LighthouseDevice?> getDevice(D device, {Duration? updateInterval});
 
   ///
   /// Close any open connections that may have been made for discovering devices.

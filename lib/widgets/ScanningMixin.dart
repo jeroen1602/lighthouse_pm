@@ -27,15 +27,16 @@ abstract class ScanningMixin {
     await LighthouseProvider.instance.stopScan();
   }
 
-  Future startScan(Duration scanDuration) async {
-    await LighthouseProvider.instance.startScan(timeout: scanDuration);
+  Future startScan(Duration scanDuration, {Duration? updateInterval}) async {
+    await LighthouseProvider.instance
+        .startScan(timeout: scanDuration, updateInterval: updateInterval);
   }
 
   Future startScanWithCheck(Duration scanDuration,
-      {String failMessage = ""}) async {
+      {Duration? updateInterval, String failMessage = ""}) async {
     if (await BLEPermissionsHelper.hasBLEPermissions() ==
         PermissionStatus.granted) {
-      await startScan(scanDuration);
+      await startScan(scanDuration, updateInterval: updateInterval);
     } else if (failMessage != null && failMessage.isNotEmpty && !kReleaseMode) {
       debugPrint(failMessage);
     }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:mutex/mutex.dart';
@@ -43,6 +44,13 @@ abstract class LighthouseDevice {
   LHDeviceIdentifier get deviceIdentifier;
 
   ///
+  /// The update interval for this device.
+  ///
+  @protected
+  @nonVirtual
+  Duration updateInterval = const Duration(milliseconds: 1000);
+
+  ///
   /// Disconnect from the device and clean up the connection.
   ///
   Future disconnect() async {
@@ -68,8 +76,22 @@ abstract class LighthouseDevice {
   /// Get the update interval that this device supports.
   ///
   @protected
-  Duration getUpdateInterval() {
+  Duration getMinUpdateInterval() {
     return const Duration(milliseconds: 1000);
+  }
+
+  @nonVirtual
+  Duration getUpdateInterval() {
+    final min = getMinUpdateInterval();
+    if (min < updateInterval) {
+      return updateInterval;
+    }
+    return min;
+  }
+
+  @nonVirtual
+  void setUpdateInterval(Duration interval) {
+    this.updateInterval = interval;
   }
 
   ///
@@ -169,7 +191,8 @@ abstract class LighthouseDevice {
       return;
     }
     powerStateSubscription =
-        Stream.periodic(getUpdateInterval()).listen((_) async {
+        MergeStream([Stream.value(null), Stream.periodic(getUpdateInterval())])
+            .listen((_) async {
       if (hasOpenConnection) {
         if (!transactionMutex.isLocked) {
           retryCount = 0;
