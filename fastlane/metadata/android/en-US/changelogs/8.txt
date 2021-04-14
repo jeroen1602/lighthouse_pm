@@ -1,0 +1,12 @@
+Now with the recommended amount of lighthouse grouping.
+
+Changes:
+<ul>
+<li>Updated flutter, now with null safety.</li>
+<li>Updated dependencies.</li>
+<li>(Android) BETA added shortcut (Android 8.0+ (Oreo api 26)).</li>
+<li>Removed unused fonts (-0.6MB save).</li>
+<li>Standardized dialog button order (sorry for the inconvenience).</li>
+<li>Added the ability to group devices.</li>
+<li>Added option for changing update interval.</li>
+</ul>

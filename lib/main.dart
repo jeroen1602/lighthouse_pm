@@ -74,11 +74,16 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
           colorScheme: ColorScheme.light(),
           primarySwatch: Colors.blueGrey,
           selectedRowColor: Colors.grey,
+          disabledColor: Colors.grey.shade400,
+          appBarTheme:
+              AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
         ),
         darkTheme: ThemeData(
           colorScheme: ColorScheme.dark(),
           primarySwatch: Colors.blueGrey,
           selectedRowColor: Colors.blueGrey,
+          appBarTheme:
+              AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
         ),
         themeMode: themeSnapshot.data,
         onGenerateRoute: (RouteSettings settings) {

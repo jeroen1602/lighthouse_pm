@@ -1,4 +1,4 @@
-# Version 1.1.3+8 R.C.
+# Version 1.2.0+8 14-04-2021
 
  - Updated flutter, now with null safety.
  - Updated dependencies.
