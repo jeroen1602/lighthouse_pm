@@ -129,6 +129,31 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
+      StreamBuilder<int>(
+        stream: blocWithoutListen(context).settings.getUpdateIntervalAsStream(),
+        builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return DropdownMenuListTile<int>(
+              title: Text('Set update interval'),
+              subTitle: Text('You may want to change this if you have a lot'
+                  ' of devices.'),
+              value: snapshot.requireData,
+              onChanged: (int? value) async {
+                if (value != null) {
+                  await blocWithoutListen(context)
+                      .settings
+                      .setUpdateInterval(value);
+                }
+              },
+              items: SettingsDao.UPDATE_INTERVAL_VALUES
+                  .map<DropdownMenuItem<int>>((int value) => DropdownMenuItem<int>(
+                  value: value, child: Text('$value seconds')))
+                  .toList());
+        },
+      ),
+      Divider(),
       FutureBuilder<List<ThemeMode>>(
         future: _getSupportedThemeModes(),
         builder: (BuildContext context,

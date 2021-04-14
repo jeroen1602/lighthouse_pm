@@ -34,6 +34,11 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   @protected
   Set<T> providers = Set();
 
+  /// The prefered update interval to use with getting the device state.
+  /// If `null` a default value will be used.
+  @protected
+  Duration? updateInterval;
+
   /// Add a provider for this back end.
   void addProvider(T provider) {
     providers.add(provider);
@@ -51,7 +56,8 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   ///
   /// Any back end that implements this method MUST await the super function first.
   @mustCallSuper
-  Future<void> startScan({required Duration timeout}) async {
+  Future<void> startScan(
+      {required Duration timeout, Duration? updateInterval}) async {
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
@@ -64,6 +70,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
             ' It\'s still in debug mode so FIX it!');
       }
     }
+    this.updateInterval = updateInterval;
   }
 
   /// Stop scanning for devices using this back end.
@@ -96,7 +103,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
         continue;
       }
       final LighthouseDevice? lighthouseDevice =
-          await provider.getDevice(device);
+          await provider.getDevice(device, updateInterval: updateInterval);
       if (lighthouseDevice != null) {
         return lighthouseDevice;
       }
