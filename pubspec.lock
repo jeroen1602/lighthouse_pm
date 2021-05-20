@@ -249,6 +249,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_bluetooth:
+    dependency: "direct main"
+    description:
+      path: "../flutter_web_bluetooth"
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

@@ -28,6 +28,9 @@ class BLEPermissionsHelper {
     if (LocalPlatform.isAndroid) {
       return await Permission.locationWhenInUse.status;
     }
+    if (LocalPlatform.isWeb) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -46,6 +49,9 @@ class BLEPermissionsHelper {
       return await Permission.locationWhenInUse.request();
     }
     if (LocalPlatform.isIOS) {
+      return PermissionStatus.granted;
+    }
+    if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;
     }
     throw UnsupportedError(
@@ -74,6 +80,10 @@ class BLEPermissionsHelper {
       debugPrint("Can't open settings because iOS doesn't support it.");
       return false;
     }
+    if (LocalPlatform.isWeb) {
+      debugPrint("Can't open settings because WEB because there is no api.");
+      return false;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -99,6 +109,10 @@ class BLEPermissionsHelper {
       debugPrint("Can't enable BLE on iOS since there is no api.");
       return false;
     }
+    if (LocalPlatform.isWeb) {
+      debugPrint("Can't enable BLE on WEB since there is no api.");
+      return false;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -122,6 +136,10 @@ class BLEPermissionsHelper {
     if (LocalPlatform.isIOS) {
       // iOS doesn't have an API that can open location settings
       debugPrint("Can't open location settings on iOS since there is no api.");
+      return false;
+    }
+    if (LocalPlatform.isWeb) {
+      debugPrint("Can't open location settings on WEB since there is no api.");
       return false;
     }
     throw UnsupportedError(

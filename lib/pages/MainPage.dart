@@ -10,6 +10,7 @@ import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/PairBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/ChangeGroupAlertWidget.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/ChangeGroupNameAlertWidget.dart';
@@ -81,34 +82,99 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 
   final MainPageSettings settings;
 
+  Stream<int> getPairedDevicesStream(List<PairBackEnd> backEnds) {
+    return Rx.combineLatestList(backEnds.map((e) => e.numberOfPairedDevices()))
+        .map((event) => event.reduce((value, element) => element + value));
+  }
+
   @override
   Widget build(BuildContext context) {
-    // The button for starting and stopping scanning.
-    return StreamBuilder<bool>(
-      stream: LighthouseProvider.instance.isScanning,
-      initialData: false,
-      builder: (c, snapshot) {
-        final isScanning = snapshot.data;
-        if (isScanning == true) {
-          return FloatingActionButton(
-            child: Icon(Icons.stop),
-            onPressed: () => stopScan(),
-            backgroundColor: Colors.red,
-          );
+    final pairBackEnds = LighthouseProvider.instance.getPairBackEnds();
+    final onlyPairBackEnds = LighthouseProvider.instance.hasOnlyPairBackends();
+    final pairedDevicesStream = getPairedDevicesStream(pairBackEnds);
+
+    return StreamBuilder<int>(
+      stream: pairedDevicesStream,
+      initialData: 0,
+      builder:
+          (BuildContext context, AsyncSnapshot<int> pairedDevicesSnapshot) {
+        var pairedDevices = 0;
+        if (pairedDevicesSnapshot.hasError) {
+          debugPrint(pairedDevicesSnapshot.error.toString());
         } else {
-          return FloatingActionButton(
-            child: Icon(Icons.search),
-            onPressed: () async {
-              if (await LocationPermissionDialogFlow
-                  .showLocationPermissionDialogFlow(context)) {
-                await startScan(
-                  Duration(seconds: settings.scanDuration),
-                  updateInterval: Duration(seconds: settings.updateInterval),
-                );
-              }
-            },
-          );
+          pairedDevices = pairedDevicesSnapshot.requireData;
         }
+        final shouldScanBeDisabled = onlyPairBackEnds && pairedDevices <= 0;
+        final theme = Theme.of(context);
+
+        return Row(
+          children: [
+            Spacer(),
+            if (pairBackEnds.isNotEmpty) ...[
+              FloatingActionButton(
+                heroTag: 'pairButton',
+                child: Icon(Icons.bluetooth_connected),
+                onPressed: () {
+                  if (pairBackEnds.length > 1) {
+                    // TODO show dialog to select the provider
+                  } else {
+                    pairBackEnds[0].pairNewDevice(
+                        timeout: Duration(seconds: settings.scanDuration),
+                        updateInterval:
+                            Duration(seconds: settings.updateInterval));
+                  }
+                },
+                tooltip: 'Pair a new device',
+              ),
+              Padding(
+                padding: EdgeInsets.all(4.0),
+              ),
+            ],
+            // The button for starting and stopping scanning.
+            StreamBuilder<bool>(
+              stream: LighthouseProvider.instance.isScanning,
+              initialData: false,
+              builder: (c, snapshot) {
+                final isScanning = snapshot.data;
+                if (isScanning == true) {
+                  return FloatingActionButton(
+                    heroTag: 'scanButton',
+                    child: Icon(Icons.stop),
+                    onPressed: () => stopScan(),
+                    backgroundColor: Colors.red,
+                    tooltip: 'Stop scanning',
+                  );
+                } else {
+                  return FloatingActionButton(
+                    heroTag: 'scanButton',
+                    child: Icon(Icons.search),
+                    backgroundColor:
+                        shouldScanBeDisabled ? theme.disabledColor : null,
+                    elevation: shouldScanBeDisabled ? 0 : null,
+                    hoverElevation: shouldScanBeDisabled ? 0 : null,
+                    onPressed: () async {
+                      if (shouldScanBeDisabled) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                'Please pair a device first, before scanning for devices.')));
+                        return;
+                      }
+                      if (await LocationPermissionDialogFlow
+                          .showLocationPermissionDialogFlow(context)) {
+                        await startScan(
+                          Duration(seconds: settings.scanDuration),
+                          updateInterval:
+                              Duration(seconds: settings.updateInterval),
+                        );
+                      }
+                    },
+                    tooltip: 'Start scanning',
+                  );
+                }
+              },
+            )
+          ],
+        );
       },
     );
   }

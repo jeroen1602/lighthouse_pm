@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
+import './adapterState/AdapterState.dart';
 import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
 import 'backEnd/LighthouseBackEnd.dart';
+import 'backEnd/PairBackEnd.dart';
 import 'ble/DeviceIdentifier.dart';
 import 'timeout/TimeoutContainer.dart';
 
@@ -95,6 +96,34 @@ class LighthouseProvider {
       backEnd.updateLastSeen = null;
     }
     _removeStateSubscription(backEnd);
+  }
+
+  ///
+  /// Get all the back ends that have to pair first before they can communicate
+  /// with a device.
+  ///
+  List<PairBackEnd> getPairBackEnds() {
+    final List<PairBackEnd> backEnds = [];
+    for (final backEnd in _backEndSet) {
+      if (backEnd is PairBackEnd) {
+        backEnds.add(backEnd as PairBackEnd);
+      }
+    }
+    return backEnds;
+  }
+
+  ///
+  /// Check if all the back ends installed all require to be paired first.
+  /// If one of the back ends doesn't require it then this will return `false`
+  /// else this will return `true`.
+  ///
+  bool hasOnlyPairBackends() {
+    for (final backEnd in _backEndSet) {
+      if (!backEnd.isPairBackEnd) {
+        return false;
+      }
+    }
+    return true;
   }
 
   void _addStateSubscription(LighthouseBackEnd backEnd) {

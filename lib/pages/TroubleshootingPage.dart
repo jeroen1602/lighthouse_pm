@@ -37,6 +37,15 @@ class TroubleshootingContentWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
+      if (LighthouseProvider.instance.getPairBackEnds().length > 0) ...[
+        ListTile(
+            title: Text("Make sure you have paired with the lighthouse"),
+            leading: Icon(
+              Icons.bluetooth_connected,
+              color: Colors.lightBlue,
+            )),
+        Divider()
+      ],
       ListTile(
         title: Text('Make sure the lighthouse is plugged in'),
         leading: Icon(Icons.power, color: Colors.blue),
@@ -67,30 +76,44 @@ class TroubleshootingContentWidget extends StatelessWidget
       Divider(),
       ListTile(
           title: Text(
-              'Your lighthouse may be running an older unsupported software version.'),
+              'Your lighthouse may be running an older unsupported software version'),
           subtitle:
               Text('Check to see if there is an update for your lighthouse.'),
           leading: Icon(Icons.update, color: Colors.cyan)),
       Divider(),
       ListTile(
-          title: Text(
-              'Sometimes a lighthouse reports it\'s own state as booting.'),
+          title:
+              Text('Sometimes a lighthouse reports it\'s own state as booting'),
           subtitle: Text(
               'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
           leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
       Divider(),
-      ListTile(
-          title: Text('Sometimes the app needs a restart.'),
-          subtitle: Text(
-              'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
-          leading: Icon(Icons.replay, color: Colors.deepOrange)),
+      if (LocalPlatform.isWeb)
+        ListTile(
+            title: Text('Sometimes the page needs to be reloaded'),
+            subtitle: Text('Try to reload the web page and connect again'),
+            leading: Icon(Icons.replay, color: Colors.deepOrange))
+      else
+        ListTile(
+            title: Text('Sometimes the app needs a restart'),
+            subtitle: Text(
+                'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
+            leading: Icon(Icons.replay, color: Colors.deepOrange)),
       Divider(),
-      ListTile(
-          title: Text(
-              'Make sure no other app is communicating with the lighthouse.'),
-          subtitle: Text(
-              'The app cannot find the lighthouse if another app is already communicating with it.'),
-          leading: Icon(Icons.apps, color: Colors.greenAccent)),
+      if (LocalPlatform.isWeb)
+        ListTile(
+            title: Text(
+                'Make sure no other tab is communicating with the lighthouse'),
+            subtitle: Text(
+                'The site cannot find the lighthouse if another program is already communicating with it.'),
+            leading: Icon(Icons.apps, color: Colors.greenAccent))
+      else
+        ListTile(
+            title: Text(
+                'Make sure no other app is communicating with the lighthouse'),
+            subtitle: Text(
+                'The app cannot find the lighthouse if another app is already communicating with it.'),
+            leading: Icon(Icons.apps, color: Colors.greenAccent)),
       Divider(),
     ];
 

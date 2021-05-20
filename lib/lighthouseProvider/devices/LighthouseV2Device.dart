@@ -116,6 +116,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     } on TimeoutException {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
+    } catch (e, s) {
+      // other connection error
+      debugPrint('Other connection error:');
+      debugPrint('$e');
+      debugPrint('$s');
+      return false;
     }
     _identifyDeviceExtension.setEnabled(false);
 

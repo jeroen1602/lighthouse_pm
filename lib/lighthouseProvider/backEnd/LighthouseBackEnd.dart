@@ -35,7 +35,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   @protected
   Set<T> providers = Set();
 
-  /// The prefered update interval to use with getting the device state.
+  /// The preferred update interval to use with getting the device state.
   /// If `null` a default value will be used.
   @protected
   Duration? updateInterval;

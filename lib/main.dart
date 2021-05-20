@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterWebBluetoothBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/pages/BasePage.dart';
@@ -23,20 +24,6 @@ import 'bloc.dart';
 void main() {
   loadIntlStrings();
 
-  if (LocalPlatform.isIOS || LocalPlatform.isAndroid) {
-    LighthouseProvider.instance
-        .addBackEnd(FlutterBlueLighthouseBackEnd.instance);
-  }
-  if (!kReleaseMode) {
-    // Add this back if you need to test for devices you don't own.
-    // you'll also need to
-    // import 'package:lighthouse_pm/lighthouseProvider/backEnd/FakeBLEBackEnd.dart';
-
-    // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
-  }
-
-  LighthouseProvider.instance.addProvider(LighthouseV2DeviceProvider.instance);
-
   runApp(MainApp());
 }
 
@@ -53,6 +40,26 @@ class MainApp extends StatelessWidget {
   LighthousePMBloc _initializeDataBase() {
     final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
+
+    if (LocalPlatform.isIOS || LocalPlatform.isAndroid) {
+      LighthouseProvider.instance
+          .addBackEnd(FlutterBlueLighthouseBackEnd.instance);
+    }
+    if (LocalPlatform.isWeb) {
+      LighthouseProvider.instance
+          .addBackEnd(FlutterWebBluetoothBackend.instance);
+    }
+    if (!kReleaseMode) {
+      // Add this back if you need to test for devices you don't own.
+      // you'll also need to
+      // import 'package:lighthouse_pm/lighthouseProvider/backEnd/FakeBLEBackEnd.dart';
+
+      // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
+    }
+
+    LighthouseProvider.instance
+        .addProvider(LighthouseV2DeviceProvider.instance);
+
     ViveBaseStationDeviceProvider.instance
         .setViveBaseStationDao(mainBloc.viveBaseStation);
     LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
@@ -82,6 +89,7 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
           selectedRowColor: Colors.blueGrey,
         ),
         themeMode: themeSnapshot.data,
+        initialRoute: '/',
         onGenerateRoute: (RouteSettings settings) {
           // Make sure all these pages extend the Base page or else shortcut
           // handling won't work!
