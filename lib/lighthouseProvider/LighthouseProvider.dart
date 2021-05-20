@@ -278,13 +278,9 @@ class LighthouseProvider {
     if (list == null) {
       return false;
     }
-    final device =
-        list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere((element) {
-      if (element != null) {
-        return element.data.deviceIdentifier == deviceIdentifier;
-      }
-      return false;
-    }, orElse: () => null);
+    final device = list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
+        (element) => element?.data.deviceIdentifier == deviceIdentifier,
+        orElse: () => null);
     if (device == null) {
       return false;
     }
@@ -324,6 +320,9 @@ class LighthouseProvider {
       if (newDevice == null) {
         return;
       }
+      if (_updateLastSeen(newDevice.deviceIdentifier)) {
+        return;
+      }
       try {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
@@ -343,7 +342,6 @@ class LighthouseProvider {
         }
 
         list.add(TimeoutContainer<LighthouseDevice>(newDevice));
-        this._lightHouseDevices.add(list);
         this._lightHouseDevices.add(list);
       } finally {
         if (_lighthouseDeviceMutex.isLocked) {
