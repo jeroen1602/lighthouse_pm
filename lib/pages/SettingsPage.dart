@@ -12,7 +12,7 @@ import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ShortcutAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ViveBaseStationAlertWidget.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,8 +149,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 }
               },
               items: SettingsDao.UPDATE_INTERVAL_VALUES
-                  .map<DropdownMenuItem<int>>((int value) => DropdownMenuItem<int>(
-                  value: value, child: Text('$value seconds')))
+                  .map<DropdownMenuItem<int>>((int value) =>
+                      DropdownMenuItem<int>(
+                          value: value, child: Text('$value seconds')))
                   .toList());
         },
       ),
