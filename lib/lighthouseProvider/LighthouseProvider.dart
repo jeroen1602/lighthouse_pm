@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
+import 'adapterState/AdapterState.dart';
 import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
 import 'backEnd/LighthouseBackEnd.dart';
+import 'backEnd/PairBackEnd.dart';
 import 'ble/DeviceIdentifier.dart';
 import 'timeout/TimeoutContainer.dart';
 
@@ -25,7 +28,9 @@ import 'timeout/TimeoutContainer.dart';
 /// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackEnd].
 ///
 class LighthouseProvider {
-  LighthouseProvider._();
+  LighthouseProvider._() {
+    WidgetsFlutterBinding.ensureInitialized();
+  }
 
   /// Get a stream with a [List] of valid [LighthouseDevice]s.
   ///
@@ -60,10 +65,29 @@ class LighthouseProvider {
 
   Stream<bool> get isScanning => _isScanningBehavior.stream;
 
+  Map<LighthouseBackEnd, StreamSubscription?> _stateSubscriptions = {};
+  Map<LighthouseBackEnd, BluetoothAdapterState> _savedStates = {};
+  BehaviorSubject<Map<LighthouseBackEnd, BluetoothAdapterState>> _state =
+      BehaviorSubject.seeded({});
+
+  Stream<BluetoothAdapterState> get state => _state.stream.map((map) {
+        if (map.isEmpty) {
+          return BluetoothAdapterState.unknown;
+        }
+        return map.values.reduce((value, element) {
+          if (value == BluetoothAdapterState.on ||
+              element == BluetoothAdapterState.on) {
+            return BluetoothAdapterState.on;
+          }
+          return element;
+        });
+      });
+
   /// Add a back end for providing data.
   void addBackEnd(LighthouseBackEnd backEnd) {
     backEnd.updateLastSeen = _updateLastSeen;
     _backEndSet.add(backEnd);
+    _addStateSubscription(backEnd);
   }
 
   /// Remove a back end for providing data.
@@ -71,6 +95,51 @@ class LighthouseProvider {
     if (_backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
     }
+    _removeStateSubscription(backEnd);
+  }
+
+  ///
+  /// Get all the back ends that have to pair first before they can communicate
+  /// with a device.
+  ///
+  List<PairBackEnd> getPairBackEnds() {
+    final List<PairBackEnd> backEnds = [];
+    for (final backEnd in _backEndSet) {
+      if (backEnd is PairBackEnd) {
+        backEnds.add(backEnd as PairBackEnd);
+      }
+    }
+    return backEnds;
+  }
+
+  ///
+  /// Check if all the back ends installed all require to be paired first.
+  /// If one of the back ends doesn't require it then this will return `false`
+  /// else this will return `true`.
+  ///
+  bool hasOnlyPairBackends() {
+    for (final backEnd in _backEndSet) {
+      if (!backEnd.isPairBackEnd) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _addStateSubscription(LighthouseBackEnd backEnd) {
+    if (_stateSubscriptions.containsKey(backEnd)) {
+      return;
+    }
+    _stateSubscriptions[backEnd] = backEnd.state.listen((newState) {
+      _savedStates[backEnd] = newState;
+      _state.add(_savedStates);
+    });
+  }
+
+  void _removeStateSubscription(LighthouseBackEnd backEnd) {
+    _stateSubscriptions[backEnd]?.cancel();
+    _savedStates.remove(backEnd);
+    _state.add(_savedStates);
   }
 
   /// Get a list of all the back ends that this [DeviceProvider] can be used with.
@@ -127,8 +196,12 @@ class LighthouseProvider {
     await cleanUp();
     await _startListeningScanResults();
     for (final backEnd in _backEndSet) {
-      // may need to add await back again depending on how the providers react to being multi-threaded.
-      backEnd.startScan(timeout: timeout, updateInterval: updateInterval);
+      /// Only start the scan if the back-end acknowledges that it's bluetooth
+      /// adapter state is on.
+      if (_savedStates[backEnd] == BluetoothAdapterState.on) {
+        // may need to add await back again depending on how the providers react to being multi-threaded.
+        backEnd.startScan(timeout: timeout, updateInterval: updateInterval);
+      }
     }
   }
 
@@ -205,13 +278,9 @@ class LighthouseProvider {
     if (list == null) {
       return false;
     }
-    final device =
-        list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere((element) {
-      if (element != null) {
-        return element.data.deviceIdentifier == deviceIdentifier;
-      }
-      return false;
-    }, orElse: () => null);
+    final device = list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
+        (element) => element?.data.deviceIdentifier == deviceIdentifier,
+        orElse: () => null);
     if (device == null) {
       return false;
     }
@@ -251,6 +320,9 @@ class LighthouseProvider {
       if (newDevice == null) {
         return;
       }
+      if (_updateLastSeen(newDevice.deviceIdentifier)) {
+        return;
+      }
       try {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
@@ -270,7 +342,6 @@ class LighthouseProvider {
         }
 
         list.add(TimeoutContainer<LighthouseDevice>(newDevice));
-        this._lightHouseDevices.add(list);
         this._lightHouseDevices.add(list);
       } finally {
         if (_lighthouseDeviceMutex.isLocked) {

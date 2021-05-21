@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 
-import './BasePage.dart';
+import 'BasePage.dart';
 
 ///
 /// A very simple [BasePage] implementation for testing!

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import '../adapterState/AdapterState.dart';
 
 import '../DeviceProvider.dart';
 import '../LighthouseDevice.dart';
@@ -34,7 +35,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   @protected
   Set<T> providers = Set();
 
-  /// The prefered update interval to use with getting the device state.
+  /// The preferred update interval to use with getting the device state.
   /// If `null` a default value will be used.
   @protected
   Duration? updateInterval;
@@ -57,7 +58,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// Any back end that implements this method MUST await the super function first.
   @mustCallSuper
   Future<void> startScan(
-      {required Duration timeout, Duration? updateInterval}) async {
+      {required Duration timeout, required Duration? updateInterval}) async {
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
@@ -90,6 +91,9 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
 
   /// A stream that returns all scanned devices.
   Stream<LighthouseDevice?> get lighthouseStream;
+
+  /// A stream that returns the state of the bluetooth adapter.
+  Stream<BluetoothAdapterState> get state;
 
   /// IMPORTANT the [LighthouseProvider] should set this value when registering a back end!
   UpdateLastSeen? updateLastSeen;

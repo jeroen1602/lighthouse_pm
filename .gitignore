@@ -48,3 +48,6 @@ app.*.map.json
 
 # Ingore generated dart files
 *.g.dart
+
+#sql-wasm
+web/sql-*

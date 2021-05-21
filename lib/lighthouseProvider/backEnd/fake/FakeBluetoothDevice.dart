@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
 import '../../ble/BluetoothDevice.dart';
@@ -277,25 +278,30 @@ List<int> _intListFromString(String data) {
 }
 
 List<int> _intListFromNumber(int number) {
-  final data = ByteData(8);
-  data.setUint64(0, number, Endian.big);
+  final data = ByteData(LocalPlatform.isWeb ? 4 : 8);
+  if (LocalPlatform.isWeb) {
+    data.setUint32(0, number, Endian.big);
+  } else {
+    data.setUint64(0, number, Endian.big);
+  }
   final List<int> list = List<int>.filled(data.lengthInBytes, 0);
   var nonZero = false;
+  var trimZeroStart = -1;
+  //        V
+  // 00 00 00 FF
   for (int i = 0; i < data.lengthInBytes; i++) {
     final byte = data.getUint8(i);
-    if (byte > 0) {
+    if (byte > 0 && !nonZero) {
       nonZero = true;
+      trimZeroStart = i - 1;
     }
     list[i] = byte;
   }
   if (nonZero) {
-    // Trim the list at the end.
-    for (int i = list.length - 1; i >= 0; i--) {
-      if (list[i] == 0) {
-        list.removeLast();
-      } else {
-        break;
-      }
+    if (trimZeroStart > 0) {
+      // 00 00 00 FF -> FF
+      // 00 00 FF 00 -> FF 00
+      return list.sublist(trimZeroStart);
     }
     return list;
   } else {

@@ -1,14 +1,14 @@
-import 'dart:io';
-
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
+import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'BasePage.dart';
@@ -37,6 +37,15 @@ class TroubleshootingContentWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
+      if (LighthouseProvider.instance.getPairBackEnds().length > 0) ...[
+        ListTile(
+            title: Text("Make sure you have paired with the lighthouse"),
+            leading: Icon(
+              Icons.bluetooth_connected,
+              color: Colors.lightBlue,
+            )),
+        Divider()
+      ],
       ListTile(
         title: Text('Make sure the lighthouse is plugged in'),
         leading: Icon(Icons.power, color: Colors.blue),
@@ -67,52 +76,66 @@ class TroubleshootingContentWidget extends StatelessWidget
       Divider(),
       ListTile(
           title: Text(
-              'Your lighthouse may be running an older unsupported software version.'),
+              'Your lighthouse may be running an older unsupported software version'),
           subtitle:
               Text('Check to see if there is an update for your lighthouse.'),
           leading: Icon(Icons.update, color: Colors.cyan)),
       Divider(),
       ListTile(
-          title: Text(
-              'Sometimes a lighthouse reports it\'s own state as booting.'),
+          title:
+              Text('Sometimes a lighthouse reports it\'s own state as booting'),
           subtitle: Text(
               'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
           leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
       Divider(),
-      ListTile(
-          title: Text('Sometimes the app needs a restart.'),
-          subtitle: Text(
-              'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
-          leading: Icon(Icons.replay, color: Colors.deepOrange)),
+      if (LocalPlatform.isWeb)
+        ListTile(
+            title: Text('Sometimes the page needs to be reloaded'),
+            subtitle: Text('Try to reload the web page and connect again'),
+            leading: Icon(Icons.replay, color: Colors.deepOrange))
+      else
+        ListTile(
+            title: Text('Sometimes the app needs a restart'),
+            subtitle: Text(
+                'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
+            leading: Icon(Icons.replay, color: Colors.deepOrange)),
       Divider(),
-      ListTile(
-          title: Text(
-              'Make sure no other app is communicating with the lighthouse.'),
-          subtitle: Text(
-              'The app cannot find the lighthouse if another app is already communicating with it.'),
-          leading: Icon(Icons.apps, color: Colors.greenAccent)),
+      if (LocalPlatform.isWeb)
+        ListTile(
+            title: Text(
+                'Make sure no other tab is communicating with the lighthouse'),
+            subtitle: Text(
+                'The site cannot find the lighthouse if another program is already communicating with it.'),
+            leading: Icon(Icons.apps, color: Colors.greenAccent))
+      else
+        ListTile(
+            title: Text(
+                'Make sure no other app is communicating with the lighthouse'),
+            subtitle: Text(
+                'The app cannot find the lighthouse if another app is already communicating with it.'),
+            leading: Icon(Icons.apps, color: Colors.greenAccent)),
       Divider(),
     ];
 
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       children.insert(
           0,
           // FlutterBlue doesn't like it when you have two of the same streams
           // open at once, so for now convert it into a future.
           //StreamBuilder<BluetoothState>(
           //  stream: FlutterBlue.instance.state,
-          FutureBuilder<BluetoothState>(
-            future: FlutterBlue.instance.state.first,
-            initialData: BluetoothState.unknown,
+          FutureBuilder<BluetoothAdapterState>(
+            future: LighthouseProvider.instance.state.first,
+            initialData: BluetoothAdapterState.unknown,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
               final data = snapshot.data;
               switch (data) {
-                case BluetoothState.on:
-                case BluetoothState.turningOn:
-                case BluetoothState.unknown:
+                case BluetoothAdapterState.on:
+                case BluetoothAdapterState.turningOn:
+                case BluetoothAdapterState.unknown:
                   return Container();
                 default:
                   return Column(

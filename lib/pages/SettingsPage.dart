@@ -1,21 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
-import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
+import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ShortcutAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ViveBaseStationAlertWidget.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import './BasePage.dart';
+import 'BasePage.dart';
 import 'settings/PrivacyPage.dart';
 import 'settings/SettingsNicknamesPage.dart';
 import 'settings/SettingsViveBaseStationIdsPage.dart';
@@ -148,8 +149,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 }
               },
               items: SettingsDao.UPDATE_INTERVAL_VALUES
-                  .map<DropdownMenuItem<int>>((int value) => DropdownMenuItem<int>(
-                  value: value, child: Text('$value seconds')))
+                  .map<DropdownMenuItem<int>>((int value) =>
+                      DropdownMenuItem<int>(
+                          value: value, child: Text('$value seconds')))
                   .toList());
         },
       ),
@@ -270,7 +272,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // endregion
 
     // region shortcut
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       items.add(FutureBuilder<bool>(
         future: AndroidLauncherShortcut.instance.shortcutSupported(),
         builder: (context, supportedSnapshot) {

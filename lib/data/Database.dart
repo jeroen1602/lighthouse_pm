@@ -1,9 +1,4 @@
-import 'dart:io';
-
-import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 import 'dao/GroupDao.dart';
 import 'dao/NicknameDao.dart';
@@ -14,6 +9,8 @@ import 'tables/LastSeenDevicesTable.dart';
 import 'tables/NicknameTable.dart';
 import 'tables/SimpleSettingsTable.dart';
 import 'tables/ViveBaseStationIdTable.dart';
+
+export 'shared/shared.dart';
 
 part 'Database.g.dart';
 
@@ -29,17 +26,6 @@ class NicknamesLastSeenJoin {
 // Use `flutter packages pub run build_runner build`
 // or `flutter packages pub run build_runner watch` to generate these files.
 
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(() async {
-    // put the database file, called db.sqlite here, into the documents folder
-    // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
-  });
-}
-
 @UseMoor(tables: [
   Nicknames,
   LastSeenDevices,
@@ -48,13 +34,13 @@ LazyDatabase _openConnection() {
   Groups,
   GroupEntries,
 ], daos: [
-  SettingsDao,
   NicknameDao,
+  SettingsDao,
   ViveBaseStationDao,
   GroupDao,
 ])
 class LighthouseDatabase extends _$LighthouseDatabase {
-  LighthouseDatabase() : super(_openConnection());
+  LighthouseDatabase(QueryExecutor e) : super(e);
 
   @override
   int get schemaVersion => 3;

@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/platformSpecific/android/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 
-import './DeviceExtension.dart';
+import 'DeviceExtension.dart';
 
 typedef GetDeviceNickname = String Function();
 

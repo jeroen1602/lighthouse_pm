@@ -27,7 +27,8 @@ dependencies:
     sdk: flutter
   flutter_blue: ^0.8.0
   rxdart: ^0.26.0
-  package_info: ^2.0.0
+#  package_info: ^2.0.0
+  package_info_plus: ^1.0.1
   permission_handler: ^6.1.1
   flutter_svg: ^0.21.0-nullsafety.0
   url_launcher: ^6.0.3
@@ -50,6 +51,7 @@ dependencies:
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.0
+  flutter_web_bluetooth: ^0.0.1
 
   # This may need to be enabled again if the build runner doesn't like it.
   #dependency_overrides:

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:rxdart/rxdart.dart';
 
 import '../LighthouseDevice.dart';
+import '../adapterState/AdapterState.dart';
 import 'BLELighthouseBackEnd.dart';
 import 'fake/FakeBluetoothDevice.dart';
 
@@ -34,7 +35,8 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> startScan({required Duration timeout, Duration? updateInterval}) async {
+  Future<void> startScan(
+      {required Duration timeout, required Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     _isScanningSubject.add(true);
     for (int i = 0; i < 2; i++) {
@@ -62,4 +64,8 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
 
   @override
   Stream<bool> get isScanning => _isScanningSubject.stream;
+
+  @override
+  Stream<BluetoothAdapterState> get state =>
+      Stream.value(BluetoothAdapterState.on);
 }

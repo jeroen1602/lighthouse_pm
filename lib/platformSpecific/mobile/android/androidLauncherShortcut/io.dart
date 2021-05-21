@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'shared.dart';
+
 ///
 /// Code for handling and creating shortcuts.
 ///
@@ -66,7 +68,7 @@ class AndroidLauncherShortcut {
   Future<bool> _requestShortcut(
       ShortcutTypes type, String shortCutString, String name) {
     return _channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
-      'action': "${type._part}/$shortCutString",
+      'action': "${type.part}/$shortCutString",
       'name': name
     }).then((value) => value == true);
   }
@@ -120,36 +122,4 @@ class _InMethods {
   final _InMethodHandler functionHandler;
 
   const _InMethods._(this.functionName, this.functionHandler);
-}
-
-///
-/// Types of shortcuts that exist
-///
-class ShortcutTypes {
-  static const MAC_TYPE = ShortcutTypes._("mac");
-
-  final String _part;
-
-  const ShortcutTypes._(this._part);
-}
-
-///
-/// Data class with all the information for a shortcut type.
-///
-class ShortcutHandle {
-  final ShortcutTypes type;
-  final String data;
-
-  const ShortcutHandle(this.type, this.data);
-
-  @override
-  bool operator ==(Object other) {
-    if (other is ShortcutHandle) {
-      return other.type == this.type && other.data == this.data;
-    }
-    return false;
-  }
-
-  @override
-  int get hashCode => super.hashCode;
 }

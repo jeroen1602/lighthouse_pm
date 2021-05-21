@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 
 import '../ble/BluetoothDevice.dart';
 import '../devices/BLEDevice.dart';
@@ -44,9 +46,35 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
     return LighthouseV2Device(device, this._bloc!);
   }
 
-  ///
-  /// Check if the name of the device start correctly.
-  ///
+
   @override
-  bool nameCheck(String name) => name.startsWith('LHB-');
+  List<LighthouseGuid> get characteristics => [
+        LighthouseGuid.fromString("00001525-1212-efde-1523-785feabcd124"),
+        LighthouseGuid.fromString("00001524-1212-EFDE-1523-785FEABCD124"),
+        LighthouseGuid.fromString("00008421-1212-EFDE-1523-785FEABCD124"),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
+      ];
+
+  @override
+  List<LighthouseGuid> get optionalServices => [
+        LighthouseGuid.fromString(
+            BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
+      ];
+
+  @override
+  List<LighthouseGuid> get requiredServices => [
+        LighthouseGuid.fromString("00001523-1212-efde-1523-785feabcd124"),
+      ];
+
+  @override
+  String get namePrefix => "LHB-";
 }

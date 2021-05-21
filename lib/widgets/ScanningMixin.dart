@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 abstract class ScanningMixin {
@@ -13,8 +11,8 @@ abstract class ScanningMixin {
 
   Future<bool> _onWillPop() async {
     // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
-    if (Platform.isAndroid) {
-      if (await FlutterBlue.instance.isScanning.first ||
+    if (LocalPlatform.isAndroid) {
+      if (await LighthouseProvider.instance.isScanning.first ||
           await _hasConnectedDevices()) {
         await LighthouseProvider.instance.cleanUp();
         await Future.delayed(Duration(milliseconds: 100));

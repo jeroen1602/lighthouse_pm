@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../bloc.dart';
 import '../LighthousePowerState.dart';
@@ -116,6 +116,12 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     } on TimeoutException {
       debugPrint('Connection timed-out for device: ${this.deviceIdentifier}');
       return false;
+    } catch (e, s) {
+      // other connection error
+      debugPrint('Other connection error:');
+      debugPrint('$e');
+      debugPrint('$s');
+      return false;
     }
     _identifyDeviceExtension.setEnabled(false);
 
@@ -186,7 +192,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     deviceExtensions.add(OnExtension(
         changeState: changeState, powerStateStream: powerStateEnum));
 
-    if (Platform.isAndroid) {
+    if (LocalPlatform.isAndroid) {
       _bloc?.settings.getShortcutsEnabledStream().first.then((value) {
         if (value == true) {
           deviceExtensions
