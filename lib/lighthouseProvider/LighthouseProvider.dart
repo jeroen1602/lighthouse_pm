@@ -6,7 +6,7 @@ import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
-import './adapterState/AdapterState.dart';
+import 'adapterState/AdapterState.dart';
 import 'DeviceProvider.dart';
 import 'LighthouseDevice.dart';
 import 'backEnd/LighthouseBackEnd.dart';

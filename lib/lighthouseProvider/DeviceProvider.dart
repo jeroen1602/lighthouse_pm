@@ -1,4 +1,4 @@
-import './LighthouseDevice.dart';
+import 'LighthouseDevice.dart';
 import 'backEnd/LowLevelDevice.dart';
 import 'ble/Guid.dart';
 

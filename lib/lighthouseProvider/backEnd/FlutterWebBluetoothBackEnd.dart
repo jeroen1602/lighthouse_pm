@@ -6,7 +6,7 @@ import 'package:flutter_web_bluetooth/js_web_bluetooth.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 
-import './BLELighthouseBackEnd.dart';
+import 'BLELighthouseBackEnd.dart';
 import '../LighthouseDevice.dart';
 import '../adapterState/AdapterState.dart';
 import '../ble/Guid.dart';

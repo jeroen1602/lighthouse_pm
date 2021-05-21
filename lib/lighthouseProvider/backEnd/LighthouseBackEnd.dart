@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
+import '../adapterState/AdapterState.dart';
 
 import '../DeviceProvider.dart';
 import '../LighthouseDevice.dart';

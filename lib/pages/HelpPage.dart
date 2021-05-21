@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import './BasePage.dart';
+import 'BasePage.dart';
 
 const _GITHUB_ISSUES_URL =
     "https://github.com/jeroen1602/lighthouse_pm/issues/";

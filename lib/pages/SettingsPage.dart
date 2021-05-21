@@ -16,7 +16,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import './BasePage.dart';
+import 'BasePage.dart';
 import 'settings/PrivacyPage.dart';
 import 'settings/SettingsNicknamesPage.dart';
 import 'settings/SettingsViveBaseStationIdsPage.dart';

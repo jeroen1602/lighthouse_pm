@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
-import './shared.dart';
+import 'shared.dart';
 
 ///
 /// Code for handling and creating shortcuts.
