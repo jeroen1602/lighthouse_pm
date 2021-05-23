@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:toast/toast.dart';
 
 import '../BasePage.dart';
@@ -59,20 +60,21 @@ class _SettingsViveBaseStationIdsPageState
           if (data.isEmpty) {
             body = _EmptyPage();
           } else {
-            body = _DataPage(
-              ids: data,
-              selecting: selected.isNotEmpty,
-              selectItem: _selectItem,
-              deselectItem: _deselectItem,
-              isSelected: _isSelected,
-              deleteItem: _deleteItem,
-            );
+            body = ContentContainerWidget(builder: (context) {
+              return _DataPage(
+                ids: data,
+                selecting: selected.isNotEmpty,
+                selectItem: _selectItem,
+                deselectItem: _deselectItem,
+                isSelected: _isSelected,
+                deleteItem: _deleteItem,
+              );
+            });
           }
         }
 
-        final Color? scaffoldColor = selected.isNotEmpty
-            ? Theme.of(context).selectedRowColor
-            : null;
+        final Color? scaffoldColor =
+            selected.isNotEmpty ? Theme.of(context).selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [

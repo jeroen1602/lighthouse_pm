@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:toast/toast.dart';
 
@@ -67,21 +68,24 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
           if (data.isEmpty) {
             body = _EmptyNicknamePage();
           } else {
-            body = _DataNicknamePage(
-              nicknames: data,
-              selecting: selected.isNotEmpty,
-              selectItem: _selectItem,
-              deselectItem: _deselectItem,
-              isSelected: _isSelected,
-              deleteItem: _deleteItem,
-              updateItem: _updateItem,
+            body = ContentContainerWidget(
+              builder: (context) {
+                return _DataNicknamePage(
+                  nicknames: data,
+                  selecting: selected.isNotEmpty,
+                  selectItem: _selectItem,
+                  deselectItem: _deselectItem,
+                  isSelected: _isSelected,
+                  deleteItem: _deleteItem,
+                  updateItem: _updateItem,
+                );
+              },
             );
           }
         }
 
-        final Color? scaffoldColor = selected.isNotEmpty
-            ? Theme.of(context).selectedRowColor
-            : null;
+        final Color? scaffoldColor =
+            selected.isNotEmpty ? Theme.of(context).selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [

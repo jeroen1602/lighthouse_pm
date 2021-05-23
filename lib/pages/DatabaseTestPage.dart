@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/pages/database/GroupDaoPage.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:toast/toast.dart';
 
 import 'BasePage.dart';
@@ -33,7 +34,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
               color: theme.textTheme.bodyText1!.color),
         ),
         subtitle: Text(
-            'This is a page meant for development, changing values here may cause the app to become unstable and crash!'),
+            'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!'),
         isThreeLine: true,
       ),
       Divider(
@@ -137,16 +138,19 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Database test page'),
-        ),
-        body: ListView(
+      appBar: AppBar(
+        title: Text('Database test page'),
+      ),
+      body: ContentContainerWidget(builder: (context) {
+        return ListView(
           children: [
             Column(
               children: items,
             )
           ],
-        ));
+        );
+      }),
+    );
   }
 
   String _getTables(LighthousePMBloc bloc) {

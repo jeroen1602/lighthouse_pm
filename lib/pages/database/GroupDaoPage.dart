@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
@@ -148,21 +149,25 @@ class GroupDaoPage extends BasePage with WithBlocStateless {
       appBar: AppBar(
         title: Text('GroupDao'),
       ),
-      body: ListView(
-        children: [
-          Column(
+      body: ContentContainerWidget(
+        builder: (context) {
+          return ListView(
             children: [
-              DaoTableDataWidget<Group>(
-                  'Groups',
-                  bloc.groups.select(bloc.groups.groups).watch(),
-                  _GroupConverter(bloc)),
-              DaoTableDataWidget<GroupEntry>(
-                  'Group entries',
-                  bloc.groups.select(bloc.groups.groupEntries).watch(),
-                  _GroupEntryConverter(bloc))
+              Column(
+                children: [
+                  DaoTableDataWidget<Group>(
+                      'Groups',
+                      bloc.groups.select(bloc.groups.groups).watch(),
+                      _GroupConverter(bloc)),
+                  DaoTableDataWidget<GroupEntry>(
+                      'Group entries',
+                      bloc.groups.select(bloc.groups.groupEntries).watch(),
+                      _GroupEntryConverter(bloc))
+                ],
+              )
             ],
-          )
-        ],
+          );
+        },
       ),
     );
   }
