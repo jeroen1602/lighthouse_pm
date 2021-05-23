@@ -13,11 +13,6 @@ class NotFoundPage extends BasePage {
       body: ContentContainerWidget(
         builder: (context) {
           final theme = Theme.of(context);
-          final width = MediaQuery.of(context).size.width;
-          var iconSize = width - 10.0;
-          if (width >= ContentContainerWidget.DEFAULT_MAX_SIZE) {
-            iconSize = width * ContentContainerWidget.DEFAULT_CONTENT_SIZE - 10;
-          }
 
           return ListView(
             children: [
