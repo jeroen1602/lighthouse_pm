@@ -9,6 +9,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/adapterState/AdapterState.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'BasePage.dart';
@@ -23,7 +24,11 @@ class TroubleshootingPage extends BasePage {
   Widget buildPage(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Troubleshooting')),
-        body: TroubleshootingContentWidget());
+        body: ContentContainerWidget(
+          builder: (context) {
+            return TroubleshootingContentWidget();
+          },
+        ));
   }
 }
 

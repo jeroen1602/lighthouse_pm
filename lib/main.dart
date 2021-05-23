@@ -118,7 +118,8 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
             routes.addAll(DatabaseTestPage.getSubPages('/databaseTest'));
           }
           WidgetBuilder builder = routes[settings.name]!;
-          return MaterialPageRoute(builder: (ctx) => builder(ctx));
+          return MaterialPageRoute(
+              builder: (ctx) => builder(ctx), settings: settings);
         },
       ),
     );

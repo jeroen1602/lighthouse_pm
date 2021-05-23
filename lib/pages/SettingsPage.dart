@@ -4,11 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/pages/settings/LHLicensePage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DropdownMenuListTile.dart';
 import 'package:lighthouse_pm/widgets/ShortcutAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ViveBaseStationAlertWidget.dart';
@@ -349,7 +351,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ListTile(
         title: Text('Licences'),
         trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () => {showLicensePage(context: context)},
+        onTap: () => Navigator.pushNamed(context, '/settings/license'),
       ),
       Divider(),
       ListTile(
@@ -402,14 +404,18 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // endregion
 
     return Scaffold(
-        appBar: AppBar(title: Text('Settings')),
-        body: ListView(children: [Column(children: items)]));
+      appBar: AppBar(title: Text('Settings')),
+      body: ContentContainerWidget(builder: (context) {
+        return ListView(children: [Column(children: items)]);
+      }),
+    );
   }
 
   static Map<String, PageBuilder> _subPages = {
     '/nicknames': (context) => SettingsNicknamesPage(),
     '/vive': (context) => SettingsViveBaseStationIdsPage(),
     '/privacy': (context) => PrivacyPage(),
+    '/license': (context) => LHLicensePage(),
   };
 
   static Map<String, PageBuilder> getSubPages(String parentPath) {

@@ -167,7 +167,8 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     assert(updateInterval > 0, 'update interval should be higher than 0');
     return into(simpleSettings).insert(
         SimpleSetting(
-            settingsId: UPDATE_INTERVAL_ID, data: updateInterval.toRadixString(10)),
+            settingsId: UPDATE_INTERVAL_ID,
+            data: updateInterval.toRadixString(10)),
         mode: InsertMode.insertOrReplace);
   }
 
@@ -216,6 +217,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
+    } else if (LocalPlatform.isWeb) {
+      // TODO: check if the current browser actually supports it.
+      return true;
     }
     return false;
   }

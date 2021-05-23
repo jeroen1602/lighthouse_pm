@@ -21,6 +21,7 @@ import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseGroupWidget.d
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseWidget.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/MainPageDrawer.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
@@ -307,21 +308,24 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                         if (scanning == true) {
                           return Container();
                         } else {
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(12),
-                                child: Text(
-                                  'Unable to find lighthouses, try some troubleshooting.',
-                                  style: Theme.of(context).textTheme.headline4,
-                                  textAlign: TextAlign.center,
+                          return ContentContainerWidget(builder: (context) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: Text(
+                                    'Unable to find lighthouses, try some troubleshooting.',
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: TroubleshootingContentWidget(),
-                              )
-                            ],
-                          );
+                                Expanded(
+                                  child: TroubleshootingContentWidget(),
+                                ),
+                              ],
+                            );
+                          });
                         }
                       },
                     )

@@ -3,6 +3,7 @@ import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
@@ -140,15 +141,19 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
       DaoDataCreateAlertIntDecorator('Id', null, autoIncrement: false),
       DaoDataCreateAlertStringDecorator('Value', null),
     ];
-    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem =
+        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
-      final int? id = (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final int? id =
+          (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
+      final String? value =
+          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (id == null) {
         Toast.show('No id set!', context);
         return;
       }
-      await bloc.settings.insertSimpleSetting(SimpleSetting(settingsId: id, data: value));
+      await bloc.settings
+          .insertSimpleSetting(SimpleSetting(settingsId: id, data: value));
     }
   }
 }
@@ -162,18 +167,20 @@ class SettingsDaoPage extends BasePage with WithBlocStateless {
       appBar: AppBar(
         title: Text('SettingsDao'),
       ),
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              DaoTableDataWidget<SimpleSetting>(
-                  'Simple settings',
-                  bloc.settings.watchSimpleSettings,
-                  _SimpleSettingConverter(bloc)),
-            ],
-          )
-        ],
-      ),
+      body: ContentContainerWidget(builder: (context) {
+        return ListView(
+          children: [
+            Column(
+              children: [
+                DaoTableDataWidget<SimpleSetting>(
+                    'Simple settings',
+                    bloc.settings.watchSimpleSettings,
+                    _SimpleSettingConverter(bloc)),
+              ],
+            )
+          ],
+        );
+      }),
     );
   }
 }

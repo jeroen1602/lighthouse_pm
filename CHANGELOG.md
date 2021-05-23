@@ -1,3 +1,13 @@
+# Version 1.3.0+9 R.C
+
+ - (Web) Added support for web.
+ - (Web) Added Flutter web Bluetooth back end for the web.
+ - (Web) Change pages based on the screen size.
+ - (Web) Changed wording in troubleshooting page if viewed from teh web.
+ - Fixed bug where devices could show up twice, mostly web and development will notice this change.
+ - Added pair button if the back end requires it, this change is only web for now.
+ - (iOS) Added Bluetooth request key.
+
 # Version 1.2.0+8 14-04-2021
 
  - Updated flutter, now with null safety.

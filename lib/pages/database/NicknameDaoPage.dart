@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
@@ -156,18 +157,22 @@ class NicknameDaoPage extends BasePage with WithBlocStateless {
       appBar: AppBar(
         title: Text('NicknameDao'),
       ),
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              DaoTableDataWidget<Nickname>('Nicknames',
-                  bloc.nicknames.watchNicknames, _NicknameConverter(bloc)),
-              DaoTableDataWidget<LastSeenDevice>('Last seen devices',
-                  bloc.nicknames.watchLastSeenDevices, _LastSeenConverter(bloc))
-            ],
-          )
-        ],
-      ),
+      body: ContentContainerWidget(builder: (context) {
+        return ListView(
+          children: [
+            Column(
+              children: [
+                DaoTableDataWidget<Nickname>('Nicknames',
+                    bloc.nicknames.watchNicknames, _NicknameConverter(bloc)),
+                DaoTableDataWidget<LastSeenDevice>(
+                    'Last seen devices',
+                    bloc.nicknames.watchLastSeenDevices,
+                    _LastSeenConverter(bloc))
+              ],
+            )
+          ],
+        );
+      }),
     );
   }
 }
