@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 /// A widget that will scale the content if the screen size gets too big.
 ///
 class ContentContainerWidget extends StatelessWidget {
+  static const DEFAULT_MAX_SIZE = 1280.0;
+  static const DEFAULT_CONTENT_SIZE = 0.5;
+
   ContentContainerWidget(
       {required this.builder,
-      this.maxSize = 1280,
-      this.contentSize = 0.5,
+      this.maxSize = ContentContainerWidget.DEFAULT_MAX_SIZE,
+      this.contentSize = ContentContainerWidget.DEFAULT_CONTENT_SIZE,
       Key? key})
       : super(key: key);
 
