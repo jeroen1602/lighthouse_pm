@@ -1,5 +1,6 @@
 # Version 1.3.0+9 R.C
 
+ - (Web) Added more info to the Bluetooth adapter unavailable.
  - (Web) Added 404 page not found.
  - (Web) Added support for web.
  - (Web) Added Flutter web Bluetooth back end for the web.

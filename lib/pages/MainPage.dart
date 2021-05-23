@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
@@ -27,6 +28,7 @@ import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
+import 'package:web_browser_detect/web_browser_detect.dart';
 
 import 'BasePage.dart';
 
@@ -748,6 +750,50 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final stateName = state != null
+        ? BluetoothAdapterStateFunctions.stateToString(state!)
+        : 'not available';
+
+    var subText = [
+      TextSpan(
+          text: 'Bluetooth needs to be enabled to talk to the lighthouses.')
+    ];
+    if (LocalPlatform.isWeb) {
+      if (!FlutterWebBluetooth.instance.isBluetoothApiSupported) {
+        final browser = Browser.detectOrNull();
+
+        subText = [
+          TextSpan(
+              text: "Your browser doesn't support the bluetooth web API."
+                  " It may need to be enabled behind a flag, try going to "
+                  "about:flags in your browser bar."),
+          if (browser?.browserAgent == BrowserAgent.Chrome)
+            TextSpan(
+                text: '\nFor Chrome (or chrome like browsers) you will need to '
+                    'enable the "enable-experimental-web-platform-features" flag.')
+          else if (browser?.browserAgent == BrowserAgent.Firefox ||
+              browser?.browserAgent == BrowserAgent.Safari)
+            TextSpan(
+                text:
+                    '\n${browser?.browser} does not support Bluetooth web yet.')
+          else if (browser?.browserAgent == BrowserAgent.Explorer)
+            TextSpan(
+                text: "\nWhat are you doing trying this in Internet Explorer!? "
+                    "Of course it doesn't support it!")
+          else if (browser?.browserAgent == BrowserAgent.Edge)
+            TextSpan(
+                text: "\nTry switching to the new Chrome based Edge browser.")
+        ];
+      } else {
+        subText = [
+          TextSpan(
+              text: "Try enabling Bluetooth on your device or "
+                  "stick in a USB Bluetooth adapter.")
+        ];
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.lightBlue,
       drawer: MainPageDrawer(Duration(seconds: settings.scanDuration),
@@ -765,20 +811,15 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
               color: Colors.white54,
             ),
             Text(
-              'Bluetooth is ${state != null ? state.toString().substring(15) : 'not available'}.',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(color: Colors.white),
+              'Bluetooth is $stateName.',
+              style: textTheme.headline6?.copyWith(color: Colors.white),
             ),
-            Text(
-              'Bluetooth needs to be enabled to talk to the lighthouses',
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1
-                  ?.copyWith(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
+            RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: textTheme.subtitle1?.copyWith(color: Colors.white),
+                  children: subText,
+                )),
             _toSettingsButton(context)
           ],
         ),
