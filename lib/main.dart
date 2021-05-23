@@ -10,6 +10,7 @@ import 'package:lighthouse_pm/pages/BasePage.dart';
 import 'package:lighthouse_pm/pages/DatabaseTestPage.dart';
 import 'package:lighthouse_pm/pages/HelpPage.dart';
 import 'package:lighthouse_pm/pages/MainPage.dart';
+import 'package:lighthouse_pm/pages/NotFoundPage.dart';
 import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
@@ -116,10 +117,19 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
               '/databaseTest': (context) => DatabaseTestPage()
             });
             routes.addAll(DatabaseTestPage.getSubPages('/databaseTest'));
+            routes['/404'] = (context) => NotFoundPage();
           }
-          WidgetBuilder builder = routes[settings.name]!;
-          return MaterialPageRoute(
-              builder: (ctx) => builder(ctx), settings: settings);
+
+          if (LocalPlatform.isWeb || !kReleaseMode) {
+            WidgetBuilder? builder = routes[settings.name];
+            return MaterialPageRoute(
+                builder: (ctx) => builder?.call(ctx) ?? NotFoundPage(),
+                settings: settings);
+          } else {
+            WidgetBuilder builder = routes[settings.name]!;
+            return MaterialPageRoute(
+                builder: (ctx) => builder(ctx), settings: settings);
+          }
         },
       ),
     );
