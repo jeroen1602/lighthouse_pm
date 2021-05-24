@@ -150,7 +150,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     Map<String, Tuple2<int, LighthousePowerState>> powerStates,
     Tuple2<List<String>, List<LighthouseDevice>> onlineAndOfflineDevices,
   ) {
-    if (group.macs.isEmpty) {
+    if (group.deviceIds.isEmpty) {
       return [
         ListTile(
           title: Text('No group items yet'),
@@ -205,7 +205,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   /// Get a [Tuple2] with a list of offline and online devices. The first item
   /// is offline and the second item is online.
   Tuple2<List<String>, List<LighthouseDevice>> _getOnlineAndOfflineDevices() {
-    final List<String> offlineMacs = List.from(group.macs);
+    final List<String> offlineMacs = List.from(group.deviceIds);
     final List<LighthouseDevice> foundDevices = devices.where((device) {
       final index = offlineMacs.indexWhere(
           (mac) => mac.toUpperCase() == device.deviceIdentifier.toString());
@@ -309,7 +309,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   }
 
   bool isSelected() {
-    final selected = isGroupSelected(this.group.macs,
+    final selected = isGroupSelected(this.group.deviceIds,
         this.selectedDevices.map((e) => e.toString()).toList());
     if (!selected) {
       return this.group.group.id == this.selectedGroup?.id;

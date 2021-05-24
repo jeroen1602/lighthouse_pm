@@ -11,20 +11,18 @@ class Groups extends Table {
 
 @DataClassName('GroupEntry')
 class GroupEntries extends Table {
-  // TextColumn get macAddress => text().withLength(min: 17, max: 17)();
-  // TODO: rename to device id.
-  TextColumn get macAddress => text().withLength(min: 17, max: 37)();
+  TextColumn get deviceId => text().withLength(min: 17, max: 37)();
 
   IntColumn get groupId =>
       integer().customConstraint('NOT NULL REFERENCES "groups"(id) ON DELETE CASCADE ON UPDATE CASCADE')();
 
   @override
-  Set<Column> get primaryKey => {macAddress};
+  Set<Column> get primaryKey => {deviceId};
 }
 
 class GroupWithEntries {
   final Group group;
-  final List<String> macs;
+  final List<String> deviceIds;
 
-  GroupWithEntries(this.group, this.macs);
+  GroupWithEntries(this.group, this.deviceIds);
 }

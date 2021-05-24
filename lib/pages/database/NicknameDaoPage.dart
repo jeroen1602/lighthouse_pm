@@ -64,7 +64,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (deviceId == null) {
-        Toast.show('No mac set!', context);
+        Toast.show('No device id set!', context);
         return;
       }
       if (value == null) {
@@ -89,7 +89,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
 
   @override
   String getDataTitle(LastSeenDevice data) {
-    return data.macAddress;
+    return data.deviceId;
   }
 
   @override
@@ -102,7 +102,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
       BuildContext context, LastSeenDevice data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
-        primaryKey: data.macAddress,
+        primaryKey: data.deviceId,
         startValue: data.lastSeen.toIso8601String());
     if (newValue == null) {
       return;
@@ -110,7 +110,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     try {
       final newData = DateTime.parse(newValue);
       await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          macAddress: data.macAddress, lastSeen: moor.Value(newData)));
+          deviceId: data.deviceId, lastSeen: moor.Value(newData)));
     } on FormatException {
       Toast.show('That didn\'t work', context);
     }
@@ -120,7 +120,8 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Mac address', null,
-          validator: MacValidator.macValidator),
+          validator:
+              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
       // TODO: use date picker
       DaoDataCreateAlertStringDecorator(
           'Last seen', DateTime.now().toIso8601String()),
@@ -128,14 +129,15 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
-      final String? mac = (decorators[0] as DaoDataCreateAlertStringDecorator)
-          .getNewValue()
-          ?.trim()
-          .toUpperCase();
+      final String? deviceId =
+          (decorators[0] as DaoDataCreateAlertStringDecorator)
+              .getNewValue()
+              ?.trim()
+              .toUpperCase();
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (mac == null) {
-        Toast.show('No mac set!', context);
+      if (deviceId == null) {
+        Toast.show('No device id set!', context);
         return;
       }
       DateTime? date;
@@ -146,7 +148,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
         date = DateTime.now();
       }
       await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          macAddress: mac, lastSeen: moor.Value(date)));
+          deviceId: deviceId, lastSeen: moor.Value(date)));
     }
   }
 }

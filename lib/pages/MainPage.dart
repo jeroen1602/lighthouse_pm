@@ -235,7 +235,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
     for (final device in devices) {
       bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          macAddress: device.deviceIdentifier.toString()));
+          deviceId: device.deviceIdentifier.toString()));
       // Make sure a device hasn't left
       if (selectedCopy.contains(device.deviceIdentifier)) {
         newSelected.add(device.deviceIdentifier);
@@ -244,7 +244,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       bool found = false;
       bool groupFound = false;
       for (final group in groups) {
-        for (final mac in group.macs) {
+        for (final mac in group.deviceIds) {
           final deviceIdentifier = LHDeviceIdentifier(mac);
           if (selectedCopy.contains(deviceIdentifier)) {
             newSelected.add(deviceIdentifier);
@@ -352,13 +352,13 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                 widget.settings.groupShowOfflineWarning,
                             onGroupSelected: () {
                               setState(() {
-                                if (groups[index].macs.isEmpty) {
+                                if (groups[index].deviceIds.isEmpty) {
                                   clearSelected();
                                   selectedGroup = groups[index].group;
                                   return;
                                 }
                                 if (LighthouseGroupWidget.isGroupSelected(
-                                    groups[index].macs,
+                                    groups[index].deviceIds,
                                     this
                                         .selected
                                         .map((e) => e.toString())
@@ -367,7 +367,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                 } else {
                                   clearSelected();
                                   selected.addAll(groups[index]
-                                      .macs
+                                      .deviceIds
                                       .map((e) => LHDeviceIdentifier(e)));
                                 }
                               });
@@ -545,7 +545,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final foundGroup = groups
                   .firstWhere((element) => element.group.id == newGroup.id);
               final Set<String> items = Set<String>();
-              items.addAll(foundGroup.macs);
+              items.addAll(foundGroup.deviceIds);
               items.addAll(selected.map((e) => e.toString()));
 
               // The devices that have been selected.
@@ -663,7 +663,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     for (final selectedDevice in selected) {
       bool found = false;
       for (final group in groups) {
-        if (group.macs.contains(selectedDevice.toString())) {
+        if (group.deviceIds.contains(selectedDevice.toString())) {
           if (firstGroup == null) {
             firstGroup = group.group;
           } else if (firstGroup.id != group.group.id) {
@@ -690,7 +690,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     selectedGroup = null;
     for (final group in groups) {
       if (LighthouseGroupWidget.isGroupSelected(
-          group.macs, selected.map((e) => e.toString()).toList())) {
+          group.deviceIds, selected.map((e) => e.toString()).toList())) {
         return group.group;
       }
     }
