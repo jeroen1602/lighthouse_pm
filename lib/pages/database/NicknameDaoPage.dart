@@ -56,11 +56,11 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
-      final String? deviceId =
-          (decorators[0] as DaoDataCreateAlertStringDecorator)
-              .getNewValue()
-              ?.trim()
-              .toUpperCase();
+      String? deviceId =
+          (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (LocalPlatform.isAndroid) {
+        deviceId = deviceId?.trim().toUpperCase();
+      }
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (deviceId == null) {
@@ -129,11 +129,11 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
-      final String? deviceId =
-          (decorators[0] as DaoDataCreateAlertStringDecorator)
-              .getNewValue()
-              ?.trim()
-              .toUpperCase();
+      String? deviceId =
+          (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (LocalPlatform.isAndroid) {
+        deviceId = deviceId?.trim().toUpperCase();
+      }
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (deviceId == null) {

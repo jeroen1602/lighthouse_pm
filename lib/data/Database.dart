@@ -58,11 +58,15 @@ class LighthouseDatabase extends _$LighthouseDatabase {
         }
         if ((from >= 1 && from <= 3) && (to == 4)) {
           await m.renameColumn(nicknames, 'mac_address', nicknames.deviceId);
-          await m.renameColumn(lastSeenDevices, 'mac_address', lastSeenDevices.deviceId);
+          await m.renameColumn(
+              lastSeenDevices, 'mac_address', lastSeenDevices.deviceId);
           if (from >= 3 && from <= 3) {
             // groups table already exists so we need to rename, otherwise it will be created
-            await m.renameColumn(groupEntries, 'mac_address', groupEntries.deviceId);
+            await m.renameColumn(
+                groupEntries, 'mac_address', groupEntries.deviceId);
           }
+          await m.deleteTable('vive_base_station_ids');
+          await m.createTable(viveBaseStationIds);
         }
       }, beforeOpen: (details) async {
         await this.customStatement('PRAGMA foreign_keys = ON');

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
+import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:toast/toast.dart';
 
@@ -22,40 +23,41 @@ class _SettingsViveBaseStationIdsPageContent extends StatefulWidget {
 
 class _SettingsViveBaseStationIdsPageState
     extends State<_SettingsViveBaseStationIdsPageContent> {
-  final Set<int> selected = Set();
+  final Set<String> selected = Set();
 
-  void _selectItem(int id) {
+  void _selectItem(String deviceId) {
     setState(() {
-      this.selected.add(id);
+      this.selected.add(deviceId);
     });
   }
 
-  void _deselectItem(int id) {
+  void _deselectItem(String deviceId) {
     setState(() {
-      this.selected.remove(id);
+      this.selected.remove(deviceId);
     });
   }
 
-  bool _isSelected(int id) {
-    return this.selected.contains(id);
+  bool _isSelected(String deviceId) {
+    return this.selected.contains(deviceId);
   }
 
-  Future _deleteItem(int id) {
-    return blocWithoutListen.viveBaseStation.deleteId(id);
+  Future _deleteItem(String deviceId) {
+    return blocWithoutListen.viveBaseStation.deleteId(deviceId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<int>>(
-      stream: bloc.viveBaseStation.getIdsAsStream(),
-      builder: (BuildContext _, AsyncSnapshot<List<int>> snapshot) {
+    return StreamBuilder<List<ViveBaseStationId>>(
+      stream: bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
+      builder:
+          (BuildContext _, AsyncSnapshot<List<ViveBaseStationId>> snapshot) {
         Widget body = Center(
           child: CircularProgressIndicator(),
         );
         final data = snapshot.data;
         if (data != null) {
           data.sort((a, b) {
-            return a.compareTo(b);
+            return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
             body = _EmptyPage();
@@ -117,10 +119,10 @@ class _SettingsViveBaseStationIdsPageState
   }
 }
 
-typedef void _SelectItem(int id);
-typedef bool _IsSelected(int id);
-typedef void _DeselectItem(int id);
-typedef Future _DeleteItem(int id);
+typedef void _SelectItem(String deviceId);
+typedef bool _IsSelected(String deviceId);
+typedef void _DeselectItem(String deviceId);
+typedef Future _DeleteItem(String deviceId);
 
 class _DataPage extends StatelessWidget {
   _DataPage(
@@ -134,7 +136,7 @@ class _DataPage extends StatelessWidget {
       : super(key: key);
 
   final bool selecting;
-  final List<int> ids;
+  final List<ViveBaseStationId> ids;
   final _SelectItem selectItem;
   final _IsSelected isSelected;
   final _DeselectItem deselectItem;
@@ -145,7 +147,7 @@ class _DataPage extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final id = ids[index];
-        final selected = isSelected(id);
+        final selected = isSelected(id.deviceId);
         return Column(
           children: [
             Container(
@@ -154,18 +156,17 @@ class _DataPage extends StatelessWidget {
                   : Colors.transparent,
               child: ListTile(
                 title: Text(
-                    '${id.toRadixString(16).padLeft(8, '0').toUpperCase()}'),
-                subtitle: Text(
-                    'HTC BS XX${(id & 0xFFFF).toRadixString(16).padLeft(4, '0').toUpperCase()}'),
+                    '${id.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase()}'),
+                subtitle: Text(id.deviceId),
                 onLongPress: () {
-                  selectItem(id);
+                  selectItem(id.deviceId);
                 },
                 onTap: () {
                   if (selecting) {
                     if (selected) {
-                      deselectItem(id);
+                      deselectItem(id.deviceId);
                     } else {
-                      selectItem(id);
+                      selectItem(id.deviceId);
                     }
                   }
                 },
@@ -206,10 +207,14 @@ class _EmptyState extends State<_EmptyPage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFF);
-                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFE);
-                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFD);
-                blocWithoutListen.viveBaseStation.insertId(0xFFFFFFFC);
+                blocWithoutListen.viveBaseStation
+                    .insertId("FF:FF:FF:FF:FF:FF", 0xFFFFFFFF);
+                blocWithoutListen.viveBaseStation
+                    .insertId("FF:FF:FF:FF:FF:FE", 0xFFFFFFFE);
+                blocWithoutListen.viveBaseStation
+                    .insertId("FF:FF:FF:FF:FF:FD", 0xFFFFFFFD);
+                blocWithoutListen.viveBaseStation
+                    .insertId("FF:FF:FF:FF:FF:FC", 0xFFFFFFFC);
                 Toast.show('Fake ids created!', context,
                     duration: Toast.lengthShort);
                 tapCounter++;

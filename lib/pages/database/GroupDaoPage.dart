@@ -124,11 +124,11 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
     if (saveNewItem) {
       final int? groupId =
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      final String? deviceId =
-          (decorators[1] as DaoDataCreateAlertStringDecorator)
-              .getNewValue()
-              ?.trim()
-              .toUpperCase();
+      String? deviceId =
+          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (LocalPlatform.isAndroid) {
+        deviceId = deviceId?.trim().toUpperCase();
+      }
       if (groupId == null) {
         Toast.show('No group id set!', context);
         return;
