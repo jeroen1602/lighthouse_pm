@@ -68,6 +68,18 @@ Because the app uses generated code you will first need to run `flutter packages
 
 While the app is in development there may be changes to the local database, there will not be any migrations written unless it's between actual versions. So you may need to clear the app storage before some new features start working.
 
+### Web Builds
+
+For web builds you will need to download `sql-wasm` and place it in the web folder. This can be 
+done from [here](https://github.com/sql-js/sql.js/releases). You will need to download the 
+`wasm version, best runtime performance, smaller assets, requires configuration` version. Extract
+the `sql-wasm.js` and `sql-wasm.wasm` files in the web folder. After this you are ready to create
+web builds.
+
+If you want to debug with chrome on a platform where web bluetooth is behind a startup flag, then 
+follow the tutorial provided by the flutter_web_bluetooth library 
+[here](https://github.com/jeroen1602/flutter_web_bluetooth/tree/master/chrome-experimental-launch). 
+
 ### Release build
 
 Sometimes before you can create a release build you will need to assemble the Android component before an Android build can be created.
