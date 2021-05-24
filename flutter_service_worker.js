@@ -6,7 +6,7 @@ const RESOURCES = {
   "sql-wasm.js": "8ffd545d7b00ab4de0b2d0492f555ac7",
 "favicon.png": "d32b512bfd66a116e675fe864db8eed4",
 "index.html": "e4d18202a1484bfaacda14622ea2812d",
-"/": "e4d18202a1484bfaacda14622ea2812d",
+"/lighthouse_pm/": "e4d18202a1484bfaacda14622ea2812d",
 "version.json": "d90d62bccf2f343070fb1cd62edfd92e",
 "icons/mstile-310x310.png": "9419249e7e9e11e1fe7a1de190a8304d",
 "icons/mstile-310x150.png": "f4c3653e2da6b580a09a88710a7ec1d4",
@@ -42,7 +42,7 @@ const RESOURCES = {
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = [
-  "/",
+  "/lighthouse_pm/",
 "main.dart.js",
 "index.html",
 "assets/NOTICES",
