@@ -32,7 +32,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     if (newNickname != null) {
       if (newNickname.nickname == null) {
         await blocWithoutListen.nicknames
-            .deleteNicknames([newNickname.macAddress]);
+            .deleteNicknames([newNickname.deviceId]);
       } else {
         await blocWithoutListen.nicknames
             .insertNickname(newNickname.toNickname()!);
@@ -64,7 +64,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
 
     body.add(StreamBuilder<Nickname?>(
-      stream: bloc.nicknames.watchNicknameForMacAddress(
+      stream: bloc.nicknames.watchNicknameForDeviceIds(
           widget.device.deviceIdentifier.toString()),
       builder: (BuildContext context, AsyncSnapshot<Nickname?> snapshot) {
         final nickname = snapshot.data;

@@ -223,7 +223,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   Map<String, String> _nicknamesToMap(List<Nickname> nicknames) {
     return Map.fromEntries(nicknames
-        .map((nickname) => MapEntry(nickname.macAddress, nickname.nickname)));
+        .map((nickname) => MapEntry(nickname.deviceId, nickname.nickname)));
   }
 
   List<LighthouseDevice> _devicesNotInAGroup(
@@ -491,7 +491,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
           if (newNickname != null) {
             if (newNickname.nickname == null) {
               blocWithoutListen.nicknames
-                  .deleteNicknames([newNickname.macAddress]);
+                  .deleteNicknames([newNickname.deviceId]);
             } else {
               blocWithoutListen.nicknames
                   .insertNickname(newNickname.toNickname()!);

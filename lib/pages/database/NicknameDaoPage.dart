@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
@@ -23,44 +24,46 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
 
   @override
   String getDataTitle(Nickname data) {
-    return data.macAddress;
+    return data.deviceId;
   }
 
   @override
   Future<void> deleteItem(Nickname item) {
-    return bloc.nicknames.deleteNicknames([item.macAddress]);
+    return bloc.nicknames.deleteNicknames([item.deviceId]);
   }
 
   @override
   Future<void> openChangeDialog(BuildContext context, Nickname data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
-        primaryKey: data.macAddress,
+        primaryKey: data.deviceId,
         startValue: data.nickname);
     if (newValue == null) {
       return;
     }
-    await bloc.nicknames.insertNickname(
-        Nickname(macAddress: data.macAddress, nickname: newValue));
+    await bloc.nicknames
+        .insertNickname(Nickname(deviceId: data.deviceId, nickname: newValue));
   }
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Mac address', null,
-          validator: MacValidator.macValidator),
+      DaoDataCreateAlertStringDecorator('Device Id', null,
+          validator:
+              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
       DaoDataCreateAlertStringDecorator('Nickname', null),
     ];
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
-      final String? mac = (decorators[0] as DaoDataCreateAlertStringDecorator)
-          .getNewValue()
-          ?.trim()
-          .toUpperCase();
+      final String? deviceId =
+          (decorators[0] as DaoDataCreateAlertStringDecorator)
+              .getNewValue()
+              ?.trim()
+              .toUpperCase();
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (mac == null) {
+      if (deviceId == null) {
         Toast.show('No mac set!', context);
         return;
       }
@@ -69,7 +72,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
         return;
       }
       await bloc.nicknames
-          .insertNickname(Nickname(macAddress: mac, nickname: value));
+          .insertNickname(Nickname(deviceId: deviceId, nickname: value));
     }
   }
 }

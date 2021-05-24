@@ -84,6 +84,19 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
           }
         }
 
+        if (snapshot.hasError) {
+          print(snapshot.error.toString());
+          body = Center(
+            child: Container(
+              color: Colors.red,
+              child: ListTile(
+                title: Text('Error'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            ),
+          );
+        }
+
         final Color? scaffoldColor =
             selected.isNotEmpty ? Theme.of(context).selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
@@ -159,7 +172,7 @@ class _DataNicknamePage extends StatelessWidget {
         macAddress: oldNickname.macAddress, nickname: oldNickname.nickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await deleteItem(newNickname.macAddress);
+        await deleteItem(newNickname.deviceId);
       } else {
         await updateItem(newNickname.toNickname()!);
       }
@@ -238,17 +251,18 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
+                //TODO: change the default ids based on the platform!
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FF",
+                    deviceId: "FF:FF:FF:FF:FF:FF",
                     nickname: "This is a test nickname1"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FE",
+                    deviceId: "FF:FF:FF:FF:FF:FE",
                     nickname: "This is a test nickname2"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FD",
+                    deviceId: "FF:FF:FF:FF:FF:FD",
                     nickname: "This is a test nickname3"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    macAddress: "FF:FF:FF:FF:FF:FC",
+                    deviceId: "FF:FF:FF:FF:FF:FC",
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,
                     duration: Toast.lengthShort);

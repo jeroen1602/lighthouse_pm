@@ -6,11 +6,11 @@ import 'package:lighthouse_pm/data/tables/NicknameTable.dart';
 class NicknameAlertWidget extends StatefulWidget {
   NicknameAlertWidget({
     Key? key,
-    required this.macAddress,
+    required this.deviceId,
     this.deviceName,
     this.nickname,
   }) : super(key: key);
-  final String macAddress;
+  final String deviceId;
   final String? deviceName;
   final String? nickname;
 
@@ -27,7 +27,7 @@ class NicknameAlertWidget extends StatefulWidget {
         context: context,
         builder: (BuildContext context) {
           return NicknameAlertWidget(
-            macAddress: macAddress,
+            deviceId: macAddress,
             deviceName: deviceName,
             nickname: nickname,
           );
@@ -60,7 +60,7 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           TextSpan(
               style: textTheme?.copyWith(fontWeight: FontWeight.bold),
               text: widget.deviceName == null
-                  ? widget.macAddress
+                  ? widget.deviceId
                   : widget.deviceName),
           TextSpan(style: textTheme, text: "."),
         ],
@@ -84,12 +84,12 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
               Navigator.pop(
                   context,
                   NicknamesHelper(
-                      macAddress: widget.macAddress, nickname: null));
+                      deviceId: widget.deviceId, nickname: null));
             } else {
               Navigator.pop(
                   context,
                   NicknamesHelper(
-                      macAddress: widget.macAddress, nickname: text));
+                      deviceId: widget.deviceId, nickname: text));
             }
           },
         ),

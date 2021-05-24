@@ -2,27 +2,25 @@ import 'package:lighthouse_pm/data/Database.dart';
 import 'package:moor/moor.dart';
 
 class Nicknames extends Table {
-  // TextColumn get macAddress => text().withLength(min: 17, max: 17)();
-  // TODO: rename to device id.
-  TextColumn get macAddress => text().withLength(min: 17, max: 37)();
+  TextColumn get deviceId => text().withLength(min: 17, max: 37)();
 
   TextColumn get nickname => text()();
 
   @override
-  Set<Column> get primaryKey => {macAddress};
+  Set<Column> get primaryKey => {deviceId};
 }
 
 class NicknamesHelper {
-  final String macAddress;
+  final String deviceId;
   final String? nickname;
 
-  NicknamesHelper({required this.macAddress, this.nickname});
+  NicknamesHelper({required this.deviceId, this.nickname});
 
   Nickname? toNickname() {
     final nickname = this.nickname;
     if (nickname == null) {
       return null;
     }
-    return Nickname(macAddress: this.macAddress, nickname: nickname);
+    return Nickname(deviceId: this.deviceId, nickname: nickname);
   }
 }
