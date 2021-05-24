@@ -337,7 +337,7 @@ class LighthouseProvider {
             }, orElse: () => null) !=
             null) {
           debugPrint(
-              'Found a device that has already been found! mac: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+              'Found a device that has already been found! Device id: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
           return;
         }
 

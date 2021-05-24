@@ -244,8 +244,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       bool found = false;
       bool groupFound = false;
       for (final group in groups) {
-        for (final mac in group.deviceIds) {
-          final deviceIdentifier = LHDeviceIdentifier(mac);
+        for (final deviceId in group.deviceIds) {
+          final deviceIdentifier = LHDeviceIdentifier(deviceId);
           if (selectedCopy.contains(deviceIdentifier)) {
             newSelected.add(deviceIdentifier);
           }
@@ -485,7 +485,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
           final newNickname = await NicknameAlertWidget.showCustomDialog(
               context,
-              macAddress: item.toString(),
+              deviceId: item.toString(),
               deviceName: name,
               nickname: nickname);
           if (newNickname != null) {

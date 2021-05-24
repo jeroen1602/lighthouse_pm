@@ -48,7 +48,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Device Id', null,
+      DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
               LocalPlatform.isAndroid ? MacValidator.macValidator : null),
       DaoDataCreateAlertStringDecorator('Nickname', null),
@@ -119,7 +119,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Mac address', null,
+      DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
               LocalPlatform.isAndroid ? MacValidator.macValidator : null),
       // TODO: use date picker

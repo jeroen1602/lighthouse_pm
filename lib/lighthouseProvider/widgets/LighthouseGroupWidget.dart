@@ -119,18 +119,18 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   }
 
   /// Combine all the power state streams of the devices into a [Stream] which
-  /// returns a [Map] of the mac address and the power state of the
+  /// returns a [Map] of the device id and the power state of the
   /// [LighthouseDevice]. Every device will start out with the state `0xFF`
   /// ([LighthousePowerState.UNKNOWN]). The [Tuple2] contains the raw power
   /// state [int] and the converted [LighthousePowerState].
   Stream<Map<String, Tuple2<int, LighthousePowerState>>> _combinePowerStates(
       List<LighthouseDevice> devices) {
     final devicePowerStates = devices.map((device) {
-      final String mac = device.deviceIdentifier.toString();
+      final String deviceId = device.deviceIdentifier.toString();
       return MergeStream([
-        Stream.value(MapEntry(mac, Tuple2(0xFF, LighthousePowerState.UNKNOWN))),
+        Stream.value(MapEntry(deviceId, Tuple2(0xFF, LighthousePowerState.UNKNOWN))),
         device.powerState.map((event) {
-          return MapEntry(mac, Tuple2(event, device.powerStateFromByte(event)));
+          return MapEntry(deviceId, Tuple2(event, device.powerStateFromByte(event)));
         })
       ]);
     });
@@ -161,8 +161,8 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     // First the online devices.
     final onlineDevices = onlineAndOfflineDevices.item2;
     for (final device in onlineDevices.asMap().entries) {
-      final mac = device.value.deviceIdentifier.toString();
-      final powerState = powerStates[mac]?.item1 ?? 0xFF;
+      final deviceId = device.value.deviceIdentifier.toString();
+      final powerState = powerStates[deviceId]?.item1 ?? 0xFF;
       children.add(LighthouseWidgetContent(
         device.value,
         powerState,
@@ -171,7 +171,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
         },
         selected: selectedDevices.contains(device.value.deviceIdentifier),
         selecting: selectedDevices.isNotEmpty || selectedGroup != null,
-        nickname: nicknameMap[mac],
+        nickname: nicknameMap[deviceId],
         sleepState: this.sleepState,
       ));
       if (device.key < onlineDevices.length - 1 ||
@@ -205,18 +205,18 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   /// Get a [Tuple2] with a list of offline and online devices. The first item
   /// is offline and the second item is online.
   Tuple2<List<String>, List<LighthouseDevice>> _getOnlineAndOfflineDevices() {
-    final List<String> offlineMacs = List.from(group.deviceIds);
+    final List<String> offlineDeviceIds = List.from(group.deviceIds);
     final List<LighthouseDevice> foundDevices = devices.where((device) {
-      final index = offlineMacs.indexWhere(
-          (mac) => mac.toUpperCase() == device.deviceIdentifier.toString());
+      final index = offlineDeviceIds.indexWhere(
+          (deviceId) => deviceId.toUpperCase() == device.deviceIdentifier.toString());
       if (index >= 0) {
-        offlineMacs.removeAt(index);
+        offlineDeviceIds.removeAt(index);
         return true;
       }
       return false;
     }).toList();
 
-    return Tuple2(offlineMacs, foundDevices);
+    return Tuple2(offlineDeviceIds, foundDevices);
   }
 
   /// Check if the devices in [onlineDevices] support
@@ -317,15 +317,15 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     return selected;
   }
 
-  static bool isGroupSelected(List<String> macs, List<String> selected) {
-    if (macs.isEmpty) {
+  static bool isGroupSelected(List<String> deviceIds, List<String> selected) {
+    if (deviceIds.isEmpty) {
       return false;
     }
-    if (macs.length != selected.length) {
+    if (deviceIds.length != selected.length) {
       return false;
     }
-    for (final mac in macs) {
-      if (!selected.contains(mac)) {
+    for (final deviceId in deviceIds) {
+      if (!selected.contains(deviceId)) {
         return false;
       }
     }

@@ -22,12 +22,12 @@ class NicknameAlertWidget extends StatefulWidget {
   /// Open a dialog and return a [Nickname] with the new setting.
   /// Can return `null` if the dialog is cancelled.
   static Future<NicknamesHelper?> showCustomDialog(BuildContext context,
-      {required String macAddress, String? deviceName, String? nickname}) {
+      {required String deviceId, String? deviceName, String? nickname}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return NicknameAlertWidget(
-            deviceId: macAddress,
+            deviceId: deviceId,
             deviceName: deviceName,
             nickname: nickname,
           );

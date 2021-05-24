@@ -26,7 +26,7 @@ class LighthouseMetadataPage extends StatefulWidget {
 class LighthouseMetadataState extends State<LighthouseMetadataPage> {
   Future<void> changeNicknameHandler(String? currentNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
-        macAddress: widget.device.deviceIdentifier.toString(),
+        deviceId: widget.device.deviceIdentifier.toString(),
         deviceName: widget.device.name,
         nickname: currentNickname);
     if (newNickname != null) {

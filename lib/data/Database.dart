@@ -15,9 +15,9 @@ export 'shared/shared.dart';
 part 'Database.g.dart';
 
 class NicknamesLastSeenJoin {
-  NicknamesLastSeenJoin(this.macAddress, this.nickname, this.lastSeen);
+  NicknamesLastSeenJoin(this.deviceId, this.nickname, this.lastSeen);
 
-  final String macAddress;
+  final String deviceId;
   final String nickname;
   final DateTime? lastSeen;
 }

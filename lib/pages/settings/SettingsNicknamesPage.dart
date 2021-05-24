@@ -27,24 +27,24 @@ class _SettingsNicknamesPageContent extends StatefulWidget {
 class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   final Set<LHDeviceIdentifier> selected = Set();
 
-  void _selectItem(String macAddress) {
+  void _selectItem(String deviceId) {
     setState(() {
-      this.selected.add(LHDeviceIdentifier(macAddress));
+      this.selected.add(LHDeviceIdentifier(deviceId));
     });
   }
 
-  void _deselectItem(String macAddress) {
+  void _deselectItem(String deviceId) {
     setState(() {
-      this.selected.remove(LHDeviceIdentifier(macAddress));
+      this.selected.remove(LHDeviceIdentifier(deviceId));
     });
   }
 
-  bool _isSelected(String macAddress) {
-    return this.selected.contains(LHDeviceIdentifier(macAddress));
+  bool _isSelected(String deviceId) {
+    return this.selected.contains(LHDeviceIdentifier(deviceId));
   }
 
-  Future _deleteItem(String macAddress) {
-    return blocWithoutListen.nicknames.deleteNicknames([macAddress]);
+  Future _deleteItem(String deviceId) {
+    return blocWithoutListen.nicknames.deleteNicknames([deviceId]);
   }
 
   Future _updateItem(Nickname nickname) {
@@ -63,7 +63,7 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
         final data = snapshot.data;
         if (data != null) {
           data.sort((a, b) {
-            return a.macAddress.compareTo(b.macAddress);
+            return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
             body = _EmptyNicknamePage();
@@ -140,10 +140,10 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   }
 }
 
-typedef void _SelectItem(String macAddress);
-typedef bool _IsSelected(String macAddress);
-typedef void _DeselectItem(String macAddress);
-typedef Future _DeleteItem(String macAddress);
+typedef void _SelectItem(String deviceId);
+typedef bool _IsSelected(String deviceId);
+typedef void _DeselectItem(String deviceId);
+typedef Future _DeleteItem(String deviceId);
 typedef Future _UpdateItem(Nickname nickname);
 
 class _DataNicknamePage extends StatelessWidget {
@@ -169,7 +169,7 @@ class _DataNicknamePage extends StatelessWidget {
   Future _changeNickname(
       BuildContext context, NicknamesLastSeenJoin oldNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
-        macAddress: oldNickname.macAddress, nickname: oldNickname.nickname);
+        deviceId: oldNickname.deviceId, nickname: oldNickname.nickname);
     if (newNickname != null) {
       if (newNickname.nickname == null) {
         await deleteItem(newNickname.deviceId);
@@ -184,7 +184,7 @@ class _DataNicknamePage extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final item = nicknames[index];
-        final selected = isSelected(item.macAddress);
+        final selected = isSelected(item.deviceId);
         final lastSeen = item.lastSeen;
         return Column(
           children: [
@@ -195,10 +195,10 @@ class _DataNicknamePage extends StatelessWidget {
               child: ListTile(
                 title: Text(item.nickname),
                 subtitle: Text(
-                    '${item.macAddress}${lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(lastSeen) : ''}'),
+                    '${item.deviceId}${lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(lastSeen) : ''}'),
                 onLongPress: () {
                   if (!selecting) {
-                    selectItem(item.macAddress);
+                    selectItem(item.deviceId);
                   } else {
                     _changeNickname(context, item);
                   }
@@ -206,9 +206,9 @@ class _DataNicknamePage extends StatelessWidget {
                 onTap: () {
                   if (selecting) {
                     if (selected) {
-                      deselectItem(item.macAddress);
+                      deselectItem(item.deviceId);
                     } else {
-                      selectItem(item.macAddress);
+                      selectItem(item.deviceId);
                     }
                   } else {
                     _changeNickname(context, item);

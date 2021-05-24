@@ -13,16 +13,16 @@ import '../../../data/helperStructures/WithTimeout.dart';
 
 class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
     with ScanningMixin, CloseCurrentRouteMixin {
-  final String macAddress;
+  final String deviceId;
   final int settingsIndex;
 
-  GetDeviceStream(this.macAddress, this.settingsIndex,
+  GetDeviceStream(this.deviceId, this.settingsIndex,
       {required List<Object?> upStream,
       required List<DownStreamBuilder> downStreamBuilders})
       : super(upStream: upStream, downStreamBuilders: downStreamBuilders);
 
   Stream<WithTimeout<LighthouseDevice?>> listenForDevice(Duration timeout) {
-    LHDeviceIdentifier identifier = LHDeviceIdentifier(macAddress);
+    LHDeviceIdentifier identifier = LHDeviceIdentifier(deviceId);
 
     final timeoutStream = Stream.fromFutures(
         [Future.value(false), Future.delayed(timeout).then((value) => true)]);
@@ -96,13 +96,13 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
         });
   }
 
-  static DownStreamBuilder createBuilder(String macAddress, int settingsIndex) {
+  static DownStreamBuilder createBuilder(String deviceId, int settingsIndex) {
     if (settingsIndex < 0) {
       throw Exception('Settings index should be at least higher than 0');
     }
     return (context, upStream, downStream) {
       return GetDeviceStream(
-        macAddress,
+        deviceId,
         settingsIndex,
         upStream: upStream,
         downStreamBuilders: downStream.cast<DownStreamBuilder>(),
