@@ -149,15 +149,15 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   Future<bool> isValid() async {
     try {
-      final idPart = name.replaceAll('HTC BS', '').replaceAll(' ', '');
-      _deviceIdEnd = int.parse(idPart.substring(2), radix: 16);
+      final subStringLocation = name.length - 4;
+      _deviceIdEnd = int.parse(name.substring(subStringLocation), radix: 16);
     } on FormatException {
       debugPrint('Could not get device id end from name. "$name"');
       return false;
     }
     final viveDao = _viveDao;
     if (viveDao != null) {
-      this._deviceId = await viveDao.getIdOnSubset(_deviceIdEnd!);
+      this._deviceId = await viveDao.getId(this.deviceIdentifier.toString());
       if (this._deviceId == null) {
         debugPrint('Device Id not set yet for "$name"');
       }
@@ -219,7 +219,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (viveDao != null) {
       deviceExtensions.add(ClearIdExtension(
           viveDao: viveDao,
-          deviceIdEnd: _deviceIdEnd!,
+          deviceId: this.deviceIdentifier.toString(),
           clearId: () => _deviceId = null));
     }
     deviceExtensions.add(SleepExtension(
@@ -253,37 +253,31 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (this._deviceId != null) {
       return true;
     }
+    final deviceIdEnd = this._deviceIdEnd;
 
-    return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-            context, _deviceIdEnd!)
-        .then((value) async {
-      if (value == null) {
-        return false;
-      }
-      value = value.toUpperCase();
-      if (value.length == 4) {
-        value += _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase();
-      }
-      if (value.length == 8) {
-        if (value.substring(3) ==
-            _deviceIdEnd!.toRadixString(16).padLeft(4, '0').toUpperCase()) {
-          debugPrint('End of the device did not match');
-          return false;
-        }
-        try {
-          this._deviceId = int.parse(value, radix: 16);
-          final viveDao = _viveDao;
-          if (viveDao != null) {
-            await viveDao.insertId(_deviceId!);
-          } else {
-            debugPrint('Could not save device id because the dao was null');
-          }
-          return true;
-        } on FormatException {
-          debugPrint('Could not convert device id to a number');
-        }
-      }
+    var value = await ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
+        context, deviceIdEnd);
+    if (value == null) {
       return false;
-    });
+    }
+    value = value.toUpperCase();
+    if (value.length == 4 && deviceIdEnd != null) {
+      value += deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
+    }
+    if (value.length == 8) {
+      try {
+        this._deviceId = int.parse(value, radix: 16);
+        final viveDao = _viveDao;
+        if (viveDao != null) {
+          await viveDao.insertId(this.deviceIdentifier.toString(), _deviceId!);
+        } else {
+          debugPrint('Could not save device id because the dao was null');
+        }
+        return true;
+      } on FormatException {
+        debugPrint('Could not convert device id to a number');
+      }
+    }
+    return false;
   }
 }

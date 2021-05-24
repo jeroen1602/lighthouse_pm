@@ -29,7 +29,7 @@ dependencies:
   rxdart: ^0.26.0
   #  package_info: ^2.0.0
   package_info_plus: ^1.0.1
-  permission_handler: ^8.0.0+1
+  permission_handler: ^8.0.0+2
   flutter_svg: ^0.22.0
   url_launcher: ^6.0.4
   community_material_icon: 5.9.55
@@ -44,7 +44,7 @@ dependencies:
     git:
       url: https://github.com/appdev/FlutterToast
       ref: 7f329a9c1979abb0627fd5e245935d7b461b6fba
-  moor: ^4.3.0
+  moor: ^4.3.1
   sqlite3_flutter_libs: ^0.4.3
   path_provider: ^2.0.1
   provider: ^5.0.0
@@ -67,7 +67,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.16.8
-  moor_generator: ^4.3.0
+  moor_generator: ^4.3.1
   build_runner: 2.0.3
 
 # For information on the generic Dart part of this file, see the

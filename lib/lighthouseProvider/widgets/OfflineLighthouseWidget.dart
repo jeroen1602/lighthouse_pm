@@ -4,7 +4,7 @@ import '../LighthouseDevice.dart';
 
 /// A widget for showing an OFFLINE [LighthouseDevice] in a list.
 class OfflineLighthouseWidget extends StatelessWidget {
-  OfflineLighthouseWidget(this.macAddress,
+  OfflineLighthouseWidget(this.deviceId,
       {required this.onSelected,
       required this.selected,
         required this.selecting,
@@ -12,7 +12,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
       Key? key})
       : super(key: key);
 
-  final String macAddress;
+  final String deviceId;
   final VoidCallback onSelected;
   final bool selected;
   final bool selecting;
@@ -39,7 +39,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
                   child: Column(children: <Widget>[
                     Container(
                         alignment: Alignment.topLeft,
-                        child: Text('${this.nickname ?? this.macAddress}',
+                        child: Text('${this.nickname ?? this.deviceId}',
                             style: theme.textTheme.headline4
                                 ?.copyWith(color: disabledColored))),
                     Row(
@@ -48,7 +48,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
                         VerticalDivider(),
                         Container(
                             alignment: Alignment.bottomLeft,
-                            child: Text('${this.macAddress}',
+                            child: Text('${this.deviceId}',
                                 style: disabledTextTheme)),
                       ],
                     ),

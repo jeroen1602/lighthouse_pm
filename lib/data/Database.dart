@@ -15,9 +15,9 @@ export 'shared/shared.dart';
 part 'Database.g.dart';
 
 class NicknamesLastSeenJoin {
-  NicknamesLastSeenJoin(this.macAddress, this.nickname, this.lastSeen);
+  NicknamesLastSeenJoin(this.deviceId, this.nickname, this.lastSeen);
 
-  final String macAddress;
+  final String deviceId;
   final String nickname;
   final DateTime? lastSeen;
 }
@@ -43,18 +43,30 @@ class LighthouseDatabase extends _$LighthouseDatabase {
   LighthouseDatabase(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
         return m.createAll();
       }, onUpgrade: (Migrator m, int from, int to) async {
-        if (from == 1 && (to >= 2 && to <= 3)) {
+        if (from == 1 && (to >= 2 && to <= 4)) {
           await m.renameColumn(simpleSettings, 'id', simpleSettings.settingsId);
         }
-        if ((from >= 1 && from <= 2) && (to == 3)) {
+        if ((from >= 1 && from <= 2) && (to >= 3 && to <= 4)) {
           await m.createTable(groups);
           await m.createTable(groupEntries);
+        }
+        if ((from >= 1 && from <= 3) && (to == 4)) {
+          await m.renameColumn(nicknames, 'mac_address', nicknames.deviceId);
+          await m.renameColumn(
+              lastSeenDevices, 'mac_address', lastSeenDevices.deviceId);
+          if (from >= 3 && from <= 3) {
+            // groups table already exists so we need to rename, otherwise it will be created
+            await m.renameColumn(
+                groupEntries, 'mac_address', groupEntries.deviceId);
+          }
+          await m.deleteTable('vive_base_station_ids');
+          await m.createTable(viveBaseStationIds);
         }
       }, beforeOpen: (details) async {
         await this.customStatement('PRAGMA foreign_keys = ON');

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
@@ -17,17 +19,17 @@ class _ViveBaseStationIdConverter
 
   @override
   String getDataSubtitle(ViveBaseStationId data) {
-    return 'HTC BS XX${(data.id & 0xFFFF).toRadixString(16).padLeft(4, '0').toUpperCase()}';
+    return '0x${data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase()} (${data.baseStationId})';
   }
 
   @override
   String getDataTitle(ViveBaseStationId data) {
-    return '0x${data.id.toRadixString(16).padLeft(8, '0').toUpperCase()} (${data.id})';
+    return data.deviceId;
   }
 
   @override
   Future<void> deleteItem(ViveBaseStationId item) {
-    return bloc.viveBaseStation.deleteIdNoValidate(item.id);
+    return bloc.viveBaseStation.deleteId(item.deviceId);
   }
 
   @override
@@ -35,15 +37,15 @@ class _ViveBaseStationIdConverter
       BuildContext context, ViveBaseStationId data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
-        primaryKey: getDataTitle(data),
-        startValue: data.id.toRadixString(16).padLeft(8, '0'));
+        primaryKey: data.deviceId,
+        startValue:
+            data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase());
     if (newValue == null) {
       return;
     }
     try {
       final numberValue = int.parse(newValue, radix: 16);
-      await bloc.viveBaseStation.insertIdNoValidate(numberValue);
-      await bloc.viveBaseStation.deleteIdNoValidate(data.id);
+      await bloc.viveBaseStation.insertIdNoValidate(data.deviceId, numberValue);
     } on FormatException {
       Toast.show('Could not convert "$newValue" to a hex number', context);
     }
@@ -52,19 +54,38 @@ class _ViveBaseStationIdConverter
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertIntDecorator('Base station id', null,
-          autoIncrement: false),
+      DaoDataCreateAlertStringDecorator('Device id', null,
+          validator:
+              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+      DaoDataCreateAlertStringDecorator('Base station id', null)
     ];
-    final saveNewItem =
+    final storeValue =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
-    if (saveNewItem) {
-      final int? id =
-          (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      if (id == null) {
-        Toast.show('No id set!', context);
-        return;
-      }
-      await bloc.viveBaseStation.insertIdNoValidate(id);
+    if (!storeValue) {
+      return;
+    }
+
+    String? deviceId =
+        (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+    if (LocalPlatform.isAndroid) {
+      deviceId = deviceId?.trim().toUpperCase();
+    }
+    final String? newValueString =
+        (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+    if (deviceId == null) {
+      Toast.show('No device id set!', context);
+      return;
+    }
+    if (newValueString == null) {
+      Toast.show('No base station id set!', context);
+      return;
+    }
+    try {
+      final numberValue = int.parse(newValueString, radix: 16);
+      await bloc.viveBaseStation.insertIdNoValidate(deviceId, numberValue);
+    } on FormatException {
+      Toast.show(
+          'Could not convert "$newValueString" to a hex number', context);
     }
   }
 }

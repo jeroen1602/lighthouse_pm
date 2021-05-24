@@ -13,9 +13,9 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<List<Nickname>> get watchSavedNicknames => select(nicknames).watch();
 
-  Stream<Nickname?> watchNicknameForMacAddress(String macAddress) {
-    macAddress = macAddress.toUpperCase();
-    return (select(nicknames)..where((n) => n.macAddress.equals(macAddress)))
+  Stream<Nickname?> watchNicknameForDeviceIds(String deviceId) {
+    deviceId = deviceId.toUpperCase();
+    return (select(nicknames)..where((n) => n.deviceId.equals(deviceId)))
         .watch()
         .map((list) {
       if (list.isEmpty) {
@@ -29,8 +29,8 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
     return into(nicknames).insert(nickname, mode: InsertMode.insertOrReplace);
   }
 
-  Future<void> deleteNicknames(List<String> macAddresses) {
-    return (delete(nicknames)..where((t) => t.macAddress.isIn(macAddresses)))
+  Future<void> deleteNicknames(List<String> deviceIds) {
+    return (delete(nicknames)..where((t) => t.deviceId.isIn(deviceIds)))
         .go();
   }
 
@@ -47,11 +47,11 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   Stream<List<NicknamesLastSeenJoin>> watchSavedNicknamesWithLastSeen() {
     final query = select(nicknames).join([
       leftOuterJoin(lastSeenDevices,
-          lastSeenDevices.macAddress.equalsExp(nicknames.macAddress))
+          lastSeenDevices.deviceId.equalsExp(nicknames.deviceId))
     ]);
     return query.watch().map((rows) {
       return rows.map((row) {
-        return NicknamesLastSeenJoin(row.read(nicknames.macAddress)!,
+        return NicknamesLastSeenJoin(row.read(nicknames.deviceId)!,
             row.read(nicknames.nickname)!, row.read(lastSeenDevices.lastSeen));
       }).toList();
     });
@@ -63,7 +63,7 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> deleteLastSeen(LastSeenDevice lastSeen) {
     return (delete(lastSeenDevices)
-          ..where((tbl) => tbl.macAddress.equals(lastSeen.macAddress)))
+          ..where((tbl) => tbl.deviceId.equals(lastSeen.deviceId)))
         .go();
   }
 }

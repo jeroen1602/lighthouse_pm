@@ -1,5 +1,8 @@
 # Version 1.3.0+9 R.C
 
+ - Vive base station ids are now bound to the device id instead to the device name. 
+This way everyone can store whatever id without restrictions, fixing the bug for some people.
+This has the effect that all stored ids are now gone (sorry about that).
  - (Web) Added more info to the Bluetooth adapter unavailable.
  - (Web) Added 404 page not found.
  - (Web) Added support for web.

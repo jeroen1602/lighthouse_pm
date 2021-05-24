@@ -12,45 +12,30 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
   ViveBaseStationDao(LighthouseDatabase attachedDatabase)
       : super(attachedDatabase);
 
-  Future<int?> getIdOnSubset(int subset) {
-    assert((subset & 0xFFFF) == subset,
-        'Subset should only be the lower 2 bytes. Subset was: 0x${subset.toRadixString(16)}');
-    return select(viveBaseStationIds).get().then((baseStationIds) {
-      for (final baseStationId in baseStationIds) {
-        if ((baseStationId.id & 0xFFFF) == subset) {
-          return baseStationId.id;
-        }
-      }
-      return null;
-    });
+  Future<int?> getId(String deviceId) {
+    return (select(viveBaseStationIds)
+          ..where((tbl) => tbl.deviceId.equals(deviceId)))
+        .getSingleOrNull()
+        .then((value) => value?.baseStationId);
   }
 
-  Stream<List<int>> getIdsAsStream() {
-    return select(viveBaseStationIds).watch().map((event) {
-      if (event.isEmpty) {
-        return [];
-      }
-      final out = List<int>.filled(event.length, 0);
-      for (int i = 0; i < event.length; i++) {
-        out[i] = event[i].id;
-      }
-      return out;
-    });
+  Stream<List<ViveBaseStationId>> getViveBaseStationIdsAsStream() {
+    return select(viveBaseStationIds).watch();
   }
 
-  Future<void> insertId(int id) {
+  Future<void> insertId(String deviceId, int id) {
     assert((id & 0xFFFFFFFF) == id,
-        'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16)}');
+        'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16).padLeft(8, '0').toUpperCase()}');
 
-    return into(viveBaseStationIds)
-        .insert(ViveBaseStationId(id: id), mode: InsertMode.insertOrReplace);
+    return into(viveBaseStationIds).insert(
+        ViveBaseStationId(deviceId: deviceId, baseStationId: id),
+        mode: InsertMode.insertOrReplace);
   }
 
-  Future<void> deleteId(int id) {
-    assert((id & 0xFFFFFFFF) == id,
-        'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16)}');
-
-    return (delete(viveBaseStationIds)..where((tbl) => tbl.id.equals(id))).go();
+  Future<void> deleteId(String deviceId) {
+    return (delete(viveBaseStationIds)
+          ..where((tbl) => tbl.deviceId.equals(deviceId)))
+        .go();
   }
 
   Future<void> deleteIds() {
@@ -63,16 +48,11 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
     return select(viveBaseStationIds).watch();
   }
 
-  Future<void> insertIdNoValidate(int id) {
+  Future<void> insertIdNoValidate(String deviceId, int id) {
     debugPrint(
         'WARNING using insertIdNoValidate, this should not happen in release mode!');
-    return into(viveBaseStationIds)
-        .insert(ViveBaseStationId(id: id), mode: InsertMode.insertOrReplace);
-  }
-
-  Future<void> deleteIdNoValidate(int id) {
-    debugPrint(
-        'WARNING using deleteIdNoValidate, this should not happen in release mode!');
-    return (delete(viveBaseStationIds)..where((tbl) => tbl.id.equals(id))).go();
+    return into(viveBaseStationIds).insert(
+        ViveBaseStationId(deviceId: deviceId, baseStationId: id),
+        mode: InsertMode.insertOrReplace);
   }
 }

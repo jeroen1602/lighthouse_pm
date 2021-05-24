@@ -20,11 +20,11 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
         (List<Group> groups, List<GroupEntry> entries) {
       final combinedGroups = <GroupWithEntries>[];
       for (final group in groups) {
-        final macs = entries
+        final deviceIds = entries
             .where((value) => value.groupId == group.id)
-            .map((e) => e.macAddress)
+            .map((e) => e.deviceId)
             .toList();
-        combinedGroups.add(GroupWithEntries(group, macs));
+        combinedGroups.add(GroupWithEntries(group, deviceIds));
       }
       return combinedGroups;
     });
@@ -46,9 +46,9 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
 
     return Rx.combineLatest2(groupStream, groupEntriesStream,
         (Group group, List<GroupEntry> entries) {
-      final macs =
-          entries.map((entry) => entry.macAddress).toList(growable: true);
-      return GroupWithEntries(group, macs);
+      final deviceIds =
+          entries.map((entry) => entry.deviceId).toList(growable: true);
+      return GroupWithEntries(group, deviceIds);
     });
   }
 
@@ -65,9 +65,9 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
           .go();
 
       // Insert all the new entries.
-      for (final item in entry.macs) {
+      for (final deviceId in entry.deviceIds) {
         await into(groupEntries).insert(
-            GroupEntry(macAddress: item, groupId: group.id),
+            GroupEntry(deviceId: deviceId, groupId: group.id),
             mode: InsertMode.insertOrReplace);
       }
     });
@@ -93,14 +93,14 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     });
   }
 
-  Future<void> deleteGroupEntry(String macAddress) {
+  Future<void> deleteGroupEntry(String deviceId) {
     return (delete(groupEntries)
-          ..where((entry) => entry.macAddress.equals(macAddress)))
+          ..where((entry) => entry.deviceId.equals(deviceId)))
         .go();
   }
 
   Future<void> deleteGroupEntries(List<String> entries) {
-    return (delete(groupEntries)..where((tbl) => tbl.macAddress.isIn(entries)))
+    return (delete(groupEntries)..where((tbl) => tbl.deviceId.isIn(entries)))
         .go();
   }
 

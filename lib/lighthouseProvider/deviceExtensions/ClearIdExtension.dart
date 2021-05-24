@@ -6,25 +6,20 @@ import 'DeviceExtension.dart';
 class ClearIdExtension extends DeviceExtension {
   ClearIdExtension(
       {required ViveBaseStationDao viveDao,
-      required int deviceIdEnd,
+      required String deviceId,
       required VoidCallback clearId})
       : super(
             toolTip: 'Clear id',
             icon: Text('ID'),
             updateListAfter: true,
             onTap: () async {
-              final id = await viveDao.getIdOnSubset(deviceIdEnd);
-              if (id != null) {
-                await viveDao.deleteId(id);
-              }
+              await viveDao.deleteId(deviceId);
               clearId();
             }) {
-    assert(
-        deviceIdEnd & 0xFFFF == deviceIdEnd, 'Device id end should be 2 bytes');
     streamEnabledFunction = () {
-      return viveDao.getIdsAsStream().map((events) {
+      return viveDao.getViveBaseStationIdsAsStream().map((events) {
         for (final event in events) {
-          if (event & 0xFFFF == deviceIdEnd) {
+          if (event.deviceId == deviceId) {
             return true;
           }
         }

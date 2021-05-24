@@ -153,7 +153,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
                 await _devicesMutex.acquire();
                 if (lighthouseDevice == null) {
                   debugPrint(
-                      'Found a non valid device! Mac: ${scanResult.device.id.toString()}');
+                      'Found a non valid device! Device id: ${scanResult.device.id.toString()}');
                   this._rejectedDevices.add(deviceIdentifier);
                 } else {
                   this._foundDeviceSubject.add(lighthouseDevice);

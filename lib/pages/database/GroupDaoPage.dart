@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/validators/MacValidator.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
@@ -83,19 +84,19 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
 
   @override
   String getDataTitle(GroupEntry data) {
-    return data.macAddress;
+    return data.deviceId;
   }
 
   @override
   Future<void> deleteItem(GroupEntry item) {
-    return bloc.groups.deleteGroupEntry(item.macAddress);
+    return bloc.groups.deleteGroupEntry(item.deviceId);
   }
 
   @override
   Future<void> openChangeDialog(BuildContext context, GroupEntry data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
-        primaryKey: data.macAddress,
+        primaryKey: data.deviceId,
         startValue: '${data.groupId}');
     if (newValue == null) {
       return;
@@ -107,35 +108,37 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
       return;
     }
     await bloc.groups.insertGroupEntry(
-        GroupEntry(macAddress: data.macAddress, groupId: intValue));
+        GroupEntry(deviceId: data.deviceId, groupId: intValue));
   }
 
   @override
   Future<void> openAddNewItemDialog(BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: false),
-      DaoDataCreateAlertStringDecorator('Mac address', null,
-          validator: MacValidator.macValidator),
+      DaoDataCreateAlertStringDecorator('Device id', null,
+          validator:
+              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
     ];
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
     if (saveNewItem) {
       final int? groupId =
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      final String? mac = (decorators[1] as DaoDataCreateAlertStringDecorator)
-          .getNewValue()
-          ?.trim()
-          .toUpperCase();
+      String? deviceId =
+          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      if (LocalPlatform.isAndroid) {
+        deviceId = deviceId?.trim().toUpperCase();
+      }
       if (groupId == null) {
         Toast.show('No group id set!', context);
         return;
       }
-      if (mac == null) {
-        Toast.show('No mac set!', context);
+      if (deviceId == null) {
+        Toast.show('No device id set!', context);
         return;
       }
       await bloc.groups
-          .insertGroupEntry(GroupEntry(macAddress: mac, groupId: groupId));
+          .insertGroupEntry(GroupEntry(deviceId: deviceId, groupId: groupId));
     }
   }
 }

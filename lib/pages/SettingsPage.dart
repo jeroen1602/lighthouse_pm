@@ -94,6 +94,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
         stream: blocWithoutListen(context).settings.getSleepStateAsStream(),
         builder:
             (BuildContext c, AsyncSnapshot<LighthousePowerState> snapshot) {
+          if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
+            return Container(
+              color: Colors.red,
+              child: ListTile(
+                title: Text('Error'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            );
+          }
           final state =
               snapshot.hasData && snapshot.data == LighthousePowerState.STANDBY;
           return SwitchListTile(
@@ -111,6 +121,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
       StreamBuilder<int>(
         stream: blocWithoutListen(context).settings.getScanDurationsAsStream(),
         builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+          if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
+            return Container(
+              color: Colors.red,
+              child: ListTile(
+                title: Text('Error'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            );
+          }
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
@@ -135,6 +155,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
       StreamBuilder<int>(
         stream: blocWithoutListen(context).settings.getUpdateIntervalAsStream(),
         builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+          if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
+            return Container(
+              color: Colors.red,
+              child: ListTile(
+                title: Text('Error'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            );
+          }
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
@@ -170,6 +200,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
             stream:
                 blocWithoutListen(context).settings.getPreferredThemeAsStream(),
             builder: (BuildContext context, AsyncSnapshot<ThemeMode> snapshot) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error.toString());
+                return Container(
+                  color: Colors.red,
+                  child: ListTile(
+                    title: Text('Error'),
+                    subtitle: Text(snapshot.error.toString()),
+                  ),
+                );
+              }
               if (!snapshot.hasData) {
                 return CircularProgressIndicator();
               }
@@ -201,6 +241,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
             .settings
             .getGroupOfflineWarningEnabledStream(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
+            return Container(
+              color: Colors.red,
+              child: ListTile(
+                title: Text('Error'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            );
+          }
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
@@ -379,6 +429,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         future: PackageInfo.fromPlatform(),
         builder: (_, snapshot) {
           if (snapshot.hasError) {
+            debugPrint(snapshot.error.toString());
             return ListTile(
               title: Text('Version'),
               subtitle: Text('${snapshot.error}'),

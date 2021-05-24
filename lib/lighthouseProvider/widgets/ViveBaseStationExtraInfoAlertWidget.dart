@@ -5,7 +5,7 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
       {Key? key, required this.existingIdEnd})
       : super(key: key);
 
-  final int existingIdEnd;
+  final int? existingIdEnd;
 
   @override
   State<StatefulWidget> createState() {
@@ -13,7 +13,7 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   }
 
   static Future<String?> showCustomDialog(
-      BuildContext context, int existingIdEnd) {
+      BuildContext context, int? existingIdEnd) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -59,9 +59,6 @@ class _ViveBaseStationExtraInfoAlertState
     if (value.length > 4 && value.length < 8) {
       return 'Please enter the rest of the id';
     }
-    if (value.length == 8 && intValue & 0xFFFF != widget.existingIdEnd) {
-      return 'The last 4 digits don\'t match "${widget.existingIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase()}"';
-    }
     if (value.length > 8) {
       return 'The length of the id must be 8 digits';
     }
@@ -70,25 +67,26 @@ class _ViveBaseStationExtraInfoAlertState
 
   @override
   Widget build(BuildContext context) {
+    final endHint = widget.existingIdEnd;
+
+    final textTheme = Theme.of(context).textTheme;
+    final boldTheme =
+        textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold);
+
     return AlertDialog(
       title: RichText(
-        text: TextSpan(children: <InlineSpan>[
-          TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text: 'Base station id required.\n'),
-          TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text: 'The id is found on the back and should end with: '),
-          TextSpan(
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontWeight: FontWeight.bold),
-              text: widget.existingIdEnd
-                  .toRadixString(16)
-                  .padLeft(4, '0')
-                  .toUpperCase()),
-          TextSpan(style: Theme.of(context).textTheme.bodyText1, text: '.'),
+        text: TextSpan(style: textTheme.bodyText1, children: <InlineSpan>[
+          TextSpan(text: 'Base station id required.\n'),
+          if (endHint != null) ...[
+            TextSpan(
+                text:
+                    'The id is found on the back and will probably end with: '),
+            TextSpan(
+                style: boldTheme,
+                text: endHint.toRadixString(16).padLeft(4, '0').toUpperCase()),
+            TextSpan(text: '.'),
+          ] else
+            TextSpan(text: 'The id is found on the back.')
         ]),
       ),
       content: Form(
@@ -107,9 +105,20 @@ class _ViveBaseStationExtraInfoAlertState
         ),
         SimpleDialogOption(
           child: Text('Set'),
-          onPressed: () {
-            final text = _textController.text.trim();
+          onPressed: () async {
+            final text = _textController.text.trim().toUpperCase();
             if (_formKey.currentState?.validate() == true) {
+              if (endHint != null) {
+                final intValue = int.parse(text, radix: 16);
+                if (text.length == 8 && intValue & 0xFFFF != endHint) {
+                  if (!(await ViveBaseStationExtraInfoIdWarningAlertWidget
+                      .showCustomDialog(context,
+                          setId: text, existingIdEnd: endHint))) {
+                    // The user doesn't want to close yet.
+                    return;
+                  }
+                }
+              }
               Navigator.pop(context, text);
             }
           },
@@ -122,5 +131,73 @@ class _ViveBaseStationExtraInfoAlertState
   void dispose() {
     _textController.dispose();
     super.dispose();
+  }
+}
+
+class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
+  ViveBaseStationExtraInfoIdWarningAlertWidget(
+      {required this.setId, required this.existingIdEnd, Key? key})
+      : super(key: key);
+
+  final String setId;
+  final int existingIdEnd;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final boldTheme =
+        textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold);
+
+    return AlertDialog(
+      title: Text("The end of the id doesn't match"),
+      content: RichText(
+        text: TextSpan(style: textTheme.bodyText1, children: [
+          TextSpan(text: "The id you have provided ("),
+          TextSpan(text: '$setId', style: boldTheme),
+          TextSpan(
+              text: ") doesn't end the same as the end of your lighthouse's "
+                  "name ("),
+          TextSpan(
+              style: boldTheme,
+              text: existingIdEnd
+                  .toRadixString(16)
+                  .padLeft(4, '0')
+                  .toUpperCase()),
+          TextSpan(
+              text: "). That doesn't mean that it isn't correct, but please "
+                  "double check to be sure!")
+        ]),
+      ),
+      actions: [
+        SimpleDialogOption(
+          child: Text('Change it'),
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        SimpleDialogOption(
+          child: Text("It's correct"),
+          onPressed: () => Navigator.pop(context, true),
+        )
+      ],
+    );
+  }
+
+  static Future<bool> showCustomDialog(
+    BuildContext context, {
+    required String setId,
+    required int existingIdEnd,
+  }) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ViveBaseStationExtraInfoIdWarningAlertWidget(
+            setId: setId,
+            existingIdEnd: existingIdEnd,
+          );
+        }).then((value) {
+      if (value is bool) {
+        return value;
+      }
+      return false;
+    });
   }
 }
