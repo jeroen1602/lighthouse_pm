@@ -1,0 +1,33 @@
+{
+  "name": "Lighthouse power management",
+  "short_name": "Lighthouse pm",
+  "start_url": "/lighthouse_pm/",
+  "display": "standalone",
+  "theme_color": "#c722c3",
+  "background_color": "#c722c3",
+  "description": "Power management app to control the Valve Index® lighthouses from your phone.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": true,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "utilities"
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm",
+      "id": "com.jeroen1602.lighthouse_pm"
+    }
+  ]
+}
