@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/NicknameAlertWidget.dart';
@@ -253,16 +254,16 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
               if (tapCounter == _TAP_TOP) {
                 //TODO: change the default ids based on the platform!
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: "FF:FF:FF:FF:FF:FF",
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFF).toString(),
                     nickname: "This is a test nickname1"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: "FF:FF:FF:FF:FF:FE",
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFE).toString(),
                     nickname: "This is a test nickname2"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: "FF:FF:FF:FF:FF:FD",
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFD).toString(),
                     nickname: "This is a test nickname3"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: "FF:FF:FF:FF:FF:FC",
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC).toString(),
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,
                     duration: Toast.lengthShort);

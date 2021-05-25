@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:toast/toast.dart';
 
@@ -207,14 +208,22 @@ class _EmptyState extends State<_EmptyPage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                blocWithoutListen.viveBaseStation
-                    .insertId("FF:FF:FF:FF:FF:FF", 0xFFFFFFFF);
-                blocWithoutListen.viveBaseStation
-                    .insertId("FF:FF:FF:FF:FF:FE", 0xFFFFFFFE);
-                blocWithoutListen.viveBaseStation
-                    .insertId("FF:FF:FF:FF:FF:FD", 0xFFFFFFFD);
-                blocWithoutListen.viveBaseStation
-                    .insertId("FF:FF:FF:FF:FF:FC", 0xFFFFFFFC);
+                blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFF)
+                        .toString(),
+                    0xFFFFFFFF);
+                blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFE)
+                        .toString(),
+                    0xFFFFFFFE);
+                blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFD)
+                        .toString(),
+                    0xFFFFFFFD);
+                blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC)
+                        .toString(),
+                    0xFFFFFFFC);
                 Toast.show('Fake ids created!', context,
                     duration: Toast.lengthShort);
                 tapCounter++;

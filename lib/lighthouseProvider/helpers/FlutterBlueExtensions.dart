@@ -1,10 +1,10 @@
 ///
 /// Extensions for the flutter blue classes.
 ///
-
 import 'dart:typed_data';
 
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../ble/BluetoothDevice.dart';
 import '../ble/DeviceIdentifier.dart';
@@ -27,6 +27,9 @@ extension GuidByteData on Guid {
 
 extension DeviceIdentifierExtensions on DeviceIdentifier {
   LHDeviceIdentifier toLHDeviceIdentifier() {
+    if (LocalPlatform.isAndroid) {
+      return LHDeviceIdentifier(this.id.toUpperCase());
+    }
     return LHDeviceIdentifier(this.id);
   }
 }

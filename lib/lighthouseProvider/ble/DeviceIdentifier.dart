@@ -9,10 +9,10 @@ class LHDeviceIdentifier {
   const LHDeviceIdentifier(this.id);
 
   @override
-  String toString() => id.toUpperCase();
+  String toString() => id;
 
   @override
-  int get hashCode => id.toUpperCase().hashCode;
+  int get hashCode => id.hashCode;
 
   @override
   bool operator ==(Object other) =>
