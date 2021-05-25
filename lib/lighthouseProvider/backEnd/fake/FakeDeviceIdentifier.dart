@@ -22,8 +22,8 @@ class FakeDeviceIdentifier {
   @visibleForTesting
   static LHDeviceIdentifier generateDeviceIdentifierAndroid(int seed) {
     final octets = List<int>.filled(6, 0);
-    for (var i = 0; i < 6; i++) {
-      octets[5 - i] = seed & 0xFF;
+    for (var i = 5; i >= 0; i--) {
+      octets[i] = seed & 0xFF;
       seed >>= 8;
       if (seed <= 0) {
         break;
