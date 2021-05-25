@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
@@ -21,9 +22,16 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
   FakeBluetoothDevice(
       List<LHBluetoothCharacteristic> characteristics, int id, String name)
       : service = _SimpleBluetoothService(characteristics),
-        deviceIdentifier = LHDeviceIdentifier(
-            '00:00:00:00:00:${id.toRadixString(16).padLeft(2, '0').toUpperCase()}'),
+        deviceIdentifier = _generateIdentifier(id),
         _name = name;
+
+  static LHDeviceIdentifier _generateIdentifier(int id) {
+    if (LocalPlatform.isWeb) {
+      return LHDeviceIdentifier(
+          'a${FakeDeviceIdentifier.generateDeviceIdentifier(id).toString().substring(1)}');
+    }
+    return FakeDeviceIdentifier.generateDeviceIdentifier(id);
+  }
 
   @override
   Future<void> connect({Duration? timeout}) async {

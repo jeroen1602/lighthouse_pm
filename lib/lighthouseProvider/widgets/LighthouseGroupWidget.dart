@@ -208,7 +208,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     final List<String> offlineDeviceIds = List.from(group.deviceIds);
     final List<LighthouseDevice> foundDevices = devices.where((device) {
       final index = offlineDeviceIds.indexWhere(
-          (deviceId) => deviceId.toUpperCase() == device.deviceIdentifier.toString());
+          (deviceId) => deviceId == device.deviceIdentifier.toString());
       if (index >= 0) {
         offlineDeviceIds.removeAt(index);
         return true;
