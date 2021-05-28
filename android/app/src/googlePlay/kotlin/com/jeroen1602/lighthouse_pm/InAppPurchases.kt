@@ -313,7 +313,6 @@ class InAppPurchases {
     ): List<Int> {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             return listOf(-1)
-
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             return purchases.map { purchase ->
                 if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
