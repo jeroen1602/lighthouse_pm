@@ -1,3 +1,4 @@
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,12 +19,19 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../BuildOptions.dart';
 import 'BasePage.dart';
 import 'settings/PrivacyPage.dart';
+import 'settings/SettingsDonationsPage.dart';
 import 'settings/SettingsNicknamesPage.dart';
 import 'settings/SettingsViveBaseStationIdsPage.dart';
 
 const _GITHUB_URL = "https://github.com/jeroen1602/lighthouse_pm";
+const _GOOGLE_PLAY_URL =
+    "https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm";
+const _F_DROID_URL =
+    "https://f-droid.org/packages/com.jeroen1602.lighthouse_pm/";
+const _WEB_URL = "https://jeroen1602.github.io/lighthouse_pm/";
 
 class SettingsPage extends BasePage with WithBlocStateless {
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
@@ -47,9 +55,21 @@ class SettingsPage extends BasePage with WithBlocStateless {
     }
   }
 
+  static Color? getIconColor(IconThemeData iconTheme) {
+    final double iconOpacity = iconTheme.opacity ?? 1.0;
+    Color iconColor = iconTheme.color!;
+    if (iconOpacity != 1.0) {
+      iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
+    }
+    return iconColor;
+  }
+
   @override
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
+    final iconColor = getIconColor(theme.iconTheme);
+    final headTheme =
+        theme.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold);
 
     // region header
     final items = <Widget>[
@@ -58,10 +78,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
           "assets/images/app-icon.svg",
           width: 24.0,
           height: 24.0,
+          color: iconColor,
         ),
-        title: Text('Lighthouse Power management',
-            style: theme.textTheme.headline6!
-                .copyWith(fontWeight: FontWeight.bold)),
+        title: Text('Lighthouse Power management', style: headTheme),
       ),
       Divider(
         thickness: 1.5,
@@ -271,9 +290,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // region Vive Base station
     items.addAll([
       ListTile(
-        title: Text('Vive Base station | BETA',
-            style: theme.textTheme.headline6!
-                .copyWith(fontWeight: FontWeight.bold)),
+        title: Text('Vive Base station | BETA', style: headTheme),
       ),
       Divider(thickness: 1.5),
       ListTile(
@@ -334,10 +351,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           }
           return Column(
             children: [
-              ListTile(
-                  title: Text('Shortcuts | BETA',
-                      style: theme.textTheme.headline6!
-                          .copyWith(fontWeight: FontWeight.bold))),
+              ListTile(title: Text('Shortcuts | BETA', style: headTheme)),
               Divider(thickness: 1.5),
               StreamBuilder<bool>(
                 stream: blocWithoutListen(context)
@@ -391,9 +405,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // region about
     items.addAll([
       ListTile(
-        title: Text('About',
-            style: theme.textTheme.headline6!
-                .copyWith(fontWeight: FontWeight.bold)),
+        title: Text('About', style: headTheme),
       ),
       Divider(
         thickness: 1.5,
@@ -410,6 +422,15 @@ class SettingsPage extends BasePage with WithBlocStateless {
         onTap: () => Navigator.pushNamed(context, '/settings/privacy'),
       ),
       Divider(),
+      if (BuildOptions.includeSupportButtons &&
+          BuildOptions.includeSupportPage) ...[
+        ListTile(
+          title: Text('Support'),
+          trailing: Icon(Icons.arrow_forward_ios),
+          onTap: () => Navigator.pushNamed(context, '/settings/support'),
+        ),
+        Divider(),
+      ],
       ListTile(
         title: Text('Fork me on Github'),
         trailing: Icon(Icons.arrow_forward_ios),
@@ -425,6 +446,49 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
+      if (LocalPlatform.isWeb) ...[
+        ListTile(
+          title: Text('Try the Android app'),
+          subtitle: Text('On Google Play'),
+          trailing: Icon(Icons.arrow_forward_ios),
+          leading: Icon(
+            CommunityMaterialIcons.google_play,
+            color: iconColor,
+          ),
+          onTap: () async {
+            await launch(_GOOGLE_PLAY_URL);
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Try the Android app'),
+          subtitle: Text('On F-Droid'),
+          trailing: Icon(Icons.arrow_forward_ios),
+          leading: SvgPicture.asset(
+            "assets/images/f-droid-logo.svg",
+            width: 24,
+            height: 24,
+            color: iconColor,
+          ),
+          onTap: () async {
+            await launch(_F_DROID_URL);
+          },
+        ),
+        Divider(),
+      ] else ...[
+        ListTile(
+          title: Text('Try the web version'),
+          trailing: Icon(Icons.arrow_forward_ios),
+          leading: Icon(
+            Icons.public,
+            color: iconColor,
+          ),
+          onTap: () async {
+            await launch(_WEB_URL);
+          },
+        ),
+        Divider(),
+      ],
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (_, snapshot) {
@@ -467,6 +531,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
     '/vive': (context) => SettingsViveBaseStationIdsPage(),
     '/privacy': (context) => PrivacyPage(),
     '/license': (context) => LHLicensePage(),
+    if (BuildOptions.includeSupportButtons &&
+        BuildOptions.includeSupportPage)
+      '/support': (context) => SettingsSupportPage(),
   };
 
   static Map<String, PageBuilder> getSubPages(String parentPath) {

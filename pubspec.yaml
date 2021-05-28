@@ -92,6 +92,9 @@ flutter:
     - assets/images/group-edit-icon.svg
     - assets/images/group-delete-icon.svg
     - assets/images/nickname-icon.svg
+    - assets/images/f-droid-logo.svg
+    - assets/images/paypal.svg
+    - assets/images/github-sponsors.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
