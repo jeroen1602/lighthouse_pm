@@ -41,10 +41,18 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        googlePlay {
+            java.srcDirs += 'src/googlePlay/kotlin'
+        }
+        defaultVersion {
+            java.srcDirs += 'src/defaultVersion/kotlin'
+        }
     }
 
     lintOptions {
         disable 'InvalidPackage'
+        //TODO: check to see if this can be removed in future versions, since a lint for release builds is useful
+        checkReleaseBuilds false
     }
 
     defaultConfig {
@@ -79,6 +87,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions 'productFlavors'
+    productFlavors {
+        googlePlay {
+            dimension 'productFlavors'
+        }
+        defaultVersion {
+            dimension 'productFlavors'
+        }
+    }
 }
 
 flutter {
@@ -87,4 +104,15 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // For now only needed for googlePlayImplementation
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+
+
+
+    def billing_version = "4.0.0"
+
+    googlePlayImplementation "com.android.billingclient:billing:$billing_version"
+    googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"
+
 }

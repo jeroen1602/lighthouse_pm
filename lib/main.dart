@@ -15,11 +15,13 @@ import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/InAppPurchases.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/Intl.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:provider/provider.dart';
 
+import 'BuildOptions.dart';
 import 'bloc.dart';
 
 void main() {
@@ -64,6 +66,12 @@ class MainApp extends StatelessWidget {
     ViveBaseStationDeviceProvider.instance
         .setViveBaseStationDao(mainBloc.viveBaseStation);
     LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
+
+    if (BuildOptions.includeGooglePlayInAppPurchases) {
+      InAppPurchases.instance.handlePendingPurchases().catchError((error) {
+        debugPrint(error.toString());
+      });
+    }
 
     return mainBloc;
   }

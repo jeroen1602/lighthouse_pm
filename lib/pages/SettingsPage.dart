@@ -422,15 +422,15 @@ class SettingsPage extends BasePage with WithBlocStateless {
         onTap: () => Navigator.pushNamed(context, '/settings/privacy'),
       ),
       Divider(),
-      if (BuildOptions.includeDonationButtons && BuildOptions.includeDonationsPage)
-        ...[
-          ListTile(
-            title: Text('Donate'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () => Navigator.pushNamed(context, '/settings/donate'),
-          ),
-          Divider(),
-        ],
+      if (BuildOptions.includeSupportButtons &&
+          BuildOptions.includeSupportPage) ...[
+        ListTile(
+          title: Text('Support'),
+          trailing: Icon(Icons.arrow_forward_ios),
+          onTap: () => Navigator.pushNamed(context, '/settings/support'),
+        ),
+        Divider(),
+      ],
       ListTile(
         title: Text('Fork me on Github'),
         trailing: Icon(Icons.arrow_forward_ios),
@@ -531,9 +531,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
     '/vive': (context) => SettingsViveBaseStationIdsPage(),
     '/privacy': (context) => PrivacyPage(),
     '/license': (context) => LHLicensePage(),
-    if (BuildOptions.includeDonationButtons &&
-        BuildOptions.includeDonationsPage)
-      '/donate': (context) => SettingsDonationsPage(),
+    if (BuildOptions.includeSupportButtons &&
+        BuildOptions.includeSupportPage)
+      '/support': (context) => SettingsSupportPage(),
   };
 
   static Map<String, PageBuilder> getSubPages(String parentPath) {

@@ -51,11 +51,16 @@ class Shortcut {
         this.context = context
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SHORTCUT_ID)
         methodChannel.setMethodCallHandler { call, result ->
+            var found = false
             for (handler in InMethods.values()) {
                 if (handler.functionName == call.method) {
+                    found = true
                     handler.handlerFunction(this, call, result)
                     break
                 }
+            }
+            if (!found) {
+                result.notImplemented()
             }
         }
         handleIntent(intent)

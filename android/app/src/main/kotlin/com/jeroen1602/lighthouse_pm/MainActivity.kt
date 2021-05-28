@@ -9,6 +9,9 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
     private val shortcut: Shortcut by lazy { Shortcut() }
+    private val iAP: InAppPurchases
+        get() = InAppPurchases.instance
+
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -17,7 +20,10 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_NAME).setMethodCallHandler { call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL_NAME
+        ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "openBLESettings" -> {
                     openBLESettings()
@@ -35,7 +41,7 @@ class MainActivity : FlutterActivity() {
             }
         }
         shortcut.init(flutterEngine, this, intent)
-
+        iAP.init(flutterEngine, this)
     }
 
     private fun openBLESettings() {
