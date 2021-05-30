@@ -51,7 +51,7 @@ dependencies:
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.1
-  flutter_web_bluetooth: ^0.0.3
+  flutter_web_bluetooth: ^0.0.4
   web_browser_detect: ^2.0.2
 
   # This may need to be enabled again if the build runner doesn't like it.

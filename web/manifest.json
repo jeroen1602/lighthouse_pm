@@ -3,21 +3,49 @@
   "short_name": "Lighthouse pm",
   "start_url": ".",
   "display": "standalone",
+  "iarc_rating_id": "3a885139-c8fc-45ec-be92-457ff2e3a93a",
   "theme_color": "#c722c3",
   "background_color": "#c722c3",
   "description": "Power management app to control the Valve Index® lighthouses from your phone.",
   "orientation": "portrait-primary",
   "prefer_related_applications": true,
+  "lang": "en",
   "icons": [
     {
-      "src": "icons/Icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icons/Icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable_icon.png",
+      "size": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/maskable_icon_x512.png",
+      "size": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/maskable_icon_x192.png",
+      "size": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/monochrome_icon.png",
+      "size": "1024x1024",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
   "categories": [
@@ -28,6 +56,10 @@
       "platform": "play",
       "url": "https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm",
       "id": "com.jeroen1602.lighthouse_pm"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://jeroen1602.github.io/lighthouse_pm/"
     }
   ]
 }
