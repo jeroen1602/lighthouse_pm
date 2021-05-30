@@ -58,7 +58,7 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
       stream: bloc.nicknames.watchSavedNicknamesWithLastSeen(),
       builder: (BuildContext _,
           AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
-        Widget body = Center(
+        Widget body = const Center(
           child: CircularProgressIndicator(),
         );
         final data = snapshot.data;
@@ -67,31 +67,27 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
             return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
-            body = _EmptyNicknamePage();
+            body = const _EmptyNicknamePage();
           } else {
-            body = ContentContainerWidget(
-              builder: (context) {
-                return _DataNicknamePage(
-                  nicknames: data,
-                  selecting: selected.isNotEmpty,
-                  selectItem: _selectItem,
-                  deselectItem: _deselectItem,
-                  isSelected: _isSelected,
-                  deleteItem: _deleteItem,
-                  updateItem: _updateItem,
-                );
-              },
+            body = _DataNicknamePage(
+              nicknames: data,
+              selecting: selected.isNotEmpty,
+              selectItem: _selectItem,
+              deselectItem: _deselectItem,
+              isSelected: _isSelected,
+              deleteItem: _deleteItem,
+              updateItem: _updateItem,
             );
           }
         }
 
         if (snapshot.hasError) {
-          print(snapshot.error.toString());
+          debugPrint(snapshot.error.toString());
           body = Center(
             child: Container(
               color: Colors.red,
               child: ListTile(
-                title: Text('Error'),
+                title: const Text('Error'),
                 subtitle: Text(snapshot.error.toString()),
               ),
             ),
@@ -104,7 +100,7 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
             ? const []
             : [
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   tooltip: 'Delete selected',
                   onPressed: () async {
                     await blocWithoutListen.nicknames
@@ -112,15 +108,15 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
                     setState(() {
                       selected.clear();
                     });
-                    Toast.show('Nicknames have been removed!', context);
+                    Toast.show('Nicknames have been removed', context);
                   },
                 )
               ];
         final Widget? leading = selected.isEmpty
             ? null
             : IconButton(
+                icon: const Icon(Icons.arrow_back),
                 tooltip: 'Cancel selection',
-                icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   setState(() {
                     this.selected.clear();
@@ -130,7 +126,7 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
 
         return Scaffold(
             appBar: AppBar(
-              title: Text('Nicknames'),
+              title: const Text('Nicknames'),
               backgroundColor: scaffoldColor,
               actions: actions,
               leading: leading,
@@ -182,7 +178,7 @@ class _DataNicknamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ContentContainerListView.builder(
       itemBuilder: (context, index) {
         final item = nicknames[index];
         final selected = isSelected(item.deviceId);
@@ -217,7 +213,7 @@ class _DataNicknamePage extends StatelessWidget {
                 },
               ),
             ),
-            Divider()
+            const Divider(),
           ],
         );
       },
@@ -227,6 +223,8 @@ class _DataNicknamePage extends StatelessWidget {
 }
 
 class _EmptyNicknamePage extends StatefulWidget {
+  const _EmptyNicknamePage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _EmptyNicknameState();
@@ -240,7 +238,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
   @override
   Widget build(BuildContext context) {
     final Widget blockIcon = kReleaseMode
-        ? Icon(Icons.block, size: 120.0)
+        ? const Icon(Icons.block, size: 120.0)
         : GestureDetector(
             onTap: () {
               if (tapCounter < _TAP_TOP) {
@@ -252,25 +250,32 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                     context);
               }
               if (tapCounter == _TAP_TOP) {
-                //TODO: change the default ids based on the platform!
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFF).toString(),
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFF)
+                        .toString(),
                     nickname: "This is a test nickname1"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFE).toString(),
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFE)
+                        .toString(),
                     nickname: "This is a test nickname2"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFD).toString(),
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFD)
+                        .toString(),
                     nickname: "This is a test nickname3"));
                 blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC).toString(),
+                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFC)
+                        .toString(),
                     nickname: "This is a test nickname4"));
                 Toast.show('Fake nickname created!', context,
                     duration: Toast.lengthShort);
                 tapCounter++;
               }
             },
-            child: Icon(Icons.block, size: 120.0),
+            child: const Icon(Icons.block, size: 120.0),
           );
     return Center(
       child: Column(

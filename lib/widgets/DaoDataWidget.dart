@@ -20,7 +20,7 @@ class DaoTableDataWidget<T> extends StatelessWidget {
   final Stream<List<T>> entriesStream;
   final DaoTableDataConverter<T> converter;
 
-  DaoTableDataWidget(this.tableName, this.entriesStream, this.converter,
+  const DaoTableDataWidget(this.tableName, this.entriesStream, this.converter,
       {Key? key})
       : super(key: key);
 
@@ -49,34 +49,32 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                 elevation: 2.0,
                 fillColor: Colors.orange,
                 padding: const EdgeInsets.all(8.0),
-                shape: CircleBorder(),
-                child: Icon(
+                shape: const CircleBorder(),
+                child: const Icon(
                   Icons.add,
                   color: Colors.black,
                   size: 24.0,
                 )),
           ),
-          Divider(
+          const Divider(
             thickness: 1.5,
           ),
-        ];
-
-        if (snapshot.hasError) {
-          final error = snapshot.error!;
-          children.add(ListTile(
-            title: Text('Error!'),
-            subtitle: Text(error.toString()),
-          ));
-        } else if (data != null) {
-          for (int i = 0; i < data.length; i++) {
-            final item = data[i];
-            children.addAll([
+          if (snapshot.hasError)
+            Container(
+              color: Colors.red,
+              child: ListTile(
+                title: const Text('Error!'),
+                subtitle: Text(snapshot.error.toString()),
+              ),
+            )
+          else if (data != null)
+            for (int i = 0; i < data.length; i++) ...[
               ListTile(
-                  title: Text(converter.getDataTitle(item)),
-                  subtitle: Text(converter.getDataSubtitle(item)),
+                  title: Text(converter.getDataTitle(data[i])),
+                  subtitle: Text(converter.getDataSubtitle(data[i])),
                   onTap: () async {
                     try {
-                      await converter.openChangeDialog(context, item);
+                      await converter.openChangeDialog(context, data[i]);
                     } catch (e, s) {
                       debugPrint('$e');
                       debugPrint('$s');
@@ -87,10 +85,10 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                   trailing: RawMaterialButton(
                       onPressed: () async {
                         if (await DaoDeleteAlertWidget.showCustomDialog(context,
-                            title: converter.getDataTitle(item),
-                            subTitle: converter.getDataSubtitle(item))) {
+                            title: converter.getDataTitle(data[i]),
+                            subTitle: converter.getDataSubtitle(data[i]))) {
                           try {
-                            await converter.deleteItem(item);
+                            await converter.deleteItem(data[i]);
                             Toast.show('Deleted!', context);
                           } catch (e, s) {
                             debugPrint('$e');
@@ -103,8 +101,8 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                       elevation: 2.0,
                       fillColor: Colors.red,
                       padding: const EdgeInsets.all(8.0),
-                      shape: CircleBorder(),
-                      child: Icon(
+                      shape: const CircleBorder(),
+                      child: const Icon(
                         Icons.delete_forever,
                         color: Colors.black,
                         size: 24.0,
@@ -112,11 +110,10 @@ class DaoTableDataWidget<T> extends StatelessWidget {
               Divider(
                 thickness: (i == data.length - 1) ? 2 : null,
               ),
-            ]);
-          }
-        } else {
-          children.add(CircularProgressIndicator());
-        }
+            ]
+          else
+            const CircularProgressIndicator(),
+        ];
 
         return Column(children: children);
       },

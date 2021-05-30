@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lighthouse_pm/widgets/ScanningMixin.dart';
 
 class MainPageDrawer extends StatelessWidget with ScanningMixin {
-  MainPageDrawer(this.scanDuration, this.updateInterval, {Key? key})
+  const MainPageDrawer(this.scanDuration, this.updateInterval, {Key? key})
       : super(key: key);
 
   final Duration scanDuration;
@@ -16,14 +16,14 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
   Widget build(BuildContext context) {
     final children = <Widget>[
       DrawerHeader(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/images/drawer-image.png'),
                   fit: BoxFit.cover)),
           child: SvgPicture.asset('assets/images/app-icon.svg')),
       ListTile(
-          leading: Icon(Icons.report),
-          title: Text('Troubleshooting'),
+          leading: const Icon(Icons.report),
+          title: const Text('Troubleshooting'),
           onTap: () async {
             Navigator.pop(context);
             cleanUp();
@@ -34,8 +34,8 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                     "Could not start scan because permission has not been granted. On navigator pop");
           }),
       ListTile(
-        leading: Icon(Icons.info),
-        title: Text('Help'),
+        leading: const Icon(Icons.info),
+        title: const Text('Help'),
         onTap: () async {
           Navigator.pop(context);
           cleanUp();
@@ -47,8 +47,8 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
         },
       ),
       ListTile(
-        leading: Icon(Icons.settings),
-        title: Text('Settings'),
+        leading: const Icon(Icons.settings),
+        title: const Text('Settings'),
         onTap: () async {
           Navigator.pop(context);
           cleanUp();
@@ -59,12 +59,10 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                   "Could not start scan because permission has not been granted. On navigator pop");
         },
       ),
-    ];
-    if (!kReleaseMode) {
-      children.addAll([
+      if (!kReleaseMode)
         ListTile(
-            leading: Icon(CommunityMaterialIcons.database),
-            title: Text('Database test'),
+            leading: const Icon(CommunityMaterialIcons.database),
+            title: const Text('Database test'),
             onTap: () async {
               Navigator.pop(context);
               cleanUp();
@@ -74,8 +72,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                   failMessage:
                       "Could not start scan because permission has not been granted. On navigator pop");
             }),
-      ]);
-    }
+    ];
 
     return Drawer(
         child: ListView(

@@ -48,6 +48,9 @@ abstract class WithBlocStateless {
 
   LighthousePMBloc blocWithoutListen(BuildContext context) =>
       bloc(context, listen: false);
+
+  static blocStatic(BuildContext context, {bool listen = true}) => Provider.of<LighthousePMBloc>(context, listen: listen);
+
 }
 
 extension WithBlocState on State {

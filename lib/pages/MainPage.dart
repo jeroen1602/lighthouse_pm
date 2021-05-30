@@ -80,7 +80,7 @@ class MainPage extends BasePage with WithBlocStateless {
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
-  _ScanFloatingButtonWidget({Key? key, required this.settings})
+  const _ScanFloatingButtonWidget({Key? key, required this.settings})
       : super(key: key);
 
   final MainPageSettings settings;
@@ -310,24 +310,25 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                         if (scanning == true) {
                           return Container();
                         } else {
-                          return ContentContainerWidget(builder: (context) {
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text(
-                                    'Unable to find lighthouses, try some troubleshooting.',
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TroubleshootingContentWidget(),
-                                ),
-                              ],
-                            );
-                          });
+                          return ContentContainerListView(children: [
+                            Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text(
+                                'Unable to find lighthouses, try some troubleshooting.',
+                                style: Theme.of(context).textTheme.headline4,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Divider(
+                              thickness: 1.5,
+                            ),
+                            ...TroubleshootingContentWidget.getContent(context),
+                            // Add an extra container at the bottom to stop the floating
+                            // button from obstructing the last item.
+                            Container(
+                              height: _DEVICE_LIST_SCROLL_PADDING,
+                            ),
+                          ]);
                         }
                       },
                     )
@@ -445,7 +446,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
               return Scaffold(
                 appBar: AppBar(
-                  title: Text('Lighthouse PM'),
+                  title: const Text('Lighthouse PM'),
                   actions: actions,
                   backgroundColor: actionBarColor,
                   leading: leading,
@@ -755,7 +756,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
         ? BluetoothAdapterStateFunctions.stateToString(state!)
         : 'not available';
 
-    var subText = [
+    var subText = const [
       TextSpan(
           text: 'Bluetooth needs to be enabled to talk to the lighthouses.')
     ];
@@ -764,12 +765,12 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
         final browser = Browser.detectOrNull();
 
         subText = [
-          TextSpan(
+          const TextSpan(
               text: "Your browser doesn't support the bluetooth web API."
                   " It may need to be enabled behind a flag, try going to "
                   "about:flags in your browser bar."),
           if (browser?.browserAgent == BrowserAgent.Chrome)
-            TextSpan(
+            const TextSpan(
                 text: '\nFor Chrome (or chrome like browsers) you will need to '
                     'enable the "enable-experimental-web-platform-features" flag.')
           else if (browser?.browserAgent == BrowserAgent.Firefox ||
@@ -778,15 +779,15 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                 text:
                     '\n${browser?.browser} does not support Bluetooth web yet.')
           else if (browser?.browserAgent == BrowserAgent.Explorer)
-            TextSpan(
+            const TextSpan(
                 text: "\nWhat are you doing trying this in Internet Explorer!? "
                     "Of course it doesn't support it!")
           else if (browser?.browserAgent == BrowserAgent.Edge)
-            TextSpan(
+            const TextSpan(
                 text: "\nTry switching to the new Chrome based Edge browser.")
         ];
       } else {
-        subText = [
+        subText = const [
           TextSpan(
               text: "Try enabling Bluetooth on your device or "
                   "stick in a USB Bluetooth adapter.")
@@ -799,13 +800,13 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
       drawer: MainPageDrawer(Duration(seconds: settings.scanDuration),
           Duration(seconds: settings.updateInterval)),
       appBar: AppBar(
-        title: Text('Lighthouse PM'),
+        title: const Text('Lighthouse PM'),
       ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(
+            const Icon(
               Icons.bluetooth_disabled,
               size: 200.0,
               color: Colors.white54,

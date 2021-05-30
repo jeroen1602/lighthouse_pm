@@ -113,9 +113,11 @@ class SettingsSupportPage extends BasePage {
                     final result = await InAppPurchases.instance
                         .startBillingFlow(price.id);
                     if (result == 0) {
-                      Toast.show("Thanks for the support!", context, duration: Toast.lengthLong);
+                      Toast.show("Thanks for the support!", context,
+                          duration: Toast.lengthLong);
                     } else if (result == 1) {
-                      Toast.show("Purchase is still pending", context, duration: Toast.lengthLong);
+                      Toast.show("Purchase is still pending", context,
+                          duration: Toast.lengthLong);
                     }
                   },
                 ),
@@ -131,11 +133,8 @@ class SettingsSupportPage extends BasePage {
     ];
 
     return Scaffold(
-        appBar: AppBar(title: Text('Support')),
-        body: ContentContainerWidget(
-          builder: (context) {
-            return ListView(children: items);
-          },
-        ));
+      appBar: AppBar(title: const Text('Support')),
+      body: ContentContainerListView(children: items),
+    );
   }
 }

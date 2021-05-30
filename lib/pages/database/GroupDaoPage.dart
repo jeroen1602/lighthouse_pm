@@ -150,27 +150,19 @@ class GroupDaoPage extends BasePage with WithBlocStateless {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('GroupDao'),
+        title: const Text('GroupDao'),
       ),
-      body: ContentContainerWidget(
-        builder: (context) {
-          return ListView(
-            children: [
-              Column(
-                children: [
-                  DaoTableDataWidget<Group>(
-                      'Groups',
-                      bloc.groups.select(bloc.groups.groups).watch(),
-                      _GroupConverter(bloc)),
-                  DaoTableDataWidget<GroupEntry>(
-                      'Group entries',
-                      bloc.groups.select(bloc.groups.groupEntries).watch(),
-                      _GroupEntryConverter(bloc))
-                ],
-              )
-            ],
-          );
-        },
+      body: ContentContainerListView(
+        children: [
+          DaoTableDataWidget<Group>(
+              'Groups',
+              bloc.groups.select(bloc.groups.groups).watch(),
+              _GroupConverter(bloc)),
+          DaoTableDataWidget<GroupEntry>(
+              'Group entries',
+              bloc.groups.select(bloc.groups.groupEntries).watch(),
+              _GroupEntryConverter(bloc)),
+        ],
       ),
     );
   }

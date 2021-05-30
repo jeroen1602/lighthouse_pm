@@ -22,7 +22,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
 
     final items = <Widget>[
       ListTile(
-        leading: Icon(
+        leading: const Icon(
           Icons.warning,
           color: Colors.orange,
           size: 30,
@@ -31,22 +31,22 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
           'WARNING!',
           style: theme.textTheme.headline4?.copyWith(
               fontWeight: FontWeight.bold,
-              color: theme.textTheme.bodyText1!.color),
+              color: theme.textTheme.bodyText1?.color),
         ),
-        subtitle: Text(
+        subtitle: const Text(
             'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!'),
         isThreeLine: true,
       ),
-      Divider(
+      const Divider(
         thickness: 3,
       ),
       ListTile(
-        title: Text('Schema version'),
+        title: const Text('Schema version'),
         subtitle: Text('Version: ${bloc.db.schemaVersion}'),
       ),
-      Divider(),
+      const Divider(),
       ListTile(
-        title: Text('Known tables'),
+        title: const Text('Known tables'),
         subtitle: Text(_getTables(bloc)),
         onLongPress: () async {
           await Clipboard.setData(ClipboardData(text: _getTables(bloc)));
@@ -55,7 +55,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
         },
         isThreeLine: true,
       ),
-      Divider(),
+      const Divider(),
       FutureBuilder<String>(
           future: _getInstalledTables(bloc),
           builder: (context, snapshot) {
@@ -63,7 +63,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
             if (snapshot.hasError) {
               final error = snapshot.error;
               return ListTile(
-                title: Text('Error!'),
+                title: const Text('Error!'),
                 subtitle: Text(error.toString()),
               );
             } else if (data != null) {
@@ -72,7 +72,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
               // Check if the lists are equal, if they are not show a warning.
               if (listEquals(knownTables, installedTables)) {
                 return ListTile(
-                  title: Text('Installed tables'),
+                  title: const Text('Installed tables'),
                   subtitle: Text(data),
                   onLongPress: () async {
                     await Clipboard.setData(ClipboardData(text: data));
@@ -84,7 +84,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text('Installed tables'),
+                      title: const Text('Installed tables'),
                       subtitle: Text(data),
                       onLongPress: () async {
                         await Clipboard.setData(ClipboardData(text: data));
@@ -100,7 +100,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                           style: theme.textTheme.headline5?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.textTheme.bodyText1!.color)),
-                      leading: Icon(
+                      leading: const Icon(
                         Icons.warning,
                         color: Colors.orange,
                         size: 30,
@@ -113,13 +113,13 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
               return CircularProgressIndicator();
             }
           }),
-      Divider(),
+      const Divider(),
       ListTile(
         title: Text('Daos',
             style: theme.textTheme.headline6!
                 .copyWith(fontWeight: FontWeight.bold)),
       ),
-      Divider(thickness: 1.5),
+      const Divider(thickness: 1.5),
     ];
 
     for (final dao in _DaoContainer._KNOWN_DAOS) {
@@ -128,7 +128,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
           title: Text(dao.daoName),
           subtitle:
               dao.daoDescription != null ? Text(dao.daoDescription!) : null,
-          trailing: Icon(Icons.arrow_forward_ios),
+          trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () async {
             Navigator.pushNamed(context, '/databaseTest${dao.pageLink}');
           },
@@ -138,19 +138,12 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Database test page'),
-      ),
-      body: ContentContainerWidget(builder: (context) {
-        return ListView(
-          children: [
-            Column(
-              children: items,
-            )
-          ],
-        );
-      }),
-    );
+        appBar: AppBar(
+          title: const Text('Database test page'),
+        ),
+        body: ContentContainerListView(
+          children: items,
+        ));
   }
 
   String _getTables(LighthousePMBloc bloc) {

@@ -477,7 +477,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         Divider(),
       ] else ...[
         ListTile(
-          title: Text('Try the web version'),
+          title: Text('Try the Webapp'),
           trailing: Icon(Icons.arrow_forward_ios),
           leading: Icon(
             Icons.public,
@@ -519,10 +519,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // endregion
 
     return Scaffold(
-      appBar: AppBar(title: Text('Settings')),
-      body: ContentContainerWidget(builder: (context) {
-        return ListView(children: [Column(children: items)]);
-      }),
+      appBar: AppBar(title: const Text('Settings')),
+      body: ContentContainerListView(children: items),
     );
   }
 
@@ -531,8 +529,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     '/vive': (context) => SettingsViveBaseStationIdsPage(),
     '/privacy': (context) => PrivacyPage(),
     '/license': (context) => LHLicensePage(),
-    if (BuildOptions.includeSupportButtons &&
-        BuildOptions.includeSupportPage)
+    if (BuildOptions.includeSupportButtons && BuildOptions.includeSupportPage)
       '/support': (context) => SettingsSupportPage(),
   };
 

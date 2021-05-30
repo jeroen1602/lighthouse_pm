@@ -160,24 +160,16 @@ class NicknameDaoPage extends BasePage with WithBlocStateless {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('NicknameDao'),
+        title: const Text('NicknameDao'),
       ),
-      body: ContentContainerWidget(builder: (context) {
-        return ListView(
-          children: [
-            Column(
-              children: [
-                DaoTableDataWidget<Nickname>('Nicknames',
-                    bloc.nicknames.watchNicknames, _NicknameConverter(bloc)),
-                DaoTableDataWidget<LastSeenDevice>(
-                    'Last seen devices',
-                    bloc.nicknames.watchLastSeenDevices,
-                    _LastSeenConverter(bloc))
-              ],
-            )
-          ],
-        );
-      }),
+      body: ContentContainerListView(
+        children: [
+          DaoTableDataWidget<Nickname>('Nicknames',
+              bloc.nicknames.watchNicknames, _NicknameConverter(bloc)),
+          DaoTableDataWidget<LastSeenDevice>('Last seen devices',
+              bloc.nicknames.watchLastSeenDevices, _LastSeenConverter(bloc))
+        ],
+      ),
     );
   }
 }

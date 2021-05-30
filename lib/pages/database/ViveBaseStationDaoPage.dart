@@ -97,22 +97,16 @@ class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('ViveBaseStationDao'),
+        title: const Text('ViveBaseStationDao'),
       ),
-      body: ContentContainerWidget(builder: (context) {
-        return ListView(
-          children: [
-            Column(
-              children: [
-                DaoTableDataWidget<ViveBaseStationId>(
-                    'ViveBaseStationIds',
-                    bloc.viveBaseStation.watchViveBaseStationIds,
-                    _ViveBaseStationIdConverter(bloc)),
-              ],
-            )
-          ],
-        );
-      }),
+      body: ContentContainerListView(
+        children: [
+          DaoTableDataWidget<ViveBaseStationId>(
+              'ViveBaseStationIds',
+              bloc.viveBaseStation.watchViveBaseStationIds,
+              _ViveBaseStationIdConverter(bloc)),
+        ],
+      ),
     );
   }
 }

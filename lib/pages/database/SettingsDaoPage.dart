@@ -165,22 +165,14 @@ class SettingsDaoPage extends BasePage with WithBlocStateless {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('SettingsDao'),
+        title: const Text('SettingsDao'),
       ),
-      body: ContentContainerWidget(builder: (context) {
-        return ListView(
-          children: [
-            Column(
-              children: [
-                DaoTableDataWidget<SimpleSetting>(
-                    'Simple settings',
-                    bloc.settings.watchSimpleSettings,
-                    _SimpleSettingConverter(bloc)),
-              ],
-            )
-          ],
-        );
-      }),
+      body: ContentContainerListView(
+        children: [
+          DaoTableDataWidget<SimpleSetting>('Simple settings',
+              bloc.settings.watchSimpleSettings, _SimpleSettingConverter(bloc)),
+        ],
+      ),
     );
   }
 }

@@ -61,18 +61,16 @@ class _SettingsViveBaseStationIdsPageState
             return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
-            body = _EmptyPage();
+            body = const _EmptyPage();
           } else {
-            body = ContentContainerWidget(builder: (context) {
-              return _DataPage(
-                ids: data,
-                selecting: selected.isNotEmpty,
-                selectItem: _selectItem,
-                deselectItem: _deselectItem,
-                isSelected: _isSelected,
-                deleteItem: _deleteItem,
-              );
-            });
+            body = _DataPage(
+              ids: data,
+              selecting: selected.isNotEmpty,
+              selectItem: _selectItem,
+              deselectItem: _deselectItem,
+              isSelected: _isSelected,
+              deleteItem: _deleteItem,
+            );
           }
         }
 
@@ -126,7 +124,7 @@ typedef void _DeselectItem(String deviceId);
 typedef Future _DeleteItem(String deviceId);
 
 class _DataPage extends StatelessWidget {
-  _DataPage(
+  const _DataPage(
       {Key? key,
       required this.selecting,
       required this.ids,
@@ -145,7 +143,7 @@ class _DataPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ContentContainerListView.builder(
       itemBuilder: (context, index) {
         final id = ids[index];
         final selected = isSelected(id.deviceId);
@@ -173,7 +171,7 @@ class _DataPage extends StatelessWidget {
                 },
               ),
             ),
-            Divider()
+            const Divider(),
           ],
         );
       },
@@ -183,6 +181,8 @@ class _DataPage extends StatelessWidget {
 }
 
 class _EmptyPage extends StatefulWidget {
+  const _EmptyPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _EmptyState();
@@ -196,7 +196,7 @@ class _EmptyState extends State<_EmptyPage> {
   @override
   Widget build(BuildContext context) {
     final Widget blockIcon = kReleaseMode
-        ? Icon(Icons.block, size: 120.0)
+        ? const Icon(Icons.block, size: 120.0)
         : GestureDetector(
             onTap: () {
               if (tapCounter < _TAP_TOP) {
@@ -229,7 +229,7 @@ class _EmptyState extends State<_EmptyPage> {
                 tapCounter++;
               }
             },
-            child: Icon(Icons.block, size: 120.0),
+            child: const Icon(Icons.block, size: 120.0),
           );
     return Center(
       child: Column(
