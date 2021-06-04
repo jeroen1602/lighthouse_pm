@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/pages/database/GroupDaoPage.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
@@ -16,7 +17,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
 
   @override
   Widget buildPage(BuildContext context) {
-    final theme = Theme.of(context);
+    final theming = Theming.of(context);
 
     final bloc = blocWithoutListen(context);
 
@@ -29,9 +30,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
         ),
         title: Text(
           'WARNING!',
-          style: theme.textTheme.headline4?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.textTheme.bodyText1?.color),
+          style: theming.headline4,
         ),
         subtitle: const Text(
             'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!'),
@@ -97,9 +96,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                       title: Text(
                           'WARNING installed tables do not match known tables!'
                           '\nYou should create a migration!',
-                          style: theme.textTheme.headline5?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.textTheme.bodyText1!.color)),
+                          style: theming.headline5),
                       leading: const Icon(
                         Icons.warning,
                         color: Colors.orange,
@@ -116,8 +113,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
       const Divider(),
       ListTile(
         title: Text('Daos',
-            style: theme.textTheme.headline6!
-                .copyWith(fontWeight: FontWeight.bold)),
+            style: theming.headline6?.copyWith(fontWeight: FontWeight.bold)),
       ),
       const Divider(thickness: 1.5),
     ];

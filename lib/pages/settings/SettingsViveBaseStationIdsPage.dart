@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
@@ -74,8 +75,10 @@ class _SettingsViveBaseStationIdsPageState
           }
         }
 
+        final theming = Theming.of(context);
+
         final Color? scaffoldColor =
-            selected.isNotEmpty ? Theme.of(context).selectedRowColor : null;
+            selected.isNotEmpty ? theming.selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [
@@ -143,6 +146,8 @@ class _DataPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return ContentContainerListView.builder(
       itemBuilder: (context, index) {
         final id = ids[index];
@@ -150,9 +155,7 @@ class _DataPage extends StatelessWidget {
         return Column(
           children: [
             Container(
-              color: selected
-                  ? Theme.of(context).selectedRowColor
-                  : Colors.transparent,
+              color: selected ? theming.selectedRowColor : Colors.transparent,
               child: ListTile(
                 title: Text(
                     '${id.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase()}'),
@@ -195,6 +198,8 @@ class _EmptyState extends State<_EmptyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     final Widget blockIcon = kReleaseMode
         ? const Icon(Icons.block, size: 120.0)
         : GestureDetector(
@@ -238,7 +243,7 @@ class _EmptyState extends State<_EmptyPage> {
           blockIcon,
           Text(
             'No ids set (yet).',
-            style: Theme.of(context).textTheme.headline6,
+            style: theming.headline6,
           )
         ],
       ),

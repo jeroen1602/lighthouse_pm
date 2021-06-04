@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 /// A dialog for changing the nickname of a lighthouse
 class DaoSimpleChangeStringAlertWidget extends StatefulWidget {
@@ -45,21 +46,16 @@ class _DaoSimpleChangeStringAlertWidget
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return AlertDialog(
       title: RichText(
           text: TextSpan(
+        style: theming.bodyText,
         children: <InlineSpan>[
+          TextSpan(text: "Set a new value for "),
+          TextSpan(style: theming.bodyTextBold, text: widget.primaryKey),
           TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text: "Set a new value for "),
-          TextSpan(
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontWeight: FontWeight.bold),
-              text: widget.primaryKey),
-          TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
               text: ".\n"
                   "NOTE doing this may force the app into an illegal state."),
         ],

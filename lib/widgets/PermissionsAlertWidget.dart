@@ -1,21 +1,25 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
+
+  const PermissionsAlertWidget({Key? key}): super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return AlertDialog(
-        title: Text("Location permissions required"),
+        title: const Text("Location permissions required"),
         content: RichText(
-            text: TextSpan(children: <InlineSpan>[
-          TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
+            text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+          const TextSpan(
               text:
                   "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
           TextSpan(
             text: "More info.",
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                color: Colors.blue, decoration: TextDecoration.underline),
+            style: theming.linkTheme,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 Navigator.pushNamed(context, '/settings');
@@ -25,13 +29,13 @@ class PermissionsAlertWidget extends StatelessWidget {
         ])),
         actions: <Widget>[
           SimpleDialogOption(
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             onPressed: () {
               Navigator.pop(context, false);
             },
           ),
           SimpleDialogOption(
-            child: Text("Allow permissions"),
+            child: const Text("Allow permissions"),
             onPressed: () {
               Navigator.pop(context, true);
             },
@@ -43,7 +47,7 @@ class PermissionsAlertWidget extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return PermissionsAlertWidget();
+          return const PermissionsAlertWidget();
         });
   }
 }

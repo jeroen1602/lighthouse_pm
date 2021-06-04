@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   const ViveBaseStationExtraInfoAlertWidget(
@@ -69,20 +70,18 @@ class _ViveBaseStationExtraInfoAlertState
   Widget build(BuildContext context) {
     final endHint = widget.existingIdEnd;
 
-    final textTheme = Theme.of(context).textTheme;
-    final boldTheme =
-        textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold);
+    final theming = Theming.of(context);
 
     return AlertDialog(
       title: RichText(
-        text: TextSpan(style: textTheme.bodyText1, children: <InlineSpan>[
+        text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
           TextSpan(text: 'Base station id required.\n'),
           if (endHint != null) ...[
             TextSpan(
                 text:
                     'The id is found on the back and will probably end with: '),
             TextSpan(
-                style: boldTheme,
+                style: theming.bodyTextBold,
                 text: endHint.toRadixString(16).padLeft(4, '0').toUpperCase()),
             TextSpan(text: '.'),
           ] else
@@ -144,21 +143,19 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final boldTheme =
-        textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold);
+    final theming = Theming.of(context);
 
     return AlertDialog(
       title: Text("The end of the id doesn't match"),
       content: RichText(
-        text: TextSpan(style: textTheme.bodyText1, children: [
+        text: TextSpan(style: theming.bodyText, children: [
           TextSpan(text: "The id you have provided ("),
-          TextSpan(text: '$setId', style: boldTheme),
+          TextSpan(text: '$setId', style: theming.bodyTextBold),
           TextSpan(
               text: ") doesn't end the same as the end of your lighthouse's "
                   "name ("),
           TextSpan(
-              style: boldTheme,
+              style: theming.bodyTextBold,
               text: existingIdEnd
                   .toRadixString(16)
                   .padLeft(4, '0')

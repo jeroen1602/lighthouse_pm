@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 
 import 'BasePage.dart';
@@ -6,7 +7,7 @@ import 'BasePage.dart';
 class NotFoundPage extends BasePage {
   @override
   Widget buildPage(BuildContext context) {
-    final theme = Theme.of(context);
+    final theming = Theming.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -17,7 +18,7 @@ class NotFoundPage extends BasePage {
           ListTile(
             title: Text(
               '404 Not Found',
-              style: theme.textTheme.headline1,
+              style: theming.headline1,
               textAlign: TextAlign.center,
             ),
           ),

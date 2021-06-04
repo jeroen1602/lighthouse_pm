@@ -1,21 +1,23 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return AlertDialog(
         title: Text("Location permissions required"),
         content: RichText(
-            text: TextSpan(children: <InlineSpan>[
+            text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
           TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text:
-                  "Location permissions are required on Android to use Bluetooth Low Energy.\nOpen settings and go to permissions to enable location permissions (while app is in use).\n"),
+              text: "Location permissions are required on Android to use "
+                  "Bluetooth Low Energy.\nOpen settings and go to permissions "
+                  "to enable location permissions (while app is in use).\n"),
           TextSpan(
             text: "More info.",
-            style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                color: Colors.blue, decoration: TextDecoration.underline),
+            style: theming.linkTheme,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 Navigator.pushNamed(context, '/settings');

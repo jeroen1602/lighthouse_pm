@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 ///
 /// A class for generating dialogs for adding new items into the database.
@@ -230,13 +231,12 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
         },
       ));
     } else {
+      final theming = Theming.of(context);
       children.add(FocusScope(
           node: FocusScopeNode(canRequestFocus: false),
           canRequestFocus: false,
           child: TextFormField(
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: Theme.of(context).disabledColor,
-                ),
+            style: theming.subtitle,
             decoration: InputDecoration(
                 labelText: widget.item.name, hintText: 'Auto increment is on'),
           )));

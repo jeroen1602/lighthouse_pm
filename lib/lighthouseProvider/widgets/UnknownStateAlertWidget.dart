@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
@@ -23,6 +24,8 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     final actions = <Widget>[
       SimpleDialogOption(
         child: Text("Cancel"),
@@ -59,16 +62,14 @@ class UnknownStateAlertWidget extends StatelessWidget {
     return AlertDialog(
         title: Text('Unknown state'),
         content: RichText(
-          text: TextSpan(children: <InlineSpan>[
-            TextSpan(
-              style: Theme.of(context).textTheme.bodyText1,
-              text:
-                  'The state of this device is unknown. What do you want to do?\n',
+          text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+            const TextSpan(
+              text: 'The state of this device is unknown. What do you want '
+                  'to do?\n',
             ),
             TextSpan(
               text: "Help out.",
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                  color: Colors.blue, decoration: TextDecoration.underline),
+              style: theming.linkTheme,
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
                   await UnknownStateHelpOutAlertWidget.showCustomDialog(
@@ -119,6 +120,8 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return AlertDialog(
       title: Text('Help out!'),
       content: FutureBuilder<PackageInfo>(
@@ -129,66 +132,45 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
               ? createRecognizer(context, version.version)
               : null;
           return RichText(
-              text: TextSpan(children: <InlineSpan>[
+              text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+            const TextSpan(
+                text: 'Help out by leaving a comment with the following '
+                    'information on the github issue.\n\n'),
             TextSpan(
-                style: Theme.of(context).textTheme.bodyText1,
-                text:
-                    'Help out by leaving a comment with the following information on the github issue.\n\n'),
+              text: 'App version: ',
+              recognizer: recognizer,
+            ),
             TextSpan(
-              children: <InlineSpan>[
-                TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2,
-                  text: 'App version: ',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  text: '${version?.version ?? "Loading"}\n',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2,
-                  text: 'Device type: ',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  text: '${device.runtimeType}\n',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2,
-                  text: 'Firmware version: ',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  text: '${device.firmwareVersion}\n',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context).textTheme.bodyText2,
-                  text: 'Current reported state: ',
-                  recognizer: recognizer,
-                ),
-                TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  text: '0x${currentState.toRadixString(16).padLeft(2, '0')}\n',
-                  recognizer: recognizer,
-                ),
-              ],
+              style: theming.bodyTextBold,
+              text: '${version?.version ?? "Loading"}\n',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              text: 'Device type: ',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              style: theming.bodyTextBold,
+              text: '${device.runtimeType}\n',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              text: 'Firmware version: ',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              style: theming.bodyTextBold,
+              text: '${device.firmwareVersion}\n',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              text: 'Current reported state: ',
+              recognizer: recognizer,
+            ),
+            TextSpan(
+              style: theming.bodyTextBold,
+              text: '0x${currentState.toRadixString(16).padLeft(2, '0')}\n',
+              recognizer: recognizer,
             ),
           ]));
         },

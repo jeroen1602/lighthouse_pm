@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 import '../LighthouseDevice.dart';
 
@@ -7,7 +8,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
   OfflineLighthouseWidget(this.deviceId,
       {required this.onSelected,
       required this.selected,
-        required this.selecting,
+      required this.selecting,
       this.nickname,
       Key? key})
       : super(key: key);
@@ -20,19 +21,13 @@ class OfflineLighthouseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final disabledColored = theme.disabledColor;
-    final disabledTextTheme =
-        theme.textTheme.bodyText1?.copyWith(color: disabledColored);
+    final theming = Theming.of(context);
 
     return Container(
-        color:
-            selected ? Theme.of(context).selectedRowColor : Colors.transparent,
+        color: selected ? theming.selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onSelected,
-            onTap: selecting ? () {
-              onSelected();
-            } : null,
+            onTap: selecting ? onSelected : null,
             child: IntrinsicHeight(
               child: Padding(
                   padding: const EdgeInsets.all(6.0),
@@ -40,16 +35,16 @@ class OfflineLighthouseWidget extends StatelessWidget {
                     Container(
                         alignment: Alignment.topLeft,
                         child: Text('${this.nickname ?? this.deviceId}',
-                            style: theme.textTheme.headline4
-                                ?.copyWith(color: disabledColored))),
+                            style: theming.headline4
+                                ?.copyWith(color: theming.disabledColor))),
                     Row(
                       children: [
-                        Text('Offline', style: disabledTextTheme),
+                        Text('Offline', style: theming.disabledBodyText),
                         VerticalDivider(),
                         Container(
                             alignment: Alignment.bottomLeft,
                             child: Text('${this.deviceId}',
-                                style: disabledTextTheme)),
+                                style: theming.disabledBodyText)),
                       ],
                     ),
                   ])),

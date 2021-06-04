@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,17 +10,11 @@ class PrivacyPage extends BasePage {
   static const GITHUB_PAGES_PRIVACY_URL =
       "https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages";
   static const GOOGLE_PRIVACY_URL = "https://policies.google.com/privacy";
+  static const VERSION_1_1_DATE = "May 23th 2021";
 
   @override
   Widget buildPage(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final boldTheme =
-        textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold);
-    final linkTheme = textTheme.bodyText1?.copyWith(
-        color: theme.accentColor, decoration: TextDecoration.underline);
-    final olderVersionTextTheme =
-        textTheme.headline4?.copyWith(color: textTheme.bodyText1?.color);
+    final theming = Theming.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,20 +24,21 @@ class PrivacyPage extends BasePage {
         ListTile(
           title: Text(
             "Version 1.1",
-            style: boldTheme,
+            style: theming.bodyTextBold,
           ),
+          subtitle: const Text("Post $VERSION_1_1_DATE"),
         ),
         Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
             child: RichText(
-                text: TextSpan(style: textTheme.bodyText1, children: [
+                text: TextSpan(style: theming.bodyText, children: [
               const TextSpan(
                   text: "This privacy statement is the same for all "
                       "versions of this (web)app, it is divided in "
                       "a part for all versions. One for the web "
                       "version, one for the Android/ iOS version and "
                       "one for just the Android version.\n\n"),
-              TextSpan(text: 'Global\n\n', style: textTheme.headline5),
+              TextSpan(text: 'Global\n\n', style: theming.headline5),
               const TextSpan(
                   text: "This (web)app does not collect any user "
                       "information. The Android and iOS versions don't "
@@ -54,7 +50,7 @@ class PrivacyPage extends BasePage {
                       "that they collect basic information from visitors "
                       "for legal obligations. Check the "),
               TextSpan(
-                  style: linkTheme,
+                  style: theming.linkTheme,
                   text: "Github privacy statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
@@ -63,7 +59,7 @@ class PrivacyPage extends BasePage {
               const TextSpan(
                   text: " if you want more, and up-to-date "
                       "information.\n\n"),
-              TextSpan(text: 'Web app\n\n', style: textTheme.headline5),
+              TextSpan(text: 'Web app\n\n', style: theming.headline5),
               const TextSpan(
                   text: "The web app will only communicate with the "
                       "devices you (the user) give access to when you "
@@ -83,7 +79,7 @@ class PrivacyPage extends BasePage {
                       "to determine if it's a valid lighthouse device. "
                       "This happens when you first pair or every time "
                       "you scan for devices.\n\n"),
-              TextSpan(text: "Android and iOS\n\n", style: textTheme.headline5),
+              TextSpan(text: "Android and iOS\n\n", style: theming.headline5),
               const TextSpan(
                   text: "Everytime you scan for lighthouses, you also "
                       "scan for all Bluetooth low energy (BLE) devices "
@@ -94,7 +90,7 @@ class PrivacyPage extends BasePage {
                       "then it will not be considered as a valid "
                       "device, and the app won't connect to it. "
                       "\n\n"),
-              TextSpan(text: "Android\n\n", style: textTheme.headline5),
+              TextSpan(text: "Android\n\n", style: theming.headline5),
               const TextSpan(
                   text: "If you want to connect to a Bluetooth low "
                       "energy device from an Android phone, then you "
@@ -114,7 +110,7 @@ class PrivacyPage extends BasePage {
                       "Google may however still collect some data through "
                       "this connection. Check the "),
               TextSpan(
-                  style: linkTheme,
+                  style: theming.linkTheme,
                   text: "Google privacy Statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
@@ -126,7 +122,7 @@ class PrivacyPage extends BasePage {
         ListTile(
           title: Text(
             "Older versions",
-            style: olderVersionTextTheme,
+            style: theming.headline4,
           ),
         ),
         const Divider(
@@ -135,20 +131,20 @@ class PrivacyPage extends BasePage {
         ListTile(
           title: Text(
             "Version 1.0",
-            style: boldTheme,
+            style: theming.bodyTextBold,
           ),
-          subtitle: const Text("pre may 23th 2021"),
+          subtitle: const Text("Pre $VERSION_1_1_DATE"),
         ),
         Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
             child: RichText(
-              text: TextSpan(style: textTheme.bodyText1, children: [
+              text: TextSpan(style: theming.bodyText, children: [
                 const TextSpan(
                     text: "This app does not collect any user "
                         "information. In fact this app doesn't even "
                         "have the internet permission, so it can't make "
                         "any internet connections to share any data.\n\n"),
-                TextSpan(text: "Android\n\n", style: textTheme.headline5),
+                TextSpan(text: "Android\n\n", style: theming.headline5),
                 const TextSpan(
                     text: "For Android, in order for an app to use "
                         "Bluetooth Low Energy (BLE), the technology used "
