@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/LighthouseMetadataPage.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/UnknownStateAlertWidget.dart';
 
@@ -45,9 +46,9 @@ class LighthouseWidgetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theming = Theming.of(context);
     return Container(
-        color: selected ? theme.selectedRowColor : Colors.transparent,
+        color: selected ? theming.selectedRowColor : Colors.transparent,
         child: InkWell(
             onLongPress: onSelected,
             onTap: () {
@@ -69,7 +70,7 @@ class LighthouseWidgetContent extends StatelessWidget {
                                 alignment: Alignment.topLeft,
                                 child: Text(
                                     '${this.nickname ?? this.lighthouseDevice.name}',
-                                    style: theme.textTheme.headline4)),
+                                    style: theming.headline4)),
                             Container(
                                 alignment: Alignment.topLeft,
                                 child: Row(

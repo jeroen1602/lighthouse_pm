@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 
 class DeleteGroupAlertWidget extends StatelessWidget {
-  DeleteGroupAlertWidget({required this.group, Key? key}) : super(key: key);
+  const DeleteGroupAlertWidget({required this.group, Key? key})
+      : super(key: key);
 
-  Group group;
+  final Group group;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme.bodyText1;
+    final theming = Theming.of(context);
 
     return AlertDialog(
       title: Text('Delete group'),
       content: RichText(
-        text: TextSpan(children: <InlineSpan>[
-          TextSpan(
-              style: textTheme,
-              text: "Are you sure you want to delete the group "),
-          TextSpan(
-              style: textTheme?.copyWith(fontWeight: FontWeight.bold),
-              text: "${group.name}"),
-          TextSpan(style: textTheme, text: '?')
+        text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+          TextSpan(text: "Are you sure you want to delete the group "),
+          TextSpan(style: theming.bodyTextBold, text: "${group.name}"),
+          TextSpan(text: '?')
         ]),
       ),
       actions: [

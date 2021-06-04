@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
@@ -64,8 +65,8 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     }
 
     body.add(StreamBuilder<Nickname?>(
-      stream: bloc.nicknames.watchNicknameForDeviceIds(
-          widget.device.deviceIdentifier.toString()),
+      stream: bloc.nicknames
+          .watchNicknameForDeviceIds(widget.device.deviceIdentifier.toString()),
       builder: (BuildContext context, AsyncSnapshot<Nickname?> snapshot) {
         final nickname = snapshot.data;
         if (nickname != null) {
@@ -77,15 +78,14 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
             },
           );
         } else {
-          final theme = Theme.of(context);
+          final theming = Theming.of(context);
           return InkWell(
             child: ListTile(
               title: Text('Nickname'),
               subtitle: Text(
                 'Not set',
-                style: theme.textTheme.bodyText2!.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theme.textTheme.caption!.color),
+                style: theming.bodyText?.copyWith(
+                    fontStyle: FontStyle.italic, color: theming.disabledColor),
               ),
               onTap: () {
                 changeNicknameHandler(null);
@@ -123,7 +123,7 @@ class _MetadataInkWell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theming = Theming.of(context);
     return InkWell(
       child: ListTile(
         title: Text(name),
@@ -131,9 +131,8 @@ class _MetadataInkWell extends StatelessWidget {
           value ?? 'Not set',
           style: value != null
               ? null
-              : theme.textTheme.bodyText2!.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: theme.textTheme.caption!.color),
+              : theming.bodyText?.copyWith(
+                  fontStyle: FontStyle.italic, color: theming.disabledColor),
         ),
       ),
       onLongPress: () async {
@@ -159,6 +158,7 @@ class _ExtraActionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final extensions = device.deviceExtensions.toList(growable: false);
+    final theming = Theming.of(context);
 
     return Container(
         height: 165.0,
@@ -168,7 +168,7 @@ class _ExtraActionsWidget extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   'Extra actions',
-                  style: Theme.of(context).textTheme.headline5,
+                  style: theming.headline5,
                 ),
               ),
             ),
@@ -196,8 +196,8 @@ class _ExtraActionsWidget extends StatelessWidget {
                               enableFeedback: enabled,
                               elevation: 2.0,
                               fillColor: enabled
-                                  ? Theme.of(context).buttonColor
-                                  : Theme.of(context).disabledColor,
+                                  ? theming.buttonColor
+                                  : theming.disabledColor,
                               padding: const EdgeInsets.all(2.0),
                               shape: CircleBorder(),
                               child: extensions[index].icon,

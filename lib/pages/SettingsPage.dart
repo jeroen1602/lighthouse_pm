@@ -2,6 +2,7 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
@@ -55,30 +56,20 @@ class SettingsPage extends BasePage with WithBlocStateless {
     }
   }
 
-  static Color? getIconColor(IconThemeData iconTheme) {
-    final double iconOpacity = iconTheme.opacity ?? 1.0;
-    Color iconColor = iconTheme.color!;
-    if (iconOpacity != 1.0) {
-      iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
-    }
-    return iconColor;
-  }
-
   @override
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
-    final iconColor = getIconColor(theme.iconTheme);
-    final headTheme =
-        theme.textTheme.headline6?.copyWith(fontWeight: FontWeight.bold);
+    final theming = Theming.fromTheme(theme);
+    final headTheme = theming.headline6?.copyWith(fontWeight: FontWeight.bold);
 
     // region header
     final items = <Widget>[
       ListTile(
         leading: SvgPicture.asset(
           "assets/images/app-icon.svg",
-          width: 24.0,
-          height: 24.0,
-          color: iconColor,
+          width: theming.iconSizeLarge,
+          height: theming.iconSizeLarge,
+          color: theming.iconColor,
         ),
         title: Text('Lighthouse Power management', style: headTheme),
       ),
@@ -352,7 +343,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           return Column(
             children: [
               ListTile(title: Text('Shortcuts | BETA', style: headTheme)),
-              Divider(thickness: 1.5),
+              const Divider(thickness: 1.5),
               StreamBuilder<bool>(
                 stream: blocWithoutListen(context)
                     .settings
@@ -370,7 +361,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                     title: Text('BETA: enable support for shortcuts'),
                     value: snapshot.requireData,
                     inactiveThumbColor:
-                        (supported) ? null : Theme.of(context).disabledColor,
+                        (supported) ? null : theming.disabledColor,
                     onChanged: (enabled) async {
                       if (!supported) {
                         ShortcutNotSupportedWidget.showCustomDialog(context);
@@ -407,7 +398,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ListTile(
         title: Text('About', style: headTheme),
       ),
-      Divider(
+      const Divider(
         thickness: 1.5,
       ),
       ListTile(
@@ -432,14 +423,14 @@ class SettingsPage extends BasePage with WithBlocStateless {
         Divider(),
       ],
       ListTile(
-        title: Text('Fork me on Github'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Fork me on Github'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         leading: SvgPicture.asset(
           (theme.brightness == Brightness.light)
               ? "assets/images/github-dark.svg"
               : "assets/images/github-light.svg",
-          width: 24,
-          height: 24,
+          width: theming.iconSizeLarge,
+          height: theming.iconSizeLarge,
         ),
         onTap: () async {
           await launch(_GITHUB_URL);
@@ -448,12 +439,13 @@ class SettingsPage extends BasePage with WithBlocStateless {
       Divider(),
       if (LocalPlatform.isWeb) ...[
         ListTile(
-          title: Text('Try the Android app'),
-          subtitle: Text('On Google Play'),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text('Try the Android app'),
+          subtitle: const Text('On Google Play'),
+          trailing: const Icon(Icons.arrow_forward_ios),
           leading: Icon(
             CommunityMaterialIcons.google_play,
-            color: iconColor,
+            size: theming.iconSizeLarge,
+            color: theming.iconColor,
           ),
           onTap: () async {
             await launch(_GOOGLE_PLAY_URL);
@@ -461,33 +453,34 @@ class SettingsPage extends BasePage with WithBlocStateless {
         ),
         Divider(),
         ListTile(
-          title: Text('Try the Android app'),
-          subtitle: Text('On F-Droid'),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text('Try the Android app'),
+          subtitle: const Text('On F-Droid'),
+          trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             "assets/images/f-droid-logo.svg",
-            width: 24,
-            height: 24,
-            color: iconColor,
+            width: theming.iconSizeLarge,
+            height: theming.iconSizeLarge,
+            color: theming.iconColor,
           ),
           onTap: () async {
             await launch(_F_DROID_URL);
           },
         ),
-        Divider(),
+        const Divider(),
       ] else ...[
         ListTile(
-          title: Text('Try the Webapp'),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text('Try the Webapp'),
+          trailing: const Icon(Icons.arrow_forward_ios),
           leading: Icon(
             Icons.public,
-            color: iconColor,
+            size: theming.iconSizeLarge,
+            color: theming.iconColor,
           ),
           onTap: () async {
             await launch(_WEB_URL);
           },
         ),
-        Divider(),
+        const Divider(),
       ],
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
@@ -495,16 +488,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return ListTile(
-              title: Text('Version'),
+              title: const Text('Version'),
               subtitle: Text('${snapshot.error}'),
             );
           }
           final packageInfo = snapshot.data;
           if (packageInfo == null) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return ListTile(
-            title: Text('Version'),
+            title: const Text('Version'),
             subtitle: Text('${packageInfo.version}'),
             onLongPress: () async {
               await Clipboard.setData(ClipboardData(text: packageInfo.version));

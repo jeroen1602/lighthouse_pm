@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/local/MainPageSettings.dart';
@@ -108,7 +109,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
           pairedDevices = pairedDevicesSnapshot.requireData;
         }
         final shouldScanBeDisabled = onlyPairBackEnds && pairedDevices <= 0;
-        final theme = Theme.of(context);
+        final theming = Theming.of(context);
 
         return Row(
           children: [
@@ -152,7 +153,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                     heroTag: 'scanButton',
                     child: Icon(Icons.search),
                     backgroundColor:
-                        shouldScanBeDisabled ? theme.disabledColor : null,
+                        shouldScanBeDisabled ? theming.disabledColor : null,
                     elevation: shouldScanBeDisabled ? 0 : null,
                     hoverElevation: shouldScanBeDisabled ? 0 : null,
                     onPressed: () async {
@@ -300,6 +301,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final groups = tuple.item3;
               final notGroupedDevices = _devicesNotInAGroup(devices, groups);
               final listLength = groups.length + notGroupedDevices.length;
+              final theming = Theming.of(context);
 
               final Widget body = (devices.isEmpty && updates > 2)
                   ? StreamBuilder<bool>(
@@ -315,7 +317,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               padding: EdgeInsets.all(12),
                               child: Text(
                                 'Unable to find lighthouses, try some troubleshooting.',
-                                style: Theme.of(context).textTheme.headline4,
+                                style: theming.headline4,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -415,21 +417,22 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final List<Widget> actions = [];
               Color? actionBarColor;
               if (selecting) {
-                actionBarColor = Theme.of(context).selectedRowColor;
+                actionBarColor = theming.selectedRowColor;
                 if (selected.length == 1) {
-                  actions.add(
-                      _getChangeNicknameAction(context, devices, nicknames));
+                  actions.add(_getChangeNicknameAction(
+                      context, devices, nicknames, theming));
                 }
                 if (selected.isNotEmpty) {
-                  actions.add(_getChangeGroupAction(context, groups, devices));
+                  actions.add(
+                      _getChangeGroupAction(context, groups, devices, theming));
                 }
                 final Group? currentlySelectedGroup =
                     _getSelectedGroupFromSelected(groups);
                 if (currentlySelectedGroup != null) {
                   actions.add(_getChangeGroupNameAction(
-                      context, currentlySelectedGroup));
+                      context, currentlySelectedGroup, theming));
                   actions.add(_getDeleteGroupNameAction(
-                      context, currentlySelectedGroup));
+                      context, currentlySelectedGroup, theming));
                 }
               }
               final Widget? leading = selecting
@@ -467,11 +470,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     BuildContext context,
     List<LighthouseDevice> devices,
     Map<String, String> nicknames,
+    Theming theming,
   ) {
     return IconButton(
       tooltip: 'Change nickname',
       icon: SvgPicture.asset('assets/images/nickname-icon.svg',
-          color: Theme.of(context).appBarTheme.iconTheme?.color),
+          color: theming.iconColor),
       onPressed: () async {
         if (selected.length == 1) {
           final item = selected.first;
@@ -507,12 +511,15 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the action for changing a group.
-  IconButton _getChangeGroupAction(BuildContext context,
-      List<GroupWithEntries> groups, List<LighthouseDevice> devices) {
+  IconButton _getChangeGroupAction(
+      BuildContext context,
+      List<GroupWithEntries> groups,
+      List<LighthouseDevice> devices,
+      Theming theming) {
     return IconButton(
         tooltip: 'Change group',
         icon: SvgPicture.asset('assets/images/group-add-icon.svg',
-            color: Theme.of(context).appBarTheme.iconTheme?.color),
+            color: theming.iconColor),
         onPressed: () async {
           final Group? commonGroup = _getGroupFromSelected(groups);
           final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
@@ -570,11 +577,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the change name action for a group.
-  IconButton _getChangeGroupNameAction(BuildContext context, Group group) {
+  IconButton _getChangeGroupNameAction(
+      BuildContext context, Group group, Theming theming) {
     return IconButton(
         tooltip: 'Rename group',
         icon: SvgPicture.asset('assets/images/group-edit-icon.svg',
-            color: Theme.of(context).appBarTheme.iconTheme?.color),
+            color: theming.iconColor),
         onPressed: () async {
           final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
               context,
@@ -590,11 +598,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the action for deleting a group.
-  IconButton _getDeleteGroupNameAction(BuildContext context, Group group) {
+  IconButton _getDeleteGroupNameAction(
+      BuildContext context, Group group, Theming theming) {
     return IconButton(
         tooltip: 'Delete group',
         icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
-            color: Theme.of(context).appBarTheme.iconTheme?.color),
+            color: theming.iconColor),
         onPressed: () async {
           if (await DeleteGroupAlertWidget.showCustomDialog(context,
               group: group)) {
@@ -731,7 +740,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   final BluetoothAdapterState? state;
   final MainPageSettings settings;
 
-  Widget _toSettingsButton(BuildContext context) {
+  Widget _toSettingsButton(BuildContext context, Theming theming) {
     if (LocalPlatform.isAndroid && state == BluetoothAdapterState.off) {
       return ElevatedButton(
           onPressed: () async {
@@ -740,10 +749,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
           },
           child: Text(
             'Enable Bluetooth.',
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1
-                ?.copyWith(color: Colors.black),
+            style: theming.bodyText?.copyWith(color: Colors.black),
           ));
     }
     return Container();
@@ -751,7 +757,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theming = Theming.of(context);
     final stateName = state != null
         ? BluetoothAdapterStateFunctions.stateToString(state!)
         : 'not available';
@@ -813,15 +819,15 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
             ),
             Text(
               'Bluetooth is $stateName.',
-              style: textTheme.headline6?.copyWith(color: Colors.white),
+              style: theming.headline6?.copyWith(color: Colors.white),
             ),
             RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: textTheme.subtitle1?.copyWith(color: Colors.white),
+                  style: theming.subtitle?.copyWith(color: Colors.white),
                   children: subText,
                 )),
-            _toSettingsButton(context)
+            _toSettingsButton(context, theming)
           ],
         ),
       ),

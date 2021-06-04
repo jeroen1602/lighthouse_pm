@@ -2,6 +2,7 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/EnableBluetoothDialogFlow.dart';
 import 'package:lighthouse_pm/dialogs/LocationPermissionDialogFlow.dart';
@@ -239,6 +240,8 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theming = Theming.of(context);
+
     return Row(
       children: [
         Expanded(
@@ -251,7 +254,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
         RawMaterialButton(
             onPressed: onTap,
             elevation: 2.0,
-            fillColor: Theme.of(context).buttonColor,
+            fillColor: theming.buttonColor,
             padding: const EdgeInsets.all(8.0),
             shape: const CircleBorder(),
             child: Icon(

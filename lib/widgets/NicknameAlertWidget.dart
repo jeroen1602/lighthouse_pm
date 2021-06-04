@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/tables/NicknameTable.dart';
 
@@ -49,20 +50,20 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme.bodyText1;
+    final theming = Theming.of(context);
 
     return AlertDialog(
       title: RichText(
           text: TextSpan(
+        style: theming.bodyText,
         children: <InlineSpan>[
-          TextSpan(style: textTheme, text: "Set a nickname for "),
+          TextSpan(text: "Set a nickname for "),
           TextSpan(
-              style: textTheme?.copyWith(fontWeight: FontWeight.bold),
+              style: theming.bodyTextBold,
               text: widget.deviceName == null
                   ? widget.deviceId
                   : widget.deviceName),
-          TextSpan(style: textTheme, text: "."),
+          TextSpan(text: "."),
         ],
       )),
       content: TextField(
@@ -81,15 +82,11 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           onPressed: () {
             final text = textController.text.trim();
             if (text.isEmpty) {
-              Navigator.pop(
-                  context,
-                  NicknamesHelper(
-                      deviceId: widget.deviceId, nickname: null));
+              Navigator.pop(context,
+                  NicknamesHelper(deviceId: widget.deviceId, nickname: null));
             } else {
-              Navigator.pop(
-                  context,
-                  NicknamesHelper(
-                      deviceId: widget.deviceId, nickname: text));
+              Navigator.pop(context,
+                  NicknamesHelper(deviceId: widget.deviceId, nickname: text));
             }
           },
         ),

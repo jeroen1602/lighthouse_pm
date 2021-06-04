@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 import '../LighthousePowerState.dart';
 
@@ -18,7 +19,8 @@ class LighthousePowerButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theming = Theming.of(context);
+
     Color color = Colors.grey;
     switch (powerState) {
       case LighthousePowerState.ON:
@@ -40,7 +42,7 @@ class LighthousePowerButtonWidget extends StatelessWidget {
           onPressed: disabled ? () {} : onPress,
           onLongPress: onLongPress,
           elevation: disabled ? 0.0 : 2.0,
-          fillColor: disabled ? theme.disabledColor : theme.buttonColor,
+          fillColor: disabled ? theming.disabledColor : theming.buttonColor,
           padding: const EdgeInsets.all(2.0),
           shape: CircleBorder(),
           child: Icon(

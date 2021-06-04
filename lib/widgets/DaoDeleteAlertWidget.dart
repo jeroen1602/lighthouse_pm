@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 
 /// A dialog for changing the nickname of a lighthouse
 class DaoDeleteAlertWidget extends StatelessWidget {
@@ -12,33 +13,21 @@ class DaoDeleteAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theming = Theming.of(context);
     return AlertDialog(
       title: RichText(
-          text: TextSpan(children: [
-        TextSpan(
-            text: 'Do you want to delete: ', style: theme.textTheme.bodyText1),
-        TextSpan(
-            text: '$title',
-            style: theme.textTheme.bodyText1!
-                .copyWith(fontWeight: FontWeight.bold)),
-        TextSpan(text: '?', style: theme.textTheme.bodyText1),
+          text: TextSpan(style: theming.bodyText, children: [
+        TextSpan(text: 'Do you want to delete: '),
+        TextSpan(text: '$title', style: theming.bodyTextBold),
+        TextSpan(text: '?'),
       ])),
       content: RichText(
           text: TextSpan(children: [
-        TextSpan(text: 'This will delete:\n', style: theme.textTheme.bodyText1),
-        TextSpan(
-            text: '$title\n',
-            style: theme.textTheme.bodyText1!
-                .copyWith(fontWeight: FontWeight.bold)),
-        TextSpan(
-            text: '$subTitle\n',
-            style: theme.textTheme.bodyText1!
-                .copyWith(fontWeight: FontWeight.bold)),
+        TextSpan(text: 'This will delete:\n'),
+        TextSpan(text: '$title\n$subTitle\n', style: theming.bodyTextBold),
         TextSpan(
             text: 'from the database.\n'
-                'Since this is a test page it may break stuff if you do this!',
-            style: theme.textTheme.bodyText1),
+                'Since this is a test page it may break stuff if you do this!'),
       ])),
       actions: [
         SimpleDialogOption(

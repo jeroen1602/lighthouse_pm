@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/data/tables/GroupTable.dart';
@@ -128,9 +129,11 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     final devicePowerStates = devices.map((device) {
       final String deviceId = device.deviceIdentifier.toString();
       return MergeStream([
-        Stream.value(MapEntry(deviceId, Tuple2(0xFF, LighthousePowerState.UNKNOWN))),
+        Stream.value(
+            MapEntry(deviceId, Tuple2(0xFF, LighthousePowerState.UNKNOWN))),
         device.powerState.map((event) {
-          return MapEntry(deviceId, Tuple2(event, device.powerStateFromByte(event)));
+          return MapEntry(
+              deviceId, Tuple2(event, device.powerStateFromByte(event)));
         })
       ]);
     });
@@ -359,10 +362,10 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theming = Theming.of(context);
 
     return Container(
-      color: selected ? theme.selectedRowColor : Colors.transparent,
+      color: selected ? theming.selectedRowColor : Colors.transparent,
       child: InkWell(
           onLongPress: onSelected,
           onTap: this.selecting ? onSelected : null,
@@ -375,8 +378,7 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
                   padding: const EdgeInsets.all(6.0),
                   child: Text(
                     group.name,
-                    style: theme.textTheme.headline4
-                        ?.copyWith(color: theme.textTheme.bodyText1?.color),
+                    style: theming.headline4,
                   ),
                 )),
                 LighthousePowerButtonWidget(
