@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
@@ -10,18 +11,17 @@ import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import '../../ble/BluetoothCharacteristic.dart';
 import '../../ble/BluetoothDevice.dart';
 import '../../ble/BluetoothService.dart';
-import '../../ble/DefaultCharacteristics.dart';
 import '../../ble/DeviceIdentifier.dart';
 import '../../ble/Guid.dart';
 
 class FakeBluetoothDevice extends LHBluetoothDevice {
   final LHDeviceIdentifier deviceIdentifier;
-  final _SimpleBluetoothService service;
+  final SimpleBluetoothService service;
   final String _name;
 
   FakeBluetoothDevice(
       List<LHBluetoothCharacteristic> characteristics, int id, String name)
-      : service = _SimpleBluetoothService(characteristics),
+      : service = SimpleBluetoothService(characteristics),
         deviceIdentifier = _generateIdentifier(id),
         _name = name;
 
@@ -66,11 +66,20 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
           _FakeHardwareRevisionCharacteristic(),
           _FakeManufacturerNameCharacteristic(),
           _FakeChannelCharacteristic(),
-          _FakeLighthouseV2PowerCharacteristic()
+          ..._getPowerAndIdentifyCharacteristic(),
         ], deviceId, _getNameFromInt(deviceName));
 
   static String _getNameFromInt(int deviceName) {
     return 'LHB-000000${deviceName.toRadixString(16).padLeft(2, '0').toUpperCase()}';
+  }
+
+  static List<FakeReadWriteCharacteristic>
+      _getPowerAndIdentifyCharacteristic() {
+    final powerCharacteristic = _FakeLighthouseV2PowerCharacteristic();
+    return [
+      powerCharacteristic,
+      _FakeLighthouseV2IdentifyCharacteristic(powerCharacteristic)
+    ];
   }
 }
 
@@ -90,8 +99,9 @@ class FakeViveBaseStationDevice extends FakeBluetoothDevice {
   }
 }
 
-class _SimpleBluetoothService extends LHBluetoothService {
-  _SimpleBluetoothService(List<LHBluetoothCharacteristic> characteristics)
+@visibleForTesting
+class SimpleBluetoothService extends LHBluetoothService {
+  SimpleBluetoothService(List<LHBluetoothCharacteristic> characteristics)
       : _characteristics = characteristics;
 
   List<LHBluetoothCharacteristic> _characteristics;
@@ -146,40 +156,40 @@ class _FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeFirmwareCharacteristic()
       : super(
             _intListFromString('FAKE_DEVICE'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC));
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .FIRMWARE_REVISION_STRING.uuid));
 }
 
 class _FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeModelNumberCharacteristic()
       : super(
             _intListFromNumber(0xFF),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.MODEL_NUMBER_STRING_CHARACTERISTIC));
+            LighthouseGuid.fromString(
+                BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid));
 }
 
 class _FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeSerialNumberCharacteristic()
       : super(
             _intListFromNumber(0xFF),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.SERIAL_NUMBER_STRING_CHARACTERISTIC));
+            LighthouseGuid.fromString(
+                BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid));
 }
 
 class _FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeHardwareRevisionCharacteristic()
       : super(
             _intListFromString('FAKE_REVISION'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.HARDWARE_REVISION_CHARACTERISTIC));
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .HARDWARE_REVISION_STRING.uuid));
 }
 
 class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeManufacturerNameCharacteristic()
       : super(
             _intListFromString('LIGHTHOUSE PM By Jeroen1602'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC));
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .MANUFACTURER_NAME_STRING.uuid));
 }
 //endregion
 
@@ -245,6 +255,25 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
   }
 }
 
+class _FakeLighthouseV2IdentifyCharacteristic
+    extends FakeReadWriteCharacteristic {
+  _FakeLighthouseV2IdentifyCharacteristic(this.powerCharacteristic)
+      : super(
+          LighthouseGuid.fromString("00008421-1212-EFDE-1523-785FEABCD124"),
+        );
+
+  final _FakeLighthouseV2PowerCharacteristic powerCharacteristic;
+
+  @override
+  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+    if (data.length == 1 && data[0] == 0x00) {
+      await powerCharacteristic.write([0x01], withoutResponse: withoutResponse);
+    } else {
+      debugPrint("Send unrecognized data to the identify characteristic");
+    }
+  }
+}
+
 class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
   _FakeViveBaseStationCharacteristic()
       : super(
@@ -272,13 +301,6 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
       changeState(LighthousePowerState.SLEEP);
     }
   }
-}
-
-LighthouseGuid _fromDefaultCharacteristic(
-    DefaultCharacteristics defaultCharacteristics) {
-  final data = ByteData(16);
-  data.setUint32(0, defaultCharacteristics.uuid, Endian.big);
-  return LighthouseGuid.fromBytes(data);
 }
 
 List<int> _intListFromString(String data) {
