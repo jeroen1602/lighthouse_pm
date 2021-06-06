@@ -20,12 +20,15 @@ import '../deviceExtensions/SleepExtension.dart';
 import '../widgets/ViveBaseStationExtraInfoAlertWidget.dart';
 import 'BLEDevice.dart';
 
-const String _POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
+
 
 class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   ViveBaseStationDevice(LHBluetoothDevice device, ViveBaseStationDao dao)
       : _viveDao = dao,
         super(device);
+
+  static const String POWER_SERVICE  = '0000cb00-0000-1000-8000-00805f9b34fb';
+  static const String POWER_CHARACTERISTIC = '0000cb01-0000-1000-8000-00805f9b34fb';
 
   @override
   final Set<DeviceExtension> deviceExtensions = Set();
@@ -178,7 +181,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
         await this.device.discoverServices();
 
     final powerCharacteristic =
-        LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+        LighthouseGuid.fromString(POWER_CHARACTERISTIC);
 
     for (final service in services) {
       // Find the correct characteristic.

@@ -7,6 +7,7 @@ import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
+import 'package:lighthouse_pm/lighthouseProvider/devices/ViveBaseStationDevice.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
@@ -92,7 +93,7 @@ class FakeViveBaseStationDevice extends FakeBluetoothDevice {
           _FakeSerialNumberCharacteristic(),
           _FakeHardwareRevisionCharacteristic(),
           _FakeManufacturerNameCharacteristic(),
-          _FakeViveBaseStationCharacteristic()
+          FakeViveBaseStationCharacteristic()
         ], deviceId, _getNameFromInt(deviceName));
 
   static String _getNameFromInt(int deviceName) {
@@ -284,10 +285,12 @@ class FakeLighthouseV2IdentifyCharacteristic
   }
 }
 
-class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
-  _FakeViveBaseStationCharacteristic()
-      : super(
-            LighthouseGuid.fromString('0000cb01-0000-1000-8000-00805f9b34fb')) {
+@visibleForTesting
+class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
+  @visibleForTesting
+  FakeViveBaseStationCharacteristic()
+      : super(LighthouseGuid.fromString(
+            ViveBaseStationDevice.POWER_CHARACTERISTIC)) {
     data.addAll([0x00, 0x12]);
   }
 
@@ -305,10 +308,17 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+    if (data.length < 4) {
+      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      return;
+    }
     if (data[1] == 0x00 && data[2] == 0x00 && data[3] == 0x00) {
       changeState(LighthousePowerState.ON);
     } else if (data[1] == 0x02 && data[2] == 0x00 && data[3] == 0x01) {
       changeState(LighthousePowerState.SLEEP);
+    } else {
+      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      return;
     }
   }
 }

@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevice.dart';
+import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 
 void main() {
-  LocalPlatform.overridePlatform = PlatformOverride.android;
+
+  setUp(() {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+  });
 
   test('Should create FakeBluetoothDevice', () async {
     final device = FakeBluetoothDevice([], 0, 'TEST-DEVICE');
@@ -19,6 +23,35 @@ void main() {
     expect(services.length, 1);
     expect(services[0].characteristics, []);
     expect(services[0].uuid.toString(), "00000000-0000-0000-0000-000000000001");
+  });
+
+  test('FakeBluetoothDevice should always be connected', () async {
+    LocalPlatform.overridePlatform = PlatformOverride.web;
+
+    final device = FakeBluetoothDevice([], 0, 'TEST-DEVICE');
+
+    expect(device.name, 'TEST-DEVICE');
+    expect(device.id.toString(), 'aAAAAAAAAAAAAAAAAAAAAA==');
+    expect(device.id.toString()[0], 'a', reason: 'Should start with a lower case a');
+  });
+
+  test('FakeBluetoothDevice should insert lower case for web devices', () async {
+    final device = FakeBluetoothDevice([], 0, 'TEST-DEVICE');
+
+    expect(device.name, 'TEST-DEVICE');
+    expect(device.id.toString(), '00:00:00:00:00:00');
+
+    expect(await device.state.first, LHBluetoothDeviceState.connected);
+
+    await device.disconnect();
+
+    expect(await device.state.first, LHBluetoothDeviceState.connected,
+        reason: 'Fake devices cannot be disconnected.');
+
+    await device.connect();
+
+    expect(await device.state.first, LHBluetoothDeviceState.connected,
+        reason: 'Fake devices cannot be disconnected.');
   });
 
   test('Should create FakeLighthouseV2Device', () async {
@@ -358,6 +391,56 @@ void main() {
           reason: "Power state should stay off.");
       await Future.delayed(Duration(milliseconds: 1));
     }
+  });
+
+  test('Should be able to go to on, FakeViveBaseStationCharacteristic',
+      () async {
+    final power = FakeViveBaseStationCharacteristic();
+
+    // Not the real command but a fake one that should work
+    // Turn it on
+    power.write([0x12, 0x00, 0x00, 0x00]);
+
+    // Read the power state to verify (the real device doesn't have this but we
+    // need to verify somehow)
+    expect(await power.read(), [0x00, 0x015],
+        reason: "Should have turned on the device.");
+  });
+
+  test('Should be able to go to sleep, FakeViveBaseStationCharacteristic',
+      () async {
+    final power = FakeViveBaseStationCharacteristic();
+
+    // Not the real command but a fake one that should work
+    // Turn it off/ sleep
+    power.write([0x12, 0x02, 0x00, 0x01]);
+
+    // Read the power state to verify (the real device doesn't have this but we
+    // need to verify somehow)
+    expect(await power.read(), [0x00, 0x012],
+        reason: "Should have put the device to sleep.");
+  });
+
+  test(
+      'Should do nothing with incorrect command, FakeViveBaseStationCharacteristic',
+      () async {
+    final power = FakeViveBaseStationCharacteristic();
+
+    final before = await power.read();
+
+    // incorrect command
+    power.write([0x01]);
+
+    // Read the power state to verify (the real device doesn't have this but we
+    // need to verify somehow)
+    expect(await power.read(), before, reason: "Should not have changed");
+
+    // incorrect command
+    power.write([0x12, 0xFF, 0xFF, 0xFF]);
+
+    // Read the power state to verify (the real device doesn't have this but we
+    // need to verify somehow)
+    expect(await power.read(), before, reason: "Should not have changed");
   });
 }
 

@@ -4,8 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
-class FakeDeviceIdentifier {
-  FakeDeviceIdentifier._();
+abstract class FakeDeviceIdentifier {
 
   static LHDeviceIdentifier generateDeviceIdentifier(int seed) {
     if (LocalPlatform.isAndroid) {

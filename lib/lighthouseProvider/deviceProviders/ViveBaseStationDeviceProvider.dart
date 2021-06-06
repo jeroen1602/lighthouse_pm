@@ -49,29 +49,29 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
 
   @override
   List<LighthouseGuid> get characteristics => [
-    LighthouseGuid.fromString('0000cb01-0000-1000-8000-00805f9b34fb'),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
-  ];
+        LighthouseGuid.fromString(ViveBaseStationDevice.POWER_CHARACTERISTIC),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
+      ];
 
   @override
   List<LighthouseGuid> get optionalServices => [
-    LighthouseGuid.fromString(
-        BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
-  ];
+        LighthouseGuid.fromString(
+            BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
+      ];
 
   @override
   List<LighthouseGuid> get requiredServices => [
-    LighthouseGuid.fromString('0000cb00-0000-1000-8000-00805f9b34fb'),
-  ];
+        LighthouseGuid.fromString(ViveBaseStationDevice.POWER_SERVICE),
+      ];
 
   @override
   String get namePrefix => "HTC BS";
