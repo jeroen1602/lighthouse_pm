@@ -447,12 +447,11 @@ void main() {
 Future<int> getNextPowerState(FakeLighthouseV2PowerCharacteristic power,
     int previous, Duration timeout) async {
   final beforeTime = DateTime.now().add(timeout).millisecondsSinceEpoch;
-  int? currentState;
   while (true) {
-    currentState = await power.readUint32();
+    final currentState = await power.readUint32();
     // Give the other thread time to finish.
     if (currentState != previous) {
-      break;
+      return currentState;
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now > beforeTime) {
@@ -461,6 +460,4 @@ Future<int> getNextPowerState(FakeLighthouseV2PowerCharacteristic power,
     }
     await Future.delayed(Duration(microseconds: 10));
   }
-
-  return currentState;
 }
