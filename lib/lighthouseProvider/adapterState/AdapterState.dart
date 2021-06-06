@@ -9,8 +9,7 @@ enum BluetoothAdapterState {
   error
 }
 
-class BluetoothAdapterStateFunctions {
-  BluetoothAdapterStateFunctions._();
+abstract class BluetoothAdapterStateFunctions {
 
   static String stateToString(BluetoothAdapterState state) {
     switch (state) {

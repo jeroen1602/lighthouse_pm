@@ -15,20 +15,18 @@ class LighthousePowerState {
   static const BOOTING = const LighthousePowerState._internal('Booting', 3);
   static const STANDBY = const LighthousePowerState._internal('Standby', 4);
 
+  static const values = [
+    SLEEP,
+    ON,
+    UNKNOWN,
+    BOOTING,
+    STANDBY,
+  ];
+
   static LighthousePowerState fromId(int id) {
-    switch (id) {
-      case 0:
-        return SLEEP;
-      case 1:
-        return ON;
-      case 2:
-        return UNKNOWN;
-      case 3:
-        return BOOTING;
-      case 4:
-        return STANDBY;
-      default:
-        throw ArgumentError('Unknown id provided!');
+    if (id >= 0 && id < values.length) {
+      return values[id];
     }
+    throw ArgumentError('Unknown id provided!');
   }
 }

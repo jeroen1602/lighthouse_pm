@@ -2,26 +2,16 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 
-typedef int _GetByte(int offset);
-
 ///
 /// Extension functions for [ByteData]
 ///
 extension ByteDataFunctions on ByteData {
   List<int> toUint8List() {
-    return this._toByteList(this.getUint8);
+    return this.buffer.asUint8List();
   }
 
   List<int> toInt8List() {
-    return this._toByteList(this.getInt8);
-  }
-
-  List<int> _toByteList(_GetByte getByte) {
-    final List<int> bytes = List<int>.filled(this.lengthInBytes, 0x00);
-    for (int i = 0; i < this.lengthInBytes; i++) {
-      bytes[i] = getByte(i);
-    }
-    return bytes;
+    return this.buffer.asInt8List();
   }
 
   int calculateHashCode() {
@@ -38,7 +28,7 @@ class ReadOnlyByteData implements ByteData {
 
   ReadOnlyByteData(int length) : _byteData = ByteData(length);
 
-  ReadOnlyByteData.fromByteData(this._byteData);
+  ReadOnlyByteData.fromByteData(ByteData byteData) : _byteData = byteData;
 
   @override
   ByteBuffer get buffer => _byteData.buffer;
