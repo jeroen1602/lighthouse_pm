@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Install and set Flutter version
         uses: subosito/flutter-action@v1.5.1
