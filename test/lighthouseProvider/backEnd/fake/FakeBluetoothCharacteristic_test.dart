@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevice.dart';
-import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 
 import '../../ble/TestCharacteristic.dart';
 
