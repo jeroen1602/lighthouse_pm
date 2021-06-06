@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
+
 import '../helpers/ByteDataExtensions.dart';
 
 ///
@@ -50,7 +51,7 @@ class LighthouseGuid {
   }
 
   operator ==(other) =>
-      other is LighthouseGuid && this._hashCode == other._hashCode;
+      other is LighthouseGuid && this.hashCode == other.hashCode;
 
   @override
   int get hashCode => this._hashCode;
@@ -77,24 +78,33 @@ class LighthouseGuid {
 class Guid32 extends LighthouseGuid {
   Guid32.empty() : super.fromBytes(ByteData(4));
 
-  Guid32.fromInt32(int bytes) : super.fromBytes(ByteData(4)) {
-    super._bytes.setInt32(0, bytes, Endian.big);
+  Guid32.fromInt32(int input) : super.fromBytes(_fromInt32(input));
+
+  Guid32.fromLighthouseGuid(LighthouseGuid old)
+      : super.fromBytes(_lighthouseGuid(old));
+
+  static ByteData _fromInt32(int input) {
+    final bytes = ByteData(4);
+    bytes.setInt32(0, input, Endian.big);
+    return bytes;
   }
 
-  Guid32.fromLighthouseGuid(LighthouseGuid old) : super.fromBytes(ByteData(4)) {
-    super._bytes.setInt32(0, old._bytes.getUint32(0, Endian.big), Endian.big);
+  static ByteData _lighthouseGuid(LighthouseGuid old) {
+    final bytes = ByteData(4);
+    bytes.setInt32(0, old._bytes.getInt32(0, Endian.big), Endian.big);
+    return bytes;
   }
 
   @override
   String toString() {
-    return "${_bytes.getUint32(0, Endian.big)}";
+    return "${_bytes.getUint32(0, Endian.big).toRadixString(16).toUpperCase().padLeft(8, '0')}";
   }
 
   @override
-  operator ==(other) => other is Guid32 && this._hashCode == other._hashCode;
+  operator ==(other) => other is Guid32 && this.hashCode == other.hashCode;
 
   @override
-  int get hashCode => super.hashCode;
+  int get hashCode => this._hashCode;
 
   bool isEqualToInt32(int other) {
     return this._bytes.getUint32(0, Endian.big) == other;

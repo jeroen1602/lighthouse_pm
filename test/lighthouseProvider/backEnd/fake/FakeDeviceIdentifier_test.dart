@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 
 void main() {
   test('Should generate correct Android identifiers', () {
@@ -95,6 +96,45 @@ void main() {
 
   test('Should generate correct iOS identifiers', () {
     expect(() => FakeDeviceIdentifier.generateDeviceIdentifierIOS(0),
+        throwsA(TypeMatcher<UnimplementedError>()));
+  });
+
+  test('Should generate correct identifier for os', () {
+    // Test platform is probably linux so it should crash for now.
+    expect(() => FakeDeviceIdentifier.generateDeviceIdentifier(0),
+        throwsA(TypeMatcher<UnsupportedError>()));
+
+    // Should generate Android identifier
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    expect(FakeDeviceIdentifier.generateDeviceIdentifier(0).toString(),
+        '00:00:00:00:00:00');
+
+    // Should generate web identifier
+    LocalPlatform.overridePlatform = PlatformOverride.web;
+    final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifier(1);
+    expect(identifier1.toString(), "AAAAAAAAAAAAAAAAAAAAAQ==");
+    final decoded1 = base64Decode(identifier1.toString());
+    expect(decoded1.length, 16);
+    expect(decoded1[0], 0);
+    expect(decoded1[1], 0);
+    expect(decoded1[2], 0);
+    expect(decoded1[3], 0);
+    expect(decoded1[4], 0);
+    expect(decoded1[5], 0);
+    expect(decoded1[6], 0);
+    expect(decoded1[7], 0);
+    expect(decoded1[8], 0);
+    expect(decoded1[9], 0);
+    expect(decoded1[10], 0);
+    expect(decoded1[11], 0);
+    expect(decoded1[12], 0);
+    expect(decoded1[13], 0);
+    expect(decoded1[14], 0);
+    expect(decoded1[15], 1);
+
+    // Should generate ios identifier
+    LocalPlatform.overridePlatform = PlatformOverride.ios;
+    expect(() => FakeDeviceIdentifier.generateDeviceIdentifier(0),
         throwsA(TypeMatcher<UnimplementedError>()));
   });
 }
