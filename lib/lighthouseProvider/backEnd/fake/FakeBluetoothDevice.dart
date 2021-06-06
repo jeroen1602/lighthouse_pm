@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
+import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
@@ -75,10 +76,10 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
 
   static List<FakeReadWriteCharacteristic>
       _getPowerAndIdentifyCharacteristic() {
-    final powerCharacteristic = _FakeLighthouseV2PowerCharacteristic();
+    final powerCharacteristic = FakeLighthouseV2PowerCharacteristic();
     return [
       powerCharacteristic,
-      _FakeLighthouseV2IdentifyCharacteristic(powerCharacteristic)
+      FakeLighthouseV2IdentifyCharacteristic(powerCharacteristic)
     ];
   }
 }
@@ -155,7 +156,7 @@ abstract class FakeReadOnlyCharacteristic extends LHBluetoothCharacteristic {
 class _FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeFirmwareCharacteristic()
       : super(
-            _intListFromString('FAKE_DEVICE'),
+            intListFromString('FAKE_DEVICE'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
                 .FIRMWARE_REVISION_STRING.uuid));
 }
@@ -163,7 +164,7 @@ class _FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
 class _FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeModelNumberCharacteristic()
       : super(
-            _intListFromNumber(0xFF),
+            intListFromNumber(0xFF),
             LighthouseGuid.fromString(
                 BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid));
 }
@@ -171,7 +172,7 @@ class _FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
 class _FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeSerialNumberCharacteristic()
       : super(
-            _intListFromNumber(0xFF),
+            intListFromNumber(0xFF),
             LighthouseGuid.fromString(
                 BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid));
 }
@@ -179,7 +180,7 @@ class _FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
 class _FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeHardwareRevisionCharacteristic()
       : super(
-            _intListFromString('FAKE_REVISION'),
+            intListFromString('FAKE_REVISION'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
                 .HARDWARE_REVISION_STRING.uuid));
 }
@@ -187,7 +188,7 @@ class _FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
 class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeManufacturerNameCharacteristic()
       : super(
-            _intListFromString('LIGHTHOUSE PM By Jeroen1602'),
+            intListFromString('LIGHTHOUSE PM By Jeroen1602'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
                 .MANUFACTURER_NAME_STRING.uuid));
 }
@@ -195,14 +196,18 @@ class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
 
 class _FakeChannelCharacteristic extends FakeReadOnlyCharacteristic {
   _FakeChannelCharacteristic()
-      : super(_intListFromNumber(0xFF),
-            LighthouseGuid.fromString('00001524-1212-EFDE-1523-785FEABCD124'));
+      : super(
+            intListFromNumber(0xFF),
+            LighthouseGuid.fromString(
+                LighthouseV2Device.CHANNEL_CHARACTERISTIC));
 }
 
-class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
-  _FakeLighthouseV2PowerCharacteristic()
-      : super(
-            LighthouseGuid.fromString('00001525-1212-efde-1523-785feabcd124')) {
+@visibleForTesting
+class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
+  @visibleForTesting
+  FakeLighthouseV2PowerCharacteristic()
+      : super(LighthouseGuid.fromString(
+            LighthouseV2Device.POWER_CHARACTERISTIC)) {
     if (random.nextBool()) {
       this.data.add(0x00); // sleep
     } else {
@@ -226,14 +231,17 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
         break;
       case 0x01:
       case 0x02:
+        // Go from on to standby
         if (this.data[0] == 0x0b && byte == 0x02) {
           this.data[0] = byte;
           break;
         }
+        // Go from standby to on
         if (this.data[0] == 0x02 && byte == 0x01) {
           this.data[0] = 0x0b;
           break;
         }
+        // Go from off to standby/ on.
         this.data[0] = byte;
         Future.delayed(Duration(milliseconds: 10)).then((value) async {
           // booting
@@ -255,14 +263,16 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
   }
 }
 
-class _FakeLighthouseV2IdentifyCharacteristic
+@visibleForTesting
+class FakeLighthouseV2IdentifyCharacteristic
     extends FakeReadWriteCharacteristic {
-  _FakeLighthouseV2IdentifyCharacteristic(this.powerCharacteristic)
+  @visibleForTesting
+  FakeLighthouseV2IdentifyCharacteristic(this.powerCharacteristic)
       : super(
-          LighthouseGuid.fromString("00008421-1212-EFDE-1523-785FEABCD124"),
+          LighthouseGuid.fromString(LighthouseV2Device.IDENTIFY_CHARACTERISTIC),
         );
 
-  final _FakeLighthouseV2PowerCharacteristic powerCharacteristic;
+  final FakeLighthouseV2PowerCharacteristic powerCharacteristic;
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
@@ -303,11 +313,23 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
   }
 }
 
-List<int> _intListFromString(String data) {
+@visibleForTesting
+List<int> intListFromString(String data) {
   return Utf8Encoder().convert(data).toList();
 }
 
-List<int> _intListFromNumber(int number) {
+///
+/// Converts a number to an int list. Will also trim the leading 00's from the
+/// number. On io platforms it will work with a max of 64bit ints, for web it
+/// will work with a max of 32bit ints.
+///
+/// If the input number is 0xFF00, then the output will be [0xFF, 0x00]. Where
+/// the leading 0x00's have been stripped from the conversion.
+///
+/// If the input is 0x00, then the output will be [] (empty list).
+///
+@visibleForTesting
+List<int> intListFromNumber(int number) {
   final data = ByteData(LocalPlatform.isWeb ? 4 : 8);
   if (LocalPlatform.isWeb) {
     data.setUint32(0, number, Endian.big);
