@@ -158,14 +158,14 @@ void main() {
     final bloc = FakeBloc.normal();
 
     final v2Provider = LighthouseV2DeviceProvider.instance;
-    v2Provider.setLighthousePMBloc(bloc);
+    v2Provider.setBloc(bloc);
     final v2Device = await v2Provider.getDevice(FakeLighthouseV2Device(0, 0));
 
     expect(v2Device, isNotNull);
     expect(v2Device!.deviceIdentifier.toString(), "00:00:00:00:00:00");
 
     final viveProvider = ViveBaseStationDeviceProvider.instance;
-    viveProvider.setViveBaseStationDao(bloc.viveBaseStation);
+    viveProvider.setBloc(bloc);
     final viveDevice =
         await viveProvider.getDevice(FakeViveBaseStationDevice(1, 1));
 

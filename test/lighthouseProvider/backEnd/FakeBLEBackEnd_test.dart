@@ -48,7 +48,7 @@ void main() {
     final provider = LighthouseV2DeviceProvider.instance;
     expect(backEnd.isMyProviderType(provider), true,
         reason: 'Back end should support the provider');
-    provider.setLighthousePMBloc(fakeBloc);
+    provider.setBloc(fakeBloc);
     backEnd.addProvider(provider);
 
     backEnd.startScan(
@@ -93,7 +93,7 @@ void main() {
     final provider = ViveBaseStationDeviceProvider.instance;
     expect(backEnd.isMyProviderType(provider), true,
         reason: 'Back end should support the provider');
-    provider.setViveBaseStationDao(fakeBloc.viveBaseStation);
+    provider.setBloc(fakeBloc);
     backEnd.addProvider(provider);
 
     backEnd.startScan(

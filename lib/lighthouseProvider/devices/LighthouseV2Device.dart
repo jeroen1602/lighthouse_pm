@@ -32,6 +32,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   static const String CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
 
   static const String IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
+
+  static const String CONTROL_SERVICE = "00001523-1212-efde-1523-785feabcd124";
   
   LighthouseV2Device(LHBluetoothDevice device, LighthousePMBloc? bloc)
       : _bloc = bloc,
