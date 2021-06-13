@@ -63,8 +63,8 @@ class MainApp extends StatelessWidget {
     LighthouseProvider.instance
         .addProvider(LighthouseV2DeviceProvider.instance);
 
-    ViveBaseStationDeviceProvider.instance
-        .setViveBaseStationDao(mainBloc.viveBaseStation);
+    ViveBaseStationDeviceProvider.instance.setBloc(mainBloc);
+    LighthouseV2DeviceProvider.instance.setBloc(mainBloc);
     LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
 
     if (BuildOptions.includeGooglePlayInAppPurchases) {
