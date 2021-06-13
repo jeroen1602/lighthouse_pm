@@ -65,7 +65,6 @@ class MainApp extends StatelessWidget {
 
     ViveBaseStationDeviceProvider.instance.setBloc(mainBloc);
     LighthouseV2DeviceProvider.instance.setBloc(mainBloc);
-    LighthouseV2DeviceProvider.instance.setLighthousePMBloc(mainBloc);
 
     if (BuildOptions.includeGooglePlayInAppPurchases) {
       InAppPurchases.instance.handlePendingPurchases().catchError((error) {
