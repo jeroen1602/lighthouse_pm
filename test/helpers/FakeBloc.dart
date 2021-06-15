@@ -34,7 +34,15 @@ class FakeSettingsDao extends Fake implements SettingsDao {
 class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   @override
   Future<int?> getId(String deviceId) async {
-    return null;
+    final stream = idsStream;
+    if (stream == null) {
+      return null;
+    }
+    return stream.value
+        ?.cast<ViveBaseStationId?>()
+        .firstWhere((element) => element?.deviceId == deviceId,
+            orElse: () => null)
+        ?.baseStationId;
   }
 
   BehaviorSubject<List<ViveBaseStationId>>? idsStream;

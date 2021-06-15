@@ -29,4 +29,9 @@ class LighthousePowerState {
     }
     throw ArgumentError('Unknown id provided!');
   }
+
+  @override
+  String toString() {
+    return "$text ($id)";
+  }
 }

@@ -75,17 +75,17 @@ class _ViveBaseStationExtraInfoAlertState
     return AlertDialog(
       title: RichText(
         text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
-          TextSpan(text: 'Base station id required.\n'),
+          const TextSpan(text: 'Base station id required.\n'),
           if (endHint != null) ...[
-            TextSpan(
+            const TextSpan(
                 text:
                     'The id is found on the back and will probably end with: '),
             TextSpan(
                 style: theming.bodyTextBold,
                 text: endHint.toRadixString(16).padLeft(4, '0').toUpperCase()),
-            TextSpan(text: '.'),
+            const TextSpan(text: '.'),
           ] else
-            TextSpan(text: 'The id is found on the back.')
+            const TextSpan(text: 'The id is found on the back.')
         ]),
       ),
       content: Form(
@@ -99,11 +99,11 @@ class _ViveBaseStationExtraInfoAlertState
           )),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () => Navigator.pop(context),
         ),
         SimpleDialogOption(
-          child: Text('Set'),
+          child: const Text('Set'),
           onPressed: () async {
             final text = _textController.text.trim().toUpperCase();
             if (_formKey.currentState?.validate() == true) {

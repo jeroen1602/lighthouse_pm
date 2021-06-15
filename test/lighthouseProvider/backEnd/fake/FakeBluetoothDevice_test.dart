@@ -125,7 +125,7 @@ void main() {
   });
 
   test(
-      'Should be able to go from off to on, FakeLighthouseV2PowerCharacteristic',
+      'Should be able to go from sleep to on, FakeLighthouseV2PowerCharacteristic',
       () async {
     final power = FakeLighthouseV2PowerCharacteristic();
 
@@ -147,7 +147,7 @@ void main() {
   });
 
   test(
-      'Should be able to go from off to standby, FakeLighthouseV2PowerCharacteristic',
+      'Should be able to go from sleep to standby, FakeLighthouseV2PowerCharacteristic',
       () async {
     final power = FakeLighthouseV2PowerCharacteristic();
 
@@ -237,7 +237,7 @@ void main() {
     expect(second, 0x09, reason: "Should then switch to booting");
     expect(third, 0x02, reason: "Should then switch to standby");
 
-    // Now set it to sleep
+    // Now set it to on
     power.write([0x01]);
     expect(await power.readUint32(), 0x0b,
         reason: "Should directly switch to on");

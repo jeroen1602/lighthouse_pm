@@ -87,7 +87,13 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
     final Set<BLEDevice> discovering = Set();
     discovering.addAll(bleDevicesDiscovering);
     for (final device in discovering) {
-      await device.disconnect();
+      try {
+        await device.disconnect();
+      } catch (e, s) {
+        debugPrint("Could not disconnect device (${device.name}, "
+            "${device.deviceIdentifier.toString()}), maybe the device is "
+            "already disconnected? Error:\n$s\n$s");
+      }
     }
     bleDevicesDiscovering.clear();
   }

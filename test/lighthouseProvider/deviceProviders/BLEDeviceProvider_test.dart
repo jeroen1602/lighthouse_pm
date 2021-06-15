@@ -9,77 +9,8 @@ import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 
 import '../../helpers/FailingBLEDevice.dart';
-
-class FakeHighLevelDevice extends BLEDevice {
-  FakeHighLevelDevice(LHBluetoothDevice device) : super(device);
-
-  @override
-  void afterIsValid() {}
-
-  @override
-  Future cleanupConnection() async {}
-
-  @override
-  String get firmwareVersion => throw UnimplementedError();
-
-  @override
-  Future<int?> getCurrentState() {
-    throw UnimplementedError();
-  }
-
-  @override
-  bool get hasOpenConnection => throw UnimplementedError();
-
-  @override
-  Future internalChangeState(LighthousePowerState newState) {
-    throw UnimplementedError();
-  }
-
-  @override
-  String get name => device.name;
-
-  @override
-  Map<String, String?> get otherMetadata => throw UnimplementedError();
-
-  @override
-  LighthousePowerState powerStateFromByte(int byte) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> isValid() async {
-    try {
-      await device.connect(timeout: Duration(milliseconds: 10));
-    } on TimeoutException {
-      return false;
-    }
-
-    final services = await device.discoverServices();
-    return services.length > 0;
-  }
-}
-
-class FakeBLEDeviceProvider extends BLEDeviceProvider {
-  @override
-  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return FakeHighLevelDevice(device);
-  }
-
-  @override
-  String get namePrefix => "LHB-";
-
-  /// Not needed
-  @override
-  List<LighthouseGuid> get characteristics => throw UnimplementedError();
-
-  /// Not needed
-  @override
-  List<LighthouseGuid> get optionalServices => throw UnimplementedError();
-
-  /// Not needed
-  @override
-  List<LighthouseGuid> get requiredServices => throw UnimplementedError();
-}
+import '../../helpers/FakeBLEDeviceProvider.dart';
+import '../../helpers/FakeHighLevelDevice.dart';
 
 void main() {
   test('Should handle an error', () async {
@@ -114,14 +45,14 @@ void main() {
     final instance = FakeBLEDeviceProvider();
 
     final failingDevice = await instance.internalGetDevice(FailingBLEDeviceOnConnect());
-    final failingDevice2 = await instance.internalGetDevice(FailingBLEDeviceOnConnect());
+    final failingDevice2 = await instance.internalGetDevice(FailingBLEDeviceOnDiscover());
 
     instance.bleDevicesDiscovering.addAll([failingDevice, failingDevice2]);
 
     await instance.disconnectRunningDiscoveries();
 
     expect((failingDevice.device as FailingBLEDeviceOnConnect).disconnectCalls, 1, reason: "Disconnect should have been called");
-    expect((failingDevice2.device as FailingBLEDeviceOnConnect).disconnectCalls, 1, reason: "Disconnect should have been called");
+    expect((failingDevice2.device as FailingBLEDeviceOnDiscover).disconnectCalls, 1, reason: "Disconnect should have been called");
     expect(instance.bleDevicesDiscovering, isEmpty);
 
     LocalPlatform.overridePlatform = null;

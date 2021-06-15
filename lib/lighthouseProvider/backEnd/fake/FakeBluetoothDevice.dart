@@ -62,21 +62,22 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
 class FakeLighthouseV2Device extends FakeBluetoothDevice {
   FakeLighthouseV2Device(int deviceName, int deviceId)
       : super([
-          _FakeFirmwareCharacteristic(),
-          _FakeModelNumberCharacteristic(),
-          _FakeSerialNumberCharacteristic(),
-          _FakeHardwareRevisionCharacteristic(),
-          _FakeManufacturerNameCharacteristic(),
-          _FakeChannelCharacteristic(),
-          ..._getPowerAndIdentifyCharacteristic(),
+          FakeFirmwareCharacteristic(),
+          FakeModelNumberCharacteristic(),
+          FakeSerialNumberCharacteristic(),
+          FakeHardwareRevisionCharacteristic(),
+          FakeManufacturerNameCharacteristic(),
+          FakeChannelCharacteristic(),
+          ...getPowerAndIdentifyCharacteristic(),
         ], deviceId, _getNameFromInt(deviceName));
 
   static String _getNameFromInt(int deviceName) {
     return 'LHB-000000${deviceName.toRadixString(16).padLeft(2, '0').toUpperCase()}';
   }
 
+  @visibleForTesting
   static List<FakeReadWriteCharacteristic>
-      _getPowerAndIdentifyCharacteristic() {
+      getPowerAndIdentifyCharacteristic() {
     final powerCharacteristic = FakeLighthouseV2PowerCharacteristic();
     return [
       powerCharacteristic,
@@ -88,11 +89,11 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
 class FakeViveBaseStationDevice extends FakeBluetoothDevice {
   FakeViveBaseStationDevice(int deviceName, int deviceId)
       : super([
-          _FakeFirmwareCharacteristic(),
-          _FakeModelNumberCharacteristic(),
-          _FakeSerialNumberCharacteristic(),
-          _FakeHardwareRevisionCharacteristic(),
-          _FakeManufacturerNameCharacteristic(),
+          FakeFirmwareCharacteristic(),
+          FakeModelNumberCharacteristic(),
+          FakeSerialNumberCharacteristic(),
+          FakeHardwareRevisionCharacteristic(),
+          FakeManufacturerNameCharacteristic(),
           FakeViveBaseStationCharacteristic()
         ], deviceId, _getNameFromInt(deviceName));
 
@@ -154,40 +155,50 @@ abstract class FakeReadOnlyCharacteristic extends LHBluetoothCharacteristic {
 }
 
 //region Fake default
-class _FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeFirmwareCharacteristic()
+@visibleForTesting
+class FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeFirmwareCharacteristic()
       : super(
             intListFromString('FAKE_DEVICE'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
                 .FIRMWARE_REVISION_STRING.uuid));
 }
 
-class _FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeModelNumberCharacteristic()
+@visibleForTesting
+class FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeModelNumberCharacteristic()
       : super(
             intListFromNumber(0xFF),
             LighthouseGuid.fromString(
                 BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid));
 }
 
-class _FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeSerialNumberCharacteristic()
+@visibleForTesting
+class FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeSerialNumberCharacteristic()
       : super(
             intListFromNumber(0xFF),
             LighthouseGuid.fromString(
                 BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid));
 }
 
-class _FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeHardwareRevisionCharacteristic()
+@visibleForTesting
+class FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeHardwareRevisionCharacteristic()
       : super(
             intListFromString('FAKE_REVISION'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
                 .HARDWARE_REVISION_STRING.uuid));
 }
 
-class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeManufacturerNameCharacteristic()
+@visibleForTesting
+class FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeManufacturerNameCharacteristic()
       : super(
             intListFromString('LIGHTHOUSE PM By Jeroen1602'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
@@ -195,8 +206,10 @@ class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
 }
 //endregion
 
-class _FakeChannelCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeChannelCharacteristic()
+@visibleForTesting
+class FakeChannelCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeChannelCharacteristic()
       : super(
             intListFromNumber(0xFF),
             LighthouseGuid.fromString(
