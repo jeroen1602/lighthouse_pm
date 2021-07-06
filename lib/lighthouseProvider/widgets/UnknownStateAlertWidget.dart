@@ -28,39 +28,35 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
     final actions = <Widget>[
       SimpleDialogOption(
-        child: Text("Cancel"),
+        child: const Text("Cancel"),
         onPressed: () {
           Navigator.pop(context, null);
         },
       ),
+      // Add standby, but only if it's supported
+      if (device.hasStandbyExtension)
+        SimpleDialogOption(
+          child: const Text("Standby"),
+          onPressed: () {
+            Navigator.pop(context, LighthousePowerState.STANDBY);
+          },
+        ),
       SimpleDialogOption(
-        child: Text("Sleep"),
+        child: const Text("Sleep"),
         onPressed: () {
           Navigator.pop(context, LighthousePowerState.SLEEP);
         },
       ),
       SimpleDialogOption(
-        child: Text("On"),
+        child: const Text("On"),
         onPressed: () {
           Navigator.pop(context, LighthousePowerState.ON);
         },
       ),
     ];
 
-    // Add standby, but only if it's supported
-    if (device.hasStandbyExtension) {
-      actions.insert(
-          2,
-          SimpleDialogOption(
-            child: Text("Standby"),
-            onPressed: () {
-              Navigator.pop(context, LighthousePowerState.STANDBY);
-            },
-          ));
-    }
-
     return AlertDialog(
-        title: Text('Unknown state'),
+        title: const Text('Unknown state'),
         content: RichText(
           text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
             const TextSpan(

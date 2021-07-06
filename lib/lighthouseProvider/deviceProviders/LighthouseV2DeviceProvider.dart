@@ -16,8 +16,6 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
 
   static LighthouseV2DeviceProvider? _instance;
 
-  LighthousePMBloc? _bloc;
-
   ///
   /// Get the instance of this [DeviceProvider].
   ///
@@ -29,29 +27,18 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
   }
 
   ///
-  /// Set the database bloc for saving the ids of vive base stations.
-  ///
-  void setLighthousePMBloc(LighthousePMBloc bloc) {
-    this._bloc = bloc;
-  }
-
-  ///
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    if (this._bloc == null && !kReleaseMode) {
-      throw StateError('Bloc is null');
-    }
-    return LighthouseV2Device(device, this._bloc!);
+    return LighthouseV2Device(device, requireBloc());
   }
-
 
   @override
   List<LighthouseGuid> get characteristics => [
-        LighthouseGuid.fromString("00001525-1212-efde-1523-785feabcd124"),
-        LighthouseGuid.fromString("00001524-1212-EFDE-1523-785FEABCD124"),
-        LighthouseGuid.fromString("00008421-1212-EFDE-1523-785FEABCD124"),
+        LighthouseGuid.fromString(LighthouseV2Device.POWER_CHARACTERISTIC),
+        LighthouseGuid.fromString(LighthouseV2Device.CHANNEL_CHARACTERISTIC),
+        LighthouseGuid.fromString(LighthouseV2Device.IDENTIFY_CHARACTERISTIC),
         LighthouseGuid.fromString(
             BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
         LighthouseGuid.fromString(
@@ -72,7 +59,7 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
 
   @override
   List<LighthouseGuid> get requiredServices => [
-        LighthouseGuid.fromString("00001523-1212-efde-1523-785feabcd124"),
+        LighthouseGuid.fromString(LighthouseV2Device.CONTROL_SERVICE),
       ];
 
   @override

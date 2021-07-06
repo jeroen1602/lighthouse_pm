@@ -3,25 +3,27 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
+import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
+import 'package:lighthouse_pm/lighthouseProvider/devices/ViveBaseStationDevice.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 import '../../ble/BluetoothCharacteristic.dart';
 import '../../ble/BluetoothDevice.dart';
 import '../../ble/BluetoothService.dart';
-import '../../ble/DefaultCharacteristics.dart';
 import '../../ble/DeviceIdentifier.dart';
 import '../../ble/Guid.dart';
 
 class FakeBluetoothDevice extends LHBluetoothDevice {
   final LHDeviceIdentifier deviceIdentifier;
-  final _SimpleBluetoothService service;
+  final SimpleBluetoothService service;
   final String _name;
 
   FakeBluetoothDevice(
       List<LHBluetoothCharacteristic> characteristics, int id, String name)
-      : service = _SimpleBluetoothService(characteristics),
+      : service = SimpleBluetoothService(characteristics),
         deviceIdentifier = _generateIdentifier(id),
         _name = name;
 
@@ -60,29 +62,39 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
 class FakeLighthouseV2Device extends FakeBluetoothDevice {
   FakeLighthouseV2Device(int deviceName, int deviceId)
       : super([
-          _FakeFirmwareCharacteristic(),
-          _FakeModelNumberCharacteristic(),
-          _FakeSerialNumberCharacteristic(),
-          _FakeHardwareRevisionCharacteristic(),
-          _FakeManufacturerNameCharacteristic(),
-          _FakeChannelCharacteristic(),
-          _FakeLighthouseV2PowerCharacteristic()
+          FakeFirmwareCharacteristic(),
+          FakeModelNumberCharacteristic(),
+          FakeSerialNumberCharacteristic(),
+          FakeHardwareRevisionCharacteristic(),
+          FakeManufacturerNameCharacteristic(),
+          FakeChannelCharacteristic(),
+          ...getPowerAndIdentifyCharacteristic(),
         ], deviceId, _getNameFromInt(deviceName));
 
   static String _getNameFromInt(int deviceName) {
     return 'LHB-000000${deviceName.toRadixString(16).padLeft(2, '0').toUpperCase()}';
+  }
+
+  @visibleForTesting
+  static List<FakeReadWriteCharacteristic>
+      getPowerAndIdentifyCharacteristic() {
+    final powerCharacteristic = FakeLighthouseV2PowerCharacteristic();
+    return [
+      powerCharacteristic,
+      FakeLighthouseV2IdentifyCharacteristic(powerCharacteristic)
+    ];
   }
 }
 
 class FakeViveBaseStationDevice extends FakeBluetoothDevice {
   FakeViveBaseStationDevice(int deviceName, int deviceId)
       : super([
-          _FakeFirmwareCharacteristic(),
-          _FakeModelNumberCharacteristic(),
-          _FakeSerialNumberCharacteristic(),
-          _FakeHardwareRevisionCharacteristic(),
-          _FakeManufacturerNameCharacteristic(),
-          _FakeViveBaseStationCharacteristic()
+          FakeFirmwareCharacteristic(),
+          FakeModelNumberCharacteristic(),
+          FakeSerialNumberCharacteristic(),
+          FakeHardwareRevisionCharacteristic(),
+          FakeManufacturerNameCharacteristic(),
+          FakeViveBaseStationCharacteristic()
         ], deviceId, _getNameFromInt(deviceName));
 
   static String _getNameFromInt(int deviceName) {
@@ -90,8 +102,9 @@ class FakeViveBaseStationDevice extends FakeBluetoothDevice {
   }
 }
 
-class _SimpleBluetoothService extends LHBluetoothService {
-  _SimpleBluetoothService(List<LHBluetoothCharacteristic> characteristics)
+@visibleForTesting
+class SimpleBluetoothService extends LHBluetoothService {
+  SimpleBluetoothService(List<LHBluetoothCharacteristic> characteristics)
       : _characteristics = characteristics;
 
   List<LHBluetoothCharacteristic> _characteristics;
@@ -142,57 +155,73 @@ abstract class FakeReadOnlyCharacteristic extends LHBluetoothCharacteristic {
 }
 
 //region Fake default
-class _FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeFirmwareCharacteristic()
+@visibleForTesting
+class FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeFirmwareCharacteristic()
       : super(
-            _intListFromString('FAKE_DEVICE'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.FIRMWARE_REVISION_CHARACTERISTIC));
+            intListFromString('FAKE_DEVICE'),
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .FIRMWARE_REVISION_STRING.uuid));
 }
 
-class _FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeModelNumberCharacteristic()
+@visibleForTesting
+class FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeModelNumberCharacteristic()
       : super(
-            _intListFromNumber(0xFF),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.MODEL_NUMBER_STRING_CHARACTERISTIC));
+            intListFromNumber(0xFF),
+            LighthouseGuid.fromString(
+                BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid));
 }
 
-class _FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeSerialNumberCharacteristic()
+@visibleForTesting
+class FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeSerialNumberCharacteristic()
       : super(
-            _intListFromNumber(0xFF),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.SERIAL_NUMBER_STRING_CHARACTERISTIC));
+            intListFromNumber(0xFF),
+            LighthouseGuid.fromString(
+                BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid));
 }
 
-class _FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeHardwareRevisionCharacteristic()
+@visibleForTesting
+class FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeHardwareRevisionCharacteristic()
       : super(
-            _intListFromString('FAKE_REVISION'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.HARDWARE_REVISION_CHARACTERISTIC));
+            intListFromString('FAKE_REVISION'),
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .HARDWARE_REVISION_STRING.uuid));
 }
 
-class _FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeManufacturerNameCharacteristic()
+@visibleForTesting
+class FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeManufacturerNameCharacteristic()
       : super(
-            _intListFromString('LIGHTHOUSE PM By Jeroen1602'),
-            _fromDefaultCharacteristic(
-                DefaultCharacteristics.MANUFACTURER_NAME_CHARACTERISTIC));
+            intListFromString('LIGHTHOUSE PM By Jeroen1602'),
+            LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
+                .MANUFACTURER_NAME_STRING.uuid));
 }
 //endregion
 
-class _FakeChannelCharacteristic extends FakeReadOnlyCharacteristic {
-  _FakeChannelCharacteristic()
-      : super(_intListFromNumber(0xFF),
-            LighthouseGuid.fromString('00001524-1212-EFDE-1523-785FEABCD124'));
+@visibleForTesting
+class FakeChannelCharacteristic extends FakeReadOnlyCharacteristic {
+  @visibleForTesting
+  FakeChannelCharacteristic()
+      : super(
+            intListFromNumber(0xFF),
+            LighthouseGuid.fromString(
+                LighthouseV2Device.CHANNEL_CHARACTERISTIC));
 }
 
-class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
-  _FakeLighthouseV2PowerCharacteristic()
-      : super(
-            LighthouseGuid.fromString('00001525-1212-efde-1523-785feabcd124')) {
+@visibleForTesting
+class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
+  @visibleForTesting
+  FakeLighthouseV2PowerCharacteristic()
+      : super(LighthouseGuid.fromString(
+            LighthouseV2Device.POWER_CHARACTERISTIC)) {
     if (random.nextBool()) {
       this.data.add(0x00); // sleep
     } else {
@@ -216,14 +245,17 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
         break;
       case 0x01:
       case 0x02:
+        // Go from on to standby
         if (this.data[0] == 0x0b && byte == 0x02) {
           this.data[0] = byte;
           break;
         }
+        // Go from standby to on
         if (this.data[0] == 0x02 && byte == 0x01) {
           this.data[0] = 0x0b;
           break;
         }
+        // Go from off to standby/ on.
         this.data[0] = byte;
         Future.delayed(Duration(milliseconds: 10)).then((value) async {
           // booting
@@ -245,10 +277,33 @@ class _FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
   }
 }
 
-class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
-  _FakeViveBaseStationCharacteristic()
+@visibleForTesting
+class FakeLighthouseV2IdentifyCharacteristic
+    extends FakeReadWriteCharacteristic {
+  @visibleForTesting
+  FakeLighthouseV2IdentifyCharacteristic(this.powerCharacteristic)
       : super(
-            LighthouseGuid.fromString('0000cb01-0000-1000-8000-00805f9b34fb')) {
+          LighthouseGuid.fromString(LighthouseV2Device.IDENTIFY_CHARACTERISTIC),
+        );
+
+  final FakeLighthouseV2PowerCharacteristic powerCharacteristic;
+
+  @override
+  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+    if (data.length == 1 && data[0] == 0x00) {
+      await powerCharacteristic.write([0x01], withoutResponse: withoutResponse);
+    } else {
+      debugPrint("Send unrecognized data to the identify characteristic");
+    }
+  }
+}
+
+@visibleForTesting
+class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
+  @visibleForTesting
+  FakeViveBaseStationCharacteristic()
+      : super(LighthouseGuid.fromString(
+            ViveBaseStationDevice.POWER_CHARACTERISTIC)) {
     data.addAll([0x00, 0x12]);
   }
 
@@ -266,26 +321,38 @@ class _FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
 
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+    if (data.length < 4) {
+      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      return;
+    }
     if (data[1] == 0x00 && data[2] == 0x00 && data[3] == 0x00) {
       changeState(LighthousePowerState.ON);
     } else if (data[1] == 0x02 && data[2] == 0x00 && data[3] == 0x01) {
       changeState(LighthousePowerState.SLEEP);
+    } else {
+      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      return;
     }
   }
 }
 
-LighthouseGuid _fromDefaultCharacteristic(
-    DefaultCharacteristics defaultCharacteristics) {
-  final data = ByteData(16);
-  data.setUint32(0, defaultCharacteristics.uuid, Endian.big);
-  return LighthouseGuid.fromBytes(data);
-}
-
-List<int> _intListFromString(String data) {
+@visibleForTesting
+List<int> intListFromString(String data) {
   return Utf8Encoder().convert(data).toList();
 }
 
-List<int> _intListFromNumber(int number) {
+///
+/// Converts a number to an int list. Will also trim the leading 00's from the
+/// number. On io platforms it will work with a max of 64bit ints, for web it
+/// will work with a max of 32bit ints.
+///
+/// If the input number is 0xFF00, then the output will be [0xFF, 0x00]. Where
+/// the leading 0x00's have been stripped from the conversion.
+///
+/// If the input is 0x00, then the output will be [] (empty list).
+///
+@visibleForTesting
+List<int> intListFromNumber(int number) {
   final data = ByteData(LocalPlatform.isWeb ? 4 : 8);
   if (LocalPlatform.isWeb) {
     data.setUint32(0, number, Endian.big);

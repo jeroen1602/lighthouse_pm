@@ -1,5 +1,7 @@
 # Lighthouse Power Management
 
+[![codecov](https://codecov.io/gh/jeroen1602/lighthouse_pm/branch/master/graph/badge.svg?token=1JF6B2JE4P)](https://codecov.io/gh/jeroen1602/lighthouse_pm)
+
 Power management app to control the Valve Index® lighthouses from your phone.
 
 Inspired by [lighthouse-v2-manager](https://github.com/nouser2013/lighthouse-v2-manager) but that project is desktop only.

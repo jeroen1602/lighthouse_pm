@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:lighthouse_pm/bloc.dart';
 
 import '../DeviceProvider.dart';
 import '../LighthouseDevice.dart';
@@ -9,7 +10,32 @@ import '../devices/BLEDevice.dart';
 /// An abstract device provider specifically made for Bluetooth low energy.
 ///
 abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
-  Set<BLEDevice> _bleDevicesDiscovering = Set();
+  @visibleForTesting
+  Set<BLEDevice> bleDevicesDiscovering = Set();
+
+  @visibleForTesting
+  @protected
+  LighthousePMBloc? bloc;
+
+  ///
+  /// Set the database bloc for saving the ids of vive base stations.
+  /// Not every provider requires this.
+  ///
+  void setBloc(LighthousePMBloc bloc) {
+    this.bloc = bloc;
+  }
+
+  ///
+  /// Make sure a bloc instance exists.
+  ///
+  @visibleForTesting
+  @protected
+  LighthousePMBloc requireBloc() {
+    if (this.bloc == null && !kReleaseMode) {
+      throw StateError('Bloc is null');
+    }
+    return bloc!;
+  }
 
   ///
   /// Connect to a device and return a super class of [LighthouseDevice].
@@ -24,18 +50,25 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
     if (updateInterval != null) {
       bleDevice.setUpdateInterval(updateInterval);
     }
-    this._bleDevicesDiscovering.add(bleDevice);
+    this.bleDevicesDiscovering.add(bleDevice);
     try {
       final valid = await bleDevice.isValid();
-      this._bleDevicesDiscovering.remove(bleDevice);
+      this.bleDevicesDiscovering.remove(bleDevice);
       if (valid) {
         bleDevice.afterIsValid();
+      } else {
+        await bleDevice.disconnect();
       }
       return valid ? bleDevice : null;
     } catch (e, s) {
       debugPrint('$e');
       debugPrint('$s');
-      bleDevice.disconnect();
+      try {
+        await bleDevice.disconnect();
+      } catch (e, s) {
+        debugPrint(
+            "Failed to disconnect, maybe already disconnected\n$e\n$s\n======\n");
+      }
       return null;
     }
   }
@@ -52,10 +85,16 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
   @override
   Future disconnectRunningDiscoveries() async {
     final Set<BLEDevice> discovering = Set();
-    discovering.addAll(_bleDevicesDiscovering);
+    discovering.addAll(bleDevicesDiscovering);
     for (final device in discovering) {
-      await device.disconnect();
+      try {
+        await device.disconnect();
+      } catch (e, s) {
+        debugPrint("Could not disconnect device (${device.name}, "
+            "${device.deviceIdentifier.toString()}), maybe the device is "
+            "already disconnected? Error:\n$s\n$s");
+      }
     }
-    _bleDevicesDiscovering.clear();
+    bleDevicesDiscovering.clear();
   }
 }

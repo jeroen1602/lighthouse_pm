@@ -23,13 +23,18 @@ import 'BLEDevice.dart';
 // final String _POWER_SERVICE = '00001523-1212-efde-1523-785feabcd124';
 
 ///The characteristic that handles the power state of the device.
-const String _POWER_CHARACTERISTIC = '00001525-1212-efde-1523-785feabcd124';
 
-const String _CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
-
-const String _IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
 
 class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
+
+  static const String POWER_CHARACTERISTIC = '00001525-1212-efde-1523-785feabcd124';
+
+  static const String CHANNEL_CHARACTERISTIC = '00001524-1212-EFDE-1523-785FEABCD124';
+
+  static const String IDENTIFY_CHARACTERISTIC = '00008421-1212-EFDE-1523-785FEABCD124';
+
+  static const String CONTROL_SERVICE = "00001523-1212-efde-1523-785feabcd124";
+  
   LighthouseV2Device(LHBluetoothDevice device, LighthousePMBloc? bloc)
       : _bloc = bloc,
         super(device) {
@@ -126,11 +131,11 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     _identifyDeviceExtension.setEnabled(false);
 
     final powerCharacteristic =
-        LighthouseGuid.fromString(_POWER_CHARACTERISTIC);
+        LighthouseGuid.fromString(POWER_CHARACTERISTIC);
     final channelCharacteristic =
-        LighthouseGuid.fromString(_CHANNEL_CHARACTERISTIC);
+        LighthouseGuid.fromString(CHANNEL_CHARACTERISTIC);
     final identifyCharacteristic =
-        LighthouseGuid.fromString(_IDENTIFY_CHARACTERISTIC);
+        LighthouseGuid.fromString(IDENTIFY_CHARACTERISTIC);
 
     debugPrint('Finding service for device: ${this.deviceIdentifier}');
     final List<LHBluetoothService> services =

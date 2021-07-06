@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
-import 'package:lighthouse_pm/data/dao/ViveBaseStationDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 
 import '../ble/BluetoothDevice.dart';
@@ -15,8 +13,6 @@ import 'BLEDeviceProvider.dart';
 class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   ViveBaseStationDeviceProvider._();
 
-  ViveBaseStationDao? _viveDao;
-
   static ViveBaseStationDeviceProvider? _instance;
 
   ///
@@ -30,48 +26,38 @@ class ViveBaseStationDeviceProvider extends BLEDeviceProvider {
   }
 
   ///
-  /// Set the database dao for saving the ids of vive base stations.
-  ///
-  void setViveBaseStationDao(ViveBaseStationDao dao) {
-    this._viveDao = dao;
-  }
-
-  ///
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    if (this._viveDao == null && !kReleaseMode) {
-      throw StateError('Bloc is null, how?');
-    }
-    return ViveBaseStationDevice(device, _viveDao!);
+    return ViveBaseStationDevice(device, requireBloc());
   }
 
   @override
   List<LighthouseGuid> get characteristics => [
-    LighthouseGuid.fromString('0000cb01-0000-1000-8000-00805f9b34fb'),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
-    LighthouseGuid.fromString(
-        BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
-  ];
+        LighthouseGuid.fromString(ViveBaseStationDevice.POWER_CHARACTERISTIC),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
+        LighthouseGuid.fromString(
+            BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
+      ];
 
   @override
   List<LighthouseGuid> get optionalServices => [
-    LighthouseGuid.fromString(
-        BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
-  ];
+        LighthouseGuid.fromString(
+            BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
+      ];
 
   @override
   List<LighthouseGuid> get requiredServices => [
-    LighthouseGuid.fromString('0000cb00-0000-1000-8000-00805f9b34fb'),
-  ];
+        LighthouseGuid.fromString(ViveBaseStationDevice.POWER_SERVICE),
+      ];
 
   @override
   String get namePrefix => "HTC BS";

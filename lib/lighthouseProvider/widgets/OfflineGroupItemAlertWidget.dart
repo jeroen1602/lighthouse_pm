@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// [dialogCanceled] will be true if the dialog is canceled,
 /// [disableWarning] will be true if [dialogCanceled] is false and the user has
-/// selected the don't show em this again checkbox.
+/// selected the don't show me this again checkbox.
 ///
 class OfflineGroupItemAlertWidgetReturn {
   final bool dialogCanceled;
@@ -45,14 +45,14 @@ class _OfflineGroupItemAlertWidgetContent
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Some devices are offline'),
+      title: const Text('Some devices are offline'),
       content: IntrinsicHeight(
           child: Column(
         children: [
-          Text('Some devices in this group are offline, do you want to continue'
+          const Text('Some devices in this group are offline, do you want to continue'
               ' and change the state of the devices that are online?'),
           CheckboxListTile(
-              title: Text('Don\'t show this warning again.'),
+              title: const Text("Don't show this warning again."),
               value: disableWarning,
               onChanged: (value) {
                 setState(() {
@@ -65,14 +65,14 @@ class _OfflineGroupItemAlertWidgetContent
       )),
       actions: [
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(
                 context, OfflineGroupItemAlertWidgetReturn._(true, false));
           },
         ),
         SimpleDialogOption(
-          child: Text('Continue'),
+          child: const Text('Continue'),
           onPressed: () {
             Navigator.pop(context,
                 OfflineGroupItemAlertWidgetReturn._(false, disableWarning));

@@ -19,6 +19,7 @@ abstract class LighthouseDevice {
   /// changes it.
   ///
   @protected
+  @visibleForTesting
   String? nicknameInternal;
 
   ///
@@ -55,8 +56,8 @@ abstract class LighthouseDevice {
   ///
   Future disconnect() async {
     await _powerStateSubscription?.cancel();
-    if (this._powerState != null) {
-      await this._powerState.close();
+    if (this._powerState != null && !this._powerState.isClosed) {
+      this._powerState.close();
     }
     await internalDisconnect();
   }
@@ -75,10 +76,17 @@ abstract class LighthouseDevice {
   ///
   /// Get the minimum update interval that this device supports.
   ///
+  @visibleForTesting
   @protected
   Duration getMinUpdateInterval() {
     return const Duration(milliseconds: 1000);
   }
+
+  ///
+  /// Overwrite the minimum update interval for testing.
+  ///
+  @visibleForTesting
+  Duration? testingOverwriteMinUpdateInterval;
 
   ///
   /// Get the update interval for the device state.
@@ -88,7 +96,12 @@ abstract class LighthouseDevice {
   ///
   @nonVirtual
   Duration getUpdateInterval() {
-    final min = getMinUpdateInterval();
+    var min = getMinUpdateInterval();
+    if (!kReleaseMode && testingOverwriteMinUpdateInterval != null) {
+      debugPrint(
+          "Overwritten min update interval, stuttering devices may be in your future");
+      min = testingOverwriteMinUpdateInterval!;
+    }
     if (min < updateInterval) {
       return updateInterval;
     }
@@ -97,7 +110,7 @@ abstract class LighthouseDevice {
 
   ///
   /// Set the prefered update interval for this device.
-  /// The update interval may be higher than the prefered value bacuase of the
+  /// The update interval may be higher than the prefered value because of the
   /// value returned by [getMinUpdateInterval].
   ///
   @nonVirtual
@@ -148,6 +161,7 @@ abstract class LighthouseDevice {
   /// itself if you do try to obtain the mutex in these functions.
   ///
   ///
+  @visibleForTesting
   @protected
   final Mutex transactionMutex = Mutex();
 

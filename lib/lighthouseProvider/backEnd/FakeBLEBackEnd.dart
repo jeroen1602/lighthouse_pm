@@ -57,9 +57,6 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
     _isScanningSubject.add(false);
   }
 
-  @override
-  Future<void> cleanUp() async {}
-
   BehaviorSubject<bool> _isScanningSubject = BehaviorSubject.seeded(false);
 
   @override

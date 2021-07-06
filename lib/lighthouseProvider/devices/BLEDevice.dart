@@ -13,6 +13,7 @@ import '../ble/Guid.dart';
 abstract class BLEDevice extends LighthouseDevice {
   BLEDevice(this.device);
 
+  @visibleForTesting
   @protected
   final LHBluetoothDevice device;
 

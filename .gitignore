@@ -51,3 +51,6 @@ app.*.map.json
 
 #sql-wasm
 web/sql-*
+
+#test coverage
+coverage
