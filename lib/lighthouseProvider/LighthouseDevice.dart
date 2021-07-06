@@ -56,8 +56,8 @@ abstract class LighthouseDevice {
   ///
   Future disconnect() async {
     await _powerStateSubscription?.cancel();
-    if (this._powerState != null) {
-      await this._powerState.close();
+    if (this._powerState != null && !this._powerState.isClosed) {
+      this._powerState.close();
     }
     await internalDisconnect();
   }

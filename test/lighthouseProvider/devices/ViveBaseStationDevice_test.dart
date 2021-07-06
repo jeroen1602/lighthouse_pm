@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../helpers/FailingBLEDevice.dart';
 import '../../helpers/FakeBloc.dart';
+import '../../helpers/WidgetHelpers.dart';
 
 void main() {
   test("Firmware should be unknown if verify hasn't run, ViveBaseStationDevice",
@@ -217,7 +218,7 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(_buildTestApp((context) {
+    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
@@ -244,7 +245,7 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(_buildTestApp((context) {
+    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
@@ -282,7 +283,7 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(_buildTestApp((context) {
+    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
@@ -320,7 +321,7 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(_buildTestApp((context) {
+    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
@@ -455,7 +456,8 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  test("Should not go to staten if id is not set, ViveBaseStationDevice", () async {
+  test("Should not go to staten if id is not set, ViveBaseStationDevice",
+      () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
 
@@ -469,7 +471,9 @@ void main() {
     final valid = await device.isValid();
     expect(valid, true);
 
-    final start = await device.powerState.firstWhere((element) => element != 0xFF).timeout(Duration(seconds: 2));
+    final start = await device.powerState
+        .firstWhere((element) => element != 0xFF)
+        .timeout(Duration(seconds: 2));
 
     await device.changeState(LighthousePowerState.ON);
 
@@ -480,25 +484,4 @@ void main() {
 
     LocalPlatform.overridePlatform = null;
   });
-}
-
-typedef ButtonCallback = void Function(BuildContext context);
-
-MaterialApp _buildTestApp(ButtonCallback onPressed) {
-  return MaterialApp(
-    home: Material(
-      child: Builder(
-        builder: (context) {
-          return Center(
-            child: ElevatedButton(
-              child: const Text('X'),
-              onPressed: () {
-                return onPressed(context);
-              },
-            ),
-          );
-        },
-      ),
-    ),
-  );
 }

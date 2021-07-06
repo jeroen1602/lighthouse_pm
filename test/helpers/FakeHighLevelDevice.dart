@@ -1,11 +1,16 @@
 import 'dart:async';
 
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
+import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 
-class FakeHighLevelDevice extends BLEDevice {
+class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(LHBluetoothDevice device) : super(device);
+
+  FakeHighLevelDevice.simple() : this(FakeLighthouseV2Device(1, 1));
 
   @override
   void afterIsValid() {}
@@ -14,7 +19,7 @@ class FakeHighLevelDevice extends BLEDevice {
   Future cleanupConnection() async {}
 
   @override
-  String get firmwareVersion => throw UnimplementedError();
+  String get firmwareVersion => "WOW firmware";
 
   @override
   Future<int?> getCurrentState() {
@@ -25,7 +30,7 @@ class FakeHighLevelDevice extends BLEDevice {
   bool get hasOpenConnection => throw UnimplementedError();
 
   int changeStateCalled = 0;
-  bool errorOnInternalChangeState =false;
+  bool errorOnInternalChangeState = false;
 
   @override
   Future internalChangeState(LighthousePowerState newState) async {
@@ -58,4 +63,9 @@ class FakeHighLevelDevice extends BLEDevice {
     final services = await device.discoverServices();
     return services.length > 0;
   }
+
+  Set<DeviceExtension> extensions = Set();
+
+  @override
+  Set<DeviceExtension> get deviceExtensions => extensions;
 }

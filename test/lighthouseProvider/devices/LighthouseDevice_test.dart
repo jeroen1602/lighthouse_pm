@@ -5,6 +5,7 @@ import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevic
 import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 
 import '../../helpers/FakeHighLevelDevice.dart';
+import '../../helpers/WidgetHelpers.dart';
 
 void main() {
   test('Should set nickname', () {
@@ -47,8 +48,8 @@ void main() {
     final doneText = find.text("true");
     final incorrectText = find.text("false");
 
-    await widgetTester.pumpWidget(MaterialApp(home: Scaffold(body: Builder(
-      builder: (context) {
+    await widgetTester.pumpWidget(buildTestApp(
+      (context) {
         return FutureBuilder(
             future: device.showExtraInfoWidget(context),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -61,7 +62,7 @@ void main() {
               return CircularProgressIndicator();
             });
       },
-    ))));
+    ));
 
     // Wait for the progress indicator to stop
     await widgetTester.pumpAndSettle();

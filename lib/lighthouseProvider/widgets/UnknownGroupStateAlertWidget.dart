@@ -14,36 +14,32 @@ class UnknownGroupStateAlertWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = <Widget>[
       SimpleDialogOption(
-        child: Text("Cancel"),
+        child: const Text("Cancel"),
         onPressed: () {
           Navigator.pop(context, null);
         },
       ),
+      // Add standby, but only if it's supported
+      if (supportsStandby)
+        SimpleDialogOption(
+          child: const Text("Standby"),
+          onPressed: () {
+            Navigator.pop(context, LighthousePowerState.STANDBY);
+          },
+        ),
       SimpleDialogOption(
-        child: Text("Sleep"),
+        child: const Text("Sleep"),
         onPressed: () {
           Navigator.pop(context, LighthousePowerState.SLEEP);
         },
       ),
       SimpleDialogOption(
-        child: Text("On"),
+        child: const Text("On"),
         onPressed: () {
           Navigator.pop(context, LighthousePowerState.ON);
         },
       ),
     ];
-
-    // Add standby, but only if it's supported
-    if (supportsStandby) {
-      actions.insert(
-          2,
-          SimpleDialogOption(
-            child: Text("Standby"),
-            onPressed: () {
-              Navigator.pop(context, LighthousePowerState.STANDBY);
-            },
-          ));
-    }
 
     return AlertDialog(
         title: Text(this.isStateUniversal
