@@ -1,3 +1,4 @@
+import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
@@ -7,9 +8,12 @@ import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 import 'FakeBloc.dart';
 
 Future<ViveBaseStationDevice> createValidViveDevice(
-    int deviceName, int deviceId) async {
+    int deviceName, int deviceId,
+    [LighthousePMBloc? bloc]) async {
   LocalPlatform.overridePlatform = PlatformOverride.android;
-  final bloc = FakeBloc.normal();
+  if (bloc == null) {
+    bloc = FakeBloc.normal();
+  }
   final device = ViveBaseStationDevice(
       FakeViveBaseStationDevice(deviceName, deviceId), bloc);
 
@@ -18,9 +22,12 @@ Future<ViveBaseStationDevice> createValidViveDevice(
 }
 
 Future<LighthouseV2Device> createValidLighthouseV2Device(
-    int deviceName, int deviceId) async {
+    int deviceName, int deviceId,
+    [LighthousePMBloc? bloc]) async {
   LocalPlatform.overridePlatform = PlatformOverride.android;
-  final bloc = FakeBloc.normal();
+  if (bloc == null) {
+    bloc = FakeBloc.normal();
+  }
   final device =
       LighthouseV2Device(FakeLighthouseV2Device(deviceName, deviceId), bloc);
 

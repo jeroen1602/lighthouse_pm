@@ -27,7 +27,7 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  test("Firmware should be known if verify hasn't run, LighthouseV2Device",
+  test("Firmware should be known if verify has run, LighthouseV2Device",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();

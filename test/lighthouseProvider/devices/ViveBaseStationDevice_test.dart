@@ -25,7 +25,7 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  test("Firmware should be known if verify hasn't run, ViveBaseStationDevice",
+  test("Firmware should be known if verify has run, ViveBaseStationDevice",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
