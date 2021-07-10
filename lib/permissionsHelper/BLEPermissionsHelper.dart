@@ -31,6 +31,9 @@ class BLEPermissionsHelper {
     if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;
     }
+    if (LocalPlatform.isLinux) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }

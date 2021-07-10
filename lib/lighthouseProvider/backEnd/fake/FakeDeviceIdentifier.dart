@@ -13,13 +13,15 @@ abstract class FakeDeviceIdentifier {
       return generateDeviceIdentifierIOS(seed);
     } else if (LocalPlatform.isWeb) {
       return generateDeviceIdentifierWeb(seed);
+    } else if (LocalPlatform.isLinux) {
+      return generateDeviceIdentifierLinux(seed);
     }
     throw UnsupportedError(
         "Cannot generate device identifier for platform: ${LocalPlatform.current}");
   }
 
   @visibleForTesting
-  static LHDeviceIdentifier generateDeviceIdentifierAndroid(int seed) {
+  static LHDeviceIdentifier generateBasicMacIdentifier(int seed) {
     final octets = List<int>.filled(6, 0);
     for (var i = 5; i >= 0; i--) {
       octets[i] = seed & 0xFF;
@@ -36,6 +38,16 @@ abstract class FakeDeviceIdentifier {
       output += octet.toRadixString(16).padLeft(2, '0').toUpperCase();
     }
     return LHDeviceIdentifier(output);
+  }
+
+  @visibleForTesting
+  static LHDeviceIdentifier generateDeviceIdentifierLinux(int seed) {
+    return generateBasicMacIdentifier(seed);
+  }
+
+  @visibleForTesting
+  static LHDeviceIdentifier generateDeviceIdentifierAndroid(int seed) {
+    return generateBasicMacIdentifier(seed);
   }
 
   @visibleForTesting

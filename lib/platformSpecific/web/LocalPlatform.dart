@@ -7,6 +7,8 @@ class LocalPlatform {
 
   static const bool isWeb = true;
 
+  static const bool isLinux = false;
+
   static const String current = "web";
 
   static void exit(int code) {

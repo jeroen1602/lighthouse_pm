@@ -56,6 +56,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
     }
   }
 
+  final ScrollController _controller = ScrollController();
+
   @override
   Widget buildPage(BuildContext context) {
     final theme = Theme.of(context);
@@ -109,7 +111,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             return Container(
               color: Colors.red,
               child: ListTile(
-                title: Text('Error'),
+                title: const Text('Error'),
                 subtitle: Text(snapshot.error.toString()),
               ),
             );
@@ -117,7 +119,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
           final state =
               snapshot.hasData && snapshot.data == LighthousePowerState.STANDBY;
           return SwitchListTile(
-            title: Text('Use STANDBY instead of SLEEP'),
+            title: const Text('Use STANDBY instead of SLEEP'),
+            subtitle: const Text('Only V2 lighthouse support this.'),
             value: state,
             onChanged: (value) {
               blocWithoutListen(context).settings.setSleepState(value
@@ -265,7 +268,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             return CircularProgressIndicator();
           }
           return SwitchListTile(
-              title: Text('Show group devices offline warning'),
+              title: const Text('Show devices in group offline warning'),
               value: snapshot.requireData,
               onChanged: (value) {
                 blocWithoutListen(context)
@@ -437,7 +440,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
-      if (LocalPlatform.isWeb) ...[
+      if (LocalPlatform.isWeb || LocalPlatform.isLinux) ...[
         ListTile(
           title: const Text('Try the Android app'),
           subtitle: const Text('On Google Play'),
@@ -467,7 +470,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
           },
         ),
         const Divider(),
-      ] else ...[
+      ],
+      if (!LocalPlatform.isWeb) ...[
         ListTile(
           title: const Text('Try the Webapp'),
           trailing: const Icon(Icons.arrow_forward_ios),
@@ -513,7 +517,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: ContentContainerListView(children: items),
+      body: ContentContainerListView(
+        children: items,
+      ),
     );
   }
 

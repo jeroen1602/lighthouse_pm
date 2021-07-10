@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 ///
 /// A widget that will scale the content if the screen size gets too big.
@@ -64,12 +65,12 @@ class ContentContainerWidget extends StatelessWidget {
 }
 
 class ContentContainerListView extends StatelessWidget {
-  const ContentContainerListView(
-      {required this.children,
-      this.maxSize = ContentContainerWidget.DEFAULT_MAX_SIZE,
-      this.contentSize = ContentContainerWidget.DEFAULT_CONTENT_SIZE,
-      Key? key})
-      : super(key: key);
+  const ContentContainerListView({
+    required this.children,
+    this.maxSize = ContentContainerWidget.DEFAULT_MAX_SIZE,
+    this.contentSize = ContentContainerWidget.DEFAULT_CONTENT_SIZE,
+    Key? key,
+  }) : super(key: key);
 
   /// At what size should the content become smaller?
   final double maxSize;
@@ -93,20 +94,23 @@ class ContentContainerListView extends StatelessWidget {
           maxSize: maxSize,
           contentSize: contentSize,
         ),
-        ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            final Widget content = itemBuilder(context, index);
-            return ContentContainerWidget(
-              builder: (BuildContext context) {
-                return content;
-              },
-              addMaterial: false,
-              maxSize: maxSize,
-              contentSize: contentSize,
-            );
-          },
-          itemCount: itemCount,
-        ),
+        ContentScrollbar(scrollbarChildBuilder: (context, controller) {
+          return ListView.builder(
+            controller: controller,
+            itemBuilder: (BuildContext context, int index) {
+              final Widget content = itemBuilder(context, index);
+              return ContentContainerWidget(
+                builder: (BuildContext context) {
+                  return content;
+                },
+                addMaterial: false,
+                maxSize: maxSize,
+                contentSize: contentSize,
+              );
+            },
+            itemCount: itemCount,
+          );
+        }),
       ],
     );
   }
@@ -124,18 +128,67 @@ class ContentContainerListView extends StatelessWidget {
           maxSize: this.maxSize,
           contentSize: this.contentSize,
         ),
-        ListView(
-            children: children
-                .map((item) => ContentContainerWidget(
-                      builder: (context) {
-                        return item;
-                      },
-                      addMaterial: false,
-                      maxSize: this.maxSize,
-                      contentSize: this.contentSize,
-                    ))
-                .toList())
+        ContentScrollbar(
+          scrollbarChildBuilder: (context, controller) {
+            return ListView(
+                controller: controller,
+                children: children
+                    .map((item) => ContentContainerWidget(
+                          builder: (context) {
+                            return item;
+                          },
+                          addMaterial: false,
+                          maxSize: this.maxSize,
+                          contentSize: this.contentSize,
+                        ))
+                    .toList());
+          },
+          maxSize: this.maxSize,
+        ),
       ],
     );
+  }
+}
+
+typedef ScrollbarChildBuilder = Widget Function(
+    BuildContext context, ScrollController controller);
+
+class ContentScrollbar extends StatelessWidget {
+  ContentScrollbar({
+    Key? key,
+    ScrollController? controller,
+    required this.scrollbarChildBuilder,
+    this.maxSize = ContentContainerWidget.DEFAULT_MAX_SIZE,
+  })  : this.controller = controller ?? ScrollController(),
+        super(key: key);
+
+  final ScrollbarChildBuilder scrollbarChildBuilder;
+
+  final ScrollController controller;
+
+  final double maxSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final child = scrollbarChildBuilder(context, controller);
+    return Scrollbar(
+        controller: controller,
+        isAlwaysShown: alwaysShowScrollbar(context, maxSize: maxSize),
+        child: child);
+  }
+
+  static bool alwaysShowScrollbar(
+    BuildContext context, {
+    double maxSize = ContentContainerWidget.DEFAULT_MAX_SIZE,
+  }) {
+    if (LocalPlatform.isLinux) {
+      return true;
+    } else if (LocalPlatform.isWeb) {
+      double screenWidth = MediaQuery.of(context).size.width;
+
+      return screenWidth >= maxSize;
+    }
+
+    return false;
   }
 }

@@ -334,84 +334,91 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                         }
                       },
                     )
-                  : ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == listLength) {
-                          // Add an extra container at the bottom to stop the floating
-                          // button from obstructing the last item.
-                          return Container(
-                            height: _DEVICE_LIST_SCROLL_PADDING,
-                          );
-                        }
-                        if (index < groups.length) {
-                          return LighthouseGroupWidget(
-                            group: groups[index],
-                            devices: devices,
-                            selectedDevices: selected,
-                            selectedGroup: selectedGroup,
-                            nicknameMap: nicknames,
-                            sleepState: widget.settings.sleepState,
-                            showOfflineWarning:
-                                widget.settings.groupShowOfflineWarning,
-                            onGroupSelected: () {
-                              setState(() {
-                                if (groups[index].deviceIds.isEmpty) {
-                                  clearSelected();
-                                  selectedGroup = groups[index].group;
-                                  return;
-                                }
-                                if (LighthouseGroupWidget.isGroupSelected(
-                                    groups[index].deviceIds,
-                                    this
-                                        .selected
-                                        .map((e) => e.toString())
-                                        .toList())) {
-                                  clearSelected();
-                                } else {
-                                  clearSelected();
-                                  selected.addAll(groups[index]
-                                      .deviceIds
-                                      .map((e) => LHDeviceIdentifier(e)));
-                                }
-                              });
-                            },
-                            onSelectedDevice: (LHDeviceIdentifier device) {
-                              setState(() {
-                                selectedGroup = null;
-                                if (selected.contains(device)) {
-                                  selected.remove(device);
-                                } else {
-                                  selected.add(device);
-                                }
-                              });
-                            },
-                          );
-                        }
+                  : ContentScrollbar(
+                      scrollbarChildBuilder: (context, controller) {
+                        return ListView.builder(
+                          controller: controller,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == listLength) {
+                              // Add an extra container at the bottom to stop the floating
+                              // button from obstructing the last item.
+                              return Container(
+                                height: _DEVICE_LIST_SCROLL_PADDING,
+                              );
+                            }
+                            if (index < groups.length) {
+                              return LighthouseGroupWidget(
+                                group: groups[index],
+                                devices: devices,
+                                selectedDevices: selected,
+                                selectedGroup: selectedGroup,
+                                nicknameMap: nicknames,
+                                sleepState: widget.settings.sleepState,
+                                showOfflineWarning:
+                                    widget.settings.groupShowOfflineWarning,
+                                onGroupSelected: () {
+                                  setState(() {
+                                    if (groups[index].deviceIds.isEmpty) {
+                                      clearSelected();
+                                      selectedGroup = groups[index].group;
+                                      return;
+                                    }
+                                    if (LighthouseGroupWidget.isGroupSelected(
+                                        groups[index].deviceIds,
+                                        this
+                                            .selected
+                                            .map((e) => e.toString())
+                                            .toList())) {
+                                      clearSelected();
+                                    } else {
+                                      clearSelected();
+                                      selected.addAll(groups[index]
+                                          .deviceIds
+                                          .map((e) => LHDeviceIdentifier(e)));
+                                    }
+                                  });
+                                },
+                                onSelectedDevice: (LHDeviceIdentifier device) {
+                                  setState(() {
+                                    selectedGroup = null;
+                                    if (selected.contains(device)) {
+                                      selected.remove(device);
+                                    } else {
+                                      selected.add(device);
+                                    }
+                                  });
+                                },
+                              );
+                            }
 
-                        index -= groups.length;
-                        final device = notGroupedDevices[index];
+                            index -= groups.length;
+                            final device = notGroupedDevices[index];
 
-                        final nickname =
-                            nicknames[device.deviceIdentifier.toString()];
-                        return LighthouseWidget(
-                          device,
-                          selected: selected.contains(device.deviceIdentifier),
-                          selecting: selecting,
-                          onSelected: () {
-                            setState(() {
-                              selectedGroup = null;
-                              if (selected.contains(device.deviceIdentifier)) {
-                                selected.remove(device.deviceIdentifier);
-                              } else {
-                                selected.add(device.deviceIdentifier);
-                              }
-                            });
+                            final nickname =
+                                nicknames[device.deviceIdentifier.toString()];
+                            return LighthouseWidget(
+                              device,
+                              selected:
+                                  selected.contains(device.deviceIdentifier),
+                              selecting: selecting,
+                              onSelected: () {
+                                setState(() {
+                                  selectedGroup = null;
+                                  if (selected
+                                      .contains(device.deviceIdentifier)) {
+                                    selected.remove(device.deviceIdentifier);
+                                  } else {
+                                    selected.add(device.deviceIdentifier);
+                                  }
+                                });
+                              },
+                              nickname: nickname,
+                              sleepState: widget.settings.sleepState,
+                            );
                           },
-                          nickname: nickname,
-                          sleepState: widget.settings.sleepState,
+                          itemCount: listLength + 1,
                         );
                       },
-                      itemCount: listLength + 1,
                     );
 
               final List<Widget> actions = [];

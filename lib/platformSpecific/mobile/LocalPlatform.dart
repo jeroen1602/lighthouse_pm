@@ -31,6 +31,13 @@ class LocalPlatform {
     return false;
   }
 
+  static bool get isLinux {
+    if (overridePlatform == PlatformOverride.linux && !kReleaseMode) {
+      return true;
+    }
+    return Platform.isLinux;
+  }
+
   static String get current {
     if (LocalPlatform.isAndroid ||
         (overridePlatform == PlatformOverride.android && !kReleaseMode)) {
@@ -42,6 +49,10 @@ class LocalPlatform {
     }
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return "web";
+    }
+    if (LocalPlatform.isLinux ||
+        (overridePlatform == PlatformOverride.linux && !kReleaseMode)) {
+      return "Linux";
     }
     return "UNKNOWN";
   }
@@ -56,4 +67,5 @@ enum PlatformOverride {
   android,
   ios,
   web,
+  linux,
 }

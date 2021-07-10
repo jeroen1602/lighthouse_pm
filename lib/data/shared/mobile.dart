@@ -17,10 +17,14 @@ LighthouseDatabase constructDb({bool logStatements = false}) {
     });
     return LighthouseDatabase(executor);
   }
-  // if (Platform.isMacOS || Platform.isLinux) {
-  //   final file = File('db.sqlite');
-  //   return LighthouseDatabase(VmDatabase(file, logStatements: logStatements));
-  // }
+  if (Platform.isMacOS || Platform.isLinux) {
+    final executor = LazyDatabase(() async {
+      final dbFolder = await paths.getApplicationSupportDirectory();
+      final file = File(p.join(dbFolder.path, 'settings.sqlite'));
+      return VmDatabase(file, logStatements: logStatements);
+    });
+    return LighthouseDatabase(executor);
+  }
   // if (Platform.isWindows) {
   //   final file = File('db.sqlite');
   //   return Database(VMDatabase(file, logStatements: logStatements));

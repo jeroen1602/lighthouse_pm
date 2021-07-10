@@ -217,6 +217,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
+    } else if (LocalPlatform.isLinux) {
+      // TODO: check if the current platform supports it
+      return true;
     } else if (LocalPlatform.isWeb) {
       // TODO: check if the current browser actually supports it.
       return true;
