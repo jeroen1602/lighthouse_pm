@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/Database.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/BlueZBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterWebBluetoothBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
@@ -52,6 +53,9 @@ class MainApp extends StatelessWidget {
     if (LocalPlatform.isWeb) {
       LighthouseProvider.instance
           .addBackEnd(FlutterWebBluetoothBackend.instance);
+    }
+    if (LocalPlatform.isLinux) {
+      LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
     }
     if (!kReleaseMode) {
       // Add this back if you need to test for devices you don't own.

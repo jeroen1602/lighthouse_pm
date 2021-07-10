@@ -53,6 +53,7 @@ dependencies:
   device_info: ^2.0.1
   flutter_web_bluetooth: ^0.0.4
   web_browser_detect: ^2.0.2
+  bluez: ^0.6.0
 
   # This may need to be enabled again if the build runner doesn't like it.
   #dependency_overrides:

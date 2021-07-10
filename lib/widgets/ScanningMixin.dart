@@ -35,7 +35,7 @@ abstract class ScanningMixin {
     if (await BLEPermissionsHelper.hasBLEPermissions() ==
         PermissionStatus.granted) {
       await startScan(scanDuration, updateInterval: updateInterval);
-    } else if (failMessage != null && failMessage.isNotEmpty && !kReleaseMode) {
+    } else if (failMessage.isNotEmpty && !kReleaseMode) {
       debugPrint(failMessage);
     }
   }

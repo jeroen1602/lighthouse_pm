@@ -806,6 +806,13 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                   "stick in a USB Bluetooth adapter.")
         ];
       }
+    } else if (LocalPlatform.isLinux) {
+      if (state == BluetoothAdapterState.unavailable) {
+        subText = const [
+          TextSpan(text: "No bluetooth adapter has been found. "
+              "Try sticking in a USB Bluetooth adapter.")
+        ];
+      }
     }
 
     return Scaffold(
