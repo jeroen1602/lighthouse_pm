@@ -1,5 +1,7 @@
 # Version 1.3.0+9 R.C
 
+ - (Web) added alt + R keyboard shortcut for rescanning devices.
+ - (Desktop) Added F5, ctrl + R, super/ cmd + R keyboard shortcut for rescanning devices. 
  - Calling disconnect if state could not be retrieved.
  - (Linux) Added basic support for a linux version.
  - (Web) Fixed bug where devices would show inside the group and outside the group.

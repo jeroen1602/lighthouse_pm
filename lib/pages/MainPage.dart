@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/Theming.dart';
@@ -467,7 +468,34 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 drawer: MainPageDrawer(
                     Duration(seconds: widget.settings.scanDuration),
                     Duration(seconds: widget.settings.updateInterval)),
-                body: body,
+                body: Shortcuts(
+                    shortcuts: <LogicalKeySet, Intent>{
+                      if (!LocalPlatform.isWeb)
+                        ...{LogicalKeySet(
+                            LogicalKeyboardKey.f5): ScanDevicesIntent(),
+                        LogicalKeySet(LogicalKeyboardKey.control,
+                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                        LogicalKeySet(LogicalKeyboardKey.superKey,
+                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                      }
+                      else ...{
+                        LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey.keyR): ScanDevicesIntent()
+                      }
+                    },
+                    child: Actions(
+                      actions: <Type, Action<Intent>>{
+                        ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
+                            onInvoke: (ScanDevicesIntent intent) {
+                          startScanWithCheck(
+                              Duration(seconds: widget.settings.scanDuration),
+                              updateInterval: Duration(
+                                  seconds: widget.settings.updateInterval),
+                              failMessage:
+                                  "Could not start scan because the permission has not been granted on keyboard shortcut.");
+                        })
+                      },
+                      child: Focus(autofocus: true, child: body),
+                    )),
               );
             }));
   }
@@ -739,6 +767,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 }
 
+class ScanDevicesIntent extends Intent {
+  const ScanDevicesIntent();
+}
+
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
       {Key? key, required this.state, required this.settings})
@@ -809,8 +841,9 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
     } else if (LocalPlatform.isLinux) {
       if (state == BluetoothAdapterState.unavailable) {
         subText = const [
-          TextSpan(text: "No bluetooth adapter has been found. "
-              "Try sticking in a USB Bluetooth adapter.")
+          TextSpan(
+              text: "No bluetooth adapter has been found. "
+                  "Try sticking in a USB Bluetooth adapter.")
         ];
       }
     }
