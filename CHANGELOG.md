@@ -1,6 +1,7 @@
 # Version 1.3.0+9 R.C
 
- - (Web) Fixed bug where devices would show inside the group and outside of the group.
+ - (Linux) Added basic support for a linux version.
+ - (Web) Fixed bug where devices would show inside the group and outside the group.
  - Vive base station ids are now bound to the device id instead to the device name. 
 This way everyone can store whatever id without restrictions, fixing the bug for some people.
 This has the effect that all stored ids are now gone (sorry about that).
