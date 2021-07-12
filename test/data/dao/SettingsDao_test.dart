@@ -1,8 +1,7 @@
-
+import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
-import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class FakeAndroidDeviceVersion extends Fake implements AndroidBuildVersion {
@@ -12,30 +11,25 @@ class FakeAndroidDeviceVersion extends Fake implements AndroidBuildVersion {
 }
 
 class FakeAndroidDeviceInfo extends Fake implements AndroidDeviceInfo {
-  
   FakeAndroidDeviceInfo(this.fakeVersion);
 
   FakeAndroidDeviceVersion fakeVersion;
 
   AndroidBuildVersion get version => fakeVersion;
-  
 }
 
-class FakeIosDeviceVersion extends Fake implements AndroidBuildVersion {
-}
+class FakeIosDeviceVersion extends Fake implements AndroidBuildVersion {}
 
 class FakeIOSDeviceInfo extends Fake implements IosDeviceInfo {
-
-
-
   String systemVersion = '';
-
 }
 
-class FakePlatformVersions extends Fake with MockPlatformInterfaceMixin implements DeviceInfoPlatform {
+class FakePlatformVersions extends Fake
+    with MockPlatformInterfaceMixin
+    implements DeviceInfoPlatform {
+  FakeAndroidDeviceInfo androidDeviceInfo =
+      FakeAndroidDeviceInfo(FakeAndroidDeviceVersion());
 
-  FakeAndroidDeviceInfo androidDeviceInfo = FakeAndroidDeviceInfo(FakeAndroidDeviceVersion());
-  
   /// Gets the Android device information.
   Future<AndroidDeviceInfo> androidInfo() async {
     return androidDeviceInfo;
@@ -47,7 +41,6 @@ class FakePlatformVersions extends Fake with MockPlatformInterfaceMixin implemen
   Future<IosDeviceInfo> iosInfo() async {
     return iosDeviceInfo;
   }
-
 }
 
 void main() {
@@ -64,7 +57,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt=30;
+    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 30;
 
     LocalPlatform.overridePlatform = PlatformOverride.android;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
@@ -77,21 +70,21 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  test('Should return system theme based on Android version', () async{
+  test('Should return system theme based on Android version', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt=29;
+    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 29;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt=5;
+    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 5;
     expect(await SettingsDao.supportsThemeModeSystem, isFalse);
 
     LocalPlatform.overridePlatform = null;
   });
 
-  test('Should return system theme based on iOS version', () async{
+  test('Should return system theme based on iOS version', () async {
     LocalPlatform.overridePlatform = PlatformOverride.ios;
 
     final fakeVersion = FakePlatformVersions();

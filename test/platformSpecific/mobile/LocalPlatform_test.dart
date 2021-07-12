@@ -18,7 +18,7 @@ void main() {
 
     expect(LocalPlatform.current, "Android");
 
-    expect(LocalPlatform.isAndroid,  isTrue);
+    expect(LocalPlatform.isAndroid, isTrue);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
     expect(LocalPlatform.isWeb, isFalse);
@@ -29,7 +29,7 @@ void main() {
 
     expect(LocalPlatform.current, "IOS");
 
-    expect(LocalPlatform.isAndroid,  isFalse);
+    expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isTrue);
     expect(LocalPlatform.isLinux, isFalse);
     expect(LocalPlatform.isWeb, isFalse);
@@ -40,7 +40,7 @@ void main() {
 
     expect(LocalPlatform.current, "Linux");
 
-    expect(LocalPlatform.isAndroid,  isFalse);
+    expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isTrue);
     expect(LocalPlatform.isWeb, isFalse);
@@ -51,7 +51,7 @@ void main() {
 
     expect(LocalPlatform.current, "web");
 
-    expect(LocalPlatform.isAndroid,  isFalse);
+    expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
     expect(LocalPlatform.isWeb, isTrue);
@@ -62,7 +62,7 @@ void main() {
 
     expect(LocalPlatform.current, "UNKNOWN");
 
-    expect(LocalPlatform.isAndroid,  isFalse);
+    expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
     expect(LocalPlatform.isWeb, isFalse);

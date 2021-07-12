@@ -6,7 +6,6 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
-import 'package:rxdart/subjects.dart';
 
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(LHBluetoothDevice device) : super(device);
@@ -43,7 +42,6 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
     }
     // TODO: change state.
   }
-
 
   int disconnectCalled = 0;
 
