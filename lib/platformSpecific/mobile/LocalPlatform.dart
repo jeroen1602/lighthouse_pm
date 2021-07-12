@@ -14,12 +14,18 @@ class LocalPlatform {
     if (overridePlatform == PlatformOverride.android && !kReleaseMode) {
       return true;
     }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
     return Platform.isAndroid;
   }
 
   static bool get isIOS {
     if (overridePlatform == PlatformOverride.ios && !kReleaseMode) {
       return true;
+    }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
     }
     return Platform.isIOS;
   }
@@ -28,6 +34,9 @@ class LocalPlatform {
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return true;
     }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
     return false;
   }
 
@@ -35,24 +44,24 @@ class LocalPlatform {
     if (overridePlatform == PlatformOverride.linux && !kReleaseMode) {
       return true;
     }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
     return Platform.isLinux;
   }
 
   static String get current {
-    if (LocalPlatform.isAndroid ||
-        (overridePlatform == PlatformOverride.android && !kReleaseMode)) {
+    if (LocalPlatform.isAndroid) {
       return "Android";
     }
-    if (LocalPlatform.isIOS ||
-        (overridePlatform == PlatformOverride.ios && !kReleaseMode)) {
+    if (LocalPlatform.isIOS) {
       return "IOS";
+    }
+    if (LocalPlatform.isLinux) {
+      return "Linux";
     }
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return "web";
-    }
-    if (LocalPlatform.isLinux ||
-        (overridePlatform == PlatformOverride.linux && !kReleaseMode)) {
-      return "Linux";
     }
     return "UNKNOWN";
   }
@@ -68,4 +77,5 @@ enum PlatformOverride {
   ios,
   web,
   linux,
+  unsupported,
 }
