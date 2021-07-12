@@ -232,8 +232,11 @@ abstract class LighthouseDevice {
               this._powerState.add(data);
             }
           } catch (e, s) {
+            debugPrint("Could not get state, maybe we are disconnected");
             debugPrint('$e');
             debugPrint('$s');
+            await this.disconnect();
+            return;
           } finally {
             transactionMutex.release();
           }

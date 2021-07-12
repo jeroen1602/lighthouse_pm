@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bluez/bluez.dart';
+import 'package:rxdart/streams.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../../ble/BluetoothDevice.dart';
@@ -48,7 +49,8 @@ class BlueZBluetoothDevice extends LHBluetoothDevice {
 
   void _startStateStream() {
     if (_stateStream == null) {
-      _stateStream = Stream.periodic(Duration(seconds: 2))
+      _stateStream = MergeStream(
+              [Stream.value(null), Stream.periodic(Duration(seconds: 2))])
           .map((event) => device.connected)
           .map((event) => event
               ? LHBluetoothDeviceState.connected
