@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-class LocalPlatform {
+abstract class LocalPlatform {
   ///
   /// Override the platform being reported for testing. Will not happen in
   /// release mode!
