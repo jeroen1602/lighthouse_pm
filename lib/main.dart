@@ -84,74 +84,84 @@ class MainApp extends StatelessWidget {
 class LighthousePMApp extends StatelessWidget with WithBlocStateless {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ThemeMode>(
-        stream: blocWithoutListen(context).settings.getPreferredThemeAsStream(),
-        initialData: ThemeMode.system,
-        builder:
-            (BuildContext context, AsyncSnapshot<ThemeMode> themeSnapshot) {
-          final scrollbarDesktop =
-              ContentScrollbar.alwaysShowScrollbar(context);
-          final scrollbarTheme = ScrollbarThemeData(
-            isAlwaysShown: scrollbarDesktop,
-            radius: Radius.zero,
-          );
+    return StreamBuilder<bool>(
+        initialData: false,
+        stream: ContentScrollbar.alwaysShowScrollbarStream,
+        builder: (BuildContext context,
+            AsyncSnapshot<bool> desktopScrollbarSnapshot) {
+          final scrollbarDesktop = desktopScrollbarSnapshot.requireData;
 
-          return MaterialApp(
-            debugShowCheckedModeBanner: true,
-            title: 'Lighthouse PM',
-            theme: ThemeData(
-                colorScheme: ColorScheme.light(),
-                primarySwatch: Colors.blueGrey,
-                selectedRowColor: Colors.grey,
-                disabledColor: Colors.grey.shade400,
-                appBarTheme:
-                    AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
-                scrollbarTheme: scrollbarTheme.copyWith()),
-            darkTheme: ThemeData(
-                colorScheme: ColorScheme.dark(),
-                primarySwatch: Colors.blueGrey,
-                selectedRowColor: Colors.blueGrey,
-                appBarTheme:
-                    AppBarTheme(iconTheme: IconThemeData(color: Colors.white)),
-                scrollbarTheme: scrollbarTheme.copyWith()),
-            themeMode: themeSnapshot.data,
-            initialRoute: '/',
-            onGenerateRoute: (RouteSettings settings) {
-              // Make sure all these pages extend the Base page or else shortcut
-              // handling won't work!
-              final routes = <String, PageBuilder>{
-                '/': (context) => MainPage(),
-                // '/': _createShortcutDebugPage,
-                // Uncomment the line above if you need to debug the shortcut handler.
-                '/settings': (context) => SettingsPage(),
-                '/troubleshooting': (context) => TroubleshootingPage(),
-                '/help': (context) => HelpPage(),
-                '/shortcutHandler': (context) =>
-                    ShortcutHandlerPage(settings.arguments),
-              };
+          return StreamBuilder<ThemeMode>(
+              stream: blocWithoutListen(context)
+                  .settings
+                  .getPreferredThemeAsStream(),
+              initialData: ThemeMode.system,
+              builder: (BuildContext context,
+                  AsyncSnapshot<ThemeMode> themeSnapshot) {
+                final scrollbarTheme = ScrollbarThemeData(
+                  isAlwaysShown: scrollbarDesktop,
+                  radius: scrollbarDesktop ? Radius.zero : null,
+                );
 
-              routes.addAll(SettingsPage.getSubPages('/settings'));
+                return MaterialApp(
+                  debugShowCheckedModeBanner: true,
+                  title: 'Lighthouse PM',
+                  theme: ThemeData(
+                      colorScheme: ColorScheme.light(),
+                      primarySwatch: Colors.blueGrey,
+                      selectedRowColor: Colors.grey,
+                      disabledColor: Colors.grey.shade400,
+                      appBarTheme: AppBarTheme(
+                          iconTheme: IconThemeData(color: Colors.white)),
+                      scrollbarTheme: scrollbarTheme.copyWith()),
+                  darkTheme: ThemeData(
+                      colorScheme: ColorScheme.dark(),
+                      primarySwatch: Colors.blueGrey,
+                      selectedRowColor: Colors.blueGrey,
+                      appBarTheme: AppBarTheme(
+                          iconTheme: IconThemeData(color: Colors.white)),
+                      scrollbarTheme: scrollbarTheme.copyWith()),
+                  themeMode: themeSnapshot.data,
+                  initialRoute: '/',
+                  onGenerateRoute: (RouteSettings settings) {
+                    // Make sure all these pages extend the Base page or else shortcut
+                    // handling won't work!
+                    final routes = <String, PageBuilder>{
+                      '/': (context) => MainPage(),
+                      // '/': _createShortcutDebugPage,
+                      // Uncomment the line above if you need to debug the shortcut handler.
+                      '/settings': (context) => SettingsPage(),
+                      '/troubleshooting': (context) => TroubleshootingPage(),
+                      '/help': (context) => HelpPage(),
+                      '/shortcutHandler': (context) =>
+                          ShortcutHandlerPage(settings.arguments),
+                    };
 
-              if (!kReleaseMode) {
-                routes.addAll(<String, PageBuilder>{
-                  '/databaseTest': (context) => DatabaseTestPage()
-                });
-                routes.addAll(DatabaseTestPage.getSubPages('/databaseTest'));
-                routes['/404'] = (context) => NotFoundPage();
-              }
+                    routes.addAll(SettingsPage.getSubPages('/settings'));
 
-              if (LocalPlatform.isWeb || !kReleaseMode) {
-                WidgetBuilder? builder = routes[settings.name];
-                return MaterialPageRoute(
-                    builder: (ctx) => builder?.call(ctx) ?? NotFoundPage(),
-                    settings: settings);
-              } else {
-                WidgetBuilder builder = routes[settings.name]!;
-                return MaterialPageRoute(
-                    builder: (ctx) => builder(ctx), settings: settings);
-              }
-            },
-          );
+                    if (!kReleaseMode) {
+                      routes.addAll(<String, PageBuilder>{
+                        '/databaseTest': (context) => DatabaseTestPage()
+                      });
+                      routes.addAll(
+                          DatabaseTestPage.getSubPages('/databaseTest'));
+                      routes['/404'] = (context) => NotFoundPage();
+                    }
+
+                    if (LocalPlatform.isWeb || !kReleaseMode) {
+                      WidgetBuilder? builder = routes[settings.name];
+                      return MaterialPageRoute(
+                          builder: (ctx) =>
+                              builder?.call(ctx) ?? NotFoundPage(),
+                          settings: settings);
+                    } else {
+                      WidgetBuilder builder = routes[settings.name]!;
+                      return MaterialPageRoute(
+                          builder: (ctx) => builder(ctx), settings: settings);
+                    }
+                  },
+                );
+              });
         });
   }
 }

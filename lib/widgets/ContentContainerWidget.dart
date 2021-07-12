@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
+import 'package:rxdart/subjects.dart';
 
 ///
 /// A widget that will scale the content if the screen size gets too big.
@@ -190,5 +191,19 @@ class ContentScrollbar extends StatelessWidget {
     }
 
     return false;
+  }
+
+  static BehaviorSubject<bool> _alwaysShowScrollbarSubject =
+      BehaviorSubject.seeded(false);
+
+  static Stream<bool> get alwaysShowScrollbarStream =>
+      _alwaysShowScrollbarSubject.stream;
+
+  static void updateShowScrollbarSubject(BuildContext context) {
+    final startValue = _alwaysShowScrollbarSubject.valueWrapper?.value;
+    final newValue = alwaysShowScrollbar(context);
+    if (newValue != startValue) {
+      _alwaysShowScrollbarSubject.add(newValue);
+    }
   }
 }
