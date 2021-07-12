@@ -248,7 +248,7 @@ abstract class LighthouseDevice {
         }
       } else {
         debugPrint('Cleaning-up old subscription!');
-        this._powerStateSubscription?.cancel();
+        this.disconnect();
       }
     });
     powerStateSubscription.onDone(() {

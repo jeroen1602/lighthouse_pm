@@ -6,6 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/DeviceWithExtensions.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
+import 'package:rxdart/subjects.dart';
 
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(LHBluetoothDevice device) : super(device);
@@ -26,8 +27,10 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
     throw UnimplementedError();
   }
 
+  bool openConnection = false;
+
   @override
-  bool get hasOpenConnection => throw UnimplementedError();
+  bool get hasOpenConnection => openConnection;
 
   int changeStateCalled = 0;
   bool errorOnInternalChangeState = false;
@@ -39,6 +42,15 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
       throw StateError("Test error for internal change state");
     }
     // TODO: change state.
+  }
+
+
+  int disconnectCalled = 0;
+
+  @override
+  Future<void> disconnect() {
+    disconnectCalled++;
+    return super.disconnect();
   }
 
   @override
