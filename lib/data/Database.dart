@@ -14,14 +14,6 @@ export 'shared/shared.dart';
 
 part 'Database.g.dart';
 
-class NicknamesLastSeenJoin {
-  NicknamesLastSeenJoin(this.deviceId, this.nickname, this.lastSeen);
-
-  final String deviceId;
-  final String nickname;
-  final DateTime? lastSeen;
-}
-
 // This file required generated files.
 // Use `flutter packages pub run build_runner build`
 // or `flutter packages pub run build_runner watch` to generate these files.
