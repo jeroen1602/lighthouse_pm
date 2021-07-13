@@ -16,6 +16,12 @@ class AndroidLauncherShortcut {
     }
   }
 
+  @visibleForTesting
+  AndroidLauncherShortcut.testing() {
+    debugPrint(
+        "Warning created testing version of unsupported AndroidLauncherShortcut!");
+  }
+
   static AndroidLauncherShortcut get instance {
     if (_instance == null) {
       _instance = AndroidLauncherShortcut._();

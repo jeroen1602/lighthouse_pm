@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'shared.dart';
@@ -11,33 +10,39 @@ import 'shared.dart';
 ///
 class AndroidLauncherShortcut {
   AndroidLauncherShortcut._() {
-    _channel.setMethodCallHandler((call) {
-      for (final item in _InMethods.items) {
-        if (item.functionName == call.method) {
-          return item.functionHandler(this, call);
-        }
-      }
-      throw NoSuchMethodError.withInvocation(
-          this, Invocation.method(Symbol(call.method), null));
-    });
-    if (!kReleaseMode && !Platform.isAndroid) {
+    channel.setMethodCallHandler(AndroidLauncherShortcut.messageHandler);
+    if (!kReleaseMode && !LocalPlatform.isAndroid) {
       throw UnsupportedError(
           "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?");
     }
   }
 
+  @visibleForTesting
+  static Future<void> messageHandler(MethodCall call) async {
+    for (final item in _InMethods.items) {
+      if (item.functionName == call.method) {
+        return item.functionHandler(call);
+      }
+    }
+    throw NoSuchMethodError.withInvocation(
+        instance, Invocation.method(Symbol(call.method), null));
+  }
+
   static AndroidLauncherShortcut? _instance;
 
-  static AndroidLauncherShortcut get instance {
-    if (_instance == null) {
-      _instance = AndroidLauncherShortcut._();
-    }
-    return _instance!;
-  }
+  static AndroidLauncherShortcut get instance =>
+      _instance ??= AndroidLauncherShortcut._();
 
   BehaviorSubject<ShortcutHandle?> _changePowerStateMac = BehaviorSubject();
 
-  static const _channel =
+  @visibleForTesting
+  void clearStateStream() {
+    _changePowerStateMac.close();
+    _changePowerStateMac = BehaviorSubject();
+  }
+
+  @visibleForTesting
+  static const channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/shortcut");
 
   ///
@@ -48,7 +53,7 @@ class AndroidLauncherShortcut {
   /// it's ready to handle code.
   ///
   Future<void> readyForData() async {
-    await _channel.invokeMethod('readyForData');
+    await channel.invokeMethod('readyForData');
   }
 
   ///
@@ -57,7 +62,7 @@ class AndroidLauncherShortcut {
   /// higher, but it may also happen if the shortcut manager is `null`.
   ///
   Future<bool> shortcutSupported() async {
-    return _channel.invokeMethod('supportShortcut').then((value) {
+    return channel.invokeMethod('supportShortcut').then((value) {
       if (value is bool) {
         return value;
       }
@@ -67,7 +72,7 @@ class AndroidLauncherShortcut {
 
   Future<bool> _requestShortcut(
       ShortcutTypes type, String shortCutString, String name) {
-    return _channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
+    return channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
       'action': "${type.part}/$shortCutString",
       'name': name
     }).then((value) => value == true);
@@ -92,8 +97,7 @@ class AndroidLauncherShortcut {
   ///
   /// Handle the incoming mac callback.
   ///
-  static Future<void> _handleMacShortcut(
-      AndroidLauncherShortcut instance, MethodCall call) async {
+  static Future<void> _handleMacShortcut(MethodCall call) async {
     if (call.arguments != null && call.arguments is String) {
       instance._changePowerStateMac.add(
           ShortcutHandle(ShortcutTypes.MAC_TYPE, call.arguments as String));
@@ -105,8 +109,7 @@ class AndroidLauncherShortcut {
   }
 }
 
-typedef _InMethodHandler = Future<dynamic> Function(
-    AndroidLauncherShortcut instance, MethodCall call);
+typedef _InMethodHandler = Future<dynamic> Function(MethodCall call);
 
 ///
 /// A list of "enums" with the information for the methods that the shortcut

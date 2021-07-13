@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtension.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/io.dart';
 
 void main() {
   test('Should be able to create shortcut extension', () async {
@@ -14,12 +16,26 @@ void main() {
   });
 
   test('Should be able to create shortcut', () async {
+    WidgetsFlutterBinding.ensureInitialized();
+    LocalPlatform.overridePlatform = PlatformOverride.android;
     final extension = ShortcutExtension("00:00:00:00:00:00", () {
       return "DEVICE_NAME";
     });
 
-    // For now do this because the extension method channel doesn't work.
-    expect(
-        () async => await extension.onTap(), throwsA(TypeMatcher<TypeError>()));
+    String? receivedMac;
+
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+      if (call.method == "requestShortcut") {
+        receivedMac = (call.arguments as Map)['action'];
+        return true;
+      }
+    });
+
+    await extension.onTap();
+
+    expect(receivedMac, 'mac/00:00:00:00:00:00');
+
+    LocalPlatform.overridePlatform = null;
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
   });
 }
