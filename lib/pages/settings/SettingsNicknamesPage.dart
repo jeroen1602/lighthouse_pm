@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/Theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/tables/NicknameTable.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';

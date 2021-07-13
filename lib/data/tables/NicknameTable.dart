@@ -24,3 +24,11 @@ class NicknamesHelper {
     return Nickname(deviceId: this.deviceId, nickname: nickname);
   }
 }
+
+class NicknamesLastSeenJoin {
+  NicknamesLastSeenJoin(this.deviceId, this.nickname, this.lastSeen);
+
+  final String deviceId;
+  final String nickname;
+  final DateTime? lastSeen;
+}
