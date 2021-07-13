@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
+import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 
 /// The same as a [WidgetBuilder] only require it to return a [BasePage].
 typedef PageBuilder = BasePage Function(BuildContext context);
@@ -19,6 +20,7 @@ abstract class BasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ContentScrollbar.updateShowScrollbarSubject(context);
     return _ShortcutLaunchHandleWidget(
         buildPage(context), this.shortcutHandleArgument, replace);
   }

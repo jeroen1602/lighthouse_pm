@@ -109,4 +109,48 @@ void main() {
 
     LocalPlatform.overridePlatform = null;
   });
+
+  test('Should disconnect if could not get current state', () async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final device = FakeHighLevelDevice(FakeLighthouseV2Device(0, 0));
+    device.openConnection = true;
+
+    try {
+      await device.getCurrentState();
+      fail('Should throw an error');
+    } catch (e) {
+      expect(e, TypeMatcher<UnimplementedError>());
+    }
+    final state = await device.powerState.first;
+    expect(state, 0xFF);
+
+    await Future.delayed(Duration(milliseconds: 100));
+
+    expect(device.disconnectCalled, 1,
+        reason: 'Should have called disconnect.');
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test('Should clean up if there is no open connection', () async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final device = FakeHighLevelDevice(FakeLighthouseV2Device(0, 0));
+    device.openConnection = false;
+
+    try {
+      await device.getCurrentState();
+      fail('Should throw an error');
+    } catch (e) {
+      expect(e, TypeMatcher<UnimplementedError>());
+    }
+    final state = await device.powerState.first;
+    expect(state, 0xFF);
+
+    await Future.delayed(Duration(milliseconds: 100));
+
+    expect(device.disconnectCalled, 1,
+        reason: 'Should have called disconnect.');
+
+    LocalPlatform.overridePlatform = null;
+  });
 }

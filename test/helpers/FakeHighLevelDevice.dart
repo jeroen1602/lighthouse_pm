@@ -26,8 +26,10 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
     throw UnimplementedError();
   }
 
+  bool openConnection = false;
+
   @override
-  bool get hasOpenConnection => throw UnimplementedError();
+  bool get hasOpenConnection => openConnection;
 
   int changeStateCalled = 0;
   bool errorOnInternalChangeState = false;
@@ -39,6 +41,14 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
       throw StateError("Test error for internal change state");
     }
     // TODO: change state.
+  }
+
+  int disconnectCalled = 0;
+
+  @override
+  Future<void> disconnect() {
+    disconnectCalled++;
+    return super.disconnect();
   }
 
   @override

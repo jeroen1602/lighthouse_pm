@@ -24,10 +24,10 @@ class TroubleshootingPage extends BasePage {
   @override
   Widget buildPage(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Troubleshooting')),
+        appBar: AppBar(title: const Text('Troubleshooting')),
         body: const ContentContainerListView(
           children: [
-            TroubleshootingContentWidget(),
+            const TroubleshootingContentWidget(),
           ],
         ));
   }

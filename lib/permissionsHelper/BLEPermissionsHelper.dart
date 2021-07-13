@@ -7,10 +7,10 @@ import 'package:permission_handler/permission_handler.dart';
 /// A simple class with helper functions to check if the device is allowed to use
 /// BLE.
 ///
-class BLEPermissionsHelper {
-  BLEPermissionsHelper._();
+abstract class BLEPermissionsHelper {
 
-  static const _channel =
+  @visibleForTesting
+  static const channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");
 
   ///
@@ -18,7 +18,7 @@ class BLEPermissionsHelper {
   /// On Android the device is only allowed to use BLE if the location permission
   /// has been granted by the user.
   ///
-  /// On iOS the app is  always allowed to use BLE.
+  /// On iOS, web, and Linux it's always allowed to use BLE.
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
@@ -31,6 +31,9 @@ class BLEPermissionsHelper {
     if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;
     }
+    if (LocalPlatform.isLinux) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -40,8 +43,8 @@ class BLEPermissionsHelper {
   /// On Android the device is only allowed to use BLE if the location permission
   /// has been granted by the user.
   ///
-  /// On iOS the app is always allowed to use BLE and thus this will always
-  /// return [PermissionStatus.granted].
+  /// On iOS, web, and Linux the app is always allowed to use BLE and thus this
+  /// will always return [PermissionStatus.granted].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
@@ -54,6 +57,9 @@ class BLEPermissionsHelper {
     if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;
     }
+    if (LocalPlatform.isLinux) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -61,12 +67,13 @@ class BLEPermissionsHelper {
   ///
   /// Open the bluetooth settings on the device.
   /// On Android this is possible.
-  /// On iOS this function is not possible and will always return [false].
+  /// This function is not possible on iOS, web, and Linux and will always
+  /// return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
     if (LocalPlatform.isAndroid) {
-      return _channel.invokeMethod("openBLESettings").then((value) {
+      return channel.invokeMethod("openBLESettings").then((value) {
         if (value is bool) {
           return value;
         } else {
@@ -81,7 +88,11 @@ class BLEPermissionsHelper {
       return false;
     }
     if (LocalPlatform.isWeb) {
-      debugPrint("Can't open settings because WEB because there is no api.");
+      debugPrint("Can't open settings on WEB because there is no api.");
+      return false;
+    }
+    if (LocalPlatform.isLinux) {
+      debugPrint("Can't open settings on Linux because there is no api.");
       return false;
     }
     throw UnsupportedError(
@@ -91,18 +102,23 @@ class BLEPermissionsHelper {
   ///
   /// Enable the bluetooth adapter on a device.
   /// On Android this is possible.
-  /// On iOS this function is not possible and will always return [false].
+  /// This function is not possible on iOS, web, and Linux and will always
+  /// return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
     if (LocalPlatform.isAndroid) {
-      return _channel.invokeMethod("enableBluetooth").then((value) {
+      return channel.invokeMethod("enableBluetooth").then((value) {
         if (value is bool) {
           return value;
         } else {
           throw TypeError();
         }
       });
+    }
+    if (LocalPlatform.isLinux) {
+      debugPrint("Can't enable BLE on Linux because I'm lazy 🙃.");
+      return false;
     }
     if (LocalPlatform.isIOS) {
       // iOS doesn't have an API that can handle enable bluetooth for us.
@@ -120,12 +136,13 @@ class BLEPermissionsHelper {
   ///
   /// Open location settings for a specific platform.
   /// On Android this is possible.
-  /// On iOS this function nis not possible and will always return [false].
+  /// This function is not possible On iOS, web, and Linux and will always
+  /// return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
     if (LocalPlatform.isAndroid) {
-      return _channel.invokeMethod("openLocationSettings").then((value) {
+      return channel.invokeMethod("openLocationSettings").then((value) {
         if (value is bool) {
           return value;
         } else {
@@ -140,6 +157,11 @@ class BLEPermissionsHelper {
     }
     if (LocalPlatform.isWeb) {
       debugPrint("Can't open location settings on WEB since there is no api.");
+      return false;
+    }
+    if (LocalPlatform.isLinux) {
+      debugPrint(
+          "Can't open location settings on Linux since there is no api.");
       return false;
     }
     throw UnsupportedError(

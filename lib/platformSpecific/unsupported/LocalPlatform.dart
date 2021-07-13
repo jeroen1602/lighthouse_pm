@@ -16,6 +16,11 @@ class LocalPlatform {
     return false;
   }
 
+  static bool get isLinux {
+    _throwUnsupportedError();
+    return false;
+  }
+
   static String get current {
     _throwUnsupportedError();
     return "unsupported";

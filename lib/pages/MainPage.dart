@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/Theming.dart';
@@ -334,84 +335,91 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                         }
                       },
                     )
-                  : ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == listLength) {
-                          // Add an extra container at the bottom to stop the floating
-                          // button from obstructing the last item.
-                          return Container(
-                            height: _DEVICE_LIST_SCROLL_PADDING,
-                          );
-                        }
-                        if (index < groups.length) {
-                          return LighthouseGroupWidget(
-                            group: groups[index],
-                            devices: devices,
-                            selectedDevices: selected,
-                            selectedGroup: selectedGroup,
-                            nicknameMap: nicknames,
-                            sleepState: widget.settings.sleepState,
-                            showOfflineWarning:
-                                widget.settings.groupShowOfflineWarning,
-                            onGroupSelected: () {
-                              setState(() {
-                                if (groups[index].deviceIds.isEmpty) {
-                                  clearSelected();
-                                  selectedGroup = groups[index].group;
-                                  return;
-                                }
-                                if (LighthouseGroupWidget.isGroupSelected(
-                                    groups[index].deviceIds,
-                                    this
-                                        .selected
-                                        .map((e) => e.toString())
-                                        .toList())) {
-                                  clearSelected();
-                                } else {
-                                  clearSelected();
-                                  selected.addAll(groups[index]
-                                      .deviceIds
-                                      .map((e) => LHDeviceIdentifier(e)));
-                                }
-                              });
-                            },
-                            onSelectedDevice: (LHDeviceIdentifier device) {
-                              setState(() {
-                                selectedGroup = null;
-                                if (selected.contains(device)) {
-                                  selected.remove(device);
-                                } else {
-                                  selected.add(device);
-                                }
-                              });
-                            },
-                          );
-                        }
+                  : ContentScrollbar(
+                      scrollbarChildBuilder: (context, controller) {
+                        return ListView.builder(
+                          controller: controller,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == listLength) {
+                              // Add an extra container at the bottom to stop the floating
+                              // button from obstructing the last item.
+                              return Container(
+                                height: _DEVICE_LIST_SCROLL_PADDING,
+                              );
+                            }
+                            if (index < groups.length) {
+                              return LighthouseGroupWidget(
+                                group: groups[index],
+                                devices: devices,
+                                selectedDevices: selected,
+                                selectedGroup: selectedGroup,
+                                nicknameMap: nicknames,
+                                sleepState: widget.settings.sleepState,
+                                showOfflineWarning:
+                                    widget.settings.groupShowOfflineWarning,
+                                onGroupSelected: () {
+                                  setState(() {
+                                    if (groups[index].deviceIds.isEmpty) {
+                                      clearSelected();
+                                      selectedGroup = groups[index].group;
+                                      return;
+                                    }
+                                    if (LighthouseGroupWidget.isGroupSelected(
+                                        groups[index].deviceIds,
+                                        this
+                                            .selected
+                                            .map((e) => e.toString())
+                                            .toList())) {
+                                      clearSelected();
+                                    } else {
+                                      clearSelected();
+                                      selected.addAll(groups[index]
+                                          .deviceIds
+                                          .map((e) => LHDeviceIdentifier(e)));
+                                    }
+                                  });
+                                },
+                                onSelectedDevice: (LHDeviceIdentifier device) {
+                                  setState(() {
+                                    selectedGroup = null;
+                                    if (selected.contains(device)) {
+                                      selected.remove(device);
+                                    } else {
+                                      selected.add(device);
+                                    }
+                                  });
+                                },
+                              );
+                            }
 
-                        index -= groups.length;
-                        final device = notGroupedDevices[index];
+                            index -= groups.length;
+                            final device = notGroupedDevices[index];
 
-                        final nickname =
-                            nicknames[device.deviceIdentifier.toString()];
-                        return LighthouseWidget(
-                          device,
-                          selected: selected.contains(device.deviceIdentifier),
-                          selecting: selecting,
-                          onSelected: () {
-                            setState(() {
-                              selectedGroup = null;
-                              if (selected.contains(device.deviceIdentifier)) {
-                                selected.remove(device.deviceIdentifier);
-                              } else {
-                                selected.add(device.deviceIdentifier);
-                              }
-                            });
+                            final nickname =
+                                nicknames[device.deviceIdentifier.toString()];
+                            return LighthouseWidget(
+                              device,
+                              selected:
+                                  selected.contains(device.deviceIdentifier),
+                              selecting: selecting,
+                              onSelected: () {
+                                setState(() {
+                                  selectedGroup = null;
+                                  if (selected
+                                      .contains(device.deviceIdentifier)) {
+                                    selected.remove(device.deviceIdentifier);
+                                  } else {
+                                    selected.add(device.deviceIdentifier);
+                                  }
+                                });
+                              },
+                              nickname: nickname,
+                              sleepState: widget.settings.sleepState,
+                            );
                           },
-                          nickname: nickname,
-                          sleepState: widget.settings.sleepState,
+                          itemCount: listLength + 1,
                         );
                       },
-                      itemCount: listLength + 1,
                     );
 
               final List<Widget> actions = [];
@@ -460,7 +468,34 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 drawer: MainPageDrawer(
                     Duration(seconds: widget.settings.scanDuration),
                     Duration(seconds: widget.settings.updateInterval)),
-                body: body,
+                body: Shortcuts(
+                    shortcuts: <LogicalKeySet, Intent>{
+                      if (!LocalPlatform.isWeb)
+                        ...{LogicalKeySet(
+                            LogicalKeyboardKey.f5): ScanDevicesIntent(),
+                        LogicalKeySet(LogicalKeyboardKey.control,
+                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                        LogicalKeySet(LogicalKeyboardKey.superKey,
+                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                      }
+                      else ...{
+                        LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey.keyR): ScanDevicesIntent()
+                      }
+                    },
+                    child: Actions(
+                      actions: <Type, Action<Intent>>{
+                        ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
+                            onInvoke: (ScanDevicesIntent intent) {
+                          startScanWithCheck(
+                              Duration(seconds: widget.settings.scanDuration),
+                              updateInterval: Duration(
+                                  seconds: widget.settings.updateInterval),
+                              failMessage:
+                                  "Could not start scan because the permission has not been granted on keyboard shortcut.");
+                        })
+                      },
+                      child: Focus(autofocus: true, child: body),
+                    )),
               );
             }));
   }
@@ -732,6 +767,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 }
 
+class ScanDevicesIntent extends Intent {
+  const ScanDevicesIntent();
+}
+
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
       {Key? key, required this.state, required this.settings})
@@ -797,6 +836,14 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
           TextSpan(
               text: "Try enabling Bluetooth on your device or "
                   "stick in a USB Bluetooth adapter.")
+        ];
+      }
+    } else if (LocalPlatform.isLinux) {
+      if (state == BluetoothAdapterState.unavailable) {
+        subText = const [
+          TextSpan(
+              text: "No bluetooth adapter has been found. "
+                  "Try sticking in a USB Bluetooth adapter.")
         ];
       }
     }

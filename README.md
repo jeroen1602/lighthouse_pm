@@ -82,6 +82,14 @@ If you want to debug with chrome on a platform where web bluetooth is behind a s
 follow the tutorial provided by the flutter_web_bluetooth library 
 [here](https://github.com/jeroen1602/flutter_web_bluetooth/tree/master/chrome-experimental-launch). 
 
+### Linux Builds
+
+For linux builds you need to make sure that the sqlite3 dev library is installed on your system or else the app will 
+hang on booting.
+
+The database for user settings is stored under `~/.local/share/lighthouse_pm/settings.sqlite` feel free to remove it if 
+you need to rest the settings.
+
 ### Release build
 
 Sometimes before you can create a release build you will need to assemble the Android component before an Android build can be created.

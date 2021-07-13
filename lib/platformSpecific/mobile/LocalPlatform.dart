@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-class LocalPlatform {
+abstract class LocalPlatform {
   ///
   /// Override the platform being reported for testing. Will not happen in
   /// release mode!
@@ -14,12 +14,18 @@ class LocalPlatform {
     if (overridePlatform == PlatformOverride.android && !kReleaseMode) {
       return true;
     }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
     return Platform.isAndroid;
   }
 
   static bool get isIOS {
     if (overridePlatform == PlatformOverride.ios && !kReleaseMode) {
       return true;
+    }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
     }
     return Platform.isIOS;
   }
@@ -28,17 +34,31 @@ class LocalPlatform {
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return true;
     }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
     return false;
   }
 
+  static bool get isLinux {
+    if (overridePlatform == PlatformOverride.linux && !kReleaseMode) {
+      return true;
+    }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
+    return Platform.isLinux;
+  }
+
   static String get current {
-    if (LocalPlatform.isAndroid ||
-        (overridePlatform == PlatformOverride.android && !kReleaseMode)) {
+    if (LocalPlatform.isAndroid) {
       return "Android";
     }
-    if (LocalPlatform.isIOS ||
-        (overridePlatform == PlatformOverride.ios && !kReleaseMode)) {
+    if (LocalPlatform.isIOS) {
       return "IOS";
+    }
+    if (LocalPlatform.isLinux) {
+      return "Linux";
     }
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return "web";
@@ -56,4 +76,6 @@ enum PlatformOverride {
   android,
   ios,
   web,
+  linux,
+  unsupported,
 }
