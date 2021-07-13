@@ -27,5 +27,10 @@ class ShortcutHandle {
   }
 
   @override
-  int get hashCode => super.hashCode;
+  int get hashCode => type.part.hashCode + data.hashCode;
+
+  @override
+  String toString() {
+    return 'ShortcutHandle: {"type": "${type.part}", "data": "$data"}';
+  }
 }
