@@ -262,7 +262,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9");
+    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -286,7 +286,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9");
+    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -313,7 +313,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9");
+    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
