@@ -71,8 +71,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.16.8
-  moor_generator: ^4.3.1
-  build_runner: 2.0.3
+  moor_generator: ^4.4.1
+  build_runner: 2.0.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
