@@ -51,6 +51,10 @@ void main() {
     expect(await BLEPermissionsHelper.hasBLEPermissions(),
         PermissionStatus.granted);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.hasBLEPermissions(),
+        PermissionStatus.granted);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -77,6 +81,10 @@ void main() {
     expect(await BLEPermissionsHelper.requestBLEPermissions(),
         PermissionStatus.granted);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -98,6 +106,9 @@ void main() {
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
     LocalPlatform.overridePlatform = PlatformOverride.linux;
+    expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
+
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
     LocalPlatform.overridePlatform = null;
@@ -124,6 +135,9 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.linux;
     expect(await BLEPermissionsHelper.enableBLE(), isFalse);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -146,6 +160,9 @@ void main() {
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
     LocalPlatform.overridePlatform = PlatformOverride.linux;
+    expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
     LocalPlatform.overridePlatform = null;
