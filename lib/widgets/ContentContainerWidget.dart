@@ -6,7 +6,7 @@ import 'package:rxdart/subjects.dart';
 /// A widget that will scale the content if the screen size gets too big.
 ///
 class ContentContainerWidget extends StatelessWidget {
-  static const DEFAULT_MAX_SIZE = 1280.0;
+  static const DEFAULT_MAX_SIZE = 1264.0;
   static const DEFAULT_CONTENT_SIZE = 0.5;
 
   const ContentContainerWidget(

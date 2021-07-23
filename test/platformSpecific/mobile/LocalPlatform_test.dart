@@ -10,6 +10,7 @@ void main() {
     expect(LocalPlatform.isAndroid, platform == "Android");
     expect(LocalPlatform.isIOS, platform == "IOS");
     expect(LocalPlatform.isLinux, platform == "Linux");
+    expect(LocalPlatform.isWindows, platform == "Windows");
     expect(LocalPlatform.isWeb, platform == "web");
   });
 
@@ -21,6 +22,7 @@ void main() {
     expect(LocalPlatform.isAndroid, isTrue);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
+    expect(LocalPlatform.isWindows, isFalse);
     expect(LocalPlatform.isWeb, isFalse);
   });
 
@@ -32,6 +34,7 @@ void main() {
     expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isTrue);
     expect(LocalPlatform.isLinux, isFalse);
+    expect(LocalPlatform.isWindows, isFalse);
     expect(LocalPlatform.isWeb, isFalse);
   });
 
@@ -43,6 +46,19 @@ void main() {
     expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isTrue);
+    expect(LocalPlatform.isWindows, isFalse);
+    expect(LocalPlatform.isWeb, isFalse);
+  });
+
+  test('Should overwrite platform to Windows', () {
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+
+    expect(LocalPlatform.current, "Windows");
+
+    expect(LocalPlatform.isAndroid, isFalse);
+    expect(LocalPlatform.isIOS, isFalse);
+    expect(LocalPlatform.isLinux, isFalse);
+    expect(LocalPlatform.isWindows, isTrue);
     expect(LocalPlatform.isWeb, isFalse);
   });
 
@@ -54,6 +70,7 @@ void main() {
     expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
+    expect(LocalPlatform.isWindows, isFalse);
     expect(LocalPlatform.isWeb, isTrue);
   });
 
@@ -65,6 +82,7 @@ void main() {
     expect(LocalPlatform.isAndroid, isFalse);
     expect(LocalPlatform.isIOS, isFalse);
     expect(LocalPlatform.isLinux, isFalse);
+    expect(LocalPlatform.isWindows, isFalse);
     expect(LocalPlatform.isWeb, isFalse);
   });
 }

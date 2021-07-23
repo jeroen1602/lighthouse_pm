@@ -54,3 +54,6 @@ web/sql-*
 
 #test coverage
 coverage
+
+#sqlite dll
+sqlite3.dll

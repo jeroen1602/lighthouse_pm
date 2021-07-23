@@ -4,18 +4,18 @@ import '../LighthouseDevice.dart';
 import '../adapterState/AdapterState.dart';
 import 'BLELighthouseBackEnd.dart';
 
-/// A back end that provides devices using [BlueZClient].
-class BlueZBackEnd extends BLELighthouseBackEnd {
-  BlueZBackEnd._();
+/// A back end that provides devices using [Win32].
+class Win32BackEnd extends BLELighthouseBackEnd {
+  Win32BackEnd._();
 
   // Make sure there is always only one instance.
-  static BlueZBackEnd? _instance;
+  static Win32BackEnd? _instance;
 
-  static BlueZBackEnd get instance {
+  static Win32BackEnd get instance {
     if (!kReleaseMode) {
-      throw UnsupportedError("BlueZ not supported for this platform");
+      throw UnsupportedError("Win32 not supported for this platform");
     }
-    return _instance ??= BlueZBackEnd._();
+    return _instance ??= Win32BackEnd._();
   }
 
   @override

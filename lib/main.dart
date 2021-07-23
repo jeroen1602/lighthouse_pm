@@ -5,6 +5,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/BlueZBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterWebBluetoothBackEnd.dart';
+import 'package:lighthouse_pm/lighthouseProvider/backEnd/Win32BackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
 import 'package:lighthouse_pm/pages/BasePage.dart';
@@ -56,6 +57,9 @@ class MainApp extends StatelessWidget {
     }
     if (LocalPlatform.isLinux) {
       LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
+    }
+    if (LocalPlatform.isWindows) {
+      LighthouseProvider.instance.addBackEnd(Win32BackEnd.instance);
     }
     if (!kReleaseMode) {
       // Add this back if you need to test for devices you don't own.
