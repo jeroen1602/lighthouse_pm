@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ClearIdExtensi
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/OnExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/SleepExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/ViveBaseStationDevice.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../helpers/FailingBLEDevice.dart';

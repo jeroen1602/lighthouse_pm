@@ -10,7 +10,7 @@ import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtens
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/SleepExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 
 import '../../helpers/FailingBLEDevice.dart';
 import '../../helpers/FakeBloc.dart';

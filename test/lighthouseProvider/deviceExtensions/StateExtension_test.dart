@@ -8,7 +8,7 @@ import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtensi
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StateExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../helpers/FakeBloc.dart';

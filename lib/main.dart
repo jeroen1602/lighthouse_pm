@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/BlueZBackEnd.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
@@ -17,8 +18,8 @@ import 'package:lighthouse_pm/pages/SettingsPage.dart';
 import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
 import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
 import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/InAppPurchases.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/io/InAppPurchases.dart';
+import 'package:lighthouse_pm/platformSpecific/io/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/Intl.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
@@ -98,7 +99,8 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
           return StreamBuilder<ThemeMode>(
               stream: blocWithoutListen(context)
                   .settings
-                  .getPreferredThemeAsStream(),
+                  .getPreferredThemeAsStream()
+                  .map(SettingsDao.customThemeConverter),
               initialData: ThemeMode.system,
               builder: (BuildContext context,
                   AsyncSnapshot<ThemeMode> themeSnapshot) {

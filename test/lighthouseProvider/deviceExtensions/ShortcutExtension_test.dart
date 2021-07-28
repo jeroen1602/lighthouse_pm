@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/ShortcutExtension.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/io.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/android/androidLauncherShortcut/io.dart';
 
 void main() {
   test('Should be able to create shortcut extension', () async {

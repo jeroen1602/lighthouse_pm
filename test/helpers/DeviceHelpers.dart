@@ -3,7 +3,7 @@ import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevic
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/LighthouseV2Device.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/ViveBaseStationDevice.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 
 import 'FakeBloc.dart';
 
