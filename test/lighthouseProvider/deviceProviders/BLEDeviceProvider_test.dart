@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/ble/Guid.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/BLEDeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/devices/BLEDevice.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 
 import '../../helpers/FailingBLEDevice.dart';
 import '../../helpers/FakeBLEDeviceProvider.dart';

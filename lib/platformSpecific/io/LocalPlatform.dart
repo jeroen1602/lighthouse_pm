@@ -50,6 +50,16 @@ abstract class LocalPlatform {
     return Platform.isLinux;
   }
 
+  static bool get isWindows {
+    if (overridePlatform == PlatformOverride.windows && !kReleaseMode) {
+      return true;
+    }
+    if (overridePlatform != null && !kReleaseMode) {
+      return false;
+    }
+    return Platform.isWindows;
+  }
+
   static String get current {
     if (LocalPlatform.isAndroid) {
       return "Android";
@@ -59,6 +69,9 @@ abstract class LocalPlatform {
     }
     if (LocalPlatform.isLinux) {
       return "Linux";
+    }
+    if (LocalPlatform.isWindows) {
+      return "Windows";
     }
     if (overridePlatform == PlatformOverride.web && !kReleaseMode) {
       return "web";
@@ -77,5 +90,6 @@ enum PlatformOverride {
   ios,
   web,
   linux,
+  windows,
   unsupported,
 }

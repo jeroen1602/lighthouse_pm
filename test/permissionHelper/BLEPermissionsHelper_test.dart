@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/permissionsHelper/BLEPermissionsHelper.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -51,6 +51,10 @@ void main() {
     expect(await BLEPermissionsHelper.hasBLEPermissions(),
         PermissionStatus.granted);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.hasBLEPermissions(),
+        PermissionStatus.granted);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -77,6 +81,10 @@ void main() {
     expect(await BLEPermissionsHelper.requestBLEPermissions(),
         PermissionStatus.granted);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -98,6 +106,9 @@ void main() {
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
     LocalPlatform.overridePlatform = PlatformOverride.linux;
+    expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
+
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
     LocalPlatform.overridePlatform = null;
@@ -124,6 +135,9 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.linux;
     expect(await BLEPermissionsHelper.enableBLE(), isFalse);
 
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+
     LocalPlatform.overridePlatform = null;
   });
 
@@ -146,6 +160,9 @@ void main() {
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
     LocalPlatform.overridePlatform = PlatformOverride.linux;
+    expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
     LocalPlatform.overridePlatform = null;

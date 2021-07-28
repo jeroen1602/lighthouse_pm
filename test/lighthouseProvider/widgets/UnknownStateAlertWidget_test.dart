@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceExtensions/StandbyExtension.dart';
 import 'package:lighthouse_pm/lighthouseProvider/widgets/UnknownStateAlertWidget.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../helpers/FakeHighLevelDevice.dart';

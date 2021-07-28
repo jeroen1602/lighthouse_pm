@@ -2,6 +2,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
+import 'package:lighthouse_pm/platformSpecific/io/windows/win32DarkTheme/Win32DarkTheme.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:moor/moor.dart';
 
@@ -203,6 +204,20 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         mode: InsertMode.insertOrReplace);
   }
 
+  static ThemeMode customThemeConverter(ThemeMode setMode) {
+    if (LocalPlatform.isWindows && setMode == ThemeMode.system) {
+      // Should never happen if the platform doesn't support it.
+      try {
+        return Win32DarkTheme.win32GetSystemThemeMode();
+      } catch (e, s) {
+        print('Error trying to get win32 theme mode.\n$e\n$s');
+        return ThemeMode.light;
+      }
+    }
+
+    return setMode;
+  }
+
   /// Check if the currently running device supports system mode theme.
   static Future<bool> get supportsThemeModeSystem async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -220,6 +235,13 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     } else if (LocalPlatform.isLinux) {
       // TODO: check if the current platform supports it
       return true;
+    } else if (LocalPlatform.isWindows) {
+      try {
+        return Win32DarkTheme.win32IsDarkThemeSupported();
+      } catch (e, s) {
+        print("Error trying to get win32 system theme supported\n$e\n$s");
+        return false;
+      }
     } else if (LocalPlatform.isWeb) {
       // TODO: check if the current browser actually supports it.
       return true;

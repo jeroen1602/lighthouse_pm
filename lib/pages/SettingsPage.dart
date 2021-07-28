@@ -9,7 +9,7 @@ import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/pages/settings/LHLicensePage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsNicknamesPage.dart';
 import 'package:lighthouse_pm/pages/settings/SettingsViveBaseStationIdsPage.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/io/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 import 'package:lighthouse_pm/widgets/ClearLastSeenAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
@@ -440,7 +440,9 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
-      if (LocalPlatform.isWeb || LocalPlatform.isLinux) ...[
+      if (LocalPlatform.isWeb ||
+          LocalPlatform.isLinux ||
+          LocalPlatform.isWindows) ...[
         ListTile(
           title: const Text('Try the Android app'),
           subtitle: const Text('On Google Play'),

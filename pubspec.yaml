@@ -57,6 +57,8 @@ dependencies:
   web_browser_detect: ^2.0.2
 #  Linux:
   bluez: ^0.7.0
+#  Windows:
+  win32: ^2.2.5
 
   # This may need to be enabled again if the build runner doesn't like it.
   #dependency_overrides:

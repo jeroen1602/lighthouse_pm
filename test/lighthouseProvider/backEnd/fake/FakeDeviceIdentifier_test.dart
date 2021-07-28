@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeDeviceIdentifier.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 
 void main() {
   test('Should generate correct Android identifiers', () {
@@ -22,12 +22,23 @@ void main() {
     final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(1);
     expect(identifier1.toString(), "00:00:00:00:00:01");
 
+    final identifier2 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(10);
+    expect(identifier2.toString(), "00:00:00:00:00:0A");
+
+    final identifier3 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(16);
+    expect(identifier3.toString(), "00:00:00:00:00:10");
+  });
+
+  test('Should generate correct Windows identifiers', () {
+    final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifierWindows(1);
+    expect(identifier1.toString(), "00:00:00:00:00:01");
+
     final identifier2 =
-    FakeDeviceIdentifier.generateDeviceIdentifierLinux(10);
+        FakeDeviceIdentifier.generateDeviceIdentifierWindows(10);
     expect(identifier2.toString(), "00:00:00:00:00:0A");
 
     final identifier3 =
-    FakeDeviceIdentifier.generateDeviceIdentifierLinux(16);
+        FakeDeviceIdentifier.generateDeviceIdentifierWindows(16);
     expect(identifier3.toString(), "00:00:00:00:00:10");
   });
 
@@ -36,8 +47,7 @@ void main() {
         FakeDeviceIdentifier.generateBasicMacIdentifier(0xFF + 1);
     expect(identifier1.toString(), "00:00:00:00:01:00");
 
-    final identifier2 =
-        FakeDeviceIdentifier.generateBasicMacIdentifier(0xFFFF);
+    final identifier2 = FakeDeviceIdentifier.generateBasicMacIdentifier(0xFFFF);
     expect(identifier2.toString(), "00:00:00:00:FF:FF");
   });
 
@@ -118,7 +128,7 @@ void main() {
     try {
       FakeDeviceIdentifier.generateDeviceIdentifier(0);
       fail("Should error");
-    } catch(e) {
+    } catch (e) {
       expect(e, TypeMatcher<UnsupportedError>());
     }
 
@@ -127,9 +137,15 @@ void main() {
     expect(FakeDeviceIdentifier.generateDeviceIdentifier(0).toString(),
         '00:00:00:00:00:00');
 
-    //Should genereat Linux identifier
+    //Should generate Linux identifier
     LocalPlatform.overridePlatform = PlatformOverride.linux;
-    expect(FakeDeviceIdentifier.generateDeviceIdentifier(1).toString(), '00:00:00:00:00:01');
+    expect(FakeDeviceIdentifier.generateDeviceIdentifier(1).toString(),
+        '00:00:00:00:00:01');
+
+    //Should generate Linux identifier
+    LocalPlatform.overridePlatform = PlatformOverride.windows;
+    expect(FakeDeviceIdentifier.generateDeviceIdentifier(2).toString(),
+        '00:00:00:00:00:02');
 
     // Should generate web identifier
     LocalPlatform.overridePlatform = PlatformOverride.web;

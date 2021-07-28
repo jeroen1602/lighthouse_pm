@@ -16,12 +16,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
 
   BlueZBackEnd._();
 
-  static BlueZBackEnd get instance {
-    if (_instance == null) {
-      _instance = BlueZBackEnd._();
-    }
-    return _instance!;
-  }
+  static BlueZBackEnd get instance => _instance ??= BlueZBackEnd._();
 
   // Some state variables.
   final Mutex _devicesMutex = Mutex();

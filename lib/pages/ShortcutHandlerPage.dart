@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/io/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 import 'package:lighthouse_pm/widgets/CloseCurrentRouteMixin.dart';
 
 import 'BasePage.dart';

@@ -5,7 +5,6 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 abstract class FakeDeviceIdentifier {
-
   static LHDeviceIdentifier generateDeviceIdentifier(int seed) {
     if (LocalPlatform.isAndroid) {
       return generateDeviceIdentifierAndroid(seed);
@@ -15,6 +14,8 @@ abstract class FakeDeviceIdentifier {
       return generateDeviceIdentifierWeb(seed);
     } else if (LocalPlatform.isLinux) {
       return generateDeviceIdentifierLinux(seed);
+    } else if (LocalPlatform.isWindows) {
+      return generateDeviceIdentifierWindows(seed);
     }
     throw UnsupportedError(
         "Cannot generate device identifier for platform: ${LocalPlatform.current}");
@@ -42,6 +43,11 @@ abstract class FakeDeviceIdentifier {
 
   @visibleForTesting
   static LHDeviceIdentifier generateDeviceIdentifierLinux(int seed) {
+    return generateBasicMacIdentifier(seed);
+  }
+
+  @visibleForTesting
+  static LHDeviceIdentifier generateDeviceIdentifierWindows(int seed) {
     return generateBasicMacIdentifier(seed);
   }
 

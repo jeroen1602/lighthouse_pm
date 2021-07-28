@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
+import 'package:lighthouse_pm/platformSpecific/io/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
 
 import 'DeviceExtension.dart';
 

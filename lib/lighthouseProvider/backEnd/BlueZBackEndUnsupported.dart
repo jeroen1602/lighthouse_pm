@@ -15,10 +15,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
     if (!kReleaseMode) {
       throw UnsupportedError("BlueZ not supported for this platform");
     }
-    if (_instance == null) {
-      _instance = BlueZBackEnd._();
-    }
-    return _instance!;
+    return _instance ??= BlueZBackEnd._();
   }
 
   @override

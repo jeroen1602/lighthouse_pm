@@ -470,16 +470,16 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     Duration(seconds: widget.settings.updateInterval)),
                 body: Shortcuts(
                     shortcuts: <LogicalKeySet, Intent>{
-                      if (!LocalPlatform.isWeb)
-                        ...{LogicalKeySet(
-                            LogicalKeyboardKey.f5): ScanDevicesIntent(),
+                      if (!LocalPlatform.isWeb) ...{
+                        LogicalKeySet(LogicalKeyboardKey.f5):
+                            ScanDevicesIntent(),
                         LogicalKeySet(LogicalKeyboardKey.control,
                             LogicalKeyboardKey.keyR): ScanDevicesIntent(),
                         LogicalKeySet(LogicalKeyboardKey.superKey,
                             LogicalKeyboardKey.keyR): ScanDevicesIntent(),
-                      }
-                      else ...{
-                        LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey.keyR): ScanDevicesIntent()
+                      } else ...{
+                        LogicalKeySet(LogicalKeyboardKey.alt,
+                            LogicalKeyboardKey.keyR): ScanDevicesIntent()
                       }
                     },
                     child: Actions(
@@ -838,7 +838,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                   "stick in a USB Bluetooth adapter.")
         ];
       }
-    } else if (LocalPlatform.isLinux) {
+    } else if (LocalPlatform.isLinux || LocalPlatform.isWindows) {
       if (state == BluetoothAdapterState.unavailable) {
         subText = const [
           TextSpan(

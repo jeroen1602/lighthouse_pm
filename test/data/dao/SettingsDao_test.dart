@@ -1,7 +1,7 @@
 import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class FakeAndroidDeviceVersion extends Fake implements AndroidBuildVersion {

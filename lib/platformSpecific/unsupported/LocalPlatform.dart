@@ -21,6 +21,11 @@ class LocalPlatform {
     return false;
   }
 
+  static bool get isWindows {
+    _throwUnsupportedError();
+    return false;
+  }
+
   static String get current {
     _throwUnsupportedError();
     return "unsupported";

@@ -5,7 +5,7 @@ import 'package:lighthouse_pm/lighthouseProvider/backEnd/fake/FakeBluetoothDevic
 import 'package:lighthouse_pm/lighthouseProvider/ble/BluetoothDevice.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
 import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
+import 'package:lighthouse_pm/platformSpecific/io/LocalPlatform.dart';
 
 void main() {
 

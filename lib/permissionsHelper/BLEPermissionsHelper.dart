@@ -8,7 +8,6 @@ import 'package:permission_handler/permission_handler.dart';
 /// BLE.
 ///
 abstract class BLEPermissionsHelper {
-
   @visibleForTesting
   static const channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");
@@ -34,6 +33,9 @@ abstract class BLEPermissionsHelper {
     if (LocalPlatform.isLinux) {
       return PermissionStatus.granted;
     }
+    if (LocalPlatform.isWindows) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -43,8 +45,8 @@ abstract class BLEPermissionsHelper {
   /// On Android the device is only allowed to use BLE if the location permission
   /// has been granted by the user.
   ///
-  /// On iOS, web, and Linux the app is always allowed to use BLE and thus this
-  /// will always return [PermissionStatus.granted].
+  /// On iOS, web, Windows, and Linux the app is always allowed to use BLE and
+  /// thus this will always return [PermissionStatus.granted].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
@@ -60,6 +62,9 @@ abstract class BLEPermissionsHelper {
     if (LocalPlatform.isLinux) {
       return PermissionStatus.granted;
     }
+    if (LocalPlatform.isWindows) {
+      return PermissionStatus.granted;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -67,8 +72,8 @@ abstract class BLEPermissionsHelper {
   ///
   /// Open the bluetooth settings on the device.
   /// On Android this is possible.
-  /// This function is not possible on iOS, web, and Linux and will always
-  /// return [false].
+  /// This function is not possible on iOS, web, Windows, and Linux and will
+  /// always return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
@@ -95,6 +100,11 @@ abstract class BLEPermissionsHelper {
       debugPrint("Can't open settings on Linux because there is no api.");
       return false;
     }
+    if (LocalPlatform.isWindows) {
+      debugPrint(
+          "Can't open settings on Windows because there is no api. (I think).");
+      return false;
+    }
     throw UnsupportedError(
         "ERROR: unsupported platform! ${LocalPlatform.current}");
   }
@@ -102,8 +112,8 @@ abstract class BLEPermissionsHelper {
   ///
   /// Enable the bluetooth adapter on a device.
   /// On Android this is possible.
-  /// This function is not possible on iOS, web, and Linux and will always
-  /// return [false].
+  /// This function is not possible on iOS, web, Windows, and Linux and will
+  /// always return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
@@ -118,6 +128,10 @@ abstract class BLEPermissionsHelper {
     }
     if (LocalPlatform.isLinux) {
       debugPrint("Can't enable BLE on Linux because I'm lazy 🙃.");
+      return false;
+    }
+    if (LocalPlatform.isWindows) {
+      debugPrint("Can't enable BLE on Windows because I'm lazy 🙃.");
       return false;
     }
     if (LocalPlatform.isIOS) {
@@ -136,8 +150,8 @@ abstract class BLEPermissionsHelper {
   ///
   /// Open location settings for a specific platform.
   /// On Android this is possible.
-  /// This function is not possible On iOS, web, and Linux and will always
-  /// return [false].
+  /// This function is not possible On iOS, web, Windows, and Linux and will
+  /// always return [false].
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
@@ -162,6 +176,11 @@ abstract class BLEPermissionsHelper {
     if (LocalPlatform.isLinux) {
       debugPrint(
           "Can't open location settings on Linux since there is no api.");
+      return false;
+    }
+    if (LocalPlatform.isWindows) {
+      debugPrint(
+          "Can't open location settings on Windows since there is no api. (I think).");
       return false;
     }
     throw UnsupportedError(
