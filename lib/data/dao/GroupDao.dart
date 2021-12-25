@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../Database.dart';
@@ -6,7 +6,7 @@ import '../tables/GroupTable.dart';
 
 part 'GroupDao.g.dart';
 
-@UseDao(tables: [Groups, GroupEntries])
+@DriftAccessor(tables: [Groups, GroupEntries])
 class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     with _$GroupDaoMixin {
   GroupDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
@@ -36,7 +36,7 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
 
     final groupEntriesQuery = select(groupEntries)
         .join([innerJoin(groups, groups.id.equalsExp(groupEntries.groupId))])
-          ..where(groupEntries.groupId.equals(groupId));
+      ..where(groupEntries.groupId.equals(groupId));
 
     final groupStream = groupQuery.watchSingle();
 
@@ -78,7 +78,7 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<int> insertJustGroup(Group group) {
-      return into(groups).insert(group, mode: InsertMode.insertOrReplace);
+    return into(groups).insert(group, mode: InsertMode.insertOrReplace);
   }
 
   Future<void> deleteGroup(int groupId) {

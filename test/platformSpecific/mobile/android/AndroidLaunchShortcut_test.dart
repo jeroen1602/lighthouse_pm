@@ -11,7 +11,7 @@ import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherSho
 
 void main() {
   test('Should not work on non Android platform', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.unsupported;
     try {
       AndroidLauncherShortcut.instance;
@@ -99,7 +99,7 @@ void main() {
   });
 
   test('Should return shortcuts supported', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
 
@@ -132,7 +132,7 @@ void main() {
   });
 
   test('Should handle ready for data', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
 
@@ -154,7 +154,7 @@ void main() {
   });
 
   test('Should handle mac shortcuts', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
     instance.clearStateStream();
@@ -172,7 +172,7 @@ void main() {
   });
 
   test('Should not handle mac shortcuts with incorrect data', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
     instance.clearStateStream();
@@ -193,7 +193,7 @@ void main() {
   });
 
   test('Should not handle unsupported method', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
 
@@ -213,7 +213,8 @@ void main() {
   test('Shortcut handle to string should work', () {
     final handle = ShortcutHandle(ShortcutTypes.MAC_TYPE, 'Data');
 
-    expect(handle.toString(), 'ShortcutHandle: {"type": "mac", "data": "Data"}');
+    expect(
+        handle.toString(), 'ShortcutHandle: {"type": "mac", "data": "Data"}');
   });
 
   test('Shortcut handle should compare', () {
@@ -236,7 +237,6 @@ void main() {
   test('Shortcut handle should generate hashcode', () {
     final handle1 = ShortcutHandle(ShortcutTypes.MAC_TYPE, 'Data');
     final handle2 = ShortcutHandle(ShortcutTypes.MAC_TYPE, 'Data');
-
 
     // Same objects should have the same hashcode
     expect(handle1.hashCode, handle2.hashCode);

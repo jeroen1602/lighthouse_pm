@@ -16,7 +16,7 @@ void main() {
   });
 
   test('Should be able to create shortcut', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final extension = ShortcutExtension("00:00:00:00:00:00", () {
       return "DEVICE_NAME";

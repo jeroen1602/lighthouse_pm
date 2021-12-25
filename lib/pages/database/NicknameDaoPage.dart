@@ -7,7 +7,7 @@ import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
-import 'package:moor/moor.dart' as moor;
+import 'package:drift/drift.dart' as drift;
 import 'package:toast/toast.dart';
 
 import '../BasePage.dart';
@@ -110,7 +110,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     try {
       final newData = DateTime.parse(newValue);
       await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          deviceId: data.deviceId, lastSeen: moor.Value(newData)));
+          deviceId: data.deviceId, lastSeen: drift.Value(newData)));
     } on FormatException {
       Toast.show('That didn\'t work', context);
     }
@@ -148,7 +148,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
         date = DateTime.now();
       }
       await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          deviceId: deviceId, lastSeen: moor.Value(date)));
+          deviceId: deviceId, lastSeen: drift.Value(date)));
     }
   }
 }

@@ -195,7 +195,7 @@ void main() {
   });
 
   test('Should open BLE settings on Android', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
@@ -233,7 +233,7 @@ void main() {
   });
 
   test('Should enable BLE on Android', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
@@ -271,7 +271,7 @@ void main() {
   });
 
   test('Should enable BLE on Android', () async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {

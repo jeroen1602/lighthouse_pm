@@ -7,7 +7,7 @@ import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataCreateAlertWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoDataWidget.dart';
 import 'package:lighthouse_pm/widgets/DaoSimpleChangeStringAlertWidget.dart';
-import 'package:moor/moor.dart' as moor;
+import 'package:drift/drift.dart' as drift;
 import 'package:toast/toast.dart';
 
 import '../BasePage.dart';
@@ -42,7 +42,7 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
       return;
     }
     await bloc.groups.insertEmptyGroup(
-        GroupsCompanion.insert(id: moor.Value(data.id), name: newValue));
+        GroupsCompanion.insert(id: drift.Value(data.id), name: newValue));
   }
 
   @override
@@ -66,7 +66,7 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
         await bloc.groups.insertEmptyGroup(GroupsCompanion.insert(name: value));
       } else {
         await bloc.groups.insertEmptyGroup(
-            GroupsCompanion.insert(id: moor.Value(id), name: value));
+            GroupsCompanion.insert(id: drift.Value(id), name: value));
       }
     }
   }

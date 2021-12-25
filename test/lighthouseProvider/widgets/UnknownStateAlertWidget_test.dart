@@ -257,12 +257,18 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should create unknown state help out alert widget", (WidgetTester tester) async {
+  testWidgets("Should create unknown state help out alert widget",
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
+    PackageInfo.setMockInitialValues(
+        appName: "Lighthouse pm",
+        packageName: "com.jeroen1602.lighthouse_pm",
+        version: "fake-version",
+        buildNumber: "-9",
+        buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -271,7 +277,11 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text = tester.widgetList<RichText>(find.byType(RichText)).toList()[2].text.toPlainText();
+    final text = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .toList()[2]
+        .text
+        .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("FakeHighLevelDevice"));
@@ -281,12 +291,18 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should open issue for unknown state help out alert widget", (WidgetTester tester) async {
+  testWidgets("Should open issue for unknown state help out alert widget",
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
+    PackageInfo.setMockInitialValues(
+        appName: "Lighthouse pm",
+        packageName: "com.jeroen1602.lighthouse_pm",
+        version: "fake-version",
+        buildNumber: "-9",
+        buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -295,7 +311,11 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text = tester.widgetList<RichText>(find.byType(RichText)).toList()[2].text.toPlainText();
+    final text = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .toList()[2]
+        .text
+        .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("FakeHighLevelDevice"));
@@ -308,12 +328,19 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should copy to clipboard for unknown state help out alert widget", (WidgetTester tester) async {
+  testWidgets(
+      "Should copy to clipboard for unknown state help out alert widget",
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     LocalPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(appName: "Lighthouse pm", packageName: "com.jeroen1602.lighthouse_pm", version: "fake-version", buildNumber: "-9", buildSignature: "SIGN_HERE_PLEASE");
+    PackageInfo.setMockInitialValues(
+        appName: "Lighthouse pm",
+        packageName: "com.jeroen1602.lighthouse_pm",
+        version: "fake-version",
+        buildNumber: "-9",
+        buildSignature: "SIGN_HERE_PLEASE");
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -322,7 +349,8 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final textWidget = tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
+    final textWidget =
+        tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
     final text = textWidget.text.toPlainText();
 
     expect(text, contains("fake-version"));

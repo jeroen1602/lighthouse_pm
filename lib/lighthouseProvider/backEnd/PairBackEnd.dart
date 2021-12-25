@@ -6,7 +6,8 @@ import 'package:lighthouse_pm/lighthouseProvider/backEnd/LighthouseBackEnd.dart'
 ///
 /// If there is a back end with this then there should be a pair button visible.
 abstract class PairBackEnd {
-  Future<void> pairNewDevice({required Duration timeout, required Duration? updateInterval});
+  Future<void> pairNewDevice(
+      {required Duration timeout, required Duration? updateInterval});
 
   Stream<int> numberOfPairedDevices();
 

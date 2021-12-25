@@ -627,5 +627,7 @@ void main() {
 
 Future<LighthousePowerState> getNextPowerState(LighthouseDevice device,
     LighthousePowerState previous, Duration timeout) async {
-  return device.powerStateEnum.firstWhere((element) => element != previous).timeout(timeout);
+  return device.powerStateEnum
+      .firstWhere((element) => element != previous)
+      .timeout(timeout);
 }

@@ -1,5 +1,5 @@
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class Nicknames extends Table {
   TextColumn get deviceId => text().withLength(min: 17, max: 37)();

@@ -56,8 +56,11 @@ class LighthouseGuid {
   @override
   int get hashCode => this._hashCode;
 
-  ReadOnlyByteData getByteData() {
-    return ReadOnlyByteData.fromByteData(this._bytes);
+  /// Get the byte data.
+  /// You're not supposed to update any of the data stored in the [ByteData]
+  /// object!
+  ByteData getByteData() {
+    return this._bytes;
   }
 
   static String _removeNonHexCharacters(String sourceString) {

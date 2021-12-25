@@ -1,4 +1,3 @@
-
 class InAppPurchaseItem {
   final String id;
   final String price;
@@ -14,5 +13,4 @@ class InAppPurchaseItem {
     final originalPrice = value["originalPrice"] as String;
     return InAppPurchaseItem(id, price, title, originalPrice);
   }
-
 }

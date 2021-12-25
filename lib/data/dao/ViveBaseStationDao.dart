@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import '../Database.dart';
 import '../tables/ViveBaseStationIdTable.dart';
 
 part 'ViveBaseStationDao.g.dart';
 
-@UseDao(tables: [ViveBaseStationIds])
+@DriftAccessor(tables: [ViveBaseStationIds])
 class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
     with _$ViveBaseStationDaoMixin {
   ViveBaseStationDao(LighthouseDatabase attachedDatabase)

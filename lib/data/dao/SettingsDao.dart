@@ -3,14 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/lighthouseProvider/LighthousePowerState.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import '../Database.dart';
 import '../tables/SimpleSettingsTable.dart';
 
 part 'SettingsDao.g.dart';
 
-@UseDao(tables: [SimpleSettings])
+@DriftAccessor(tables: [SimpleSettings])
 class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     with _$SettingsDaoMixin {
   SettingsDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);

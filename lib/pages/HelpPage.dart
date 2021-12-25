@@ -52,8 +52,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                         size: theming.bodyTextIconSize,
                         color: theming.iconColor,
                       )),
-                      TextSpan(
-                          text: ' button', style: theming.bodyTextBold),
+                      TextSpan(text: ' button', style: theming.bodyTextBold),
                       const TextSpan(
                           text:
                               ' of the device you want access the metadata page for.'),
@@ -71,8 +70,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                       const TextSpan(
                           text: ' the device you want to select to enter '),
                       TextSpan(
-                          text: 'selection mode',
-                          style: theming.bodyTextBold),
+                          text: 'selection mode', style: theming.bodyTextBold),
                       const TextSpan(
                           text: '. After entering selection mode click the '),
                       WidgetSpan(
@@ -82,8 +80,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                         width: theming.bodyTextIconSize,
                         height: theming.bodyTextIconSize,
                       )),
-                      TextSpan(
-                          text: 'button', style: theming.bodyTextBold),
+                      TextSpan(text: 'button', style: theming.bodyTextBold),
                       const TextSpan(
                           text:
                               ' in the toolbar to get a dialog for changing the nickname.\n'),
@@ -105,8 +102,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                           TextSpan(
                               text: 'Group items\n', style: theming.headline6),
                           const TextSpan(text: 'To group items '),
-                          TextSpan(
-                              text: 'hold', style: theming.bodyTextBold),
+                          TextSpan(text: 'hold', style: theming.bodyTextBold),
                           const TextSpan(
                               text: ' the devices you want to add to the '
                                   'group. Click on the '),
@@ -118,8 +114,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                             height: theming.bodyTextIconSize,
                           )),
                           TextSpan(
-                              text: ' button',
-                              style: theming.bodyTextBold),
+                              text: ' button', style: theming.bodyTextBold),
                           const TextSpan(
                               text: ' in the dialog that pops up select the'
                                   'group you want to add the items to, '
@@ -130,16 +125,14 @@ class HelpPage extends BasePage with WithBlocStateless {
                                 color: theming.iconColor),
                           ),
                           TextSpan(
-                              text: 'No Group',
-                              style: theming.bodyTextBold),
+                              text: 'No Group', style: theming.bodyTextBold),
                           const TextSpan(
                               text:
                                   ' to remove the items from the group they are in.\n\n'),
                           TextSpan(
                               text: 'Edit group\n', style: theming.headline6),
                           const TextSpan(text: 'To edit a group name either '),
-                          TextSpan(
-                              text: 'hold', style: theming.bodyTextBold),
+                          TextSpan(text: 'hold', style: theming.bodyTextBold),
                           const TextSpan(
                               text: ' the group header to select the group. '),
                           const TextSpan(
@@ -154,8 +147,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                             height: theming.bodyTextIconSize,
                           )),
                           TextSpan(
-                              text: ' button',
-                              style: theming.bodyTextBold),
+                              text: ' button', style: theming.bodyTextBold),
                           const TextSpan(
                               text:
                                   '. After that change the name in the dialog.\n\n'),
@@ -165,8 +157,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                               text: 'To remove a group first follow the first '
                                   'steps of '),
                           TextSpan(
-                              text: 'Edit Group',
-                              style: theming.bodyTextBold),
+                              text: 'Edit Group', style: theming.bodyTextBold),
                           const TextSpan(
                               text: ' to select the group to remove.\n'),
                           const TextSpan(text: 'After that click the '),
@@ -178,8 +169,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                             height: theming.bodyTextIconSize,
                           )),
                           TextSpan(
-                              text: ' button',
-                              style: theming.bodyTextBold),
+                              text: ' button', style: theming.bodyTextBold),
                           const TextSpan(
                               text: ' and confirm that you want to remove the '
                                   'group.\nThe items in the group will automatically '
@@ -190,8 +180,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                     _HelpItem(
                         title: 'Pairing a device',
                         body: RichText(
-                          text:
-                              TextSpan(style: theming.bodyText, children: [
+                          text: TextSpan(style: theming.bodyText, children: [
                             const TextSpan(
                                 text:
                                     'You will need to pair a lighthouse before you can communicate with it. To do this, go to the main page and click on the '),
@@ -200,24 +189,21 @@ class HelpPage extends BasePage with WithBlocStateless {
                                   size: theming.bodyTextIconSize,
                                   color: theming.iconColor),
                             ),
-                            TextSpan(
-                                text: 'Pair', style: theming.bodyTextBold),
+                            TextSpan(text: 'Pair', style: theming.bodyTextBold),
                             const TextSpan(
                                 text:
                                     ' button. After this select the device you want to connect with from the list.\n'),
                             const TextSpan(
                                 text:
                                     'Lighthouses version 2.0 should start with '),
-                            TextSpan(
-                                text: 'LHB-', style: theming.bodyTextBold),
+                            TextSpan(text: 'LHB-', style: theming.bodyTextBold),
                             const TextSpan(text: '.\n'),
                             if (settings?.viveBaseStationsEnabled == true) ...[
                               const TextSpan(
                                   text:
                                       'Vive base stations should start with '),
                               TextSpan(
-                                  text: 'HTC BS',
-                                  style: theming.bodyTextBold),
+                                  text: 'HTC BS', style: theming.bodyTextBold),
                               const TextSpan(text: '.'),
                             ],
                           ]),

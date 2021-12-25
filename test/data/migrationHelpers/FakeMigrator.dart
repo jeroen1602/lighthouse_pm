@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class MigrationError extends Error {
   MigrationError(this.message);
@@ -69,7 +69,7 @@ class FakeMigrator extends Fake implements Migrator {
 
     final columns = table.columnsByName.entries.map((entry) {
       return TestColumn(entry.key,
-          TestColumn.columnTypeFromMoorTypeString(entry.value.typeName));
+          TestColumn.columnTypeFromDriftTypeString(entry.value.typeName));
     }).toList();
 
     currentSchema!.testTables.add(TestTable(table.actualTableName, columns));
@@ -248,7 +248,7 @@ class TestColumn {
     }
   }
 
-  static ColumnType columnTypeFromMoorTypeString(String type) {
+  static ColumnType columnTypeFromDriftTypeString(String type) {
     switch (type) {
       case 'INTEGER':
         return ColumnType.integer;

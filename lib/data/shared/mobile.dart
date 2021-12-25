@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/native.dart';
+import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as paths;
 
@@ -13,7 +13,7 @@ LighthouseDatabase constructDb({bool logStatements = false}) {
     final executor = LazyDatabase(() async {
       final dbFolder = await paths.getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'db.sqlite'));
-      return VmDatabase(file, logStatements: logStatements);
+      return NativeDatabase(file, logStatements: logStatements);
     });
     return LighthouseDatabase(executor);
   }
@@ -21,7 +21,7 @@ LighthouseDatabase constructDb({bool logStatements = false}) {
     final executor = LazyDatabase(() async {
       final dbFolder = await paths.getApplicationSupportDirectory();
       final file = File(p.join(dbFolder.path, 'settings.sqlite'));
-      return VmDatabase(file, logStatements: logStatements);
+      return NativeDatabase(file, logStatements: logStatements);
     });
     return LighthouseDatabase(executor);
   }
@@ -29,5 +29,6 @@ LighthouseDatabase constructDb({bool logStatements = false}) {
   //   final file = File('db.sqlite');
   //   return Database(VMDatabase(file, logStatements: logStatements));
   // }
-  return LighthouseDatabase(VmDatabase.memory(logStatements: logStatements));
+  return LighthouseDatabase(
+      NativeDatabase.memory(logStatements: logStatements));
 }

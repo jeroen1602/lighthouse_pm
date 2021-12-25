@@ -22,12 +22,10 @@ void main() {
     final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(1);
     expect(identifier1.toString(), "00:00:00:00:00:01");
 
-    final identifier2 =
-    FakeDeviceIdentifier.generateDeviceIdentifierLinux(10);
+    final identifier2 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(10);
     expect(identifier2.toString(), "00:00:00:00:00:0A");
 
-    final identifier3 =
-    FakeDeviceIdentifier.generateDeviceIdentifierLinux(16);
+    final identifier3 = FakeDeviceIdentifier.generateDeviceIdentifierLinux(16);
     expect(identifier3.toString(), "00:00:00:00:00:10");
   });
 
@@ -36,8 +34,7 @@ void main() {
         FakeDeviceIdentifier.generateBasicMacIdentifier(0xFF + 1);
     expect(identifier1.toString(), "00:00:00:00:01:00");
 
-    final identifier2 =
-        FakeDeviceIdentifier.generateBasicMacIdentifier(0xFFFF);
+    final identifier2 = FakeDeviceIdentifier.generateBasicMacIdentifier(0xFFFF);
     expect(identifier2.toString(), "00:00:00:00:FF:FF");
   });
 
@@ -118,7 +115,7 @@ void main() {
     try {
       FakeDeviceIdentifier.generateDeviceIdentifier(0);
       fail("Should error");
-    } catch(e) {
+    } catch (e) {
       expect(e, TypeMatcher<UnsupportedError>());
     }
 
@@ -129,7 +126,8 @@ void main() {
 
     //Should genereat Linux identifier
     LocalPlatform.overridePlatform = PlatformOverride.linux;
-    expect(FakeDeviceIdentifier.generateDeviceIdentifier(1).toString(), '00:00:00:00:00:01');
+    expect(FakeDeviceIdentifier.generateDeviceIdentifier(1).toString(),
+        '00:00:00:00:00:01');
 
     // Should generate web identifier
     LocalPlatform.overridePlatform = PlatformOverride.web;

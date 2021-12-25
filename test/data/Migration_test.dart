@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/Database.dart';
-import 'package:moor/moor.dart'
+import 'package:drift/drift.dart'
     show
         QueryExecutor,
         MigrationStrategy,
-        moorRuntimeOptions,
+        driftRuntimeOptions,
         OpeningDetails,
         QueryExecutorUser;
 
@@ -27,7 +27,7 @@ class FakeQueryExecutor extends Fake implements QueryExecutor {
 class FakeOpeningDetails extends Fake implements OpeningDetails {}
 
 void main() {
-  moorRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   test('Final schemas shouldn\'t match each other', () {
     final schemas = FinalSchemas.schemas;

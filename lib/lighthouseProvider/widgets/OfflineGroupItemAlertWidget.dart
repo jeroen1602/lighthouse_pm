@@ -49,7 +49,8 @@ class _OfflineGroupItemAlertWidgetContent
       content: IntrinsicHeight(
           child: Column(
         children: [
-          const Text('Some devices in this group are offline, do you want to continue'
+          const Text(
+              'Some devices in this group are offline, do you want to continue'
               ' and change the state of the devices that are online?'),
           CheckboxListTile(
               title: const Text("Don't show this warning again."),

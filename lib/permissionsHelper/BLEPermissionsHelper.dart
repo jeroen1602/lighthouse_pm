@@ -8,7 +8,6 @@ import 'package:permission_handler/permission_handler.dart';
 /// BLE.
 ///
 abstract class BLEPermissionsHelper {
-
   @visibleForTesting
   static const channel =
       const MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");

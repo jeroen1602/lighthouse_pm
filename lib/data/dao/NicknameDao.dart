@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import '../Database.dart';
 import '../tables/LastSeenDevicesTable.dart';
@@ -6,7 +6,7 @@ import '../tables/NicknameTable.dart';
 
 part 'NicknameDao.g.dart';
 
-@UseDao(tables: [Nicknames, LastSeenDevices])
+@DriftAccessor(tables: [Nicknames, LastSeenDevices])
 class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
     with _$NicknameDaoMixin {
   NicknameDao(LighthouseDatabase attachedDatabase) : super(attachedDatabase);
@@ -30,8 +30,7 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> deleteNicknames(List<String> deviceIds) {
-    return (delete(nicknames)..where((t) => t.deviceId.isIn(deviceIds)))
-        .go();
+    return (delete(nicknames)..where((t) => t.deviceId.isIn(deviceIds))).go();
   }
 
   Future<int> insertLastSeenDevice(LastSeenDevicesCompanion lastSeen) {

@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class LastSeenDevices extends Table {
   TextColumn get deviceId => text().withLength(min: 17, max: 37)();

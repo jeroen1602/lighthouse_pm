@@ -8,7 +8,6 @@ import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStation
 import 'package:lighthouse_pm/platformSpecific/mobile/LocalPlatform.dart';
 
 void main() {
-
   setUp(() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
   });
@@ -32,10 +31,12 @@ void main() {
 
     expect(device.name, 'TEST-DEVICE');
     expect(device.id.toString(), 'aAAAAAAAAAAAAAAAAAAAAA==');
-    expect(device.id.toString()[0], 'a', reason: 'Should start with a lower case a');
+    expect(device.id.toString()[0], 'a',
+        reason: 'Should start with a lower case a');
   });
 
-  test('FakeBluetoothDevice should insert lower case for web devices', () async {
+  test('FakeBluetoothDevice should insert lower case for web devices',
+      () async {
     final device = FakeBluetoothDevice([], 0, 'TEST-DEVICE');
 
     expect(device.name, 'TEST-DEVICE');

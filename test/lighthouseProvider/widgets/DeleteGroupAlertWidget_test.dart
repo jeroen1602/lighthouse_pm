@@ -53,50 +53,50 @@ void main() {
   });
 
   testWidgets("Should return false when no is hit delete group alert widget",
-          (WidgetTester tester) async {
-        final group = Group(id: 1, name: "Test group");
+      (WidgetTester tester) async {
+    final group = Group(id: 1, name: "Test group");
 
-        Future<bool>? future;
-        await tester.pumpWidget(buildTestAppForWidgets((context) {
-          future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-        }));
+    Future<bool>? future;
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+    }));
 
-        await tester.tap(find.text('X'));
-        await tester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
 
-        expect(find.byType(Dialog), findsOneWidget);
-        expect(find.text("Delete group"), findsOneWidget);
-        expect(future, isNotNull);
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text("Delete group"), findsOneWidget);
+    expect(future, isNotNull);
 
-        await tester.tap(find.text('No'));
-        await tester.pumpAndSettle();
+    await tester.tap(find.text('No'));
+    await tester.pumpAndSettle();
 
-        expect(find.byType(Dialog), findsNothing);
-        final value = await future!.timeout(Duration(seconds: 1));
-        expect(value, isFalse);
-      });
+    expect(find.byType(Dialog), findsNothing);
+    final value = await future!.timeout(Duration(seconds: 1));
+    expect(value, isFalse);
+  });
 
   testWidgets("Should return true when yes is hit delete group alert widget",
-          (WidgetTester tester) async {
-        final group = Group(id: 1, name: "Test group");
+      (WidgetTester tester) async {
+    final group = Group(id: 1, name: "Test group");
 
-        Future<bool>? future;
-        await tester.pumpWidget(buildTestAppForWidgets((context) {
-          future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-        }));
+    Future<bool>? future;
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+    }));
 
-        await tester.tap(find.text('X'));
-        await tester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
 
-        expect(find.byType(Dialog), findsOneWidget);
-        expect(find.text("Delete group"), findsOneWidget);
-        expect(future, isNotNull);
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text("Delete group"), findsOneWidget);
+    expect(future, isNotNull);
 
-        await tester.tap(find.text('Yes'));
-        await tester.pumpAndSettle();
+    await tester.tap(find.text('Yes'));
+    await tester.pumpAndSettle();
 
-        expect(find.byType(Dialog), findsNothing);
-        final value = await future!.timeout(Duration(seconds: 1));
-        expect(value, isTrue);
-      });
+    expect(find.byType(Dialog), findsNothing);
+    final value = await future!.timeout(Duration(seconds: 1));
+    expect(value, isTrue);
+  });
 }

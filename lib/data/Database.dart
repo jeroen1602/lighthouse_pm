@@ -1,4 +1,4 @@
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 import 'dao/GroupDao.dart';
 import 'dao/NicknameDao.dart';
@@ -18,7 +18,7 @@ part 'Database.g.dart';
 // Use `flutter packages pub run build_runner build`
 // or `flutter packages pub run build_runner watch` to generate these files.
 
-@UseMoor(tables: [
+@DriftDatabase(tables: [
   Nicknames,
   LastSeenDevices,
   SimpleSettings,

@@ -76,8 +76,7 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
   }
 
   @visibleForTesting
-  static List<FakeReadWriteCharacteristic>
-      getPowerAndIdentifyCharacteristic() {
+  static List<FakeReadWriteCharacteristic> getPowerAndIdentifyCharacteristic() {
     final powerCharacteristic = FakeLighthouseV2PowerCharacteristic();
     return [
       powerCharacteristic,

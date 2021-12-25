@@ -5,7 +5,6 @@ import 'package:lighthouse_pm/lighthouseProvider/ble/DeviceIdentifier.dart';
 import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
 
 abstract class FakeDeviceIdentifier {
-
   static LHDeviceIdentifier generateDeviceIdentifier(int seed) {
     if (LocalPlatform.isAndroid) {
       return generateDeviceIdentifierAndroid(seed);

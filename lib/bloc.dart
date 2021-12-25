@@ -34,7 +34,7 @@ class LighthousePMBloc {
     return db.allTables
         .map((e) => e.actualTableName.replaceAll('"', ''))
         .toList()
-          ..sort((a, b) => a.compareTo(b));
+      ..sort((a, b) => a.compareTo(b));
   }
 
   void close() {
@@ -49,8 +49,8 @@ abstract class WithBlocStateless {
   LighthousePMBloc blocWithoutListen(BuildContext context) =>
       bloc(context, listen: false);
 
-  static blocStatic(BuildContext context, {bool listen = true}) => Provider.of<LighthousePMBloc>(context, listen: listen);
-
+  static blocStatic(BuildContext context, {bool listen = true}) =>
+      Provider.of<LighthousePMBloc>(context, listen: listen);
 }
 
 extension WithBlocState on State {

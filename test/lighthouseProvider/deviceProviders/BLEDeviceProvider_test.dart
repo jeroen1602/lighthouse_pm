@@ -44,15 +44,22 @@ void main() {
 
     final instance = FakeBLEDeviceProvider();
 
-    final failingDevice = await instance.internalGetDevice(FailingBLEDeviceOnConnect());
-    final failingDevice2 = await instance.internalGetDevice(FailingBLEDeviceOnDiscover());
+    final failingDevice =
+        await instance.internalGetDevice(FailingBLEDeviceOnConnect());
+    final failingDevice2 =
+        await instance.internalGetDevice(FailingBLEDeviceOnDiscover());
 
     instance.bleDevicesDiscovering.addAll([failingDevice, failingDevice2]);
 
     await instance.disconnectRunningDiscoveries();
 
-    expect((failingDevice.device as FailingBLEDeviceOnConnect).disconnectCalls, 1, reason: "Disconnect should have been called");
-    expect((failingDevice2.device as FailingBLEDeviceOnDiscover).disconnectCalls, 1, reason: "Disconnect should have been called");
+    expect(
+        (failingDevice.device as FailingBLEDeviceOnConnect).disconnectCalls, 1,
+        reason: "Disconnect should have been called");
+    expect(
+        (failingDevice2.device as FailingBLEDeviceOnDiscover).disconnectCalls,
+        1,
+        reason: "Disconnect should have been called");
     expect(instance.bleDevicesDiscovering, isEmpty);
 
     LocalPlatform.overridePlatform = null;
