@@ -1,29 +1,29 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/data/Database.dart';
-import 'package:lighthouse_pm/lighthouseProvider/LighthouseProvider.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backEnd/BlueZBackEnd.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterBlueLighthouseBackEnd.dart';
-import 'package:lighthouse_pm/lighthouseProvider/backEnd/FlutterWebBluetoothBackEnd.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/LighthouseV2DeviceProvider.dart';
-import 'package:lighthouse_pm/lighthouseProvider/deviceProviders/ViveBaseStationDeviceProvider.dart';
-import 'package:lighthouse_pm/pages/BasePage.dart';
-import 'package:lighthouse_pm/pages/DatabaseTestPage.dart';
-import 'package:lighthouse_pm/pages/HelpPage.dart';
-import 'package:lighthouse_pm/pages/MainPage.dart';
-import 'package:lighthouse_pm/pages/NotFoundPage.dart';
-import 'package:lighthouse_pm/pages/SettingsPage.dart';
-import 'package:lighthouse_pm/pages/ShortcutHandlerPage.dart';
-import 'package:lighthouse_pm/pages/SimpleBasePage.dart';
-import 'package:lighthouse_pm/pages/TroubleshootingPage.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/InAppPurchases.dart';
-import 'package:lighthouse_pm/platformSpecific/mobile/android/androidLauncherShortcut/AndroidLauncherShortcut.dart';
-import 'package:lighthouse_pm/platformSpecific/shared/Intl.dart';
-import 'package:lighthouse_pm/platformSpecific/shared/LocalPlatform.dart';
-import 'package:lighthouse_pm/widgets/ContentContainerWidget.dart';
+import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/back_end/bluez_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/back_end/flutter_blue_lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/back_end/flutter_web_bluetooth_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/device_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/device_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_pm/pages/base_page.dart';
+import 'package:lighthouse_pm/pages/database_test_page.dart';
+import 'package:lighthouse_pm/pages/help_page.dart';
+import 'package:lighthouse_pm/pages/main_page.dart';
+import 'package:lighthouse_pm/pages/not_found_page.dart';
+import 'package:lighthouse_pm/pages/settings_page.dart';
+import 'package:lighthouse_pm/pages/shortcut_handler_page.dart';
+import 'package:lighthouse_pm/pages/simple_base_page.dart';
+import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
+import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
+import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
+import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
+import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
+import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:provider/provider.dart';
 
-import 'BuildOptions.dart';
+import 'build_options.dart';
 import 'bloc.dart';
 
 void main() {
@@ -60,7 +60,7 @@ class MainApp extends StatelessWidget {
     if (!kReleaseMode) {
       // Add this back if you need to test for devices you don't own.
       // you'll also need to
-      // import 'package:lighthouse_pm/lighthouseProvider/backEnd/FakeBLEBackEnd.dart';
+      // import 'package:lighthouse_pm/lighthouse_provider/backEnd/fake_ble_back_end.dart';
 
       // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
     }
@@ -170,10 +170,11 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
 /// A simple shortcut handle debug page. Change the mac address if you need to
 /// test it.
 ///
+/// ignore: unused_element
 BasePage _createShortcutDebugPage(BuildContext context) {
   if (!kReleaseMode) {
     return ShortcutHandlerPage(
-        ShortcutHandle(ShortcutTypes.MAC_TYPE, "00:00:00:00:00:00"));
+        ShortcutHandle(ShortcutTypes.macType, "00:00:00:00:00:00"));
   }
   return SimpleBasePage(Text('This should not be here.'));
 }

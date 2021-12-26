@@ -1,7 +1,8 @@
-import 'package:moor/moor_web.dart';
+import 'package:drift/web.dart';
 
-import '../Database.dart';
+import '../database.dart';
 
 LighthouseDatabase constructDb({bool logStatements = false}) {
-  return LighthouseDatabase(WebDatabase('LighthouseDatabase', logStatements: logStatements));
+  return LighthouseDatabase(
+      WebDatabase('LighthouseDatabase', logStatements: logStatements));
 }

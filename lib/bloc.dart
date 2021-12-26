@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/data/Database.dart';
-import 'package:lighthouse_pm/data/dao/GroupDao.dart';
-import 'package:lighthouse_pm/data/dao/NicknameDao.dart';
-import 'package:lighthouse_pm/data/dao/SettingsDao.dart';
-import 'package:lighthouse_pm/data/dao/ViveBaseStationDao.dart';
+import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/data/dao/group_dao.dart';
+import 'package:lighthouse_pm/data/dao/nickname_dao.dart';
+import 'package:lighthouse_pm/data/dao/settings_dao.dart';
+import 'package:lighthouse_pm/data/dao/vive_base_station_dao.dart';
 import 'package:provider/provider.dart';
 
 class LighthousePMBloc {
@@ -17,7 +17,7 @@ class LighthousePMBloc {
 
   GroupDao get groups => db.groupDao;
 
-  LighthousePMBloc(LighthouseDatabase db) : db = db;
+  LighthousePMBloc(this.db);
 
   Future<List<String>> getInstalledTables() {
     return db
@@ -34,7 +34,7 @@ class LighthousePMBloc {
     return db.allTables
         .map((e) => e.actualTableName.replaceAll('"', ''))
         .toList()
-          ..sort((a, b) => a.compareTo(b));
+      ..sort((a, b) => a.compareTo(b));
   }
 
   void close() {
@@ -49,8 +49,8 @@ abstract class WithBlocStateless {
   LighthousePMBloc blocWithoutListen(BuildContext context) =>
       bloc(context, listen: false);
 
-  static blocStatic(BuildContext context, {bool listen = true}) => Provider.of<LighthousePMBloc>(context, listen: listen);
-
+  static blocStatic(BuildContext context, {bool listen = true}) =>
+      Provider.of<LighthousePMBloc>(context, listen: listen);
 }
 
 extension WithBlocState on State {
