@@ -1,6 +1,6 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/identify_device_extension.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 
 void main() {
   test('Should be able to create identify device extension', () async {

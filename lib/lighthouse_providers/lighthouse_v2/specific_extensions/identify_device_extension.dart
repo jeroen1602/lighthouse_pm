@@ -1,7 +1,4 @@
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rxdart/rxdart.dart';
-
-import 'device_extension.dart';
+part of lighthouse_v2_device_provider;
 
 /// A device extension that allow the device to be identified.
 class IdentifyDeviceExtension extends DeviceExtension {

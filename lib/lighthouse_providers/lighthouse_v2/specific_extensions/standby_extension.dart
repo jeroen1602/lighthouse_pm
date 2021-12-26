@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-
-import 'device_extension.dart';
-import 'device_with_extensions.dart';
-import 'state_extension.dart';
+part of lighthouse_v2_device_provider;
 
 ///
 /// An extension to allow a device to go into standby mode

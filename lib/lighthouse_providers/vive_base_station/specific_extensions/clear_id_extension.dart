@@ -1,7 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/data/dao/vive_base_station_dao.dart';
-
-import 'device_extension.dart';
+part of vive_base_station_device_provider;
 
 class ClearIdExtension extends DeviceExtension {
   ClearIdExtension(

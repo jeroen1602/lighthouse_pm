@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/clear_id_extension.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../helpers/fake_bloc.dart';

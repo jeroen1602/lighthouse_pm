@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -9,7 +10,6 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
-import '../device_extensions/standby_extension.dart';
 import '../helpers/custom_long_press_gesture_recognizer.dart';
 
 /// An alert dialog to ask the user what to do since the state is unknown.
