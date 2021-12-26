@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/bluetooth_device.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_with_extensions.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/ble_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(LHBluetoothDevice device) : super(device);

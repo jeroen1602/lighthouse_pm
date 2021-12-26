@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
-import '../lighthouse_power_state.dart';
 import 'device_extension.dart';
 
 typedef ChangeStateFunction = Future<void> Function(

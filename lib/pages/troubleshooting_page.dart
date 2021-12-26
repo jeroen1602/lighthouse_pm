@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/enable_bluetooth_dialog_flow.dart';
 import 'package:lighthouse_pm/dialogs/location_permission_dialog_flow.dart';
-import 'package:lighthouse_pm/lighthouse_provider/adapter_state/adapter_state.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
 import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/helpers/byte_data_extensions.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 
 void main() {
   test('Should convert to uInt8 list', () {

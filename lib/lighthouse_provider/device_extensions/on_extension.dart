@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
-import '../lighthouse_power_state.dart';
 import 'state_extension.dart';
 
 ///

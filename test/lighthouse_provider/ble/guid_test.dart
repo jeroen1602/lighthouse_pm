@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:lighthouse_pm/lighthouse_provider/ble/guid.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:test/test.dart';
 
 // Tests for the guid.dart

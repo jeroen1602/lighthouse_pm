@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+part of lighthouse_provider;
 
 ///
 /// A class for storing a device identifier or MAC address.

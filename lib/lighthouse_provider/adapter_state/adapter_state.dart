@@ -1,3 +1,5 @@
+part of lighthouse_provider;
+
 enum BluetoothAdapterState {
   unknown,
   unavailable,

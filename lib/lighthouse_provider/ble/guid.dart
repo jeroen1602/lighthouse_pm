@@ -1,8 +1,4 @@
-import 'dart:typed_data';
-
-import 'package:convert/convert.dart';
-
-import '../helpers/byte_data_extensions.dart';
+part of lighthouse_provider;
 
 ///
 /// Guid for Bluetooth Low energy services and characteristics.

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/tables/group_table.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
-import '../ble/device_identifier.dart';
 import '../device_extensions/standby_extension.dart';
-import '../lighthouse_device.dart';
-import '../lighthouse_power_state.dart';
 import 'lighthouse_power_button_widget.dart';
 import 'lighthouse_widget.dart';
 import 'offline_group_item_alert_widget.dart';

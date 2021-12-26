@@ -1,7 +1,7 @@
 import 'package:device_info/device_info.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 
 import '../database.dart';

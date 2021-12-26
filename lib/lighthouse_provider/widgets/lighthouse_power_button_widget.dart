@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
-
-import '../lighthouse_power_state.dart';
 
 /// A toggle button for the power state of a [LighthouseDevice].
 class LighthousePowerButtonWidget extends StatelessWidget {

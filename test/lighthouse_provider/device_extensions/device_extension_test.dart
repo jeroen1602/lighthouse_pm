@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/clear_id_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/identify_device_extension.dart';
@@ -8,6 +7,7 @@ import 'package:lighthouse_pm/lighthouse_provider/device_extensions/on_extension
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/sleep_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/standby_extension.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 import '../../helpers/fake_bloc.dart';
 

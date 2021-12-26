@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/bluez/bluez_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/flutter_blue/flutter_blue_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/flutter_web_bluetooth/flutter_web_bluetooth_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/bluez_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/flutter_blue_lighthouse_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/flutter_web_bluetooth_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/lighthouse_v2_device_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/pages/base_page.dart';
 import 'package:lighthouse_pm/pages/database_test_page.dart';
 import 'package:lighthouse_pm/pages/help_page.dart';
@@ -16,15 +16,15 @@ import 'package:lighthouse_pm/pages/settings_page.dart';
 import 'package:lighthouse_pm/pages/shortcut_handler_page.dart';
 import 'package:lighthouse_pm/pages/simple_base_page.dart';
 import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
-import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
+import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
 import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:provider/provider.dart';
 
-import 'build_options.dart';
 import 'bloc.dart';
+import 'build_options.dart';
 
 void main() {
   loadIntlStrings();
@@ -60,7 +60,7 @@ class MainApp extends StatelessWidget {
     if (!kReleaseMode) {
       // Add this back if you need to test for devices you don't own.
       // you'll also need to
-      // import 'package:lighthouse_pm/lighthouse_provider/backEnd/fake_ble_back_end.dart';
+      // import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 
       // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
     }

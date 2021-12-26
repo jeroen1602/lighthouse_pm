@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 void main() {
   test('Should get the correct item from id', () {

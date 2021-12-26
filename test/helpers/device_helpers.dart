@@ -1,8 +1,8 @@
 import 'package:lighthouse_pm/bloc.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/ble_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/lighthouse_v2_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/vive_base_station_device.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 import 'fake_bloc.dart';

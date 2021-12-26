@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/standby_extension.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/unknown_state_alert_widget.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:package_info_plus/package_info_plus.dart';

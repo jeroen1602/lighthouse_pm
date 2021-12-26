@@ -1,3 +1,5 @@
+part of lighthouse_provider;
+
 class TimeoutContainer<T> {
   TimeoutContainer(this.data, {DateTime? lastSeen}) {
     if (lastSeen != null) {
