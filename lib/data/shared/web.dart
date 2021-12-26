@@ -1,6 +1,6 @@
 import 'package:drift/web.dart';
 
-import '../Database.dart';
+import '../database.dart';
 
 LighthouseDatabase constructDb({bool logStatements = false}) {
   return LighthouseDatabase(

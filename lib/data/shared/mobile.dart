@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:lighthouse_pm/data/Database.dart';
+import 'package:lighthouse_pm/data/database.dart';
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as paths;
 
-import '../Database.dart';
+import '../database.dart';
 
 LighthouseDatabase constructDb({bool logStatements = false}) {
   if (Platform.isIOS || Platform.isAndroid) {
