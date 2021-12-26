@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:toast/toast.dart';
@@ -11,9 +12,6 @@ import '../device_extensions/standby_extension.dart';
 import '../helpers/custom_long_press_gesture_recognizer.dart';
 import '../lighthouse_device.dart';
 import '../lighthouse_power_state.dart';
-
-const _githubIssuesUrl =
-    "https://github.com/jeroen1602/lighthouse_pm/issues/40";
 
 /// An alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
@@ -176,7 +174,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         SimpleDialogOption(
           child: Text("Open issue"),
           onPressed: () async {
-            await launch(_githubIssuesUrl);
+            await launch(Links.stateIssueUrl);
           },
         ),
         SimpleDialogOption(

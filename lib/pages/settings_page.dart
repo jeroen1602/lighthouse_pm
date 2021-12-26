@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
+import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/pages/settings/lh_license_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_nicknames_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_vive_base_station_ids_page.dart';
@@ -26,12 +27,6 @@ import 'settings/privacy_page.dart';
 import 'settings/settings_donations_page.dart';
 import 'settings/settings_nicknames_page.dart';
 import 'settings/settings_vive_base_station_ids_page.dart';
-
-const _githubUrl = "https://github.com/jeroen1602/lighthouse_pm";
-const _googlePlayUrl =
-    "https://play.google.com/store/apps/details?id=com.jeroen1602.lighthouse_pm";
-const _fDroidUrl = "https://f-droid.org/packages/com.jeroen1602.lighthouse_pm/";
-const _webUrl = "https://jeroen1602.github.io/lighthouse_pm/";
 
 class SettingsPage extends BasePage with WithBlocStateless {
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
@@ -433,7 +428,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           height: theming.iconSizeLarge,
         ),
         onTap: () async {
-          await launch(_githubUrl);
+          await launch(Links.projectUrl);
         },
       ),
       Divider(),
@@ -448,7 +443,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(_googlePlayUrl);
+            await launch(Links.googlePlayUrl);
           },
         ),
         Divider(),
@@ -463,7 +458,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(_fDroidUrl);
+            await launch(Links.fDroidUrl);
           },
         ),
         const Divider(),
@@ -478,7 +473,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(_webUrl);
+            await launch(Links.webUrl);
           },
         ),
         const Divider(),

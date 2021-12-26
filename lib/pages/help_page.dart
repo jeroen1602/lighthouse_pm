@@ -4,13 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/local/main_page_settings.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'base_page.dart';
-
-const _githubIssuesUrl = "https://github.com/jeroen1602/lighthouse_pm/issues/";
 
 ///
 /// A widget showing the a material scaffold with some help items the user may need.
@@ -222,7 +221,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                             style: theming.linkTheme,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () async {
-                                await launch(_githubIssuesUrl);
+                                await launch(Links.projectIssuesUrl);
                               }),
                         const TextSpan(text: '!')
                       ]),

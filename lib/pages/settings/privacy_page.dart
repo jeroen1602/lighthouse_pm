@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,9 +8,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../base_page.dart';
 
 class PrivacyPage extends BasePage {
-  static const githubPagesPrivacyUrl =
-      "https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages";
-  static const googlePrivacyUrl = "https://policies.google.com/privacy";
   static const version1_1Date = "May 23th 2021";
 
   @override
@@ -54,7 +52,7 @@ class PrivacyPage extends BasePage {
                   text: "Github privacy statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launch(PrivacyPage.githubPagesPrivacyUrl);
+                      launch(Links.githubPagesPrivacyUrl);
                     }),
               const TextSpan(
                   text: " if you want more, and up-to-date "
@@ -114,7 +112,7 @@ class PrivacyPage extends BasePage {
                   text: "Google privacy Statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launch(PrivacyPage.googlePrivacyUrl);
+                      launch(Links.googlePrivacyUrl);
                     }),
               const TextSpan(
                   text: " for more, and up-to-date information.\n\n"),

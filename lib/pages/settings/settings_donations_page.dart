@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lighthouse_pm/build_options.dart';
+import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases/in_app_purchase_item.dart';
 import 'package:lighthouse_pm/theming.dart';
@@ -11,9 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../base_page.dart';
 
-const _githubSponsorsUrl = "https://github.com/sponsors/jeroen1602/";
 const _githubSponsorsColor = Color(0xffdb61a2);
-const _paypalMeUrl = "https://paypal.me/jeroen1602";
 
 class SettingsSupportPage extends BasePage {
   @override
@@ -32,7 +31,7 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launch(_githubSponsorsUrl);
+            await launch(Links.githubSponsorsUrl);
           },
         ),
         const Divider(),
@@ -48,7 +47,7 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launch(_paypalMeUrl);
+            await launch(Links.paypalMeUrl);
           },
         ),
         const Divider(),
