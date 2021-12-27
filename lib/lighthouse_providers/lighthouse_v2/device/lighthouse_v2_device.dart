@@ -93,17 +93,17 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
 
   @override
   Future<bool> isValid() async {
-    debugPrint('Connecting to device: $deviceIdentifier');
+    print('Connecting to device: $deviceIdentifier');
     try {
       await device.connect(timeout: Duration(seconds: 10));
     } on TimeoutException {
-      debugPrint('Connection timed-out for device: $deviceIdentifier');
+      print('Connection timed-out for device: $deviceIdentifier');
       return false;
     } catch (e, s) {
       // other connection error
-      debugPrint('Other connection error:');
-      debugPrint('$e');
-      debugPrint('$s');
+      print('Other connection error:');
+      print('$e');
+      print('$s');
       return false;
     }
     _identifyDeviceExtension.setEnabled(false);
@@ -115,7 +115,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
     final identifyCharacteristic =
         LighthouseGuid.fromString(identifyCharacteristicUUID);
 
-    debugPrint('Finding service for device: $deviceIdentifier');
+    print('Finding service for device: $deviceIdentifier');
     final List<LHBluetoothService> services = await device.discoverServices();
     for (final service in services) {
       // Find the correct characteristic.
@@ -136,8 +136,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
             final channel = await characteristic.readUint32();
             _otherMetadata['Channel'] = channel.toString();
           } catch (e, s) {
-            debugPrint('Unable to get channel because: $e');
-            debugPrint('$s');
+            print('Unable to get channel because: $e');
+            print('$s');
           }
           continue;
         }
@@ -149,8 +149,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
             _firmwareVersion =
                 firmware.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
-            debugPrint('Unable to get firmware version because: $e');
-            debugPrint('$s');
+            print('Unable to get firmware version because: $e');
+            print('$s');
           }
           continue;
         }
@@ -213,7 +213,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
           break;
         case LighthousePowerState.booting:
         case LighthousePowerState.unknown:
-          debugPrint('Cannot set power state to ${newState.text}');
+          print('Cannot set power state to ${newState.text}');
           return;
       }
     }
@@ -223,7 +223,7 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   Future<void> identify() async {
     final identifyCharacteristic = _identifyCharacteristic;
     if (identifyCharacteristic == null) {
-      debugPrint('No identify characteristic set!');
+      print('No identify characteristic set!');
       return;
     }
     try {

@@ -217,7 +217,7 @@ class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
     if (data.length != 1) {
-      debugPrint(
+      print(
           'Send incorrect amount of bytes to fake lighthouse v2 power characteristic');
       return;
     }
@@ -254,7 +254,7 @@ class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
 
         break;
       default:
-        debugPrint(
+        print(
             'Unknown state 0x${byte.toRadixString(16).padLeft(2, '0').toUpperCase()}');
     }
   }
@@ -277,7 +277,7 @@ class FakeLighthouseV2IdentifyCharacteristic
     if (data.length == 1 && data[0] == 0x00) {
       await powerCharacteristic.write([0x01], withoutResponse: withoutResponse);
     } else {
-      debugPrint("Send unrecognized data to the identify characteristic");
+      print("Send unrecognized data to the identify characteristic");
     }
   }
 }
@@ -309,7 +309,7 @@ class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
   @override
   Future<void> write(List<int> data, {bool withoutResponse = false}) async {
     if (data.length < 4) {
-      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      print("Incorrect command send to FakeViveBaseStationCharacteristic");
       return;
     }
     if (data[1] == 0x00 && data[2] == 0x00 && data[3] == 0x00) {
@@ -317,7 +317,7 @@ class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
     } else if (data[1] == 0x02 && data[2] == 0x00 && data[3] == 0x01) {
       changeState(LighthousePowerState.sleep);
     } else {
-      debugPrint("Incorrect command send to FakeViveBaseStationCharacteristic");
+      print("Incorrect command send to FakeViveBaseStationCharacteristic");
       return;
     }
   }

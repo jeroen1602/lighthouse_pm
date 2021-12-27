@@ -90,11 +90,13 @@ abstract class LighthouseDevice {
   @nonVirtual
   Duration getUpdateInterval() {
     var min = getMinUpdateInterval();
-    if (!kReleaseMode && testingOverwriteMinUpdateInterval != null) {
-      debugPrint(
-          "Overwritten min update interval, stuttering devices may be in your future");
-      min = testingOverwriteMinUpdateInterval!;
-    }
+    assert(() {
+      if (testingOverwriteMinUpdateInterval != null) {
+        print("Overwritten min update interval, stuttering devices may be in your future");
+        min = testingOverwriteMinUpdateInterval!;
+      }
+      return true;
+    }());
     if (min < updateInterval) {
       return updateInterval;
     }
@@ -170,11 +172,11 @@ abstract class LighthouseDevice {
   /// and then this method is called, then it will also just `return`.
   Future changeState(LighthousePowerState newState) async {
     if (newState == LighthousePowerState.unknown) {
-      debugPrint('Cannot set power state to unknown');
+      print('Cannot set power state to unknown');
       return;
     }
     if (newState == LighthousePowerState.booting) {
-      debugPrint('Cannot change power state to booting');
+      print('Cannot change power state to booting');
       return;
     }
     try {
@@ -225,9 +227,9 @@ abstract class LighthouseDevice {
               _powerState.add(data);
             }
           } catch (e, s) {
-            debugPrint("Could not get state, maybe we are disconnected");
-            debugPrint('$e');
-            debugPrint('$s');
+            print("Could not get state, maybe we are disconnected");
+            print('$e');
+            print('$s');
             await disconnect();
             return;
           } finally {
@@ -235,17 +237,17 @@ abstract class LighthouseDevice {
           }
         } else {
           if (retryCount++ > 5) {
-            debugPrint(
+            print(
                 'Unable to get power state because the mutex has been locked for a while ($retryCount). $transactionMutex');
           }
         }
       } else {
-        debugPrint('Cleaning-up old subscription!');
+        print('Cleaning-up old subscription!');
         disconnect();
       }
     });
     powerStateSubscription.onDone(() {
-      debugPrint('Cleaning-up power state subscription!');
+      print('Cleaning-up power state subscription!');
       _powerStateSubscription = null;
     });
     _powerStateSubscription = powerStateSubscription;

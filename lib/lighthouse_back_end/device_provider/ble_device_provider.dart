@@ -25,9 +25,12 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
   @visibleForTesting
   @protected
   LighthousePMBloc requireBloc() {
-    if (bloc == null && !kReleaseMode) {
-      throw StateError('Bloc is null');
-    }
+    assert((){
+      if (bloc == null) {
+        throw StateError('Bloc is null');
+      }
+      return true;
+    }());
     return bloc!;
   }
 
@@ -55,12 +58,12 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
       }
       return valid ? bleDevice : null;
     } catch (e, s) {
-      debugPrint('$e');
-      debugPrint('$s');
+      print('$e');
+      print('$s');
       try {
         await bleDevice.disconnect();
       } catch (e, s) {
-        debugPrint(
+        print(
             "Failed to disconnect, maybe already disconnected\n$e\n$s\n======\n");
       }
       return null;
@@ -84,7 +87,7 @@ abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
       try {
         await device.disconnect();
       } catch (e, s) {
-        debugPrint("Could not disconnect device (${device.name}, "
+        print("Could not disconnect device (${device.name}, "
             "${device.deviceIdentifier.toString()}), maybe the device is "
             "already disconnected? Error:\n$s\n$s");
       }

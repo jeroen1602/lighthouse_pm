@@ -93,7 +93,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
     final deviceId = _deviceId;
     if (deviceId == null) {
-      debugPrint("Device id is null for $name (${device.id})");
+      print("Device id is null for $name (${device.id})");
       return;
     }
     final command = ByteData(20);
@@ -135,34 +135,34 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
       final subStringLocation = name.length - 4;
       deviceIdEndHint = int.parse(name.substring(subStringLocation), radix: 16);
     } on FormatException {
-      debugPrint('Could not get device id end from name. "$name"');
+      print('Could not get device id end from name. "$name"');
     }
     final viveDao = bloc;
     if (viveDao != null) {
       _deviceId =
           await viveDao.viveBaseStation.getId(deviceIdentifier.toString());
       if (_deviceId == null) {
-        debugPrint('Device Id not set yet for "$name"');
+        print('Device Id not set yet for "$name"');
       }
     } else {
-      debugPrint(
+      print(
           'Bloc not set for ViveBaseStationDevice, will not be able to store the state');
     }
-    debugPrint('Connecting to device: $deviceIdentifier');
+    print('Connecting to device: $deviceIdentifier');
     try {
       await device.connect(timeout: Duration(seconds: 10));
     } on TimeoutException {
-      debugPrint('Connection timed-out for device: $deviceIdentifier');
+      print('Connection timed-out for device: $deviceIdentifier');
       return false;
     } catch (e, s) {
       // other connection error
-      debugPrint('Other connection error:');
-      debugPrint('$e');
-      debugPrint('$s');
+      print('Other connection error:');
+      print('$e');
+      print('$s');
       return false;
     }
 
-    debugPrint('Finding service for device: $deviceIdentifier');
+    print('Finding service for device: $deviceIdentifier');
     final List<LHBluetoothService> services = await device.discoverServices();
 
     final powerCharacteristic =
@@ -184,8 +184,8 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
             _firmwareVersion =
                 firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
-            debugPrint('Unable to get firmware version because: $e');
-            debugPrint('$s');
+            print('Unable to get firmware version because: $e');
+            print('$s');
           }
           continue;
         }
@@ -260,11 +260,11 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
           await viveDao.viveBaseStation
               .insertId(deviceIdentifier.toString(), _deviceId!);
         } else {
-          debugPrint('Could not save device id because the dao was null');
+          print('Could not save device id because the dao was null');
         }
         return true;
       } on FormatException {
-        debugPrint('Could not convert device id to a number');
+        print('Could not convert device id to a number');
       }
     }
     return false;

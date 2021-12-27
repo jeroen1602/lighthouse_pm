@@ -83,13 +83,12 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
-      if (kReleaseMode) {
-        debugPrint('WARNING! No device providers added for $runtimeType, no '
-            'scan will be run.');
-      } else {
+      assert(() {
         throw StateError('No device providers added for $runtimeType.'
             ' It\'s still in debug mode so FIX it!');
-      }
+      }());
+      print('WARNING! No device providers added for $runtimeType, no '
+          'scan will be run.');
     }
     this.updateInterval = updateInterval;
   }
@@ -121,7 +120,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// Will return `null` if no device provider could validate the device.
   @protected
   Future<LighthouseDevice?> getLighthouseDevice(D device) async {
-    debugPrint('Trying to connect to device with name: ${device.name}');
+    print('Trying to connect to device with name: ${device.name}');
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {
         continue;

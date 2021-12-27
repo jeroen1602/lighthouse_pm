@@ -64,16 +64,16 @@ abstract class BLEDevice extends LighthouseDevice {
               response = await characteristic.readString();
               break;
             default:
-              debugPrint('Unsupported type ${defaultCharacteristic.type}');
+              print('Unsupported type ${defaultCharacteristic.type}');
               break;
           }
           if (response != null) {
             metadataMap[defaultCharacteristic.name] = response;
           }
         } catch (e, s) {
-          debugPrint(
+          print(
               'Unable to get metadata characteristic "${defaultCharacteristic.name}", because $e');
-          debugPrint('$s');
+          print('$s');
         }
       }
     }
