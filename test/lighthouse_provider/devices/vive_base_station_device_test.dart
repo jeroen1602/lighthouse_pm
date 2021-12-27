@@ -70,7 +70,7 @@ void main() {
     final valid = await device.isValid();
     expect(valid, true);
 
-    expect(device.deviceIdEndHint, 0x0000);
+    expect(device.pairIdEndHint, 0x0000);
 
     LocalPlatform.overridePlatform = null;
   });
@@ -87,7 +87,7 @@ void main() {
     final valid = await device.isValid();
     expect(valid, true);
 
-    expect(device.deviceIdEndHint, isNull);
+    expect(device.pairIdEndHint, isNull);
 
     LocalPlatform.overridePlatform = null;
   });

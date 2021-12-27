@@ -13,12 +13,12 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   @override
   final Set<DeviceExtension> deviceExtensions = {};
   LHBluetoothCharacteristic? _characteristic;
-  int? _deviceIdStorage;
+  int? _pairIdStorage;
 
-  int? get _pairId => _deviceIdStorage;
+  int? get _pairId => _pairIdStorage;
 
   set _pairId(int? id) {
-    _deviceIdStorage = id;
+    _pairIdStorage = id;
     _hasDeviceIdSubject.add(id != null);
     if (id == null) {
       _otherMetadata['Id'] = null;
@@ -29,7 +29,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @visibleForTesting
-  int? deviceIdEndHint;
+  int? pairIdEndHint;
   String? _firmwareVersion;
   final BehaviorSubject<bool> _hasDeviceIdSubject =
       BehaviorSubject.seeded(false);
@@ -92,9 +92,9 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     if (characteristic == null) {
       return;
     }
-    final deviceId = _pairId;
-    if (deviceId == null) {
-      print("Device id is null for $name (${device.id})");
+    final pairId = _pairId;
+    if (pairId == null) {
+      print("Pair id is null for $name (${device.id})");
       return;
     }
     final command = ByteData(20);
@@ -111,7 +111,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, deviceId, Endian.little);
+    command.setUint32(4, pairId, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
   }
@@ -134,7 +134,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   Future<bool> isValid() async {
     try {
       final subStringLocation = name.length - 4;
-      deviceIdEndHint = int.parse(name.substring(subStringLocation), radix: 16);
+      pairIdEndHint = int.parse(name.substring(subStringLocation), radix: 16);
     } on FormatException {
       print('Could not get device id end from name. "$name"');
     }
@@ -238,7 +238,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     if (_pairId != null) {
       return true;
     }
-    final deviceIdEnd = deviceIdEndHint;
+    final deviceIdEnd = pairIdEndHint;
 
     var value = await ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
         context, deviceIdEnd);
