@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install and set Flutter version
-        uses: subosito/flutter-action@v1.5.1
+        uses: subosito/flutter-action@v1.5.3
         with:
           flutter-version: '2.8.1'
 
@@ -27,8 +27,11 @@ jobs:
       - name: Generate code
         run: flutter packages pub run build_runner build
 
-#      - name: Analyze
-#        run: flutter analyze
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Formatted
+        run: flutter format --set-exit-if-changed .
 
       - name: Run tests
         run: flutter test --coverage
