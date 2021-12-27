@@ -1,7 +1,10 @@
 part of vive_base_station_device_provider;
 
-class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
-  ViveBaseStationDevice(LHBluetoothDevice device, this.bloc) : super(device);
+class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
+    implements DeviceWithExtensions {
+  ViveBaseStationDevice(
+      LHBluetoothDevice device, ViveBaseStationPersistence? persistence)
+      : super(device, persistence);
 
   static const String powerServiceUUID = '0000cb00-0000-1000-8000-00805f9b34fb';
   static const String powerCharacteristicUUID =
@@ -9,14 +12,12 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   final Set<DeviceExtension> deviceExtensions = {};
-  @visibleForTesting
-  final LighthousePMBloc? bloc;
   LHBluetoothCharacteristic? _characteristic;
   int? _deviceIdStorage;
 
-  int? get _deviceId => _deviceIdStorage;
+  int? get _pairId => _deviceIdStorage;
 
-  set _deviceId(int? id) {
+  set _pairId(int? id) {
     _deviceIdStorage = id;
     _hasDeviceIdSubject.add(id != null);
     if (id == null) {
@@ -91,7 +92,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     if (characteristic == null) {
       return;
     }
-    final deviceId = _deviceId;
+    final deviceId = _pairId;
     if (deviceId == null) {
       print("Device id is null for $name (${device.id})");
       return;
@@ -137,16 +138,13 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     } on FormatException {
       print('Could not get device id end from name. "$name"');
     }
-    final viveDao = bloc;
-    if (viveDao != null) {
-      _deviceId =
-          await viveDao.viveBaseStation.getId(deviceIdentifier.toString());
-      if (_deviceId == null) {
-        print('Device Id not set yet for "$name"');
-      }
-    } else {
+    if (persistence == null) {
       print(
-          'Bloc not set for ViveBaseStationDevice, will not be able to store the state');
+          'Persistence not set for ViveBaseStationDevice, will not be able to store the id');
+    }
+    _pairId = await persistence?.getId(deviceIdentifier);
+    if (_pairId == null) {
+      print('Pair id not set yet for "$name"');
     }
     print('Connecting to device: $deviceIdentifier');
     try {
@@ -203,12 +201,11 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
   @override
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
-    final viveDao = bloc;
-    if (viveDao != null) {
+    if (persistence != null) {
       deviceExtensions.add(ClearIdExtension(
-          viveDao: viveDao.viveBaseStation,
-          deviceId: deviceIdentifier.toString(),
-          clearId: () => _deviceId = null));
+          persistence: persistence!,
+          deviceId: deviceIdentifier,
+          clearId: () => _pairId = null));
     }
     deviceExtensions.add(SleepExtension(
         changeState: changeState,
@@ -238,7 +235,7 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   Future<bool> showExtraInfoWidget(BuildContext context) async {
-    if (_deviceId != null) {
+    if (_pairId != null) {
       return true;
     }
     final deviceIdEnd = deviceIdEndHint;
@@ -254,13 +251,12 @@ class ViveBaseStationDevice extends BLEDevice implements DeviceWithExtensions {
     }
     if (value.length == 8) {
       try {
-        _deviceId = int.parse(value, radix: 16);
-        final viveDao = bloc;
-        if (viveDao != null) {
-          await viveDao.viveBaseStation
-              .insertId(deviceIdentifier.toString(), _deviceId!);
+        _pairId = int.parse(value, radix: 16);
+        final storage = persistence;
+        if (storage != null) {
+          await storage.insertId(deviceIdentifier, _pairId!);
         } else {
-          print('Could not save device id because the dao was null');
+          print('Could not save device id because the storage was null');
         }
         return true;
       } on FormatException {

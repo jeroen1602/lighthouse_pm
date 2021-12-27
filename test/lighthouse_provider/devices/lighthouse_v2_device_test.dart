@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
@@ -14,8 +15,9 @@ void main() {
   test("Firmware should be unknown if verify hasn't run, LighthouseV2Device",
       () {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     expect(device.firmwareVersion, "UNKNOWN");
 
@@ -25,8 +27,9 @@ void main() {
   test("Firmware should be known if verify has run, LighthouseV2Device",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -38,8 +41,9 @@ void main() {
 
   test("Should be able to identify", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));
@@ -71,8 +75,9 @@ void main() {
 
   test("Should not identify if characteristic is not found", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));
@@ -91,9 +96,9 @@ void main() {
 
   test("Should handle connection timeout, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
-    final device = LighthouseV2Device(lowLevelDevice, bloc);
+    final device = LighthouseV2Device(lowLevelDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -104,11 +109,11 @@ void main() {
 
   test("Should handle connection error, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
     lowLevelDevice.useTimeoutException = false;
 
-    final device = LighthouseV2Device(lowLevelDevice, bloc);
+    final device = LighthouseV2Device(lowLevelDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -119,8 +124,9 @@ void main() {
 
   test("Should have otherMetadata, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -140,9 +146,9 @@ void main() {
       "Should not crash when some secondary characteristics fail, LighthouseV2Device",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device =
-        LighthouseV2Device(FailingV2DeviceOnSpecificCharacteristics(), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device = LighthouseV2Device(
+        FailingV2DeviceOnSpecificCharacteristics(), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -164,9 +170,9 @@ void main() {
   test("Should not return valid if device isn't valid, LighthouseV2Device",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
     final lowDevice = CountingViveBaseStationDevice();
-    final device = LighthouseV2Device(lowDevice, bloc);
+    final device = LighthouseV2Device(lowDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false);
@@ -179,8 +185,10 @@ void main() {
   test('Should add Shortcut extension if enabled', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(bloc);
     bloc.settings.shortcutEnabled = true;
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -197,8 +205,10 @@ void main() {
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.web;
     final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(bloc);
     bloc.settings.shortcutEnabled = true;
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -213,8 +223,10 @@ void main() {
   test("Should add correct extensions, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(bloc);
     bloc.settings.shortcutEnabled = true;
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -232,8 +244,9 @@ void main() {
 
   test("Should return the correct device state", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final lut = {
       0x00: LighthousePowerState.sleep,
@@ -256,9 +269,9 @@ void main() {
 
   test("Should call disconnect if connection becomes lost", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
     final lowLevel = OfflineAbleLighthouseDevice(0, 0);
-    final device = LighthouseV2Device(lowLevel, bloc);
+    final device = LighthouseV2Device(lowLevel, persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -291,8 +304,9 @@ void main() {
 
   test("Should not get state if characteristic is not set", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     final state = await device.getCurrentState();
     expect(state, isNull,
@@ -303,8 +317,9 @@ void main() {
 
   test("Should be able to go from sleep to on, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));
@@ -337,8 +352,9 @@ void main() {
   test("Should be able to go from sleep to standby, LighthouseV2Device",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 5);
     device.setUpdateInterval(Duration(milliseconds: 5));
@@ -394,8 +410,9 @@ void main() {
 
   test('Should be able to go from on to sleep, LighthouseV2Device', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));
@@ -437,8 +454,9 @@ void main() {
   test('Should be able to go from standby to sleep, LighthouseV2Device',
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 5);
     device.setUpdateInterval(Duration(milliseconds: 5));
@@ -508,8 +526,9 @@ void main() {
 
   test("Should be able to go form standby to on, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 5);
     device.setUpdateInterval(Duration(milliseconds: 5));
@@ -579,8 +598,9 @@ void main() {
 
   test("Should be able to go from on to standby, LighthouseV2Device", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), bloc);
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));

@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,11 +10,11 @@ import '../../helpers/fake_bloc.dart';
 
 void main() {
   test('Should be able to create clear id extension', () {
-    final fakeBloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final extension = ClearIdExtension(
-        viveDao: fakeBloc.viveBaseStation,
-        deviceId: "12345678901234567",
+        persistence: persistence,
+        deviceId: LHDeviceIdentifier("12345678901234567"),
         clearId: () {});
 
     expect(extension.icon, TypeMatcher<Text>());
@@ -22,6 +24,7 @@ void main() {
 
   test('Should be able to clear id with extension', () async {
     final fakeBloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(fakeBloc);
 
     var clicked = false;
     fakeBloc.viveBaseStation.startViveBaseStationIdsStream([
@@ -29,8 +32,8 @@ void main() {
     ]);
 
     final extension = ClearIdExtension(
-        viveDao: fakeBloc.viveBaseStation,
-        deviceId: "12345678901234567",
+        persistence: persistence,
+        deviceId: LHDeviceIdentifier("12345678901234567"),
         clearId: () {
           clicked = true;
         });
@@ -44,10 +47,11 @@ void main() {
 
   test('Should be able to change enabled', () async {
     final fakeBloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(fakeBloc);
 
     final extension = ClearIdExtension(
-        viveDao: fakeBloc.viveBaseStation,
-        deviceId: "12345678901234567",
+        persistence: persistence,
+        deviceId: LHDeviceIdentifier("12345678901234567"),
         clearId: () {});
 
     expect(await extension.enabledStream.first, false);

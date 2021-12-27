@@ -15,7 +15,7 @@ void main() {
     final instance = LighthouseV2DeviceProvider.instance;
 
     // Make sure the bloc is null.
-    instance.bloc = null;
+    instance.persistence = null;
 
     expect(() async {
       await instance.internalGetDevice(FakeLighthouseV2Device(0, 0));

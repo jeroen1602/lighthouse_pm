@@ -5,7 +5,8 @@ part of lighthouse_v2_device_provider;
 
 ///The characteristic that handles the power state of the device.
 
-class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
+class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
+    implements DeviceWithExtensions {
   static const String powerCharacteristicUUID =
       '00001525-1212-efde-1523-785feabcd124';
 
@@ -18,16 +19,15 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
   static const String controlServiceUUID =
       "00001523-1212-efde-1523-785feabcd124";
 
-  LighthouseV2Device(LHBluetoothDevice device, LighthousePMBloc? bloc)
-      : _bloc = bloc,
-        super(device) {
+  LighthouseV2Device(
+      LHBluetoothDevice device, LighthouseV2Persistence? persistence)
+      : super(device, persistence) {
     // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }
 
   @override
   final Set<DeviceExtension> deviceExtensions = {};
-  final LighthousePMBloc? _bloc;
   LHBluetoothCharacteristic? _characteristic;
   LHBluetoothCharacteristic? _identifyCharacteristic;
   String? _firmwareVersion;
@@ -176,8 +176,8 @@ class LighthouseV2Device extends BLEDevice implements DeviceWithExtensions {
         changeState: changeState, powerStateStream: powerStateEnum));
 
     if (LocalPlatform.isAndroid) {
-      _bloc?.settings.getShortcutsEnabledStream().first.then((value) {
-        if (value == true) {
+      persistence?.areShortcutsEnabled().then((value) {
+        if (value) {
           deviceExtensions
               .add(ShortcutExtension(deviceIdentifier.toString(), () {
             return nicknameInternal ?? name;

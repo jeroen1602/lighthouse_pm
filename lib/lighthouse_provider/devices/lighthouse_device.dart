@@ -92,7 +92,8 @@ abstract class LighthouseDevice {
     var min = getMinUpdateInterval();
     assert(() {
       if (testingOverwriteMinUpdateInterval != null) {
-        print("Overwritten min update interval, stuttering devices may be in your future");
+        print(
+            "Overwritten min update interval, stuttering devices may be in your future");
         min = testingOverwriteMinUpdateInterval!;
       }
       return true;

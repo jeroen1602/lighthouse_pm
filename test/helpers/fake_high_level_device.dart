@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_exten
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
-  FakeHighLevelDevice(LHBluetoothDevice device) : super(device);
+  FakeHighLevelDevice(LHBluetoothDevice device) : super(device, null);
 
   FakeHighLevelDevice.simple() : this(FakeLighthouseV2Device(1, 1));
 

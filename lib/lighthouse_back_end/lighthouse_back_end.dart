@@ -6,7 +6,6 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 part 'back_end/ble_lighthouse_back_end.dart';

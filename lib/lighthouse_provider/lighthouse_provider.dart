@@ -7,11 +7,10 @@ import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
-
-import '../lighthouse_back_end/lighthouse_back_end.dart';
 
 part 'adapter_state/adapter_state.dart';
 

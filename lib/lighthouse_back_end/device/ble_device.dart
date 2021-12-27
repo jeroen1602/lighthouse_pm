@@ -3,12 +3,16 @@ part of lighthouse_back_end;
 ///
 /// A device for all other devices.
 ///
-abstract class BLEDevice extends LighthouseDevice {
-  BLEDevice(this.device);
+abstract class BLEDevice<T> extends LighthouseDevice {
+  BLEDevice(this.device, this.persistence);
 
   @visibleForTesting
   @protected
   final LHBluetoothDevice device;
+
+  @visibleForTesting
+  @protected
+  final T? persistence;
 
   ///
   /// Disconnect form the device and call the cleanup for the superclass to also

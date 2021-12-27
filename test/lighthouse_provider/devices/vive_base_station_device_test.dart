@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
@@ -15,8 +16,9 @@ void main() {
   test("Firmware should be unknown if verify hasn't run, ViveBaseStationDevice",
       () {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     expect(device.firmwareVersion, "UNKNOWN");
 
@@ -26,8 +28,9 @@ void main() {
   test("Firmware should be known if verify has run, ViveBaseStationDevice",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -40,10 +43,12 @@ void main() {
   test("Setting deviceId should set metadata", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -58,9 +63,10 @@ void main() {
 
   test("Should be able to parse device name", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     final valid = await device.isValid();
     expect(valid, true);
 
@@ -71,10 +77,10 @@ void main() {
 
   test("Should not fail if name is not parsable", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final device =
-        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), bloc);
+        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), persistence);
 
     expect(device.name, "HTC BS 0000GH");
 
@@ -94,16 +100,16 @@ void main() {
     final valid = await device.isValid();
     expect(valid, true);
 
-    expect(device.bloc, isNull);
+    expect(device.persistence, isNull);
 
     LocalPlatform.overridePlatform = null;
   });
 
   test("Should handle connection timeout, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
-    final device = ViveBaseStationDevice(lowLevelDevice, bloc);
+    final device = ViveBaseStationDevice(lowLevelDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -114,11 +120,11 @@ void main() {
 
   test("Should handle connection error, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
     lowLevelDevice.useTimeoutException = false;
 
-    final device = ViveBaseStationDevice(lowLevelDevice, bloc);
+    final device = ViveBaseStationDevice(lowLevelDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -129,8 +135,9 @@ void main() {
 
   test("Should have otherMetadata, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -149,9 +156,9 @@ void main() {
       "Should not crash when some secondary characteristics fail, ViveBaseStationDevice",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
-        FailingViveBaseStationDeviceOnSpecificCharacteristics(), bloc);
+        FailingViveBaseStationDeviceOnSpecificCharacteristics(), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -171,9 +178,9 @@ void main() {
   test("Should not return valid if device isn't valid, ViveBaseStationDevice",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowDevice = CountingFakeLighthouseV2Device();
-    final device = ViveBaseStationDevice(lowDevice, bloc);
+    final device = ViveBaseStationDevice(lowDevice, persistence);
 
     final valid = await device.isValid();
     expect(valid, false);
@@ -185,8 +192,9 @@ void main() {
 
   test("Should add correct extensions, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
-    final bloc = FakeBloc.normal();
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -205,10 +213,12 @@ void main() {
       (widgetTester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -234,10 +244,12 @@ void main() {
       (widgetTester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -271,11 +283,12 @@ void main() {
       (widgetTester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
     final device =
-        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), bloc);
+        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -310,10 +323,12 @@ void main() {
       (WidgetTester widgetTester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -352,10 +367,12 @@ void main() {
   test("Should be able to go from sleep to on", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -390,10 +407,12 @@ void main() {
   test("Should be able to go from on to sleep", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -428,10 +447,12 @@ void main() {
   test("Should not go to standby, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -458,10 +479,12 @@ void main() {
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), bloc);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));

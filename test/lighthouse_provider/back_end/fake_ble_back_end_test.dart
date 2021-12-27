@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 import '../../helpers/fake_bloc.dart';
@@ -37,7 +39,7 @@ void main() {
   test('Should get Lighthouse device V2', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
-    final fakeBloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
 
     final backEnd = FakeBLEBackEnd.instance;
     backEnd.updateLastSeen = (LHDeviceIdentifier deviceIdentifier) {
@@ -47,7 +49,7 @@ void main() {
     final provider = LighthouseV2DeviceProvider.instance;
     expect(backEnd.isMyProviderType(provider), true,
         reason: 'Back end should support the provider');
-    provider.setBloc(fakeBloc);
+    provider.setPersistence(persistence);
     backEnd.addProvider(provider);
 
     backEnd.startScan(
@@ -82,7 +84,7 @@ void main() {
   test('Should get Lighthouse device Vive', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
-    final fakeBloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final backEnd = FakeBLEBackEnd.instance;
     backEnd.updateLastSeen = (LHDeviceIdentifier deviceIdentifier) {
@@ -92,7 +94,7 @@ void main() {
     final provider = ViveBaseStationDeviceProvider.instance;
     expect(backEnd.isMyProviderType(provider), true,
         reason: 'Back end should support the provider');
-    provider.setBloc(fakeBloc);
+    provider.setPersistence(persistence);
     backEnd.addProvider(provider);
 
     backEnd.startScan(

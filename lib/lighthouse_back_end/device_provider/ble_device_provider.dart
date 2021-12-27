@@ -3,35 +3,35 @@ part of lighthouse_back_end;
 ///
 /// An abstract device provider specifically made for Bluetooth low energy.
 ///
-abstract class BLEDeviceProvider extends DeviceProvider<LHBluetoothDevice> {
+abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
   @visibleForTesting
   Set<BLEDevice> bleDevicesDiscovering = {};
 
   @visibleForTesting
   @protected
-  LighthousePMBloc? bloc;
+  T? persistence;
 
   ///
-  /// Set the database bloc for saving the ids of vive base stations.
+  /// Set the database persistence for saving the ids of vive base stations.
   /// Not every provider requires this.
   ///
-  void setBloc(LighthousePMBloc bloc) {
-    this.bloc = bloc;
+  void setPersistence(T persistence) {
+    this.persistence = persistence;
   }
 
   ///
-  /// Make sure a bloc instance exists.
+  /// Make sure a persistence instance exists.
   ///
   @visibleForTesting
   @protected
-  LighthousePMBloc requireBloc() {
-    assert((){
-      if (bloc == null) {
-        throw StateError('Bloc is null');
+  T requirePersistence() {
+    assert(() {
+      if (persistence == null) {
+        throw StateError('Persistence is null');
       }
       return true;
     }());
-    return bloc!;
+    return persistence!;
   }
 
   ///

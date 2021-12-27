@@ -12,9 +12,9 @@ import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../bloc.dart';
-
 part 'lighthouse_v2/device/lighthouse_v2_device.dart';
+
+part 'lighthouse_v2/lighthouse_v2_persistence.dart';
 
 part 'lighthouse_v2/specific_extensions/identify_device_extension.dart';
 
@@ -23,7 +23,8 @@ part 'lighthouse_v2/specific_extensions/standby_extension.dart';
 ///
 /// A device provider for discovering and connection to [LighthouseV2Device]s.
 ///
-class LighthouseV2DeviceProvider extends BLEDeviceProvider {
+class LighthouseV2DeviceProvider
+    extends BLEDeviceProvider<LighthouseV2Persistence> {
   LighthouseV2DeviceProvider._();
 
   static LighthouseV2DeviceProvider? _instance;
@@ -40,7 +41,7 @@ class LighthouseV2DeviceProvider extends BLEDeviceProvider {
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return LighthouseV2Device(device, requireBloc());
+    return LighthouseV2Device(device, requirePersistence());
   }
 
   @override

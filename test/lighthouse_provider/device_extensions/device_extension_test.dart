@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
@@ -26,12 +27,12 @@ void main() {
   });
 
   test('Device extension equality should work', () {
-    final fakeBloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final extensions = [
       ClearIdExtension(
-          viveDao: fakeBloc.viveBaseStation,
-          deviceId: "12345678901234567",
+          persistence: persistence,
+          deviceId: LHDeviceIdentifier("12345678901234567"),
           clearId: () {}),
       ShortcutExtension("00:00:00:00:00:00", () => "Device 1"),
       OnExtension(
@@ -48,8 +49,8 @@ void main() {
 
     final extensions2 = [
       ClearIdExtension(
-          viveDao: fakeBloc.viveBaseStation,
-          deviceId: "12345678901234568",
+          persistence: persistence,
+          deviceId: LHDeviceIdentifier("12345678901234568"),
           clearId: () {}),
       ShortcutExtension("00:00:00:00:00:01", () => "Device 2"),
       OnExtension(

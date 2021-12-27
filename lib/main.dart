@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/bluez/bluez_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/flutter_blue/flutter_blue_back_end.dart';
@@ -68,8 +70,10 @@ class MainApp extends StatelessWidget {
     LighthouseProvider.instance
         .addProvider(LighthouseV2DeviceProvider.instance);
 
-    ViveBaseStationDeviceProvider.instance.setBloc(mainBloc);
-    LighthouseV2DeviceProvider.instance.setBloc(mainBloc);
+    ViveBaseStationDeviceProvider.instance
+        .setPersistence(ViveBaseStationBloc(mainBloc));
+    LighthouseV2DeviceProvider.instance
+        .setPersistence(LighthouseV2Bloc(mainBloc));
 
     if (BuildOptions.includeGooglePlayInAppPurchases) {
       InAppPurchases.instance.handlePendingPurchases().catchError((error) {

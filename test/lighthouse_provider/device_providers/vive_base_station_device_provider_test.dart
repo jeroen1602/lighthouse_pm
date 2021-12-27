@@ -15,7 +15,7 @@ void main() {
     final instance = ViveBaseStationDeviceProvider.instance;
 
     // Make sure the bloc is null.
-    instance.bloc = null;
+    instance.persistence = null;
 
     expect(() async {
       await instance.internalGetDevice(FakeViveBaseStationDevice(0, 0));
