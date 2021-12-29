@@ -323,7 +323,8 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should not store hint if input cannot be converted to a number",
+  testWidgets(
+      "Should not store pair id if input cannot be converted to a number",
       (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();

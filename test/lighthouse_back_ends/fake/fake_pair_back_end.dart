@@ -2,7 +2,7 @@ import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FakePairBackEnd extends BLELighthouseBackEnd implements PairBackEnd {
+class FakePairBackEnd extends BLELighthouseBackEnd with PairBackEnd {
   final List<LHBluetoothDevice> devices;
 
   FakePairBackEnd(this.devices);
@@ -43,11 +43,6 @@ class FakePairBackEnd extends BLELighthouseBackEnd implements PairBackEnd {
   @override
   Stream<BluetoothAdapterState> get state =>
       Stream.value(BluetoothAdapterState.on);
-
-  @override
-  Stream<bool> hasPairedDevices() {
-    return numberOfPairedDevices().map((amount) => amount > 0);
-  }
 
   @override
   Stream<int> numberOfPairedDevices() async* {

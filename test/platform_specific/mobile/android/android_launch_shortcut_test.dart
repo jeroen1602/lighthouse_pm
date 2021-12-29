@@ -225,7 +225,7 @@ void main() {
     expect(handle1, isNot(handle3));
 
     // TODO: change type if others become available.
-    // final handle4 = ShortcutHandle(ShortcutTypes.MAC_TYPE, 'Data');
+    // final handle4 = ShortcutHandle(ShortcutTypes.macType, 'Data');
     // expect(handle1, isNot(handle4));
 
     final otherObject = "Wow";

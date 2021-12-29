@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
@@ -6,6 +8,7 @@ import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_exten
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_io.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 import '../../helpers/failing_ble_device.dart';
@@ -238,6 +241,88 @@ void main() {
     expect(device.deviceExtensions, contains(isA<SleepExtension>()));
     expect(device.deviceExtensions, contains(isA<OnExtension>()));
 
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test("Should get device name via shortcut extension", () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(bloc);
+    bloc.settings.shortcutEnabled = true;
+
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
+
+    final valid = await device.isValid();
+    expect(valid, true);
+    device.afterIsValid();
+
+    await Future.delayed(Duration(milliseconds: 10));
+
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+      if (call.method == "requestShortcut") {
+        expect(call.arguments, isA<Map>());
+        final args = call.arguments as Map<Object?, Object?>;
+        expect(args["action"], equals("mac/00:00:00:00:00:00"));
+        expect(args["name"], equals("LHB-00000000"));
+        return true;
+      }
+      throw UnsupportedError(
+          "Not sure how this mock method should handle ${call.method}");
+    });
+
+    expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
+    final extension = device.deviceExtensions
+        .firstWhere((element) => element is ShortcutExtension);
+    expect(extension, isNotNull);
+    expect(extension, isA<ShortcutExtension>());
+
+    await (extension as ShortcutExtension).onTap();
+
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test("Should get nickname via shortcut extension", () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final bloc = FakeBloc.normal();
+    final persistence = LighthouseV2Bloc(bloc);
+    bloc.settings.shortcutEnabled = true;
+
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
+
+    final valid = await device.isValid();
+    expect(valid, true);
+    device.afterIsValid();
+
+    await Future.delayed(Duration(milliseconds: 10));
+
+    device.nickname = "WOW!";
+
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+      if (call.method == "requestShortcut") {
+        expect(call.arguments, isA<Map>());
+        final args = call.arguments as Map<Object?, Object?>;
+        expect(args["action"], equals("mac/00:00:00:00:00:00"));
+        expect(args["name"], equals("WOW!"));
+        return true;
+      }
+      throw UnsupportedError(
+          "Not sure how this mock method should handle ${call.method}");
+    });
+
+    expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
+    final extension = device.deviceExtensions
+        .firstWhere((element) => element is ShortcutExtension);
+    expect(extension, isNotNull);
+    expect(extension, isA<ShortcutExtension>());
+
+    await (extension as ShortcutExtension).onTap();
+
+    AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
     LocalPlatform.overridePlatform = null;
   });
 
@@ -634,6 +719,51 @@ void main() {
         reason: "Should directly switch to standby");
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test("Should not go to unknown or booting power state", () async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final persistence = LighthouseV2Bloc(FakeBloc.normal());
+    final device =
+        LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence);
+
+    device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
+    device.setUpdateInterval(Duration(milliseconds: 10));
+
+    final valid = await device.isValid();
+    expect(valid, true);
+
+    //First turn off the device
+    await device.changeState(LighthousePowerState.sleep);
+    final currentState = await getNextPowerState(
+        device, LighthousePowerState.unknown, Duration(seconds: 1));
+    expect(currentState, LighthousePowerState.sleep);
+
+    // Now try setting it to unknown
+    await device.internalChangeState(LighthousePowerState.unknown);
+
+    try {
+      await getNextPowerState(device, currentState, Duration(seconds: 3));
+      fail("Should not be able to get next state!");
+    } on TimeoutException {
+      expect(true, isTrue, reason: "Should not be able to get the next state");
+      expect(device.transactionMutex.isLocked, false,
+          reason: "Transaction mutex should have been released");
+    }
+
+    // Now turn setting it to booting
+    await device.internalChangeState(LighthousePowerState.booting);
+
+    try {
+      await getNextPowerState(device, currentState, Duration(seconds: 3));
+      fail("Should not be able to get next state!");
+    } on TimeoutException {
+      expect(true, isTrue, reason: "Should not be able to get the next state");
+      expect(device.transactionMutex.isLocked, false,
+          reason: "Transaction mutex should have been released");
+    }
 
     LocalPlatform.overridePlatform = null;
   });
