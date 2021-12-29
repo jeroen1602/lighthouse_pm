@@ -52,6 +52,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   }
 
   /// A set with all the providers for this back end.
+  @visibleForTesting
   @protected
   Set<T> providers = {};
 

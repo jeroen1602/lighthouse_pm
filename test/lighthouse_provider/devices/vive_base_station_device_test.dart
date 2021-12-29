@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
+import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../helpers/device_helpers.dart';
 import '../../helpers/failing_ble_device.dart';
 import '../../helpers/fake_bloc.dart';
 import '../../helpers/widget_helpers.dart';
@@ -210,7 +213,7 @@ void main() {
   });
 
   testWidgets("Should not show extra info dialog if id is set",
-      (widgetTester) async {
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
@@ -226,13 +229,13 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
     // Wait for the progress indicator to stop
-    await widgetTester.tap(find.text('X'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
     expect(future, isNotNull);
     final value = await future!;
     expect(value, true);
@@ -241,7 +244,7 @@ void main() {
   });
 
   testWidgets("Should show extra info dialog if id is not set",
-      (widgetTester) async {
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
@@ -255,32 +258,125 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
     // Wait for the progress indicator to stop
-    await widgetTester.tap(find.text('X'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
     expect(future, isNotNull);
 
-    final richText = (widgetTester.widgetList<RichText>(find.descendant(
+    final richText = (tester.widgetList<RichText>(find.descendant(
             of: find.byType(Dialog), matching: find.byType(RichText))))
         .first;
     final text = richText.text.toPlainText();
     expect(text, contains('Base station id required.'));
     expect(text, contains('0000'), reason: "Find device id ending");
 
-    await widgetTester.tap(find.text('Cancel'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
     final value = await future!;
     expect(value, false, reason: "Dialog is canceled so we can't continue");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should show extra info dialog if id is set, no end hint",
-      (widgetTester) async {
+  testWidgets("Should not store pair ids if storage is null",
+      (WidgetTester tester) async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+
+    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null);
+
+    final valid = await device.isValid();
+    expect(valid, true);
+
+    Future<bool>? future;
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      future = device.showExtraInfoWidget(context);
+    }));
+
+    // Wait for the progress indicator to stop
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
+    expect(future, isNotNull);
+
+    final richText = (tester.widgetList<RichText>(find.descendant(
+            of: find.byType(Dialog), matching: find.byType(RichText))))
+        .first;
+    final text = richText.text.toPlainText();
+    // expect text
+    expect(text, contains('Base station id required.'));
+    expect(text, contains('0000'), reason: "Find device id ending");
+
+    final TextFormField textField =
+        tester.widget<TextFormField>(find.byType(TextFormField));
+    await tester.enterText(find.byWidget(textField), "1234");
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Set'));
+    await tester.pumpAndSettle();
+    final value = await future!;
+    expect(value, false, reason: "Storage is null so it can't be stored");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  testWidgets("Should not store hint if input cannot be converted to a number",
+      (WidgetTester tester) async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
+
+    bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
+
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+
+    final valid = await device.isValid();
+    expect(valid, true);
+
+    BuildContext? globalContext;
+    Future<bool>? future;
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      future = device.showExtraInfoWidget(context);
+      globalContext = context;
+    }));
+
+    // Wait for the progress indicator to stop
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
+    expect(future, isNotNull);
+    expect(globalContext, isNotNull);
+
+    final richText = (tester.widgetList<RichText>(find.descendant(
+            of: find.byType(Dialog), matching: find.byType(RichText))))
+        .first;
+    final text = richText.text.toPlainText();
+    // expect text
+    expect(text, contains('Base station id required.'));
+    expect(text, contains('0000'), reason: "Find device id ending");
+
+    final TextFormField textField =
+        tester.widget<TextFormField>(find.byType(TextFormField));
+    // g is not allowed here
+    await tester.enterText(find.byWidget(textField), "defg");
+
+    await tester.pumpAndSettle();
+
+    Navigator.pop(globalContext!, "defg");
+
+    await tester.pumpAndSettle();
+    final value = await future!;
+    expect(value, false,
+        reason: "Could not store because input is not allowed");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  testWidgets("Should show extra info dialog if id is not set, no end hint",
+      (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
@@ -294,16 +390,16 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
     // Wait for the progress indicator to stop
-    await widgetTester.tap(find.text('X'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
     expect(future, isNotNull);
 
-    final richText = (widgetTester.widgetList<RichText>(find.descendant(
+    final richText = (tester.widgetList<RichText>(find.descendant(
             of: find.byType(Dialog), matching: find.byType(RichText))))
         .first;
     final text = richText.text.toPlainText();
@@ -311,16 +407,15 @@ void main() {
     expect(text, contains('The id is found on the back.'),
         reason: "hint is not set");
 
-    await widgetTester.tap(find.text('Cancel'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
     final value = await future!;
     expect(value, false, reason: "Dialog is canceled so we can't continue");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should be able to finish dialog",
-      (WidgetTester widgetTester) async {
+  testWidgets("Should be able to finish dialog", (WidgetTester tester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
@@ -334,16 +429,16 @@ void main() {
     expect(valid, true);
 
     Future<bool>? future;
-    await widgetTester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
       future = device.showExtraInfoWidget(context);
     }));
 
     // Wait for the progress indicator to stop
-    await widgetTester.tap(find.text('X'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
     expect(future, isNotNull);
 
-    final richText = (widgetTester.widgetList<RichText>(find.descendant(
+    final richText = (tester.widgetList<RichText>(find.descendant(
             of: find.byType(Dialog), matching: find.byType(RichText))))
         .first;
     final text = richText.text.toPlainText();
@@ -351,13 +446,67 @@ void main() {
     expect(text, contains('0000'), reason: "Find device id ending");
 
     final TextFormField textField =
-        widgetTester.widget<TextFormField>(find.byType(TextFormField));
-    await widgetTester.enterText(find.byWidget(textField), "1234");
+        tester.widget<TextFormField>(find.byType(TextFormField));
+    await tester.enterText(find.byWidget(textField), "1234");
 
-    await widgetTester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-    await widgetTester.tap(find.text('Set'));
-    await widgetTester.pumpAndSettle();
+    await tester.tap(find.text('Set'));
+    await tester.pumpAndSettle();
+    final value = await future!;
+    expect(value, true, reason: "Dialog should be finished");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  testWidgets("Should show are you sure dialog if id hint is not matched",
+      (WidgetTester tester) async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
+
+    bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
+
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+
+    final valid = await device.isValid();
+    expect(valid, true);
+
+    Future<bool>? future;
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      future = device.showExtraInfoWidget(context);
+    }));
+
+    // Wait for the progress indicator to stop
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
+    expect(future, isNotNull);
+
+    final richText = (tester.widgetList<RichText>(find.descendant(
+            of: find.byType(Dialog), matching: find.byType(RichText))))
+        .first;
+    final text = richText.text.toPlainText();
+    expect(text, contains('Base station id required.'));
+    expect(text, contains('0000'), reason: "Find device id ending");
+
+    final TextFormField textField =
+        tester.widget<TextFormField>(find.byType(TextFormField));
+    await tester.enterText(find.byWidget(textField), "12344321");
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Set'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ViveBaseStationExtraInfoIdWarningAlertWidget),
+        findsOneWidget);
+    expect(find.text('Change it'), findsOneWidget);
+    expect(find.text("It's correct"), findsOneWidget);
+
+    await tester.tap(find.text("It's correct"));
+    await tester.pumpAndSettle();
+
     final value = await future!;
     expect(value, true, reason: "Dialog should be finished");
 
@@ -502,6 +651,34 @@ void main() {
     expect(next, start);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test("Should be able to clear the id via the extension", () async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+
+    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
+
+    bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([
+      ViveBaseStationId(deviceId: "00:00:00:00:00:00", baseStationId: 0xFF0134),
+    ]);
+
+    final device = await createValidViveDevice(0, 0, persistence);
+
+    expect(device.pairId, 0xFF0134, reason: "Pair id should be set");
+
+    final clear = device.deviceExtensions
+        .cast<DeviceExtension?>()
+        .whereType<ClearIdExtension>()
+        .first;
+
+    expect(clear, isNotNull, reason: "Should have a clear id extension!");
+
+    await clear.onTap();
+
+    expect(device.pairId, isNull, reason: "Pair id should not be set");
 
     LocalPlatform.overridePlatform = null;
   });

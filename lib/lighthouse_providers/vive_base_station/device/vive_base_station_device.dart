@@ -15,9 +15,9 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   LHBluetoothCharacteristic? _characteristic;
   int? _pairIdStorage;
 
-  int? get _pairId => _pairIdStorage;
+  int? get pairId => _pairIdStorage;
 
-  set _pairId(int? id) {
+  set pairId(int? id) {
     _pairIdStorage = id;
     _hasDeviceIdSubject.add(id != null);
     if (id == null) {
@@ -92,8 +92,8 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     if (characteristic == null) {
       return;
     }
-    final pairId = _pairId;
-    if (pairId == null) {
+    final id = pairId;
+    if (id == null) {
       print("Pair id is null for $name (${device.id})");
       return;
     }
@@ -111,7 +111,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, pairId, Endian.little);
+    command.setUint32(4, id, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
   }
@@ -142,8 +142,8 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       print(
           'Persistence not set for ViveBaseStationDevice, will not be able to store the id');
     }
-    _pairId = await persistence?.getId(deviceIdentifier);
-    if (_pairId == null) {
+    pairId = await persistence?.getId(deviceIdentifier);
+    if (pairId == null) {
       print('Pair id not set yet for "$name"');
     }
     print('Connecting to device: $deviceIdentifier');
@@ -205,7 +205,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       deviceExtensions.add(ClearIdExtension(
           persistence: persistence!,
           deviceId: deviceIdentifier,
-          clearId: () => _pairId = null));
+          clearId: () => pairId = null));
     }
     deviceExtensions.add(SleepExtension(
         changeState: changeState,
@@ -235,7 +235,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
 
   @override
   Future<bool> showExtraInfoWidget(BuildContext context) async {
-    if (_pairId != null) {
+    if (pairId != null) {
       return true;
     }
     final deviceIdEnd = pairIdEndHint;
@@ -251,12 +251,13 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     }
     if (value.length == 8) {
       try {
-        _pairId = int.parse(value, radix: 16);
+        pairId = int.parse(value, radix: 16);
         final storage = persistence;
         if (storage != null) {
-          await storage.insertId(deviceIdentifier, _pairId!);
+          await storage.insertId(deviceIdentifier, pairId!);
         } else {
           print('Could not save device id because the storage was null');
+          return false;
         }
         return true;
       } on FormatException {

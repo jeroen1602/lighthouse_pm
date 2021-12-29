@@ -44,7 +44,8 @@ class LighthouseProvider {
   final BehaviorSubject<List<TimeoutContainer<LighthouseDevice>>>
       _lightHouseDevices = BehaviorSubject.seeded([]);
   StreamSubscription? _backEndResultSubscription;
-  final Set<LighthouseBackEnd> _backEndSet = {};
+  @visibleForTesting
+  final Set<LighthouseBackEnd> backEndSet = {};
 
   final BehaviorSubject<bool> _isScanningBehavior =
       BehaviorSubject.seeded(false);
@@ -73,13 +74,13 @@ class LighthouseProvider {
   /// Add a back end for providing data.
   void addBackEnd(LighthouseBackEnd backEnd) {
     backEnd.updateLastSeen = _updateLastSeen;
-    _backEndSet.add(backEnd);
+    backEndSet.add(backEnd);
     _addStateSubscription(backEnd);
   }
 
   /// Remove a back end for providing data.
   void removeBackEnd(LighthouseBackEnd backEnd) {
-    if (_backEndSet.remove(backEnd)) {
+    if (backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
     }
     _removeStateSubscription(backEnd);
@@ -91,7 +92,7 @@ class LighthouseProvider {
   ///
   List<PairBackEnd> getPairBackEnds() {
     final List<PairBackEnd> backEnds = [];
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       if (backEnd is PairBackEnd) {
         backEnds.add(backEnd as PairBackEnd);
       }
@@ -103,9 +104,13 @@ class LighthouseProvider {
   /// Check if all the back ends installed all require to be paired first.
   /// If one of the back ends doesn't require it then this will return `false`
   /// else this will return `true`.
+  /// If the set of registered back ends is empty then it will also return `false`.
   ///
   bool hasOnlyPairBackends() {
-    for (final backEnd in _backEndSet) {
+    if (backEndSet.isEmpty) {
+      return false;
+    }
+    for (final backEnd in backEndSet) {
       if (!backEnd.isPairBackEnd) {
         return false;
       }
@@ -133,7 +138,7 @@ class LighthouseProvider {
   List<LighthouseBackEnd> _getBackEndForDeviceProvider(
       DeviceProvider provider) {
     final List<LighthouseBackEnd> backEndList = <LighthouseBackEnd>[];
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       if (backEnd.isMyProviderType(provider)) {
         backEndList.add(backEnd);
       }
@@ -164,7 +169,7 @@ class LighthouseProvider {
     final backEndList = _getBackEndForDeviceProvider(provider);
     if (backEndList.isEmpty) {
       throw UnsupportedError(
-          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
+          'No back ends installed. Did you forget to add the back end first?');
     }
     for (final backEnd in backEndList) {
       backEnd.removeProvider(provider);
@@ -182,7 +187,12 @@ class LighthouseProvider {
     await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
-    for (final backEnd in _backEndSet) {
+    if (backEndSet.isEmpty) {
+      assert(() {
+        throw StateError("No back ends added, please add back ends first!");
+      }());
+    }
+    for (final backEnd in backEndSet) {
       /// Only start the scan if the back-end acknowledges that it's bluetooth
       /// adapter state is on.
       if (_savedStates[backEnd] == BluetoothAdapterState.on) {
@@ -199,7 +209,7 @@ class LighthouseProvider {
   Future cleanUp() async {
     await stopScan();
     await _disconnectOpenDevices();
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       await backEnd.cleanUp();
     }
     _lightHouseDevices.add([]);
@@ -215,7 +225,7 @@ class LighthouseProvider {
   /// valid [LighthouseDevice]s.
   Future stopScan() async {
     _backEndResultSubscription?.pause();
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       await backEnd.stopScan();
     }
   }
@@ -228,7 +238,7 @@ class LighthouseProvider {
       _isScanningSubscription = null;
     }
 
-    final List<Stream<Tuple2<int, bool>>> streams = _backEndSet
+    final List<Stream<Tuple2<int, bool>>> streams = backEndSet
         .map((element) => element.isScanning)
         .where((stream) => stream != null)
         .toList(growable: false)
@@ -277,7 +287,7 @@ class LighthouseProvider {
 
   /// Disconnect from all known and open devices.
   Future _disconnectOpenDevices() async {
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       await backEnd.disconnectOpenDevices();
     }
     final list = _lightHouseDevices.value;
@@ -299,7 +309,7 @@ class LighthouseProvider {
     }
 
     final streams = <Stream<LighthouseDevice?>>[];
-    for (final backEnd in _backEndSet) {
+    for (final backEnd in backEndSet) {
       streams.add(backEnd.lighthouseStream);
     }
 

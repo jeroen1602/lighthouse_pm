@@ -49,6 +49,7 @@ abstract class BLEDevice<T> extends LighthouseDevice {
   /// [supportedCharacteristic]. If it is read the value and store it in the
   /// [metadataMap].
   ///
+  @visibleForTesting
   @protected
   Future<void> checkCharacteristicForDefaultValue(
       List<DefaultCharacteristics> supportedCharacteristic,

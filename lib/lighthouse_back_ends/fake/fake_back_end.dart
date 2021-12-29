@@ -18,7 +18,7 @@ part 'ble/fake_bluetooth_device.dart';
 part 'ble/fake_device_identifier.dart';
 
 class FakeBLEBackEnd extends BLELighthouseBackEnd {
-// Make sure there is always only one instance.
+  // Make sure there is always only one instance.
   static FakeBLEBackEnd? _instance;
 
   FakeBLEBackEnd._();
