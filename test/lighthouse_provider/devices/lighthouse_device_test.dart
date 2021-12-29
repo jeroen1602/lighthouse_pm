@@ -119,7 +119,7 @@ void main() {
       await device.getCurrentState();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnimplementedError>());
+      expect(e, isA<UnimplementedError>());
     }
     final state = await device.powerState.first;
     expect(state, 0xFF);
@@ -141,7 +141,7 @@ void main() {
       await device.getCurrentState();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnimplementedError>());
+      expect(e, isA<UnimplementedError>());
     }
     final state = await device.powerState.first;
     expect(state, 0xFF);

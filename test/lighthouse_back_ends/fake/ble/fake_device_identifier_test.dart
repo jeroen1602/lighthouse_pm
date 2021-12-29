@@ -106,7 +106,7 @@ void main() {
 
   test('Should generate correct iOS identifiers', () {
     expect(() => FakeDeviceIdentifier.generateDeviceIdentifierIOS(0),
-        throwsA(TypeMatcher<UnimplementedError>()));
+        throwsA(isA<UnimplementedError>()));
   });
 
   test('Should generate correct identifier for os', () {
@@ -116,7 +116,7 @@ void main() {
       FakeDeviceIdentifier.generateDeviceIdentifier(0);
       fail("Should error");
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
     }
 
     // Should generate Android identifier
@@ -155,6 +155,6 @@ void main() {
     // Should generate ios identifier
     LocalPlatform.overridePlatform = PlatformOverride.ios;
     expect(() => FakeDeviceIdentifier.generateDeviceIdentifier(0),
-        throwsA(TypeMatcher<UnimplementedError>()));
+        throwsA(isA<UnimplementedError>()));
   });
 }

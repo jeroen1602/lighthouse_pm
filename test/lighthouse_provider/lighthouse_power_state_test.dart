@@ -12,12 +12,12 @@ void main() {
 
     expect(() {
       LighthousePowerState.fromId(-1);
-    }, throwsA(TypeMatcher<ArgumentError>()),
+    }, throwsA(isA<ArgumentError>()),
         reason: "Should throw an error for negative ids");
 
     expect(() {
       LighthousePowerState.fromId(lut.length);
-    }, throwsA(TypeMatcher<ArgumentError>()),
+    }, throwsA(isA<ArgumentError>()),
         reason: "Should throw an error for ids that are too big");
   });
 }

@@ -33,7 +33,7 @@ void main() {
       await BLEPermissionsHelper.hasBLEPermissions();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message, contains('UNKNOWN'));
     }
 
@@ -59,7 +59,7 @@ void main() {
       await BLEPermissionsHelper.requestBLEPermissions();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message, contains('UNKNOWN'));
     }
 
@@ -85,7 +85,7 @@ void main() {
       await BLEPermissionsHelper.openBLESettings();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message, contains('UNKNOWN'));
     }
 
@@ -109,7 +109,7 @@ void main() {
       await BLEPermissionsHelper.enableBLE();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message, contains('UNKNOWN'));
     }
 
@@ -133,7 +133,7 @@ void main() {
       await BLEPermissionsHelper.openLocationSettings();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message, contains('UNKNOWN'));
     }
 
@@ -222,7 +222,7 @@ void main() {
       await BLEPermissionsHelper.openBLESettings();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<TypeError>());
+      expect(e, isA<TypeError>());
     }
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler(null);
@@ -260,7 +260,7 @@ void main() {
       await BLEPermissionsHelper.enableBLE();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<TypeError>());
+      expect(e, isA<TypeError>());
     }
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler(null);
@@ -298,7 +298,7 @@ void main() {
       await BLEPermissionsHelper.openLocationSettings();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<TypeError>());
+      expect(e, isA<TypeError>());
     }
 
     BLEPermissionsHelper.channel.setMockMethodCallHandler(null);

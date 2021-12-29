@@ -17,7 +17,7 @@ void main() {
         deviceId: LHDeviceIdentifier("12345678901234567"),
         clearId: () {});
 
-    expect(extension.icon, TypeMatcher<Text>());
+    expect(extension.icon, isA<Text>());
     expect(extension.toolTip, 'Clear id');
     expect(extension.updateListAfter, true);
   });

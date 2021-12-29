@@ -202,9 +202,9 @@ void main() {
 
     await Future.delayed(Duration(milliseconds: 10));
 
-    expect(device.deviceExtensions, contains(TypeMatcher<SleepExtension>()));
-    expect(device.deviceExtensions, contains(TypeMatcher<OnExtension>()));
-    expect(device.deviceExtensions, contains(TypeMatcher<ClearIdExtension>()));
+    expect(device.deviceExtensions, contains(isA<SleepExtension>()));
+    expect(device.deviceExtensions, contains(isA<OnExtension>()));
+    expect(device.deviceExtensions, contains(isA<ClearIdExtension>()));
 
     LocalPlatform.overridePlatform = null;
   });
@@ -240,7 +240,7 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should show extra info dialog if id is set",
+  testWidgets("Should show extra info dialog if id is not set",
       (widgetTester) async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();

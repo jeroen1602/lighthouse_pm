@@ -14,6 +14,6 @@ void main() {
 
     expect(() async {
       characteristic.write([0xEE, 0xFF]);
-    }, throwsA(TypeMatcher<UnimplementedError>()));
+    }, throwsA(isA<UnimplementedError>()));
   });
 }

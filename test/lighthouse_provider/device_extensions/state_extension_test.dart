@@ -40,13 +40,11 @@ class TestUnknownStateExtension extends StateExtension {
 
 void main() {
   test('Should not create booting state extension', () {
-    expect(() => TestBootingStateExtension(),
-        throwsA(TypeMatcher<AssertionError>()));
+    expect(() => TestBootingStateExtension(), throwsA(isA<AssertionError>()));
   });
 
   test('Should not create unknown state extension', () {
-    expect(() => TestUnknownStateExtension(),
-        throwsA(TypeMatcher<AssertionError>()));
+    expect(() => TestUnknownStateExtension(), throwsA(isA<AssertionError>()));
   });
 
   test('Should create on state extension', () async {
@@ -59,7 +57,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "On");
     expect(extension.updateListAfter, false);
 
@@ -93,7 +91,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Sleep");
     expect(extension.updateListAfter, false);
 
@@ -127,7 +125,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Standby");
     expect(extension.updateListAfter, false);
 

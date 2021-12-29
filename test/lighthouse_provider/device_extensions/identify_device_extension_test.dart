@@ -6,7 +6,7 @@ void main() {
   test('Should be able to create identify device extension', () async {
     final extension = IdentifyDeviceExtension(onTap: () async {});
 
-    expect(extension.icon, TypeMatcher<SvgPicture>());
+    expect(extension.icon, isA<SvgPicture>());
     expect(extension.toolTip, 'Identify');
     expect(extension.updateListAfter, false);
 

@@ -196,7 +196,7 @@ void main() {
 
     await Future.delayed(Duration(milliseconds: 10));
 
-    expect(device.deviceExtensions, contains(TypeMatcher<ShortcutExtension>()));
+    expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
 
     LocalPlatform.overridePlatform = null;
   });
@@ -214,8 +214,7 @@ void main() {
     expect(valid, true);
     device.afterIsValid();
 
-    expect(device.deviceExtensions,
-        isNot(contains(TypeMatcher<ShortcutExtension>())));
+    expect(device.deviceExtensions, isNot(contains(isA<ShortcutExtension>())));
 
     LocalPlatform.overridePlatform = null;
   });
@@ -234,10 +233,10 @@ void main() {
 
     await Future.delayed(Duration(milliseconds: 10));
 
-    expect(device.deviceExtensions, contains(TypeMatcher<ShortcutExtension>()));
-    expect(device.deviceExtensions, contains(TypeMatcher<StandbyExtension>()));
-    expect(device.deviceExtensions, contains(TypeMatcher<SleepExtension>()));
-    expect(device.deviceExtensions, contains(TypeMatcher<OnExtension>()));
+    expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
+    expect(device.deviceExtensions, contains(isA<StandbyExtension>()));
+    expect(device.deviceExtensions, contains(isA<SleepExtension>()));
+    expect(device.deviceExtensions, contains(isA<OnExtension>()));
 
     LocalPlatform.overridePlatform = null;
   });

@@ -14,7 +14,7 @@ void main() {
     expect(() async {
       await FakeBLEBackEnd.instance.startScan(
           timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
-    }, throwsA(TypeMatcher<AssertionError>()),
+    }, throwsA(isA<AssertionError>()),
         reason: "updateLastSeen has not been set so it should throw an error.");
   });
 
@@ -27,7 +27,7 @@ void main() {
     expect(() async {
       await FakeBLEBackEnd.instance.startScan(
           timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
-    }, throwsA(TypeMatcher<StateError>()),
+    }, throwsA(isA<StateError>()),
         reason:
             "Should throw a StateError if no device providers have been set.");
   });

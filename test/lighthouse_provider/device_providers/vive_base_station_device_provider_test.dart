@@ -19,7 +19,7 @@ void main() {
 
     expect(() async {
       await instance.internalGetDevice(FakeViveBaseStationDevice(0, 0));
-    }, throwsA(TypeMatcher<StateError>()));
+    }, throwsA(isA<StateError>()));
 
     LocalPlatform.overridePlatform = null;
   });

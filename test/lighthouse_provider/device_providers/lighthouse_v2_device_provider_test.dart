@@ -19,7 +19,7 @@ void main() {
 
     expect(() async {
       await instance.internalGetDevice(FakeLighthouseV2Device(0, 0));
-    }, throwsA(TypeMatcher<StateError>()));
+    }, throwsA(isA<StateError>()));
 
     LocalPlatform.overridePlatform = null;
   });
