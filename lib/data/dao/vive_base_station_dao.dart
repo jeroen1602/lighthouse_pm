@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 
 import '../database.dart';
 import '../tables/vive_base_station_id_table.dart';
@@ -40,12 +40,6 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> deleteIds() {
     return delete(viveBaseStationIds).go();
-  }
-
-  Stream<List<ViveBaseStationId>> get watchViveBaseStationIds {
-    debugPrint(
-        'WARNING using watchSimpleSettings, this should not happen in release mode!');
-    return select(viveBaseStationIds).watch();
   }
 
   Future<void> insertIdNoValidate(String deviceId, int id) {

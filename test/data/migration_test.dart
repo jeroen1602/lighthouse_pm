@@ -43,7 +43,7 @@ void main() {
             schema1.value.compare(schema2.value);
             fail('Should throw!');
           } catch (e) {
-            expect(e, TypeMatcher<TestSchemaIncorrectError>());
+            expect(e, isA<TestSchemaIncorrectError>());
             final String key = '${schema1.key}to${schema2.key}';
             print('Checking error for: $key');
             expect(e.toString(), FinalSchemas.expectedErrors[key]);

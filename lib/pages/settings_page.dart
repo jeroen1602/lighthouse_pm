@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/pages/settings/lh_license_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_nicknames_page.dart';

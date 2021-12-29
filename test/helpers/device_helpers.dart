@@ -1,19 +1,20 @@
-import 'package:lighthouse_pm/bloc.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/ble_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/lighthouse_v2_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/vive_base_station_device.dart';
+import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 import 'fake_bloc.dart';
 
 Future<ViveBaseStationDevice> createValidViveDevice(
     int deviceName, int deviceId,
-    [LighthousePMBloc? bloc]) async {
+    [ViveBaseStationPersistence? persistence]) async {
   LocalPlatform.overridePlatform = PlatformOverride.android;
-  bloc ??= FakeBloc.normal();
+  persistence ??= ViveBaseStationBloc(FakeBloc.normal());
   final device = ViveBaseStationDevice(
-      FakeViveBaseStationDevice(deviceName, deviceId), bloc);
+      FakeViveBaseStationDevice(deviceName, deviceId), persistence);
 
   LocalPlatform.overridePlatform = null;
   return await doTheIsValid(device);
@@ -21,11 +22,11 @@ Future<ViveBaseStationDevice> createValidViveDevice(
 
 Future<LighthouseV2Device> createValidLighthouseV2Device(
     int deviceName, int deviceId,
-    [LighthousePMBloc? bloc]) async {
+    [LighthouseV2Persistence? persistence]) async {
   LocalPlatform.overridePlatform = PlatformOverride.android;
-  bloc ??= FakeBloc.normal();
-  final device =
-      LighthouseV2Device(FakeLighthouseV2Device(deviceName, deviceId), bloc);
+  persistence ??= LighthouseV2Bloc(FakeBloc.normal());
+  final device = LighthouseV2Device(
+      FakeLighthouseV2Device(deviceName, deviceId), persistence);
 
   LocalPlatform.overridePlatform = null;
   return await doTheIsValid(device);

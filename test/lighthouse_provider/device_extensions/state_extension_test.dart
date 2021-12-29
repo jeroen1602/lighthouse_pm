@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/on_extension.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/sleep_extension.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/standby_extension.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/state_extension.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/lighthouse_v2_device_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
+import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -41,13 +40,11 @@ class TestUnknownStateExtension extends StateExtension {
 
 void main() {
   test('Should not create booting state extension', () {
-    expect(() => TestBootingStateExtension(),
-        throwsA(TypeMatcher<AssertionError>()));
+    expect(() => TestBootingStateExtension(), throwsA(isA<AssertionError>()));
   });
 
   test('Should not create unknown state extension', () {
-    expect(() => TestUnknownStateExtension(),
-        throwsA(TypeMatcher<AssertionError>()));
+    expect(() => TestUnknownStateExtension(), throwsA(isA<AssertionError>()));
   });
 
   test('Should create on state extension', () async {
@@ -60,7 +57,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "On");
     expect(extension.updateListAfter, false);
 
@@ -94,7 +91,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Sleep");
     expect(extension.updateListAfter, false);
 
@@ -128,7 +125,7 @@ void main() {
         },
         powerStateStream: powerState.stream);
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Standby");
     expect(extension.updateListAfter, false);
 
@@ -155,16 +152,18 @@ void main() {
   test('Some devices should have standby extension', () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
+    final vivePersistence = ViveBaseStationBloc(bloc);
+    final lighthousePersistence = LighthouseV2Bloc(bloc);
 
     final v2Provider = LighthouseV2DeviceProvider.instance;
-    v2Provider.setBloc(bloc);
+    v2Provider.setPersistence(lighthousePersistence);
     final v2Device = await v2Provider.getDevice(FakeLighthouseV2Device(0, 0));
 
     expect(v2Device, isNotNull);
     expect(v2Device!.deviceIdentifier.toString(), "00:00:00:00:00:00");
 
     final viveProvider = ViveBaseStationDeviceProvider.instance;
-    viveProvider.setBloc(bloc);
+    viveProvider.setPersistence(vivePersistence);
     final viveDevice =
         await viveProvider.getDevice(FakeViveBaseStationDevice(1, 1));
 

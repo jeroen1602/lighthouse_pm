@@ -16,7 +16,7 @@ void main() {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
@@ -26,7 +26,7 @@ void main() {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
@@ -36,7 +36,7 @@ void main() {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
@@ -46,7 +46,7 @@ void main() {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
@@ -59,7 +59,7 @@ void main() {
       unsupported.AndroidLauncherShortcut.instance;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
@@ -73,7 +73,7 @@ void main() {
       await instance.readyForData();
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!');
     }
@@ -82,7 +82,7 @@ void main() {
       await instance.changePowerStateMac.first;
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!');
     }
@@ -91,7 +91,7 @@ void main() {
       await instance.requestShortcutLighthouse("00:00:00:00:00:00", "Name");
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<UnsupportedError>());
+      expect(e, isA<UnsupportedError>());
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!');
     }
@@ -185,7 +185,7 @@ void main() {
       print(stateChange);
       fail('Should timeout');
     } catch (e) {
-      expect(e, TypeMatcher<TimeoutException>());
+      expect(e, isA<TimeoutException>());
     }
 
     LocalPlatform.overridePlatform = null;
@@ -200,7 +200,7 @@ void main() {
           MethodCall('unsupportedMethod'));
       fail('Should fail');
     } catch (e) {
-      expect(e, TypeMatcher<NoSuchMethodError>());
+      expect(e, isA<NoSuchMethodError>());
       expect(e.toString(), contains('unsupportedMethod'));
       expect(e.toString(), contains('AndroidLauncherShortcut'));
     }
@@ -225,7 +225,7 @@ void main() {
     expect(handle1, isNot(handle3));
 
     // TODO: change type if others become available.
-    // final handle4 = ShortcutHandle(ShortcutTypes.MAC_TYPE, 'Data');
+    // final handle4 = ShortcutHandle(ShortcutTypes.macType, 'Data');
     // expect(handle1, isNot(handle4));
 
     final otherObject = "Wow";

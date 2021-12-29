@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 
-import '../device_extensions/standby_extension.dart';
-import '../lighthouse_device.dart';
-import '../lighthouse_power_state.dart';
 import 'lighthouse_metadata_page.dart';
 import 'lighthouse_power_button_widget.dart';
 import 'unknown_state_alert_widget.dart';

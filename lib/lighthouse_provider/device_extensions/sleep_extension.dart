@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../lighthouse_power_state.dart';
-import 'state_extension.dart';
+part of device_extension;
 
 ///
 /// An extension to allow a device to go into sleep mode

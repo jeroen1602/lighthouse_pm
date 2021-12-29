@@ -103,7 +103,7 @@ class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
         children: [
           DaoTableDataWidget<ViveBaseStationId>(
               'ViveBaseStationIds',
-              bloc.viveBaseStation.watchViveBaseStationIds,
+              bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
               _ViveBaseStationIdConverter(bloc)),
         ],
       ),

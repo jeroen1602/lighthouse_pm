@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:lighthouse_pm/lighthouse_provider/ble/guid.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:test/test.dart';
 
 // Tests for the guid.dart
@@ -26,13 +26,13 @@ void main() {
     expect(
         () => LighthouseGuid.fromString(
             'Z${guidString.substring(1, guidString.length)}'),
-        throwsA(TypeMatcher<FormatException>()));
+        throwsA(isA<FormatException>()));
   });
 
   test('Should only expect legal string length', () {
     expect(() {
       LighthouseGuid.fromString('${guidString}00');
-    }, throwsA(TypeMatcher<FormatException>()));
+    }, throwsA(isA<FormatException>()));
   });
 
   // region Guid32

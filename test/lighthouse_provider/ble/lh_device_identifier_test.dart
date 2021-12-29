@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/device_identifier.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 void main() {
   test('Same device identifiers should match', () {

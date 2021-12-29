@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../lighthouse_power_state.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 /// An alert dialog to ask the user what to do since the group state is unknown.
 class UnknownGroupStateAlertWidget extends StatelessWidget {

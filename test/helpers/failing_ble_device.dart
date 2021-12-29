@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/bluetooth_service.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 
 class FailingBLEDeviceOnConnect extends FakeLighthouseV2Device {
   FailingBLEDeviceOnConnect() : super(1, 2);

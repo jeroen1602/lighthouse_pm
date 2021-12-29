@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
-import '../lighthouse_device.dart';
-
 /// A widget for showing an OFFLINE [LighthouseDevice] in a list.
 class OfflineLighthouseWidget extends StatelessWidget {
   OfflineLighthouseWidget(this.deviceId,

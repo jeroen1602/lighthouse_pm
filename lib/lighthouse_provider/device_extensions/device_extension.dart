@@ -1,4 +1,15 @@
-import 'package:flutter/widgets.dart';
+library device_extension;
+
+import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+
+part 'device_with_extensions.dart';
+
+part 'on_extension.dart';
+
+part 'sleep_extension.dart';
+
+part 'state_extension.dart';
 
 typedef FutureCallback = Future<void> Function();
 typedef StreamEnabledFunction = Stream<bool> Function();

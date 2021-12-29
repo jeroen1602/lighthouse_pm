@@ -1,5 +1,5 @@
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/guid.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 class TestReadCharacteristic extends FakeReadOnlyCharacteristic {
   TestReadCharacteristic(List<int> data)

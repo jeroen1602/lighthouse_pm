@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_power_state.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 import '../../helpers/fake_high_level_device.dart';
@@ -119,7 +119,7 @@ void main() {
       await device.getCurrentState();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnimplementedError>());
+      expect(e, isA<UnimplementedError>());
     }
     final state = await device.powerState.first;
     expect(state, 0xFF);
@@ -141,7 +141,7 @@ void main() {
       await device.getCurrentState();
       fail('Should throw an error');
     } catch (e) {
-      expect(e, TypeMatcher<UnimplementedError>());
+      expect(e, isA<UnimplementedError>());
     }
     final state = await device.powerState.first;
     expect(state, 0xFF);

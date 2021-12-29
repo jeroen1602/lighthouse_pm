@@ -10,7 +10,7 @@ void main() {
       return "DEVICE_NAME";
     });
 
-    expect(extension.icon, TypeMatcher<Icon>());
+    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, 'Create shortcut');
     expect(extension.updateListAfter, false);
   });

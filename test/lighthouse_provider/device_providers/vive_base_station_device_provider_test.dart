@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_provider/back_end/fake/fake_bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 void main() {
@@ -15,11 +15,11 @@ void main() {
     final instance = ViveBaseStationDeviceProvider.instance;
 
     // Make sure the bloc is null.
-    instance.bloc = null;
+    instance.persistence = null;
 
     expect(() async {
       await instance.internalGetDevice(FakeViveBaseStationDevice(0, 0));
-    }, throwsA(TypeMatcher<StateError>()));
+    }, throwsA(isA<StateError>()));
 
     LocalPlatform.overridePlatform = null;
   });

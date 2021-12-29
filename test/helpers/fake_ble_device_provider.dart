@@ -1,7 +1,5 @@
-import 'package:lighthouse_pm/lighthouse_provider/ble/bluetooth_device.dart';
-import 'package:lighthouse_pm/lighthouse_provider/ble/guid.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_providers/ble_device_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/devices/ble_device.dart';
+import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 import 'fake_high_level_device.dart';
 

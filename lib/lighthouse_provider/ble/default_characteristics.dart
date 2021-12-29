@@ -1,4 +1,4 @@
-import 'guid.dart';
+part of lighthouse_provider;
 
 ///
 /// Some default Bluetooth Low Energy characteristics. That most devices support
