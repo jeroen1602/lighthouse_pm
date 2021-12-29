@@ -16,13 +16,13 @@ part 'ble/flutter_web_bluetooth_device.dart';
 
 part 'ble/flutter_web_bluetooth_service.dart';
 
-class FlutterWebBluetoothBackend extends BLELighthouseBackEnd with PairBackEnd {
-  static FlutterWebBluetoothBackend? _instance;
+class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
+  static FlutterWebBluetoothBackEnd? _instance;
 
-  FlutterWebBluetoothBackend._();
+  FlutterWebBluetoothBackEnd._();
 
-  static FlutterWebBluetoothBackend get instance {
-    return _instance ??= FlutterWebBluetoothBackend._();
+  static FlutterWebBluetoothBackEnd get instance {
+    return _instance ??= FlutterWebBluetoothBackEnd._();
   }
 
   final BehaviorSubject<bool> _isScanningSubject =

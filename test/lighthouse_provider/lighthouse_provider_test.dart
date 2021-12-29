@@ -136,7 +136,7 @@ void main() {
     final pairedBackends = instance.hasOnlyPairBackends();
 
     expect(pairedBackends, isFalse,
-        reason: "Should not only have pair backends if there are no backends");
+        reason: "Should not only have pair back ends if there are no back ends");
 
     final pairBackEnds = instance.getPairBackEnds();
 

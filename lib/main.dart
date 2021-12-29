@@ -54,7 +54,7 @@ class MainApp extends StatelessWidget {
     }
     if (LocalPlatform.isWeb) {
       LighthouseProvider.instance
-          .addBackEnd(FlutterWebBluetoothBackend.instance);
+          .addBackEnd(FlutterWebBluetoothBackEnd.instance);
     }
     if (LocalPlatform.isLinux) {
       LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
