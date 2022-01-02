@@ -6,7 +6,7 @@ part of device_extension;
 class OnExtension extends StateExtension {
   OnExtension(
       {required ChangeStateFunction changeState,
-      required Stream<LighthousePowerState> powerStateStream})
+      required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "On",
             icon: Icon(Icons.power_settings_new, size: 24, color: Colors.green),

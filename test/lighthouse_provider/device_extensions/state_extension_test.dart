@@ -21,7 +21,7 @@ class TestBootingStateExtension extends StateExtension {
             toolTip: "Booting",
             icon: Icon(Icons.highlight_off, size: 24),
             changeState: (newState) async {},
-            powerStateStream: Stream.value(LighthousePowerState.on),
+            powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.booting);
 }
 
@@ -34,7 +34,7 @@ class TestUnknownStateExtension extends StateExtension {
             toolTip: "Unknown",
             icon: Icon(Icons.highlight_off, size: 24),
             changeState: (newState) async {},
-            powerStateStream: Stream.value(LighthousePowerState.on),
+            powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.unknown);
 }
 
@@ -55,7 +55,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "On");
@@ -72,7 +72,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(await extension.enabledStream.first, true);
     powerState.add(LighthousePowerState.on);
@@ -89,7 +89,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Sleep");
@@ -106,7 +106,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(await extension.enabledStream.first, true);
     powerState.add(LighthousePowerState.sleep);
@@ -123,7 +123,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "Standby");
@@ -140,7 +140,7 @@ void main() {
         changeState: (newState) async {
           powerState.add(newState);
         },
-        powerStateStream: powerState.stream);
+        powerStateStream: () => powerState.stream);
 
     expect(await extension.enabledStream.first, true);
     powerState.add(LighthousePowerState.standby);

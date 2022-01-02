@@ -209,10 +209,10 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     }
     deviceExtensions.add(SleepExtension(
         changeState: changeState,
-        powerStateStream: _getPowerStateStreamForExtensions()));
+        powerStateStream: _getPowerStateStreamForExtensions));
     deviceExtensions.add(OnExtension(
         changeState: changeState,
-        powerStateStream: _getPowerStateStreamForExtensions()));
+        powerStateStream: _getPowerStateStreamForExtensions));
   }
 
   Stream<LighthousePowerState> _getPowerStateStreamForExtensions() {

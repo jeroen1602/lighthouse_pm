@@ -6,7 +6,7 @@ part of device_extension;
 class SleepExtension extends StateExtension {
   SleepExtension(
       {required ChangeStateFunction changeState,
-      required Stream<LighthousePowerState> powerStateStream})
+      required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Sleep",
             icon: Icon(Icons.power_settings_new, size: 24, color: Colors.blue),

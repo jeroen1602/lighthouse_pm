@@ -76,7 +76,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
         changeState: (LighthousePowerState newState) async {},
-        powerStateStream: Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     LocalPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
@@ -107,7 +107,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
         changeState: (LighthousePowerState newState) async {},
-        powerStateStream: Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     LocalPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
@@ -136,7 +136,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
         changeState: (LighthousePowerState newState) async {},
-        powerStateStream: Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     LocalPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
@@ -166,7 +166,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
         changeState: (LighthousePowerState newState) async {},
-        powerStateStream: Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     LocalPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {
@@ -197,7 +197,7 @@ void main() {
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
         changeState: (LighthousePowerState newState) async {},
-        powerStateStream: Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     LocalPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((context) {

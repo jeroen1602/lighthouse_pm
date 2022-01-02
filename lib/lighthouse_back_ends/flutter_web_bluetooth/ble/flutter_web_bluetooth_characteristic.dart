@@ -6,12 +6,10 @@ class FlutterWebBluetoothCharacteristic extends LHBluetoothCharacteristic {
   final BluetoothCharacteristic characteristic;
 
   @override
-  Future<List<int>> read() {
-    return characteristic
-        .readValue(timeout: Duration(seconds: 10))
-        .then((value) {
-      return value.toUint8List();
-    });
+  Future<List<int>> read() async {
+    final value =
+        await characteristic.readValue(timeout: Duration(seconds: 10));
+    return value.toUint8List();
   }
 
   @override

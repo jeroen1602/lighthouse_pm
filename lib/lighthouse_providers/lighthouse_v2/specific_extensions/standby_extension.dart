@@ -6,7 +6,7 @@ part of lighthouse_v2_device_provider;
 class StandbyExtension extends StateExtension {
   StandbyExtension(
       {required ChangeStateFunction changeState,
-      required Stream<LighthousePowerState> powerStateStream})
+      required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Standby",
             icon:
