@@ -145,7 +145,7 @@ class FakeFirmwareCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             intListFromString('FAKE_DEVICE'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
-                .FIRMWARE_REVISION_STRING.uuid));
+                .firmwareRevisionString.uuid));
 }
 
 @visibleForTesting
@@ -155,7 +155,7 @@ class FakeModelNumberCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             intListFromNumber(0xFF),
             LighthouseGuid.fromString(
-                BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid));
+                BluetoothDefaultCharacteristicUUIDS.modelNumberString.uuid));
 }
 
 @visibleForTesting
@@ -165,7 +165,7 @@ class FakeSerialNumberCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             intListFromNumber(0xFF),
             LighthouseGuid.fromString(
-                BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid));
+                BluetoothDefaultCharacteristicUUIDS.serialNumberString.uuid));
 }
 
 @visibleForTesting
@@ -175,7 +175,7 @@ class FakeHardwareRevisionCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             intListFromString('FAKE_REVISION'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
-                .HARDWARE_REVISION_STRING.uuid));
+                .hardwareRevisionString.uuid));
 }
 
 @visibleForTesting
@@ -185,7 +185,7 @@ class FakeManufacturerNameCharacteristic extends FakeReadOnlyCharacteristic {
       : super(
             intListFromString('LIGHTHOUSE PM By Jeroen1602'),
             LighthouseGuid.fromString(BluetoothDefaultCharacteristicUUIDS
-                .MANUFACTURER_NAME_STRING.uuid));
+                .manufacturerNameString.uuid));
 }
 //endregion
 

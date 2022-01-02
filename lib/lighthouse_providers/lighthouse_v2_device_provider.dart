@@ -51,21 +51,21 @@ class LighthouseV2DeviceProvider
         LighthouseGuid.fromString(
             LighthouseV2Device.identifyCharacteristicUUID),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.manufacturerNameString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.modelNumberString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.serialNumberString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.hardwareRevisionString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.firmwareRevisionString.uuid),
       ];
 
   @override
   List<LighthouseGuid> get optionalServices => [
         LighthouseGuid.fromString(
-            BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
+            BluetoothDefaultServiceUUIDS.deviceInformation.uuid),
       ];
 
   @override

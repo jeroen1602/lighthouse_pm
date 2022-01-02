@@ -12,9 +12,7 @@ import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extr
 import 'package:rxdart/rxdart.dart';
 
 part 'vive_base_station/device/vive_base_station_device.dart';
-
 part 'vive_base_station/specific_extensions/clear_id_extension.dart';
-
 part 'vive_base_station/vive_base_station_persistence.dart';
 
 ///
@@ -46,21 +44,21 @@ class ViveBaseStationDeviceProvider
         LighthouseGuid.fromString(
             ViveBaseStationDevice.powerCharacteristicUUID),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.MANUFACTURER_NAME_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.manufacturerNameString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.MODEL_NUMBER_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.modelNumberString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.SERIAL_NUMBER_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.serialNumberString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.HARDWARE_REVISION_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.hardwareRevisionString.uuid),
         LighthouseGuid.fromString(
-            BluetoothDefaultCharacteristicUUIDS.FIRMWARE_REVISION_STRING.uuid),
+            BluetoothDefaultCharacteristicUUIDS.firmwareRevisionString.uuid),
       ];
 
   @override
   List<LighthouseGuid> get optionalServices => [
         LighthouseGuid.fromString(
-            BluetoothDefaultServiceUUIDS.DEVICE_INFORMATION.uuid),
+            BluetoothDefaultServiceUUIDS.deviceInformation.uuid),
       ];
 
   @override
