@@ -200,7 +200,7 @@ class ContentScrollbar extends StatelessWidget {
       _alwaysShowScrollbarSubject.stream;
 
   static void updateShowScrollbarSubject(BuildContext context) {
-    final startValue = _alwaysShowScrollbarSubject.valueWrapper?.value;
+    final startValue = _alwaysShowScrollbarSubject.valueOrNull;
     final newValue = alwaysShowScrollbar(context);
     if (newValue != startValue) {
       _alwaysShowScrollbarSubject.add(newValue);

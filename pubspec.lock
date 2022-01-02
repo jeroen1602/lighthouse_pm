@@ -268,10 +268,12 @@ packages:
   flutter_blue:
     dependency: "direct main"
     description:
-      name: flutter_blue
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.0"
+      path: "."
+      ref: "0.13.0"
+      resolved-ref: a7fa5410b66cabdc3f12e7d74375db3477a70c85
+      url: "https://github.com/boskokg/flutter_blue"
+    source: git
+    version: "0.13.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -659,7 +661,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.27.3"
   shelf:
     dependency: transitive
     description:

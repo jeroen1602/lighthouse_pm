@@ -38,7 +38,7 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
     if (stream == null) {
       return null;
     }
-    return stream.value
+    return stream.valueOrNull
         ?.cast<ViveBaseStationId?>()
         .firstWhere((element) => element?.deviceId == deviceId,
             orElse: () => null)
@@ -51,15 +51,15 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   Future<void> insertId(String deviceId, int id) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
-      final index = idsStream.value
+      final index = idsStream.valueOrNull
               ?.indexWhere((element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
-        idsStream.value?.removeAt(index);
+        idsStream.valueOrNull?.removeAt(index);
       }
-      idsStream.value
+      idsStream.valueOrNull
           ?.add(ViveBaseStationId(deviceId: deviceId, baseStationId: id));
-      idsStream.add(idsStream.value ?? []);
+      idsStream.add(idsStream.valueOrNull ?? []);
     }
   }
 
@@ -67,12 +67,12 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   Future<void> deleteId(String deviceId) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
-      final index = idsStream.value
+      final index = idsStream.valueOrNull
               ?.indexWhere((element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
-        idsStream.value?.removeAt(index);
-        idsStream.add(idsStream.value ?? []);
+        idsStream.valueOrNull?.removeAt(index);
+        idsStream.add(idsStream.valueOrNull ?? []);
       }
     }
   }
