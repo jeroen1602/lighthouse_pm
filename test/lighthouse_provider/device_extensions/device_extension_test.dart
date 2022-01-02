@@ -37,13 +37,13 @@ void main() {
       ShortcutExtension("00:00:00:00:00:00", () => "Device 1"),
       OnExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.on)),
+          powerStateStream: () => Stream.value(LighthousePowerState.on)),
       SleepExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.sleep)),
+          powerStateStream: () => Stream.value(LighthousePowerState.sleep)),
       StandbyExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.standby)),
+          powerStateStream: () => Stream.value(LighthousePowerState.standby)),
       IdentifyDeviceExtension(onTap: () async {}),
     ];
 
@@ -55,13 +55,13 @@ void main() {
       ShortcutExtension("00:00:00:00:00:01", () => "Device 2"),
       OnExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.on)),
+          powerStateStream: () => Stream.value(LighthousePowerState.on)),
       SleepExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.sleep)),
+          powerStateStream: () => Stream.value(LighthousePowerState.sleep)),
       StandbyExtension(
           changeState: (newState) async {},
-          powerStateStream: Stream.value(LighthousePowerState.standby)),
+          powerStateStream: () => Stream.value(LighthousePowerState.standby)),
       IdentifyDeviceExtension(onTap: () async {}),
     ];
 

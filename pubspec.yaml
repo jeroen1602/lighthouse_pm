@@ -50,12 +50,12 @@ dependencies:
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.3
-#  Android/ iOS
+  # Android/ iOS
   flutter_blue: ^0.8.0
-#  Web:
-  flutter_web_bluetooth: ^0.0.6+1
+  # Web:
+  flutter_web_bluetooth: ^0.0.6+2
   web_browser_detect: ^2.0.2
-#  Linux:
+  # Linux:
   bluez: ^0.7.4
 
   # This may need to be enabled again if the build runner doesn't like it.

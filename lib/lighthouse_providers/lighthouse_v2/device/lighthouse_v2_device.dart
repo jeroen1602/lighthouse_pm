@@ -1,7 +1,7 @@
 part of lighthouse_v2_device_provider;
 
 ///The bluetooth service that handles the power state of the device.
-// final String _POWER_SERVICE = '00001523-1212-efde-1523-785feabcd124';
+// final String _poserService = '00001523-1212-efde-1523-785feabcd124';
 
 ///The characteristic that handles the power state of the device.
 
@@ -169,11 +169,11 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   void afterIsValid() {
     // Add the extra extensions that need a valid connection to work.
     deviceExtensions.add(StandbyExtension(
-        changeState: changeState, powerStateStream: powerStateEnum));
+        changeState: changeState, powerStateStream: () => powerStateEnum));
     deviceExtensions.add(SleepExtension(
-        changeState: changeState, powerStateStream: powerStateEnum));
+        changeState: changeState, powerStateStream: () => powerStateEnum));
     deviceExtensions.add(OnExtension(
-        changeState: changeState, powerStateStream: powerStateEnum));
+        changeState: changeState, powerStateStream: () => powerStateEnum));
 
     if (LocalPlatform.isAndroid) {
       persistence?.areShortcutsEnabled().then((value) {
@@ -226,12 +226,10 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
       print('No identify characteristic set!');
       return;
     }
-    try {
-      await transactionMutex.acquire();
+    final stack = StackTrace.current;
+    await transactionMutex.protect(() async {
       // Write any byte to the characteristic to start the identify option.
       await identifyCharacteristic.write([0x00], withoutResponse: true);
-    } finally {
-      transactionMutex.release();
-    }
+    }, stack);
   }
 }

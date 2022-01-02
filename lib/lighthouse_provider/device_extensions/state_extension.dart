@@ -3,6 +3,8 @@ part of device_extension;
 typedef ChangeStateFunction = Future<void> Function(
     LighthousePowerState newState);
 
+typedef GetPowerStateStream = Stream<LighthousePowerState> Function();
+
 ///
 /// An extension for some extra states a device might have.
 ///
@@ -21,11 +23,11 @@ abstract class StateExtension extends DeviceExtension {
         'Cannot have a StateExtension that sets the power state to ${toState.text.toUpperCase()}');
   }
 
-  final Stream<LighthousePowerState> powerStateStream;
+  final GetPowerStateStream powerStateStream;
   final LighthousePowerState toState;
 
   Stream<bool> _enabledStream() {
-    return powerStateStream.map((state) {
+    return powerStateStream().map((state) {
       return state != LighthousePowerState.booting && state != toState;
     });
   }

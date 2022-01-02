@@ -105,8 +105,8 @@ abstract class LighthouseDevice {
   }
 
   ///
-  /// Set the prefered update interval for this device.
-  /// The update interval may be higher than the prefered value because of the
+  /// Set the preferred update interval for this device.
+  /// The update interval may be higher than the preferred value because of the
   /// value returned by [getMinUpdateInterval].
   ///
   @nonVirtual
@@ -159,7 +159,7 @@ abstract class LighthouseDevice {
   ///
   @visibleForTesting
   @protected
-  final Mutex transactionMutex = Mutex();
+  final MutexWithStack transactionMutex = MutexWithStack();
 
   ///Change the state of the device.
   ///
@@ -180,12 +180,8 @@ abstract class LighthouseDevice {
       print('Cannot change power state to booting');
       return;
     }
-    try {
-      await transactionMutex.acquire();
-      await internalChangeState(newState);
-    } finally {
-      transactionMutex.release();
-    }
+    final stack = StackTrace.current;
+    await transactionMutex.protect(() => internalChangeState(newState), stack);
   }
 
   /// Show an extra window for the user to fill in extra info needed for the
@@ -202,6 +198,7 @@ abstract class LighthouseDevice {
   /// If this method is called while there is already an active stream then it
   /// will do nothing.
   void _startPowerStateStream() {
+    final stack = StackTrace.current;
     int retryCount = 0;
     var powerStateSubscription = _powerStateSubscription;
     if (powerStateSubscription != null) {
@@ -218,8 +215,8 @@ abstract class LighthouseDevice {
         if (!transactionMutex.isLocked) {
           retryCount = 0;
           try {
-            await transactionMutex.acquire();
-            final data = await getCurrentState();
+            await transactionMutex.acquire(stack);
+            final data = await getCurrentState().timeout(Duration(seconds: 5));
             if (_powerState.isClosed) {
               await disconnect();
               return;
@@ -239,7 +236,7 @@ abstract class LighthouseDevice {
         } else {
           if (retryCount++ > 5) {
             print(
-                'Unable to get power state because the mutex has been locked for a while ($retryCount). $transactionMutex');
+                'Unable to get power state because the mutex has been locked for a while ($retryCount). \nLocked by: ${transactionMutex.lockTrace?.toString()}');
           }
         }
       } else {
