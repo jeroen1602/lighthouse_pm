@@ -43,17 +43,17 @@ dependencies:
     git:
       url: https://github.com/appdev/FlutterToast
       ref: 7f329a9c1979abb0627fd5e245935d7b461b6fba
-  drift: ^1.1.1
+  drift: ^1.2.0
   sqlite3_flutter_libs: ^0.5.2
   path_provider: ^2.0.8
-  provider: ^6.0.1
+  provider: ^6.0.2
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.3
 #  Android/ iOS
   flutter_blue: ^0.8.0
 #  Web:
-  flutter_web_bluetooth: ^0.0.4
+  flutter_web_bluetooth: ^0.0.6+1
   web_browser_detect: ^2.0.2
 #  Linux:
   bluez: ^0.7.4
@@ -70,10 +70,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.16.8
-  drift_dev: ^1.1.1
+  test: ^1.17.12
+  drift_dev: ^1.2.0
   build_runner: 2.1.7
-  lints: ^1.0.1
+  flutter_lints: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

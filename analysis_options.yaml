@@ -11,6 +11,8 @@
 # (the recommended set includes the core lints).
 # The core lints are also what is used by pub.dev for scoring packages.
 
+# TODO: upgrade this to the new version
+#include: package:flutter_lints/flutter.yaml
 include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
