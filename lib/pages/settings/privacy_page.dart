@@ -7,8 +7,49 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../base_page.dart';
 
+class _NotesCounter {
+  final List<String> _values = [];
+
+  int getValue(String name) {
+    final index = _values.indexOf(name);
+    if (index >= 0) {
+      return index + 1;
+    }
+    _values.add(name);
+    return _values.length;
+  }
+}
+
 class PrivacyPage extends BasePage {
-  static const version1_1Date = "May 23th 2021";
+  static const version1_1Date = "January 1st 2022";
+
+  static const superScript = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
+
+  static String toSuperScript(int number) {
+    final negative = number < 0;
+    number = number.abs();
+    String out = "";
+    while (number != 0) {
+      final current = number % 10;
+      out = "${superScript[current]}$out";
+      number ~/= 10;
+    }
+    if (negative) {
+      return "⁻$out";
+    }
+    return out;
+  }
+
+  static final _notesCounter = _NotesCounter();
+
+  static get _neverLeaveDevice => _notesCounter.getValue("neverLeaveDevice");
+
+  static get _identifierNote => _notesCounter.getValue("identifierNote");
+
+  static get _lastSeenValidDevices =>
+      _notesCounter.getValue("lastSeenValidDevices");
+
+  static get _userGeneratedData => _notesCounter.getValue("userGeneratedData");
 
   @override
   Widget buildPage(BuildContext context) {
@@ -57,14 +98,70 @@ class PrivacyPage extends BasePage {
               const TextSpan(
                   text: " if you want more, and up-to-date "
                       "information.\n\n"),
+              TextSpan(
+                  text: "This doesn't mean that this app doesn't "
+                      "handle any user information. The data that is collected "
+                      "will only be stored on your device"
+                      "${toSuperScript(_neverLeaveDevice)}, be it a phone or "
+                      "a desktop web browser. The data collected include:\n\n"
+                      " • Bluetooth low energy device identifier.${toSuperScript(_identifierNote)}\n"
+                      " • Date and time of last seen valid devices.${toSuperScript(_lastSeenValidDevices)}\n"
+                      " • User generated data.${toSuperScript(_userGeneratedData)}\n"
+                      "\n"),
+              TextSpan(
+                  text: "${toSuperScript(_neverLeaveDevice)}"
+                      "While the app doesn't have any build in mechanisms to "
+                      "export data, that doesn't mean that it will never leave "
+                      "the device. If you yourself decide to export the data of "
+                      "from for example the web version using the developer "
+                      "tools then it could leave the device. Another way is if "
+                      "you choose to take your apps with you to a new device on "
+                      "Android. In this case the locally stored information will "
+                      "transferred over to the new device by the Android system. "
+                      "See "),
+              TextSpan(
+                  style: theming.linkTheme,
+                  text: "Switch to a new Android phone",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launch(Links.androidSwitchToNewPhone);
+                    }),
+              const TextSpan(text: " for more info.\n\n"),
+              TextSpan(
+                text: "${toSuperScript(_identifierNote)}"
+                    "This identifier varies per version of the app, "
+                    "on Android This will be the actual mac address of the "
+                    "Bluetooth device, while on iOS and the web it will be a "
+                    "randomly generated string. These identifiers are used "
+                    "to bind information to these devices, for example a "
+                    "nickname. And to manage connections, for example making "
+                    "sure the same device is not connected to twice, or a "
+                    "known to be invalid device isn't connected to again.\n\n",
+              ),
+              TextSpan(
+                text: "${toSuperScript(_lastSeenValidDevices)}"
+                    "A valid device means a deice that this app is able to "
+                    "communicate with, so a Valve Lighthouse or a "
+                    "vive Base station if enabled in the settings. "
+                    "This information is bound to the device identifier.\n\n",
+              ),
+              TextSpan(
+                text: "${toSuperScript(_userGeneratedData)}"
+                    "User generated data means in this case the data a user "
+                    "inputs themself. This includes a nickname for a device, "
+                    "the name of a group and the device that are inside it, "
+                    "all the settings on the settings page, the "
+                    "pairing id needed for vive base stations.\n\n",
+              ),
               TextSpan(text: 'Web app\n\n', style: theming.headline5),
               const TextSpan(
                   text: "The web app will only communicate with the "
                       "devices you (the user) give access to when you "
-                      "click on the pair button. The browser will "
+                      "click on the pair button. The browser may "
                       "remember the devices you have given access to. "
-                      "The web app will try to re-connect to the paired "
-                      "devices everytime you click the scan button "
+                      "This depends on what bluetooth features your browser "
+                      "supports. The web app will try to re-connect to the "
+                      "paired devices everytime you click the scan button "
                       "(or load the main page).\n"
                       "There is currently no way to revoke access to an "
                       "already paired device. The only way to do this is "
@@ -72,7 +169,7 @@ class PrivacyPage extends BasePage {
                       "If you select a non-lighthouse device from the "
                       "pair list then it will not show up in the "
                       "lighthouses list, because it will not pass the "
-                      "tests to check if it's a real device. The "
+                      "tests to check if it's a supported device. The "
                       "website will however try to communicate with it "
                       "to determine if it's a valid lighthouse device. "
                       "This happens when you first pair or every time "
@@ -91,16 +188,37 @@ class PrivacyPage extends BasePage {
               TextSpan(text: "Android\n\n", style: theming.headline5),
               const TextSpan(
                   text: "If you want to connect to a Bluetooth low "
-                      "energy device from an Android phone, then you "
-                      "will need to aks for location permissions. This "
-                      "is because an app that uses Bluetooth low "
+                      "energy device from an Android phone, running Android 11 or lower,"
+                      " then you will need to aks for location permissions. "
+                      "This is because an app that uses Bluetooth low "
                       "energy could technically triangulate a devices'"
                       "location. An app that has the location "
                       "permissions also has access to the GPS module. "
                       "Lighthouse Power management does not use the GPS "
                       "module and only uses the Bluetooth low energy "
-                      "functionality.\n"
-                      "If you have installed the app via Google play then, "
+                      "functionality.\n"),
+              TextSpan(
+                  text: "Android 12 and higher\n\n", style: theming.headline6),
+              const TextSpan(
+                  text: "These location permissions are not needed for "
+                      "Android 12 and higher, on those devices you will get a "
+                      "message asking if you want to allow the app to "
+                      "communicate with nearby devices.\n"
+                      "Do note that the Android 12 version of the app still has"
+                      "the location permission in its manifest for running on "
+                      "devices with older versions of Android, but it has "
+                      "been marked as never for location, meaning that it "
+                      "won't show up in the permission list on the device and "
+                      "you will never be asked to accept these permissions. "
+                      "If have the app installed that was made for Android 11 "
+                      "and upgrade to the Android 12 version, and have Android "
+                      "12 installed on your phone, then it may still be in that "
+                      "list. You can safely revoke the location permission in "
+                      "this case.\n"),
+              TextSpan(
+                  text: "Google play version\n\n", style: theming.headline6),
+              const TextSpan(
+                  text: "If you have installed the app via Google play then, "
                       "it will use the Google Billing api to get a list of "
                       "ways to support the app. This uses a connection "
                       "directly to the Google Play Services on your device "

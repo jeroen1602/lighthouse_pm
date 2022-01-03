@@ -1,4 +1,5 @@
 import 'package:community_material_icon/community_material_icon.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
@@ -65,23 +66,46 @@ class TroubleshootingContentWidget extends StatelessWidget
             if (permissionState == PermissionStatus.granted) {
               return Container();
             }
-            return Column(
-              children: [
-                _TroubleshootingItemWithAction(
-                  leadingIcon: Icons.lock,
-                  leadingColor: Colors.red,
-                  title: Text('Allow Location permissions'),
-                  subtitle: Text(
-                      'On Android you need to allow location permissions to scan for devices'),
-                  actionIcon: Icons.location_on,
-                  onTap: () async {
-                    await LocationPermissionDialogFlow
-                        .showLocationPermissionDialogFlow(context);
-                  },
-                ),
-                const Divider(),
-              ],
-            );
+            return FutureBuilder<AndroidDeviceInfo>(
+                future: DeviceInfoPlugin().androidInfo,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  } else {
+                    final sdkInt = snapshot.requireData.version.sdkInt;
+                    return Column(
+                      children: [
+                        if (sdkInt >= 31)
+                          _TroubleshootingItemWithAction(
+                            leadingIcon: Icons.lock,
+                            leadingColor: Colors.red,
+                            title: Text('Allow Bluetooth permission'),
+                            subtitle: Text(
+                                'Bluetooth permission is required to scan for devices'),
+                            actionIcon: Icons.bluetooth,
+                            onTap: () async {
+                              await LocationPermissionDialogFlow
+                                  .showLocationPermissionDialogFlow(context);
+                            },
+                          )
+                        else
+                          _TroubleshootingItemWithAction(
+                            leadingIcon: Icons.lock,
+                            leadingColor: Colors.red,
+                            title: Text('Allow Location permissions'),
+                            subtitle: Text(
+                                'On Android you need to allow location permissions to scan for devices'),
+                            actionIcon: Icons.location_on,
+                            onTap: () async {
+                              await LocationPermissionDialogFlow
+                                  .showLocationPermissionDialogFlow(context);
+                            },
+                          ),
+                        const Divider(),
+                      ],
+                    );
+                  }
+                });
           },
         ),
         // FlutterBlue doesn't like it when you have two of the same streams
