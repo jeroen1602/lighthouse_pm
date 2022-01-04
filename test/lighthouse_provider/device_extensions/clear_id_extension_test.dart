@@ -4,7 +4,6 @@ import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../helpers/fake_bloc.dart';
 
@@ -40,7 +39,7 @@ void main() {
 
     await extension.onTap();
     expect(clicked, true, reason: "Button should have been clicked.");
-    final index = fakeBloc.viveBaseStation.idsStream!.value!
+    final index = fakeBloc.viveBaseStation.idsStream!.valueOrNull!
         .indexWhere((element) => element.deviceId == "12345678901234567");
     expect(index < 0, true, reason: 'Expect the item to be removed');
   });

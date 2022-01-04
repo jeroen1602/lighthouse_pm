@@ -1,21 +1,38 @@
+import 'package:device_info/device_info.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
-  const PermissionsAlertWidget({Key? key}) : super(key: key);
+  const PermissionsAlertWidget(this.sdkInt, {Key? key}) : super(key: key);
+
+  final int sdkInt;
+
+  String _getTitle() {
+    if (sdkInt >= 31) {
+      return "Bluetooth permission required";
+    } else {
+      return "Location permissions required";
+    }
+  }
+
+  String _getExplanation() {
+    if (sdkInt >= 31) {
+      return "Bluetooth permission is required to communicate with the Bluetooth devices.";
+    } else {
+      return "Location permissions are required on Android to use Bluetooth Low Energy.";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
-        title: const Text("Location permissions required"),
+        title: Text(_getTitle()),
         content: RichText(
             text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
-          const TextSpan(
-              text:
-                  "Location permissions are required on Android to use Bluetooth Low Energy.\n"),
+          TextSpan(text: "${_getExplanation()}\n"),
           TextSpan(
             text: "More info.",
             style: theming.linkTheme,
@@ -42,11 +59,18 @@ class PermissionsAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool?> showCustomDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return const PermissionsAlertWidget();
-        });
+  static Future<bool> showCustomDialog(BuildContext context) {
+    return DeviceInfoPlugin().androidInfo.then((deviceInto) {
+      return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return PermissionsAlertWidget(deviceInto.version.sdkInt);
+          }).then((value) {
+        if (value is bool) {
+          return value;
+        }
+        return false;
+      });
+    });
   }
 }

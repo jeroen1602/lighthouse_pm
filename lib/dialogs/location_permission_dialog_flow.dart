@@ -23,8 +23,7 @@ class LocationPermissionDialogFlow {
     switch (await BLEPermissionsHelper.hasBLEPermissions()) {
       case PermissionStatus.denied:
       case PermissionStatus.restricted:
-        // expression can be `null`
-        if (await PermissionsAlertWidget.showCustomDialog(context) != true) {
+        if (!(await PermissionsAlertWidget.showCustomDialog(context))) {
           return false;
         }
         switch (await BLEPermissionsHelper.requestBLEPermissions()) {

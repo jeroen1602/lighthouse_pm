@@ -271,7 +271,7 @@ class LighthouseProvider {
   /// This will update the last time a device with teh [deviceIdentifier] has
   /// been seen and return a bool if this was successful.
   bool _updateLastSeen(LHDeviceIdentifier deviceIdentifier) {
-    final list = _lightHouseDevices.value;
+    final list = _lightHouseDevices.valueOrNull;
     if (list == null) {
       return false;
     }
@@ -290,7 +290,7 @@ class LighthouseProvider {
     for (final backEnd in backEndSet) {
       await backEnd.disconnectOpenDevices();
     }
-    final list = _lightHouseDevices.value;
+    final list = _lightHouseDevices.valueOrNull;
     for (final device in list ?? []) {
       await device.data.disconnect();
     }
@@ -323,7 +323,7 @@ class LighthouseProvider {
       try {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
-            _lightHouseDevices.value ?? [];
+            _lightHouseDevices.valueOrNull ?? [];
         // Check if this device is already in the list, which should never happen.
         if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
                 (element) {

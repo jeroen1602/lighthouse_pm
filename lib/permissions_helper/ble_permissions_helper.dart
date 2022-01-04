@@ -1,3 +1,4 @@
+import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
@@ -14,18 +15,32 @@ abstract class BLEPermissionsHelper {
 
   ///
   /// A function to check if the app is allowed to use BLE.
-  /// On Android the device is only allowed to use BLE if the location permission
-  /// has been granted by the user.
+  /// On Android 12+ the device is allowed to use BLE if the bluetooth scan and
+  /// connect permission have been granted by the user.
+  /// On older Android versions the device is only allowed to use BLE if the
+  /// location permission has been granted by the user.
   ///
   /// On iOS, web, and Linux it's always allowed to use BLE.
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
     if (LocalPlatform.isIOS) {
-      return PermissionStatus.granted;
+      return await Permission.bluetooth.status;
     }
     if (LocalPlatform.isAndroid) {
-      return await Permission.locationWhenInUse.status;
+      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+      // Check the new bluetooth permission for Android 12 and higher.
+      if (version >= 31) {
+        final scan = await Permission.bluetoothScan.status;
+        if (!scan.isGranted) {
+          return scan;
+        }
+        final connect = await Permission.bluetoothConnect.status;
+        return connect;
+      } else {
+        // Check the "legacy" location permission.
+        return await Permission.locationWhenInUse.status;
+      }
     }
     if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;
@@ -39,8 +54,10 @@ abstract class BLEPermissionsHelper {
 
   ///
   /// A function to request the user to allow BLE permissions.
-  /// On Android the device is only allowed to use BLE if the location permission
-  /// has been granted by the user.
+  /// On Android 12+ the device is allowed to use BLE if the bluetooth scan and
+  /// connect permission have been granted by the user.
+  /// On older Android versions the device is only allowed to use BLE if the
+  /// location permission has been granted by the user.
   ///
   /// On iOS, web, and Linux the app is always allowed to use BLE and thus this
   /// will always return [PermissionStatus.granted].
@@ -48,10 +65,27 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
     if (LocalPlatform.isAndroid) {
-      return await Permission.locationWhenInUse.request();
+      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+      if (version >= 31) {
+        // Request the new bluetooth permission for Android 12 and higher.
+        return await [Permission.bluetoothScan, Permission.bluetoothConnect]
+            .request()
+            .then((map) => map.values)
+            .then((statuses) {
+          for (final status in statuses) {
+            if (!status.isGranted) {
+              return status;
+            }
+          }
+          return statuses.last;
+        });
+      } else {
+        // Request the "legacy" location permission.
+        return await Permission.locationWhenInUse.request();
+      }
     }
     if (LocalPlatform.isIOS) {
-      return PermissionStatus.granted;
+      return await Permission.bluetooth.request();
     }
     if (LocalPlatform.isWeb) {
       return PermissionStatus.granted;

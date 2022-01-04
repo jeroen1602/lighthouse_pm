@@ -14,6 +14,8 @@ abstract class Links {
   static const githubPagesPrivacyUrl =
       "https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages";
   static const googlePrivacyUrl = "https://policies.google.com/privacy";
+  static const androidSwitchToNewPhone =
+      "https://support.google.com/android/answer/6193424";
 
   static const githubSponsorsUrl = "https://github.com/sponsors/jeroen1602/";
   static const paypalMeUrl = "https://paypal.me/jeroen1602";

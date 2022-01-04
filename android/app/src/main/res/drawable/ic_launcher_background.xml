@@ -4,8 +4,8 @@
     android:width="108dp"
     android:height="108dp">
                 <gradient
-                    android:startColor="#FFFF5A66"
-                    android:endColor="#FF00DFAB"
+                    android:startColor="#FFA500FB"
+                    android:endColor="#FF0E8BFF"
                     android:type="linear"
                     android:tileMode="clamp"
                     android:angle="315">

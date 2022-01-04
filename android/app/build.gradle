@@ -36,7 +36,7 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     ndkVersion "21.3.6528147"
 
     sourceSets {
@@ -58,7 +58,7 @@ android {
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -66,7 +66,7 @@ android {
         release {
             if (!keystoreProperties['keyAlias']) {
                 println "WARNING: Release keystore has not been found! Building release builds will be impossible!"
-                println "Keystore properties should be located at: `${keystorePropertiesFile}` ."
+                println "Keystore properties should be located at: `${keystorePropertiesFile}`."
                 println "Go to `android/app/build.gradle` to change this if needed!"
             } else {
                 keyAlias keystoreProperties['keyAlias']
@@ -106,7 +106,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
 
 
 
