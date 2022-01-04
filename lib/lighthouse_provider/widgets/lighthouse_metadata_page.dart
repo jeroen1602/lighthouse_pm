@@ -54,7 +54,8 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       body.add(_ExtraActionsWidget(
         widget.device as DeviceWithExtensions,
         updateList: () {
-          widget._updateSubject.add((widget._updateSubject.valueOrNull ?? 0) + 1);
+          widget._updateSubject
+              .add((widget._updateSubject.valueOrNull ?? 0) + 1);
         },
       ));
     }

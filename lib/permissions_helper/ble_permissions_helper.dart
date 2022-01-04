@@ -68,11 +68,17 @@ abstract class BLEPermissionsHelper {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       if (version >= 31) {
         // Request the new bluetooth permission for Android 12 and higher.
-        final scan = await Permission.bluetoothScan.request();
-        if (scan.isGranted) {
-          return await Permission.bluetoothConnect.request();
-        }
-        return scan;
+        return await [Permission.bluetoothScan, Permission.bluetoothConnect]
+            .request()
+            .then((map) => map.values)
+            .then((statuses) {
+          for (final status in statuses) {
+            if (!status.isGranted) {
+              return status;
+            }
+          }
+          return statuses.last;
+        });
       } else {
         // Request the "legacy" location permission.
         return await Permission.locationWhenInUse.request();
