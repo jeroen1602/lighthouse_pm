@@ -3,8 +3,11 @@ part of vive_base_station_device_provider;
 class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     implements DeviceWithExtensions {
   ViveBaseStationDevice(
-      LHBluetoothDevice device, ViveBaseStationPersistence? persistence)
-      : super(device, persistence);
+      LHBluetoothDevice device,
+      ViveBaseStationPersistence? persistence,
+      RequestPairId<dynamic>? requestCallback)
+      : _requestCallback = requestCallback,
+        super(device, persistence);
 
   static const String powerServiceUUID = '0000cb00-0000-1000-8000-00805f9b34fb';
   static const String powerCharacteristicUUID =
@@ -14,6 +17,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   final Set<DeviceExtension> deviceExtensions = {};
   LHBluetoothCharacteristic? _characteristic;
   int? _pairIdStorage;
+  final RequestPairId<dynamic>? _requestCallback;
 
   int? get pairId => _pairIdStorage;
 
@@ -234,18 +238,23 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  Future<bool> showExtraInfoWidget(BuildContext context) async {
+  Future<bool> requestExtraInfo<C>(C? context) async {
     if (pairId != null) {
       return true;
     }
+    final callback = _requestCallback;
+    if (callback == null) {
+      assert(() {
+        throw StateError(
+            "Request pair id has not been set on the vive provider");
+      }());
+      return false;
+    }
     final deviceIdEnd = pairIdEndHint;
-
-    var value = await ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-        context, deviceIdEnd);
+    String? value = (await callback(context, deviceIdEnd))?.toUpperCase();
     if (value == null) {
       return false;
     }
-    value = value.toUpperCase();
     if (value.length == 4 && deviceIdEnd != null) {
       value += deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
     }

@@ -14,9 +14,7 @@ part of lighthouse_provider;
 /// Stop scanning using [StopScan]. (not The stopScan from the [LighthouseBackEnd].
 ///
 class LighthouseProvider {
-  LighthouseProvider._() {
-    WidgetsFlutterBinding.ensureInitialized();
-  }
+  LighthouseProvider._();
 
   /// Get a stream with a [List] of valid [LighthouseDevice]s.
   ///

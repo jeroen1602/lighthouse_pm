@@ -3,10 +3,10 @@ import 'package:lighthouse_pm/theming.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   const ViveBaseStationExtraInfoAlertWidget(
-      {Key? key, required this.existingIdEnd})
+      {Key? key, required this.pairIdHint})
       : super(key: key);
 
-  final int? existingIdEnd;
+  final int? pairIdHint;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,12 +14,12 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   }
 
   static Future<String?> showCustomDialog(
-      BuildContext context, int? existingIdEnd) {
+      BuildContext context, int? pairIdHint) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return ViveBaseStationExtraInfoAlertWidget(
-            existingIdEnd: existingIdEnd,
+            pairIdHint: pairIdHint,
           );
         });
   }
@@ -66,7 +66,7 @@ class _ViveBaseStationExtraInfoAlertState
 
   @override
   Widget build(BuildContext context) {
-    final endHint = widget.existingIdEnd;
+    final endHint = widget.pairIdHint;
 
     final theming = Theming.of(context);
 

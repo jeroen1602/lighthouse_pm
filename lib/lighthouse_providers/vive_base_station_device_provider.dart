@@ -8,12 +8,16 @@ import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'vive_base_station/device/vive_base_station_device.dart';
+
 part 'vive_base_station/specific_extensions/clear_id_extension.dart';
+
 part 'vive_base_station/vive_base_station_persistence.dart';
+
+typedef RequestPairId<C> = Future<String?> Function(
+    C? context, int? pairIdHint);
 
 ///
 /// A device provider for discovering and connection to [LighthouseV2Device]s.
@@ -36,7 +40,16 @@ class ViveBaseStationDeviceProvider
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return ViveBaseStationDevice(device, requirePersistence());
+    return ViveBaseStationDevice(
+        device, requirePersistence(), _requestCallback);
+  }
+
+  RequestPairId<dynamic>? _requestCallback;
+
+  void setRequestPairIdCallback<C>(RequestPairId<C> method) {
+    _requestCallback = (dynamic context, int? pairIdHint) {
+      return method(context, pairIdHint);
+    };
   }
 
   @override

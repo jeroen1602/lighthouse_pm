@@ -230,7 +230,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop
@@ -259,7 +259,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop
@@ -293,7 +293,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop
@@ -341,7 +341,7 @@ void main() {
     BuildContext? globalContext;
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
       globalContext = context;
     }));
 
@@ -392,7 +392,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop
@@ -431,7 +431,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop
@@ -476,7 +476,7 @@ void main() {
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.showExtraInfoWidget(context);
+      future = device.requestExtraInfo(context);
     }));
 
     // Wait for the progress indicator to stop

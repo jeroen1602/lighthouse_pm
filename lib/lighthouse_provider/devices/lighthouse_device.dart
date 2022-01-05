@@ -171,7 +171,8 @@ abstract class LighthouseDevice {
   /// console and `return` immediately.
   /// If for what ever reason the [isValid] function didn't complete correctly
   /// and then this method is called, then it will also just `return`.
-  Future changeState(LighthousePowerState newState) async {
+  Future<void> changeState<C>(LighthousePowerState newState,
+      [C? context]) async {
     if (newState == LighthousePowerState.unknown) {
       print('Cannot set power state to unknown');
       return;
@@ -180,8 +181,15 @@ abstract class LighthouseDevice {
       print('Cannot change power state to booting');
       return;
     }
-    final stack = StackTrace.current;
-    await transactionMutex.protect(() => internalChangeState(newState), stack);
+    final request = await requestExtraInfo(context);
+    if (request) {
+      final stack = StackTrace.current;
+      await transactionMutex.protect(
+          () => internalChangeState(newState), stack);
+    } else {
+      print(
+          "Could not change state because the extra info hasn't been provided");
+    }
   }
 
   /// Show an extra window for the user to fill in extra info needed for the
@@ -189,7 +197,7 @@ abstract class LighthouseDevice {
   /// Will not show a dialog if the device is already excepted.
   /// Returns a [Future] with a [bool] if the device is now able to change the
   /// state.
-  Future<bool> showExtraInfoWidget(BuildContext context) async {
+  Future<bool> requestExtraInfo<C>(C? context) async {
     return true;
   }
 
