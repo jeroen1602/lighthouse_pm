@@ -50,6 +50,7 @@ dependencies:
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.3
+  meta: ^1.7.0
   # Android/ iOS
   flutter_blue:
     git:

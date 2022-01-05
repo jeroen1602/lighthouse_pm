@@ -1,12 +1,9 @@
 part of lighthouse_provider;
 
 class TimeoutContainer<T> {
-  TimeoutContainer(this.data, {DateTime? lastSeen}) {
-    if (lastSeen != null) {
-      this.lastSeen = lastSeen;
-    }
-  }
+  TimeoutContainer(this.data, {DateTime? lastSeen})
+      : lastSeen = lastSeen ?? DateTime.now();
 
   T data;
-  DateTime lastSeen = DateTime.now();
+  DateTime lastSeen;
 }

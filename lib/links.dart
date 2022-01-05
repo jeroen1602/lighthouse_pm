@@ -1,6 +1,4 @@
 abstract class Links {
-  Links._();
-
   static const projectUrl = "https://github.com/jeroen1602/lighthouse_pm/";
   static const projectIssuesUrl = "${projectUrl}issues/";
   static const stateIssueUrl = "${projectIssuesUrl}40";
