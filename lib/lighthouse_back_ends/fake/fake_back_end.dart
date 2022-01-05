@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';

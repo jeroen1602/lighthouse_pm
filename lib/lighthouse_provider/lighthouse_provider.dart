@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:mutex/mutex.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
@@ -10,9 +9,9 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   static BlueZBackEnd? _instance;
 
   static BlueZBackEnd get instance {
-    if (!kReleaseMode) {
+    assert(() {
       throw UnsupportedError("BlueZ not supported for this platform");
-    }
+    }());
     return _instance ??= BlueZBackEnd._();
   }
 
