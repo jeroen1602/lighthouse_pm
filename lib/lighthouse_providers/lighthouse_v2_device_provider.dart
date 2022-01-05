@@ -2,8 +2,6 @@ library lighthouse_v2_device_provider;
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';

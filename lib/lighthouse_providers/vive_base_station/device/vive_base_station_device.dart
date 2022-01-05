@@ -97,10 +97,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       return;
     }
     final id = pairId;
-    if (id == null) {
-      print("Pair id is null for $name (${device.id})");
-      return;
-    }
+    assert(id != null);
     final command = ByteData(20);
     command.setUint8(0, 0x12);
     switch (newState) {
@@ -115,7 +112,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, id, Endian.little);
+    command.setUint32(4, id!, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
   }

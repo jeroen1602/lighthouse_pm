@@ -5,6 +5,7 @@ import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
@@ -19,7 +20,6 @@ class TestBootingStateExtension extends StateExtension {
   TestBootingStateExtension()
       : super(
             toolTip: "Booting",
-            icon: Icon(Icons.highlight_off, size: 24),
             changeState: (newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.booting);
@@ -32,7 +32,6 @@ class TestUnknownStateExtension extends StateExtension {
   TestUnknownStateExtension()
       : super(
             toolTip: "Unknown",
-            icon: Icon(Icons.highlight_off, size: 24),
             changeState: (newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.unknown);
@@ -57,7 +56,6 @@ void main() {
         },
         powerStateStream: () => powerState.stream);
 
-    expect(extension.icon, isA<Icon>());
     expect(extension.toolTip, "On");
     expect(extension.updateListAfter, false);
 
@@ -74,6 +72,9 @@ void main() {
         },
         powerStateStream: () => powerState.stream);
 
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Icon>());
     expect(await extension.enabledStream.first, true);
     powerState.add(LighthousePowerState.on);
     expect(await extension.enabledStream.first, false);
@@ -91,7 +92,9 @@ void main() {
         },
         powerStateStream: () => powerState.stream);
 
-    expect(extension.icon, isA<Icon>());
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Icon>());
     expect(extension.toolTip, "Sleep");
     expect(extension.updateListAfter, false);
 
@@ -125,7 +128,9 @@ void main() {
         },
         powerStateStream: () => powerState.stream);
 
-    expect(extension.icon, isA<Icon>());
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Icon>());
     expect(extension.toolTip, "Standby");
     expect(extension.updateListAfter, false);
 

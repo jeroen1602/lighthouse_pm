@@ -9,7 +9,6 @@ class OnExtension extends StateExtension {
       required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "On",
-            icon: Icon(Icons.power_settings_new, size: 24, color: Colors.green),
             changeState: changeState,
             powerStateStream: powerStateStream,
             toState: LighthousePowerState.on);

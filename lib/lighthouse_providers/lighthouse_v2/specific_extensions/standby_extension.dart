@@ -9,8 +9,6 @@ class StandbyExtension extends StateExtension {
       required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Standby",
-            icon:
-                Icon(Icons.power_settings_new, size: 24, color: Colors.orange),
             changeState: changeState,
             powerStateStream: powerStateStream,
             toState: LighthousePowerState.standby);

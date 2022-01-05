@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 
 import '../../helpers/fake_bloc.dart';
@@ -16,7 +17,9 @@ void main() {
         deviceId: LHDeviceIdentifier("12345678901234567"),
         clearId: () {});
 
-    expect(extension.icon, isA<Text>());
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Text>());
     expect(extension.toolTip, 'Clear id');
     expect(extension.updateListAfter, true);
   });
