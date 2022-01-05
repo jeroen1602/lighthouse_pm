@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,8 +18,8 @@ void main() {
       () {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
 
     expect(device.firmwareVersion, "UNKNOWN");
 
@@ -32,8 +30,8 @@ void main() {
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -50,8 +48,10 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, __) async {
+      return null;
+    });
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -68,8 +68,8 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
     final valid = await device.isValid();
     expect(valid, true);
 
@@ -82,8 +82,8 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
-    final device =
-        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), persistence);
+    final device = ViveBaseStationDevice(
+        ViveBaseStationWithIncorrectName(), persistence, null);
 
     expect(device.name, "HTC BS 0000GH");
 
@@ -98,7 +98,8 @@ void main() {
   test("Should not fail if bloc is not set", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
 
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null);
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null, null);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -112,7 +113,7 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
-    final device = ViveBaseStationDevice(lowLevelDevice, persistence);
+    final device = ViveBaseStationDevice(lowLevelDevice, persistence, null);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -127,7 +128,7 @@ void main() {
     final lowLevelDevice = FailingBLEDeviceOnConnect();
     lowLevelDevice.useTimeoutException = false;
 
-    final device = ViveBaseStationDevice(lowLevelDevice, persistence);
+    final device = ViveBaseStationDevice(lowLevelDevice, persistence, null);
 
     final valid = await device.isValid();
     expect(valid, false,
@@ -139,8 +140,8 @@ void main() {
   test("Should have otherMetadata, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -161,7 +162,9 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
-        FailingViveBaseStationDeviceOnSpecificCharacteristics(), persistence);
+        FailingViveBaseStationDeviceOnSpecificCharacteristics(),
+        persistence,
+        null);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -183,7 +186,7 @@ void main() {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowDevice = CountingFakeLighthouseV2Device();
-    final device = ViveBaseStationDevice(lowDevice, persistence);
+    final device = ViveBaseStationDevice(lowDevice, persistence, null);
 
     final valid = await device.isValid();
     expect(valid, false);
@@ -196,8 +199,8 @@ void main() {
   test("Should add correct extensions, ViveBaseStationDevice", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -220,8 +223,8 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -243,273 +246,179 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should show extra info dialog if id is not set",
-      (WidgetTester tester) async {
+  test("Should throw if request extra info is null", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
 
     final valid = await device.isValid();
-    expect(valid, true);
+    expect(valid, isTrue);
 
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-    }));
+    try {
+      await device.requestExtraInfo(null);
+      fail('Should throw');
+    } catch (e) {
+      expect(e, isA<StateError>());
+      expect((e as StateError).message,
+          contains("Request pair id has not been set"));
+    }
 
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
-
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('0000'), reason: "Find device id ending");
-
-    await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
-    final value = await future!;
-    expect(value, false, reason: "Dialog is canceled so we can't continue");
+    expect(device.pairId, isNull, reason: "Nothing should have been stored");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should not store pair ids if storage is null",
-      (WidgetTester tester) async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
-
-    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null);
-
-    final valid = await device.isValid();
-    expect(valid, true);
-
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-    }));
-
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
-
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    // expect text
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('0000'), reason: "Find device id ending");
-
-    final TextFormField textField =
-        tester.widget<TextFormField>(find.byType(TextFormField));
-    await tester.enterText(find.byWidget(textField), "1234");
-
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Set'));
-    await tester.pumpAndSettle();
-    final value = await future!;
-    expect(value, false, reason: "Storage is null so it can't be stored");
-
-    LocalPlatform.overridePlatform = null;
-  });
-
-  testWidgets(
-      "Should not store pair id if input cannot be converted to a number",
-      (WidgetTester tester) async {
+  test("Should request extra info if id is not set", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    bool requested = false;
+
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+      expect(hint, isNotNull);
+      expect(hint, equals(0x0000));
+      requested = true;
+      return null;
+    });
 
     final valid = await device.isValid();
-    expect(valid, true);
+    expect(valid, isTrue);
 
-    BuildContext? globalContext;
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-      globalContext = context;
-    }));
+    final mayContinue = await device.requestExtraInfo(null);
 
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
-    expect(globalContext, isNotNull);
-
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    // expect text
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('0000'), reason: "Find device id ending");
-
-    final TextFormField textField =
-        tester.widget<TextFormField>(find.byType(TextFormField));
-    // g is not allowed here
-    await tester.enterText(find.byWidget(textField), "defg");
-
-    await tester.pumpAndSettle();
-
-    Navigator.pop(globalContext!, "defg");
-
-    await tester.pumpAndSettle();
-    final value = await future!;
-    expect(value, false,
-        reason: "Could not store because input is not allowed");
+    expect(requested, isTrue, reason: "Should have requested new device info");
+    expect(mayContinue, isFalse, reason: "Should not have saved any new info");
+    expect(device.pairId, isNull, reason: "Nothing should have been stored");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should show extra info dialog if id is not set, no end hint",
-      (WidgetTester tester) async {
+  test("Should not store pair ids if storage is null", () async {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+
+    bool requested = false;
+
+    final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null,
+        (_, hint) async {
+      expect(hint, isNotNull);
+      expect(hint, equals(0x0000));
+      requested = true;
+      return "1234";
+    });
+
+    final valid = await device.isValid();
+    expect(valid, isTrue);
+
+    final mayContinue = await device.requestExtraInfo(null);
+
+    expect(requested, isTrue, reason: "Should have requested new device info");
+    expect(mayContinue, isTrue,
+        reason: "Storage is null so it can't be stored");
+    expect(device.pairId, isNotNull,
+        reason: "Pair id should still be stored in memory");
+
+    LocalPlatform.overridePlatform = null;
+  });
+
+  test("Should not store pair id if input cannot be converted to a number",
+      () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(ViveBaseStationWithIncorrectName(), persistence);
+    bool requested = false;
+
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+      expect(hint, isNotNull);
+      expect(hint, equals(0x0000));
+      requested = true;
+      return "defg";
+    });
 
     final valid = await device.isValid();
     expect(valid, true);
 
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-    }));
+    final mayContinue = await device.requestExtraInfo(null);
 
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
-
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('The id is found on the back.'),
-        reason: "hint is not set");
-
-    await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
-    final value = await future!;
-    expect(value, false, reason: "Dialog is canceled so we can't continue");
+    expect(requested, isTrue, reason: "Should have requested new device info");
+    expect(mayContinue, isFalse,
+        reason: "Returned value is invalid so it can't continue");
+    expect(device.pairId, isNull, reason: "Pair id should nto be stored");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should be able to finish dialog", (WidgetTester tester) async {
+  test("Should show extra info dialog if id is not set, no end hint", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    bool requested = false;
+
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+      expect(hint, isNull);
+      requested = true;
+      return null;
+    });
 
     final valid = await device.isValid();
     expect(valid, true);
 
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-    }));
+    device.pairIdEndHint = null;
 
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
+    final mayContinue = await device.requestExtraInfo(null);
 
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('0000'), reason: "Find device id ending");
-
-    final TextFormField textField =
-        tester.widget<TextFormField>(find.byType(TextFormField));
-    await tester.enterText(find.byWidget(textField), "1234");
-
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Set'));
-    await tester.pumpAndSettle();
-    final value = await future!;
-    expect(value, true, reason: "Dialog should be finished");
+    expect(requested, isTrue, reason: "Should have requested new device info");
+    expect(mayContinue, isFalse,
+        reason: "Returned null so no reason to continue.");
+    expect(device.pairId, isNull, reason: "Pair id should nto be stored");
 
     LocalPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should show are you sure dialog if id hint is not matched",
-      (WidgetTester tester) async {
+  test("Should be able to store id if everything goes well", () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    bool requested = false;
+
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+      expect(hint, isNotNull);
+      expect(hint, equals(0x0000));
+      requested = true;
+      return "1234";
+    });
 
     final valid = await device.isValid();
     expect(valid, true);
 
-    Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
-      future = device.requestExtraInfo(context);
-    }));
+    final mayContinue = await device.requestExtraInfo(null);
 
-    // Wait for the progress indicator to stop
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-    expect(future, isNotNull);
-
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .first;
-    final text = richText.text.toPlainText();
-    expect(text, contains('Base station id required.'));
-    expect(text, contains('0000'), reason: "Find device id ending");
-
-    final TextFormField textField =
-        tester.widget<TextFormField>(find.byType(TextFormField));
-    await tester.enterText(find.byWidget(textField), "12344321");
-
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Set'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(ViveBaseStationExtraInfoIdWarningAlertWidget),
-        findsOneWidget);
-    expect(find.text('Change it'), findsOneWidget);
-    expect(find.text("It's correct"), findsOneWidget);
-
-    await tester.tap(find.text("It's correct"));
-    await tester.pumpAndSettle();
-
-    final value = await future!;
-    expect(value, true, reason: "Dialog should be finished");
+    expect(requested, isTrue, reason: "Should have requested new device info");
+    expect(mayContinue, isTrue, reason: "Everything should have gone well");
+    expect(device.pairId, isNotNull,
+        reason: "Pair id should still be stored in memory");
+    expect(device.pairId, equals(0x12340000),
+        reason: "Pair id should still be stored in memory");
 
     LocalPlatform.overridePlatform = null;
   });
@@ -521,8 +430,8 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -561,8 +470,8 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -601,8 +510,8 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
     bloc.viveBaseStation
         .insertId(device.deviceIdentifier.toString(), 0x12345678);
 
@@ -625,7 +534,7 @@ void main() {
     LocalPlatform.overridePlatform = null;
   });
 
-  test("Should not go to staten if id is not set, ViveBaseStationDevice",
+  test("Should not go to state if id is not set, ViveBaseStationDevice",
       () async {
     LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
@@ -633,8 +542,12 @@ void main() {
 
     bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
 
-    final device =
-        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence);
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+      expect(hint, isNotNull);
+      expect(hint, equals(0x0000));
+      return null;
+    });
 
     device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
     device.setUpdateInterval(Duration(milliseconds: 10));

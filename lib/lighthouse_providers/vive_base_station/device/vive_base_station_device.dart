@@ -266,7 +266,6 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
           await storage.insertId(deviceIdentifier, pairId!);
         } else {
           print('Could not save device id because the storage was null');
-          return false;
         }
         return true;
       } on FormatException {

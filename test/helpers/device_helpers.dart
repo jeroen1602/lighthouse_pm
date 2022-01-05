@@ -10,11 +10,11 @@ import 'fake_bloc.dart';
 
 Future<ViveBaseStationDevice> createValidViveDevice(
     int deviceName, int deviceId,
-    [ViveBaseStationPersistence? persistence]) async {
+    [ViveBaseStationPersistence? persistence, RequestPairId? pairId]) async {
   LocalPlatform.overridePlatform = PlatformOverride.android;
   persistence ??= ViveBaseStationBloc(FakeBloc.normal());
   final device = ViveBaseStationDevice(
-      FakeViveBaseStationDevice(deviceName, deviceId), persistence);
+      FakeViveBaseStationDevice(deviceName, deviceId), persistence, pairId);
 
   LocalPlatform.overridePlatform = null;
   return await doTheIsValid(device);

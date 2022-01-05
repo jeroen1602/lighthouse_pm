@@ -27,6 +27,29 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
+  testWidgets("Should create vive base station dialog, no id hint",
+      (WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, null);
+    }));
+
+    await tester.tap(find.text('X'));
+    await tester.pumpAndSettle();
+
+    final richText = (tester.widgetList<RichText>(find.descendant(
+            of: find.byType(Dialog), matching: find.byType(RichText))))
+        .first;
+    final text = richText.text.toPlainText();
+    expect(text, contains('Base station id required.'));
+    expect(text, contains('The id is found on the back.'),
+        reason: "hint is not set");
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsNothing);
+  });
+
   testWidgets("Should validate input vive base station dialog",
       (WidgetTester tester) async {
     await tester.pumpWidget(buildTestAppForWidgets((context) {
@@ -180,7 +203,7 @@ void main() {
   });
 
   testWidgets(
-      "Previous dialog should close if it's correct is selected vive base station dialog",
+      "Previous dialog should close if it's correct id is selected vive base station dialog",
       (WidgetTester tester) async {
     await tester.pumpWidget(buildTestAppForWidgets((context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
