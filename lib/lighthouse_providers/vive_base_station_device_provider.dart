@@ -40,11 +40,11 @@ class ViveBaseStationDeviceProvider
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return ViveBaseStationDevice(
-        device, requirePersistence(), _requestCallback);
+    return ViveBaseStationDevice(device, requirePersistence(), requestCallback);
   }
 
-  RequestPairId<dynamic>? _requestCallback;
+  @visibleForTesting
+  RequestPairId<dynamic>? requestCallback;
 
   ///
   /// Set a method so that the device may request the pair id from the user, or
@@ -59,7 +59,7 @@ class ViveBaseStationDeviceProvider
   /// [LighthouseDevice.changeState] is called.
   ///
   void setRequestPairIdCallback<C>(RequestPairId<C> method) {
-    _requestCallback = (dynamic context, int? pairIdHint) {
+    requestCallback = (dynamic context, int? pairIdHint) {
       return method(context, pairIdHint);
     };
   }

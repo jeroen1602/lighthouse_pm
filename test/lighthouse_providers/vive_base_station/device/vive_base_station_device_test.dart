@@ -14,21 +14,25 @@ import '../../../helpers/fake_bloc.dart';
 import '../../../helpers/widget_helpers.dart';
 
 void main() {
+  setUp(() {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+  });
+
+  tearDown(() {
+    LocalPlatform.overridePlatform = null;
+  });
+
   test("Firmware should be unknown if verify hasn't run, ViveBaseStationDevice",
       () {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
 
     expect(device.firmwareVersion, "UNKNOWN");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Firmware should be known if verify has run, ViveBaseStationDevice",
       () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
@@ -37,12 +41,9 @@ void main() {
     expect(valid, true);
 
     expect(device.firmwareVersion, "FAKE_DEVICE");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Setting deviceId should set metadata", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -60,12 +61,9 @@ void main() {
 
     final storedId = device.otherMetadata['Id'];
     expect(storedId, '0x12345678', reason: "Should store id in metadata map");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should be able to parse device name", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final device = ViveBaseStationDevice(
@@ -74,12 +72,9 @@ void main() {
     expect(valid, true);
 
     expect(device.pairIdEndHint, 0x0000);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not fail if name is not parsable", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final device = ViveBaseStationDevice(
@@ -91,13 +86,9 @@ void main() {
     expect(valid, true);
 
     expect(device.pairIdEndHint, isNull);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not fail if bloc is not set", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
-
     final device =
         ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null, null);
 
@@ -105,12 +96,9 @@ void main() {
     expect(valid, true);
 
     expect(device.persistence, isNull);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should handle connection timeout, ViveBaseStationDevice", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
     final device = ViveBaseStationDevice(lowLevelDevice, persistence, null);
@@ -118,12 +106,9 @@ void main() {
     final valid = await device.isValid();
     expect(valid, false,
         reason: "Device should not be valid if no connection can take place");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should handle connection error, ViveBaseStationDevice", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowLevelDevice = FailingBLEDeviceOnConnect();
     lowLevelDevice.useTimeoutException = false;
@@ -133,12 +118,9 @@ void main() {
     final valid = await device.isValid();
     expect(valid, false,
         reason: "Device should not be valid if no connection can take place");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should have otherMetadata, ViveBaseStationDevice", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
@@ -152,14 +134,11 @@ void main() {
     expect(otherMetadata['Serial number'], "255");
     expect(otherMetadata['Hardware revision'], "FAKE_REVISION");
     expect(otherMetadata['Manufacturer name'], "LIGHTHOUSE PM By Jeroen1602");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test(
       "Should not crash when some secondary characteristics fail, ViveBaseStationDevice",
       () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
         FailingViveBaseStationDeviceOnSpecificCharacteristics(),
@@ -177,13 +156,10 @@ void main() {
     expect(otherMetadata, isNot(contains('Manufacturer name')));
 
     expect(device.firmwareVersion, "UNKNOWN");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not return valid if device isn't valid, ViveBaseStationDevice",
       () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final lowDevice = CountingFakeLighthouseV2Device();
     final device = ViveBaseStationDevice(lowDevice, persistence, null);
@@ -192,12 +168,9 @@ void main() {
     expect(valid, false);
 
     expect(lowDevice.disconnectCount, 1);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should add correct extensions, ViveBaseStationDevice", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
@@ -211,13 +184,10 @@ void main() {
     expect(device.deviceExtensions, contains(isA<SleepExtension>()));
     expect(device.deviceExtensions, contains(isA<OnExtension>()));
     expect(device.deviceExtensions, contains(isA<ClearIdExtension>()));
-
-    LocalPlatform.overridePlatform = null;
   });
 
   testWidgets("Should not show extra info dialog if id is set",
       (WidgetTester tester) async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -242,12 +212,25 @@ void main() {
     expect(future, isNotNull);
     final value = await future!;
     expect(value, true);
+  });
 
-    LocalPlatform.overridePlatform = null;
+  test("Should not change state if id is null", () {
+    final bloc = FakeBloc.normal();
+    final persistence = ViveBaseStationBloc(bloc);
+
+    bloc.viveBaseStation.idsStream = BehaviorSubject.seeded([]);
+
+    final device = ViveBaseStationDevice(
+        FakeViveBaseStationDevice(0, 0), persistence, null);
+
+    try {
+      device.internalChangeState(LighthousePowerState.on);
+    } catch (e) {
+      expect(e, isA<AssertionError>());
+    }
   });
 
   test("Should throw if request extra info is null", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -269,12 +252,9 @@ void main() {
     }
 
     expect(device.pairId, isNull, reason: "Nothing should have been stored");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should request extra info if id is not set", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -298,13 +278,9 @@ void main() {
     expect(requested, isTrue, reason: "Should have requested new device info");
     expect(mayContinue, isFalse, reason: "Should not have saved any new info");
     expect(device.pairId, isNull, reason: "Nothing should have been stored");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not store pair ids if storage is null", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
-
     bool requested = false;
 
     final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null,
@@ -325,13 +301,10 @@ void main() {
         reason: "Storage is null so it can't be stored");
     expect(device.pairId, isNotNull,
         reason: "Pair id should still be stored in memory");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not store pair id if input cannot be converted to a number",
       () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -356,12 +329,9 @@ void main() {
     expect(mayContinue, isFalse,
         reason: "Returned value is invalid so it can't continue");
     expect(device.pairId, isNull, reason: "Pair id should nto be stored");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should show extra info dialog if id is not set, no end hint", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -387,12 +357,9 @@ void main() {
     expect(mayContinue, isFalse,
         reason: "Returned null so no reason to continue.");
     expect(device.pairId, isNull, reason: "Pair id should nto be stored");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should be able to store id if everything goes well", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -419,12 +386,9 @@ void main() {
         reason: "Pair id should still be stored in memory");
     expect(device.pairId, equals(0x12340000),
         reason: "Pair id should still be stored in memory");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should be able to go from sleep to on", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -459,12 +423,9 @@ void main() {
     expect(nextState, LighthousePowerState.unknown);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should be able to go from on to sleep", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -499,12 +460,9 @@ void main() {
     expect(nextState, LighthousePowerState.unknown);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not go to standby, ViveBaseStationDevice", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -530,13 +488,10 @@ void main() {
     }
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should not go to state if id is not set, ViveBaseStationDevice",
       () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -565,13 +520,9 @@ void main() {
     expect(next, start);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test("Should be able to clear the id via the extension", () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
-
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -593,7 +544,5 @@ void main() {
     await clear.onTap();
 
     expect(device.pairId, isNull, reason: "Pair id should not be set");
-
-    LocalPlatform.overridePlatform = null;
   });
 }

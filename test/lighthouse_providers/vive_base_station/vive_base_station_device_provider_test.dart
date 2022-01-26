@@ -4,6 +4,17 @@ import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_prov
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
 void main() {
+  setUp(() {
+    LocalPlatform.overridePlatform = PlatformOverride.android;
+  });
+
+  tearDown(() {
+    LocalPlatform.overridePlatform = null;
+
+    final instance = ViveBaseStationDeviceProvider.instance;
+    instance.requestCallback = null;
+  });
+
   test('Should get only one instance', () {
     final instance = ViveBaseStationDeviceProvider.instance;
 
@@ -11,7 +22,6 @@ void main() {
   });
 
   test('Should throw an error if bloc is not set', () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = ViveBaseStationDeviceProvider.instance;
 
     // Make sure the bloc is null.
@@ -20,8 +30,6 @@ void main() {
     expect(() async {
       await instance.internalGetDevice(FakeViveBaseStationDevice(0, 0));
     }, throwsA(isA<StateError>()));
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should have the expected services and characteristics', () {
@@ -33,5 +41,21 @@ void main() {
         reason: "Should have expected optional services");
     expect(instance.requiredServices.length, 1,
         reason: "Should have expected required services");
+  });
+
+  test('Should set request pair id callback', () async {
+    final instance = ViveBaseStationDeviceProvider.instance;
+
+    bool called = false;
+    method(String? context, int? pairIdHint) async {
+      called = true;
+      return context;
+    }
+
+    instance.setRequestPairIdCallback<String>(method);
+
+    expect(instance.requestCallback, isNotNull);
+    expect(await instance.requestCallback!.call("hello", null), "hello");
+    expect(called, isTrue);
   });
 }
