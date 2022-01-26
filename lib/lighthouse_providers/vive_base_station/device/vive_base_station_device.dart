@@ -235,7 +235,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  Future<bool> requestExtraInfo<C>(C? context) async {
+  Future<bool> requestExtraInfo<C>([C? context]) async {
     if (pairId != null) {
       return true;
     }

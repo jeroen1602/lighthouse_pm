@@ -171,6 +171,13 @@ abstract class LighthouseDevice {
   /// console and `return` immediately.
   /// If for what ever reason the [isValid] function didn't complete correctly
   /// and then this method is called, then it will also just `return`.
+  ///
+  /// [context] is some context that is needed for the specific device to
+  /// request extra data from the user. For example a build context from Flutter,
+  /// or a database instance. Devices that need it will have a method on their
+  /// specific [DeviceProvider] class. Make sure to set the handler function or
+  /// else you may run into errors.
+  ///
   Future<void> changeState<C>(LighthousePowerState newState,
       [C? context]) async {
     if (newState == LighthousePowerState.unknown) {
@@ -192,12 +199,22 @@ abstract class LighthouseDevice {
     }
   }
 
-  /// Show an extra window for the user to fill in extra info needed for the
-  /// lighthouse device.
-  /// Will not show a dialog if the device is already excepted.
-  /// Returns a [Future] with a [bool] if the device is now able to change the
-  /// state.
-  Future<bool> requestExtraInfo<C>(C? context) async {
+  ///
+  /// This is an abstract method, with this method the specific device may
+  /// request extra information it needs from the user, or some database. The
+  /// actual implementation depends on the devices and its [DeviceProvider].
+  ///
+  /// So make sure to read their documentation if they need specific information.
+  ///
+  /// [context] is some object of choice send along with the request to the
+  /// device. You may need to supply the device's [DeviceProvider] with a
+  /// method to handle the actual acquisition of the data.
+  ///
+  /// Returns a [Future] with a [bool] if the device is now able to change
+  /// state. If it is `false`, then that means that the device is not ready to
+  /// change state and thus unable to do so.
+  ///
+  Future<bool> requestExtraInfo<C>([C? context]) async {
     return true;
   }
 

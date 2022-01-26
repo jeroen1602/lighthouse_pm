@@ -46,6 +46,18 @@ class ViveBaseStationDeviceProvider
 
   RequestPairId<dynamic>? _requestCallback;
 
+  ///
+  /// Set a method so that the device may request the pair id from the user, or
+  /// some persistence layer. When either [LighthouseDevice.changeState] is
+  /// called or [LighthouseDevice.requestExtraInfo] is called. The context
+  /// passed into these methods will be passed onto the [RequestPairId]
+  /// [method] that you provide here. It's the developers responsibility to
+  /// make sure these are of the same type to not run into a cast error.
+  ///
+  /// **Note:** Either this method needs to be set, or the ids of the
+  /// [ViveBaseStationDevice]s need to be set before
+  /// [LighthouseDevice.changeState] is called.
+  ///
   void setRequestPairIdCallback<C>(RequestPairId<C> method) {
     _requestCallback = (dynamic context, int? pairIdHint) {
       return method(context, pairIdHint);
