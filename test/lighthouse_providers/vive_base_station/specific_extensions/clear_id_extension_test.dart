@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 
-import '../../helpers/fake_bloc.dart';
+import '../../../helpers/fake_bloc.dart';
 
 void main() {
   test('Should be able to create clear id extension', () {

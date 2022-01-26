@@ -8,10 +8,10 @@ import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_prov
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../helpers/device_helpers.dart';
-import '../../helpers/failing_ble_device.dart';
-import '../../helpers/fake_bloc.dart';
-import '../../helpers/widget_helpers.dart';
+import '../../../helpers/device_helpers.dart';
+import '../../../helpers/failing_ble_device.dart';
+import '../../../helpers/fake_bloc.dart';
+import '../../../helpers/widget_helpers.dart';
 
 void main() {
   test("Firmware should be unknown if verify hasn't run, ViveBaseStationDevice",

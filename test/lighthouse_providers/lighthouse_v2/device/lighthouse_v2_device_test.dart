@@ -11,8 +11,8 @@ import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_io.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 
-import '../../helpers/failing_ble_device.dart';
-import '../../helpers/fake_bloc.dart';
+import '../../../helpers/failing_ble_device.dart';
+import '../../../helpers/fake_bloc.dart';
 
 void main() {
   test("Firmware should be unknown if verify hasn't run, LighthouseV2Device",
