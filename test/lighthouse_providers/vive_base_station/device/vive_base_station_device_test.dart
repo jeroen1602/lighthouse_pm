@@ -214,7 +214,7 @@ void main() {
     expect(value, true);
   });
 
-  test("Should not change state if id is null", () {
+  test("Should not change state if id is null", () async {
     final bloc = FakeBloc.normal();
     final persistence = ViveBaseStationBloc(bloc);
 
@@ -223,8 +223,12 @@ void main() {
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
 
+    final valid = await device.isValid();
+    expect(valid, true);
+
     try {
-      device.internalChangeState(LighthousePowerState.on);
+      await device.internalChangeState(LighthousePowerState.on);
+      fail("Should have failed");
     } catch (e) {
       expect(e, isA<AssertionError>());
     }
