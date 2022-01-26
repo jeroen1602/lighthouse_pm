@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
 
 import 'device_extension.dart';
@@ -12,7 +11,6 @@ class ShortcutExtension extends DeviceExtension {
   ShortcutExtension(String macAddress, GetDeviceNickname getDeviceNickname)
       : super(
             toolTip: 'Create shortcut',
-            icon: Icon(Icons.add),
             updateListAfter: false,
             onTap: () async {
               await AndroidLauncherShortcut.instance

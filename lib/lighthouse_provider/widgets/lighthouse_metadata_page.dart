@@ -10,6 +10,7 @@ import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../bloc.dart';
+import 'widget_for_extension.dart';
 
 class LighthouseMetadataPage extends StatefulWidget {
   LighthouseMetadataPage(this.device, {Key? key}) : super(key: key);
@@ -200,7 +201,8 @@ class _ExtraActionsWidget extends StatelessWidget {
                                   : theming.disabledColor,
                               padding: const EdgeInsets.all(2.0),
                               shape: CircleBorder(),
-                              child: extensions[index].icon,
+                              child: getWidgetFromDeviceExtension(
+                                  extensions[index]),
                             );
                           },
                         ),

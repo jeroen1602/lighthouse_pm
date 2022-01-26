@@ -9,7 +9,6 @@ class SleepExtension extends StateExtension {
       required GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Sleep",
-            icon: Icon(Icons.power_settings_new, size: 24, color: Colors.blue),
             changeState: changeState,
             powerStateStream: powerStateStream,
             toState: LighthousePowerState.sleep);

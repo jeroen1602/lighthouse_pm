@@ -4,6 +4,7 @@ import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 
@@ -11,13 +12,18 @@ import '../../helpers/fake_bloc.dart';
 
 class DefaultEnabledDeviceExtension extends DeviceExtension {
   DefaultEnabledDeviceExtension()
-      : super(
-            toolTip: 'Default enabled',
-            icon: Text('Default enabled'),
-            onTap: () async {});
+      : super(toolTip: 'Default enabled', onTap: () async {});
 }
 
 void main() {
+  test('Device extension should return Text widget by default', () {
+    final extension = DefaultEnabledDeviceExtension();
+
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Text>());
+  });
+
   test('Device extension should use default enabled stream', () async {
     final extension = DefaultEnabledDeviceExtension();
 

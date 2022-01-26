@@ -7,6 +7,7 @@ import 'package:lighthouse_pm/lighthouse_back_ends/bluez/bluez_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/flutter_blue/flutter_blue_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_back_ends/flutter_web_bluetooth/flutter_web_bluetooth_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/pages/base_page.dart';
@@ -72,6 +73,16 @@ class MainApp extends StatelessWidget {
 
     ViveBaseStationDeviceProvider.instance
         .setPersistence(ViveBaseStationBloc(mainBloc));
+    ViveBaseStationDeviceProvider.instance
+        .setRequestPairIdCallback<BuildContext>(
+            (BuildContext? context, pairIdHint) async {
+      assert(context != null);
+      if (context == null) {
+        return null;
+      }
+      return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
+          context, pairIdHint);
+    });
     LighthouseV2DeviceProvider.instance
         .setPersistence(LighthouseV2Bloc(mainBloc));
 

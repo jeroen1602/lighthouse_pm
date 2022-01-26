@@ -94,18 +94,18 @@ class LighthouseWidgetContent extends StatelessWidget {
                 ]))));
   }
 
-  Future<void> _switchToSleepState() async {
+  Future<void> _switchToSleepState(BuildContext context) async {
     if (lighthouseDevice.hasStandbyExtension) {
-      await lighthouseDevice.changeState(sleepState);
+      await lighthouseDevice.changeState(sleepState, context);
       return;
     }
     debugPrint(
         'The device doesn\'t support STANDBY so SLEEP will always be used.');
-    await lighthouseDevice.changeState(LighthousePowerState.sleep);
+    await lighthouseDevice.changeState(LighthousePowerState.sleep, context);
   }
 
   Future<void> _stateSwitch(BuildContext context, int powerStateData) async {
-    if (!await lighthouseDevice.showExtraInfoWidget(context)) {
+    if (!await lighthouseDevice.requestExtraInfo(context)) {
       return;
     }
     final state = lighthouseDevice.powerStateFromByte(powerStateData);
@@ -116,22 +116,22 @@ class LighthouseWidgetContent extends StatelessWidget {
             action: SnackBarAction(
               label: 'I\'m sure',
               onPressed: () async {
-                await _switchToSleepState();
+                await _switchToSleepState(context);
               },
             )));
         break;
       case LighthousePowerState.on:
-        await _switchToSleepState();
+        await _switchToSleepState(context);
         break;
       case LighthousePowerState.standby:
       case LighthousePowerState.sleep:
-        await lighthouseDevice.changeState(LighthousePowerState.on);
+        await lighthouseDevice.changeState(LighthousePowerState.on, context);
         break;
       case LighthousePowerState.unknown:
         final newState = await UnknownStateAlertWidget.showCustomDialog(
             context, lighthouseDevice, powerStateData);
         if (newState != null) {
-          await lighthouseDevice.changeState(newState);
+          await lighthouseDevice.changeState(newState, context);
         }
         break;
     }

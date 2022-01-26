@@ -51,7 +51,7 @@ void main() {
     await widgetTester.pumpWidget(buildTestApp(
       (context) {
         return FutureBuilder(
-            future: device.showExtraInfoWidget(context),
+            future: device.requestExtraInfo(context),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.hasError) {
                 return Text(snapshot.error.toString());

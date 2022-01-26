@@ -11,11 +11,10 @@ typedef GetPowerStateStream = Stream<LighthousePowerState> Function();
 abstract class StateExtension extends DeviceExtension {
   StateExtension(
       {required String toolTip,
-      required Widget icon,
       required ChangeStateFunction changeState,
       required this.powerStateStream,
       required this.toState})
-      : super(toolTip: toolTip, icon: icon, onTap: () => changeState(toState)) {
+      : super(toolTip: toolTip, onTap: () => changeState(toState)) {
     super.streamEnabledFunction = _enabledStream;
     assert(
         toState != LighthousePowerState.unknown &&

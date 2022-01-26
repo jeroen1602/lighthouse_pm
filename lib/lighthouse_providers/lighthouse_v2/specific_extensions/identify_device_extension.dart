@@ -3,14 +3,7 @@ part of lighthouse_v2_device_provider;
 /// A device extension that allow the device to be identified.
 class IdentifyDeviceExtension extends DeviceExtension {
   IdentifyDeviceExtension({required FutureCallback onTap})
-      : super(
-            onTap: onTap,
-            toolTip: 'Identify',
-            icon: SvgPicture.asset(
-              "assets/images/identify-icon.svg",
-              width: 24,
-              height: 24,
-            )) {
+      : super(onTap: onTap, toolTip: 'Identify') {
     super.streamEnabledFunction = _enabledStream;
   }
 

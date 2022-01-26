@@ -1,6 +1,6 @@
 library device_extension;
 
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 
 part 'device_with_extensions.dart';
@@ -18,13 +18,11 @@ typedef StreamEnabledFunction = Stream<bool> Function();
 abstract class DeviceExtension {
   DeviceExtension(
       {required this.toolTip,
-      required this.icon,
       required this.onTap,
       this.updateListAfter = false,
       this.streamEnabledFunction});
 
   final String toolTip;
-  final Widget icon;
   final FutureCallback onTap;
   final bool updateListAfter;
   @protected

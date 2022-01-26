@@ -1,12 +1,15 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
 
 void main() {
   test('Should be able to create identify device extension', () async {
     final extension = IdentifyDeviceExtension(onTap: () async {});
 
-    expect(extension.icon, isA<SvgPicture>());
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<SvgPicture>());
     expect(extension.toolTip, 'Identify');
     expect(extension.updateListAfter, false);
 

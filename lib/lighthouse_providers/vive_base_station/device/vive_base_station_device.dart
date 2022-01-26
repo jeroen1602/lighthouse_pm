@@ -3,8 +3,11 @@ part of vive_base_station_device_provider;
 class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     implements DeviceWithExtensions {
   ViveBaseStationDevice(
-      LHBluetoothDevice device, ViveBaseStationPersistence? persistence)
-      : super(device, persistence);
+      LHBluetoothDevice device,
+      ViveBaseStationPersistence? persistence,
+      RequestPairId<dynamic>? requestCallback)
+      : _requestCallback = requestCallback,
+        super(device, persistence);
 
   static const String powerServiceUUID = '0000cb00-0000-1000-8000-00805f9b34fb';
   static const String powerCharacteristicUUID =
@@ -14,6 +17,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   final Set<DeviceExtension> deviceExtensions = {};
   LHBluetoothCharacteristic? _characteristic;
   int? _pairIdStorage;
+  final RequestPairId<dynamic>? _requestCallback;
 
   int? get pairId => _pairIdStorage;
 
@@ -93,10 +97,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       return;
     }
     final id = pairId;
-    if (id == null) {
-      print("Pair id is null for $name (${device.id})");
-      return;
-    }
+    assert(id != null);
     final command = ByteData(20);
     command.setUint8(0, 0x12);
     switch (newState) {
@@ -111,7 +112,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
       default:
         throw UnsupportedError("Unsupported new state of $newState");
     }
-    command.setUint32(4, id, Endian.little);
+    command.setUint32(4, id!, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
   }
@@ -234,18 +235,23 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  Future<bool> showExtraInfoWidget(BuildContext context) async {
+  Future<bool> requestExtraInfo<C>([C? context]) async {
     if (pairId != null) {
       return true;
     }
+    final callback = _requestCallback;
+    if (callback == null) {
+      assert(() {
+        throw StateError(
+            "Request pair id has not been set on the vive provider");
+      }());
+      return false;
+    }
     final deviceIdEnd = pairIdEndHint;
-
-    var value = await ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-        context, deviceIdEnd);
+    String? value = (await callback(context, deviceIdEnd))?.toUpperCase();
     if (value == null) {
       return false;
     }
-    value = value.toUpperCase();
     if (value.length == 4 && deviceIdEnd != null) {
       value += deviceIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase();
     }
@@ -257,7 +263,6 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
           await storage.insertId(deviceIdentifier, pairId!);
         } else {
           print('Could not save device id because the storage was null');
-          return false;
         }
         return true;
       } on FormatException {

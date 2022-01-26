@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/shortcut_extension.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_io.dart';
 
@@ -10,7 +11,9 @@ void main() {
       return "DEVICE_NAME";
     });
 
-    expect(extension.icon, isA<Icon>());
+    final widget = getWidgetFromDeviceExtension(extension);
+
+    expect(widget, isA<Icon>());
     expect(extension.toolTip, 'Create shortcut');
     expect(extension.updateListAfter, false);
   });

@@ -3,17 +3,21 @@ library vive_base_station_device_provider;
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'vive_base_station/device/vive_base_station_device.dart';
+
 part 'vive_base_station/specific_extensions/clear_id_extension.dart';
+
 part 'vive_base_station/vive_base_station_persistence.dart';
+
+typedef RequestPairId<C> = Future<String?> Function(
+    C? context, int? pairIdHint);
 
 ///
 /// A device provider for discovering and connection to [LighthouseV2Device]s.
@@ -36,7 +40,28 @@ class ViveBaseStationDeviceProvider
   ///
   @override
   Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
-    return ViveBaseStationDevice(device, requirePersistence());
+    return ViveBaseStationDevice(device, requirePersistence(), requestCallback);
+  }
+
+  @visibleForTesting
+  RequestPairId<dynamic>? requestCallback;
+
+  ///
+  /// Set a method so that the device may request the pair id from the user, or
+  /// some persistence layer. When either [LighthouseDevice.changeState] is
+  /// called or [LighthouseDevice.requestExtraInfo] is called. The context
+  /// passed into these methods will be passed onto the [RequestPairId]
+  /// [method] that you provide here. It's the developers responsibility to
+  /// make sure these are of the same type to not run into a cast error.
+  ///
+  /// **Note:** Either this method needs to be set, or the ids of the
+  /// [ViveBaseStationDevice]s need to be set before
+  /// [LighthouseDevice.changeState] is called.
+  ///
+  void setRequestPairIdCallback<C>(RequestPairId<C> method) {
+    requestCallback = (dynamic context, int? pairIdHint) {
+      return method(context, pairIdHint);
+    };
   }
 
   @override
