@@ -1,19 +1,23 @@
 import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
+import 'package:shared_platform/shared_platform_io.dart';
 
 import '../../helpers/fake_device_info.dart';
 
 void main() {
+  tearDown(() {
+    SharedPlatform.overridePlatform = null;
+  });
+
   test('Should get if system theme is supported', () async {
-    LocalPlatform.overridePlatform = PlatformOverride.unsupported;
+    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
     expect(await SettingsDao.supportsThemeModeSystem, isFalse);
 
-    LocalPlatform.overridePlatform = PlatformOverride.linux;
+    SharedPlatform.overridePlatform = PlatformOverride.linux;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
 
-    LocalPlatform.overridePlatform = PlatformOverride.web;
+    SharedPlatform.overridePlatform = PlatformOverride.web;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
 
     final fakeVersion = FakePlatformVersions();
@@ -21,19 +25,17 @@ void main() {
 
     fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 30;
 
-    LocalPlatform.overridePlatform = PlatformOverride.android;
+    SharedPlatform.overridePlatform = PlatformOverride.android;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
 
     fakeVersion.iosDeviceInfo.systemVersion = '13.0';
 
-    LocalPlatform.overridePlatform = PlatformOverride.ios;
+    SharedPlatform.overridePlatform = PlatformOverride.ios;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should return system theme based on Android version', () async {
-    LocalPlatform.overridePlatform = PlatformOverride.android;
+    SharedPlatform.overridePlatform = PlatformOverride.android;
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
@@ -42,12 +44,10 @@ void main() {
 
     fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 5;
     expect(await SettingsDao.supportsThemeModeSystem, isFalse);
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should return system theme based on iOS version', () async {
-    LocalPlatform.overridePlatform = PlatformOverride.ios;
+    SharedPlatform.overridePlatform = PlatformOverride.ios;
 
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
@@ -63,7 +63,5 @@ void main() {
 
     fakeVersion.iosDeviceInfo.systemVersion = '12.2';
     expect(await SettingsDao.supportsThemeModeSystem, isFalse);
-
-    LocalPlatform.overridePlatform = null;
   });
 }

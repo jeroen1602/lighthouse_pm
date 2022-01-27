@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:fake_back_end/fake_back_end.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:toast/toast.dart';

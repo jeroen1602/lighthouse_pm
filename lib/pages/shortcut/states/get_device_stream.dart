@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/data/helper_structures/with_timeout.dart';
 import 'package:lighthouse_pm/data/local/main_page_settings.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/widgets/close_current_route_mixin.dart';
 import 'package:lighthouse_pm/widgets/scanning_mixin.dart';
 import 'package:lighthouse_pm/widgets/waterfall_widget.dart';

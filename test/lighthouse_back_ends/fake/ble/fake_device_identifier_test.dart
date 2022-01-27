@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
-import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
+import 'package:fake_back_end/fake_back_end.dart';
+import 'package:shared_platform/shared_platform_io.dart';
 
 void main() {
+  tearDown(() {
+    SharedPlatform.overridePlatform = null;
+  });
+
   test('Should generate correct Android identifiers', () {
     final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifierAndroid(1);
     expect(identifier1.toString(), "00:00:00:00:00:01");
@@ -110,7 +114,7 @@ void main() {
   });
 
   test('Should generate correct identifier for os', () {
-    LocalPlatform.overridePlatform = PlatformOverride.unsupported;
+    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
     // Unsupported platform should error.
     try {
       FakeDeviceIdentifier.generateDeviceIdentifier(0);
@@ -120,17 +124,17 @@ void main() {
     }
 
     // Should generate Android identifier
-    LocalPlatform.overridePlatform = PlatformOverride.android;
+    SharedPlatform.overridePlatform = PlatformOverride.android;
     expect(FakeDeviceIdentifier.generateDeviceIdentifier(0).toString(),
         '00:00:00:00:00:00');
 
-    //Should genereat Linux identifier
-    LocalPlatform.overridePlatform = PlatformOverride.linux;
+    //Should generate Linux identifier
+    SharedPlatform.overridePlatform = PlatformOverride.linux;
     expect(FakeDeviceIdentifier.generateDeviceIdentifier(1).toString(),
         '00:00:00:00:00:01');
 
     // Should generate web identifier
-    LocalPlatform.overridePlatform = PlatformOverride.web;
+    SharedPlatform.overridePlatform = PlatformOverride.web;
     final identifier1 = FakeDeviceIdentifier.generateDeviceIdentifier(1);
     expect(identifier1.toString(), "AAAAAAAAAAAAAAAAAAAAAQ==");
     final decoded1 = base64Decode(identifier1.toString());
@@ -153,7 +157,7 @@ void main() {
     expect(decoded1[15], 1);
 
     // Should generate ios identifier
-    LocalPlatform.overridePlatform = PlatformOverride.ios;
+    SharedPlatform.overridePlatform = PlatformOverride.ios;
     expect(() => FakeDeviceIdentifier.generateDeviceIdentifier(0),
         throwsA(isA<UnimplementedError>()));
   });

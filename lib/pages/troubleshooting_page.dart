@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/enable_bluetooth_dialog_flow.dart';
 import 'package:lighthouse_pm/dialogs/location_permission_dialog_flow.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'base_page.dart';
 
@@ -46,7 +46,7 @@ class TroubleshootingContentWidget extends StatelessWidget
       Container(
         height: _troubleshootingScrollPadding,
       ),
-      if (LocalPlatform.isAndroid) ...[
+      if (SharedPlatform.isAndroid) ...[
         _TroubleshootingItemWithAction(
           leadingIcon: Icons.location_off,
           leadingColor: Colors.green,
@@ -197,7 +197,7 @@ class TroubleshootingContentWidget extends StatelessWidget
               'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
           leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
       const Divider(),
-      if (LocalPlatform.isWeb)
+      if (SharedPlatform.isWeb)
         const ListTile(
             title: Text('Sometimes the page needs to be reloaded'),
             subtitle: Text('Try to reload the web page and connect again'),
@@ -209,7 +209,7 @@ class TroubleshootingContentWidget extends StatelessWidget
                 'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
             leading: Icon(Icons.replay, color: Colors.deepOrange)),
       const Divider(),
-      if (LocalPlatform.isWeb)
+      if (SharedPlatform.isWeb)
         const ListTile(
             title: Text(
                 'Make sure no other tab is communicating with the lighthouse'),

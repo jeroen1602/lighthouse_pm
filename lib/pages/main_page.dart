@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
+import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/local/main_page_settings.dart';
 import 'package:lighthouse_pm/data/tables/group_table.dart';
 import 'package:lighthouse_pm/dialogs/enable_bluetooth_dialog_flow.dart';
 import 'package:lighthouse_pm/dialogs/location_permission_dialog_flow.dart';
-import 'package:lighthouse_pm/lighthouse_back_end/lighthouse_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/change_group_alert_widget.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/change_group_name_alert_widget.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/delete_group_alert_widget.dart';
@@ -18,13 +17,14 @@ import 'package:lighthouse_pm/lighthouse_provider/widgets/different_group_item_t
 import 'package:lighthouse_pm/lighthouse_provider/widgets/lighthouse_group_widget.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/lighthouse_widget.dart';
 import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/main_page_drawer.dart';
 import 'package:lighthouse_pm/widgets/nickname_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/scanning_mixin.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:tuple/tuple.dart';
 import 'package:web_browser_detect/web_browser_detect.dart';
 
@@ -465,7 +465,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     Duration(seconds: widget.settings.updateInterval)),
                 body: Shortcuts(
                     shortcuts: <LogicalKeySet, Intent>{
-                      if (!LocalPlatform.isWeb) ...{
+                      if (!SharedPlatform.isWeb) ...{
                         LogicalKeySet(LogicalKeyboardKey.f5):
                             ScanDevicesIntent(),
                         LogicalKeySet(LogicalKeyboardKey.control,
@@ -775,7 +775,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   final MainPageSettings settings;
 
   Widget _toSettingsButton(BuildContext context, Theming theming) {
-    if (LocalPlatform.isAndroid && state == BluetoothAdapterState.off) {
+    if (SharedPlatform.isAndroid && state == BluetoothAdapterState.off) {
       return ElevatedButton(
           onPressed: () async {
             await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
@@ -800,7 +800,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
       TextSpan(
           text: 'Bluetooth needs to be enabled to talk to the lighthouses.')
     ];
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       if (!FlutterWebBluetooth.instance.isBluetoothApiSupported) {
         final browser = Browser.detectOrNull();
 
@@ -833,7 +833,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                   "stick in a USB Bluetooth adapter.")
         ];
       }
-    } else if (LocalPlatform.isLinux) {
+    } else if (SharedPlatform.isLinux) {
       if (state == BluetoothAdapterState.unavailable) {
         subText = const [
           TextSpan(

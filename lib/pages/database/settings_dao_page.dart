@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';

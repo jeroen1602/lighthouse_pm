@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'android_launcher_shortcut_shared.dart';
 
@@ -11,7 +11,7 @@ import 'android_launcher_shortcut_shared.dart';
 class AndroidLauncherShortcut {
   AndroidLauncherShortcut._() {
     channel.setMethodCallHandler(AndroidLauncherShortcut.messageHandler);
-    if (!kReleaseMode && !LocalPlatform.isAndroid) {
+    if (!kReleaseMode && !SharedPlatform.isAndroid) {
       throw UnsupportedError(
           "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?");
     }

@@ -1,8 +1,8 @@
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 ///
 /// A simple class with helper functions to check if the device is allowed to use
@@ -24,10 +24,10 @@ abstract class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
-    if (LocalPlatform.isIOS) {
+    if (SharedPlatform.isIOS) {
       return await Permission.bluetooth.status;
     }
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       // Check the new bluetooth permission for Android 12 and higher.
       if (version >= 31) {
@@ -42,14 +42,14 @@ abstract class BLEPermissionsHelper {
         return await Permission.locationWhenInUse.status;
       }
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       return PermissionStatus.granted;
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       return PermissionStatus.granted;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${LocalPlatform.current}");
+        "ERROR: unsupported platform! ${SharedPlatform.current}");
   }
 
   ///
@@ -64,7 +64,7 @@ abstract class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       if (version >= 31) {
         // Request the new bluetooth permission for Android 12 and higher.
@@ -84,17 +84,17 @@ abstract class BLEPermissionsHelper {
         return await Permission.locationWhenInUse.request();
       }
     }
-    if (LocalPlatform.isIOS) {
+    if (SharedPlatform.isIOS) {
       return await Permission.bluetooth.request();
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       return PermissionStatus.granted;
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       return PermissionStatus.granted;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${LocalPlatform.current}");
+        "ERROR: unsupported platform! ${SharedPlatform.current}");
   }
 
   ///
@@ -105,7 +105,7 @@ abstract class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       return channel.invokeMethod("openBLESettings").then((value) {
         if (value is bool) {
           return value;
@@ -114,22 +114,22 @@ abstract class BLEPermissionsHelper {
         }
       });
     }
-    if (LocalPlatform.isIOS) {
+    if (SharedPlatform.isIOS) {
       // According to [this](https://stackoverflow.com/a/43754366/13324337) you
       // aren't allowed to open settings on ios.
       debugPrint("Can't open settings because iOS doesn't support it.");
       return false;
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       debugPrint("Can't open settings on WEB because there is no api.");
       return false;
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       debugPrint("Can't open settings on Linux because there is no api.");
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${LocalPlatform.current}");
+        "ERROR: unsupported platform! ${SharedPlatform.current}");
   }
 
   ///
@@ -140,7 +140,7 @@ abstract class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       return channel.invokeMethod("enableBluetooth").then((value) {
         if (value is bool) {
           return value;
@@ -149,21 +149,21 @@ abstract class BLEPermissionsHelper {
         }
       });
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       debugPrint("Can't enable BLE on Linux because I'm lazy 🙃.");
       return false;
     }
-    if (LocalPlatform.isIOS) {
+    if (SharedPlatform.isIOS) {
       // iOS doesn't have an API that can handle enable bluetooth for us.
       debugPrint("Can't enable BLE on iOS since there is no api.");
       return false;
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       debugPrint("Can't enable BLE on WEB since there is no api.");
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${LocalPlatform.current}");
+        "ERROR: unsupported platform! ${SharedPlatform.current}");
   }
 
   ///
@@ -174,7 +174,7 @@ abstract class BLEPermissionsHelper {
   ///
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       return channel.invokeMethod("openLocationSettings").then((value) {
         if (value is bool) {
           return value;
@@ -183,21 +183,21 @@ abstract class BLEPermissionsHelper {
         }
       });
     }
-    if (LocalPlatform.isIOS) {
+    if (SharedPlatform.isIOS) {
       // iOS doesn't have an API that can open location settings
       debugPrint("Can't open location settings on iOS since there is no api.");
       return false;
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       debugPrint("Can't open location settings on WEB since there is no api.");
       return false;
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       debugPrint(
           "Can't open location settings on Linux since there is no api.");
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${LocalPlatform.current}");
+        "ERROR: unsupported platform! ${SharedPlatform.current}");
   }
 }

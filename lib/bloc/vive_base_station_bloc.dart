@@ -1,6 +1,6 @@
 import 'package:lighthouse_pm/bloc.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 
 class ViveBaseStationBloc implements ViveBaseStationPersistence {
   ViveBaseStationBloc(this.bloc);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 /// A toggle button for the power state of a [LighthouseDevice].

@@ -37,12 +37,19 @@ packages:
     source: hosted
     version: "2.8.2"
   bluez:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: bluez
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.4"
+  bluez_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/bluez_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -239,6 +246,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  fake_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/fake_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   ffi:
     dependency: transitive
     description:
@@ -266,7 +280,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_blue:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
       ref: "0.13.0"
@@ -274,6 +288,13 @@ packages:
       url: "https://github.com/boskokg/flutter_blue"
     source: git
     version: "0.13.0"
+  flutter_blue_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -294,12 +315,19 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_web_bluetooth:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_web_bluetooth
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.6+2"
+  flutter_web_bluetooth_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -382,6 +410,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  lighthouse_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_provider:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_provider"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_providers:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_providers"
+      relative: true
+    source: path
+    version: "1.0.0"
   lints:
     dependency: transitive
     description:
@@ -662,6 +711,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.3"
+  shared_platform:
+    dependency: "direct main"
+    description:
+      path: "shared/shared_platform"
+      relative: true
+    source: path
+    version: "1.0.0"
   shelf:
     dependency: transitive
     description:

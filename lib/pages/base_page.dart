@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 /// The same as a [WidgetBuilder] only require it to return a [BasePage].
 typedef PageBuilder = BasePage Function(BuildContext context);
@@ -48,7 +48,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
   void initState() {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         AndroidLauncherShortcut.instance.readyForData();
       });
@@ -80,7 +80,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
 }
 
 Stream<ShortcutHandle?> _shortcutStream() {
-  if (LocalPlatform.isAndroid) {
+  if (SharedPlatform.isAndroid) {
     return AndroidLauncherShortcut.instance.changePowerStateMac;
   } else {
     // This platform doesn't support shortcuts so let's return an empty stream.

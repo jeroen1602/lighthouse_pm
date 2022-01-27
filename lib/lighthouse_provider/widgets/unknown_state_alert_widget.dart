@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:package_info_plus/package_info_plus.dart';

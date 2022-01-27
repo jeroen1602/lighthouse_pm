@@ -1,8 +1,8 @@
 import 'package:device_info/device_info.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import '../database.dart';
 import '../tables/simple_settings_table.dart';
@@ -200,21 +200,21 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   /// Check if the currently running device supports system mode theme.
   static Future<bool> get supportsThemeModeSystem async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       final android = await deviceInfo.androidInfo;
       if (android.version.sdkInt >= 29 /* Android 10 */) {
         return true;
       }
-    } else if (LocalPlatform.isIOS) {
+    } else if (SharedPlatform.isIOS) {
       final ios = await deviceInfo.iosInfo;
       final iosVersion = double.tryParse(ios.systemVersion);
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
-    } else if (LocalPlatform.isLinux) {
+    } else if (SharedPlatform.isLinux) {
       // TODO: check if the current platform supports it
       return true;
-    } else if (LocalPlatform.isWeb) {
+    } else if (SharedPlatform.isWeb) {
       // TODO: check if the current browser actually supports it.
       return true;
     }

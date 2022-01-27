@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_pm/lighthouse_provider/device_extensions/device_extension.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/device_extensions/device_extension.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/nickname_alert_widget.dart';
 import 'package:rxdart/rxdart.dart';

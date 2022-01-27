@@ -17,7 +17,7 @@ class LHLicensePage extends SimpleBasePage {
                 applicationName: "Lighthouse Power management",
                 applicationIcon: SvgPicture.asset('assets/images/app-icon.svg'),
                 applicationVersion: data?.version,
-                applicationLegalese: "Copyright (C) 2020 Jeroen1602",
+                applicationLegalese: "Copyright© 2020-2022 Jeroen1602",
               );
             }));
 }

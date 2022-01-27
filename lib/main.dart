@@ -1,15 +1,12 @@
+import 'package:bluez_back_end/bluez_back_end.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_back_end/flutter_blue_back_end.dart';
+import 'package:flutter_web_bluetooth_back_end/flutter_web_bluetooth_back_end.dart';
 import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/bluez/bluez_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/flutter_blue/flutter_blue_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/flutter_web_bluetooth/flutter_web_bluetooth_back_end.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
-import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
-import 'package:lighthouse_pm/lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:lighthouse_pm/pages/base_page.dart';
 import 'package:lighthouse_pm/pages/database_test_page.dart';
 import 'package:lighthouse_pm/pages/help_page.dart';
@@ -22,9 +19,12 @@ import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'bloc.dart';
 import 'build_options.dart';
@@ -49,15 +49,15 @@ class MainApp extends StatelessWidget {
     final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
 
-    if (LocalPlatform.isIOS || LocalPlatform.isAndroid) {
+    if (SharedPlatform.isIOS || SharedPlatform.isAndroid) {
       LighthouseProvider.instance
           .addBackEnd(FlutterBlueLighthouseBackEnd.instance);
     }
-    if (LocalPlatform.isWeb) {
+    if (SharedPlatform.isWeb) {
       LighthouseProvider.instance
           .addBackEnd(FlutterWebBluetoothBackEnd.instance);
     }
-    if (LocalPlatform.isLinux) {
+    if (SharedPlatform.isLinux) {
       LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
     }
     if (!kReleaseMode) {
@@ -85,6 +85,13 @@ class MainApp extends StatelessWidget {
     });
     LighthouseV2DeviceProvider.instance
         .setPersistence(LighthouseV2Bloc(mainBloc));
+    LighthouseV2DeviceProvider.instance
+        .setCreateShortcutCallback((mac, name) async {
+      if (SharedPlatform.isAndroid) {
+        await AndroidLauncherShortcut.instance
+            .requestShortcutLighthouse(mac, name);
+      }
+    });
 
     if (BuildOptions.includeGooglePlayInAppPurchases) {
       InAppPurchases.instance.handlePendingPurchases().catchError((error) {
@@ -163,7 +170,7 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
                       routes['/404'] = (context) => NotFoundPage();
                     }
 
-                    if (LocalPlatform.isWeb || !kReleaseMode) {
+                    if (SharedPlatform.isWeb || !kReleaseMode) {
                       WidgetBuilder? builder = routes[settings.name];
                       return MaterialPageRoute(
                           builder: (ctx) =>

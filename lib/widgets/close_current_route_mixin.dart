@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 const _exitWaitTime = 5;
 
@@ -13,10 +13,10 @@ abstract class CloseCurrentRouteMixin {
     Navigator.pop(context);
     bool canPop = Navigator.canPop(context);
     if (!canPop) {
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         // This is not recommended for iOS but this code should only be run
         // on Android.
-        LocalPlatform.exit(0);
+        SharedPlatform.exit(0);
       } else {
         Navigator.pushNamed(context, Navigator.defaultRouteName);
       }

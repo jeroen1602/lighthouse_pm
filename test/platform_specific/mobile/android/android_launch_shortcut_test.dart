@@ -6,12 +6,20 @@ import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_shared.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_unsupported.dart'
     as unsupported;
-import 'package:lighthouse_pm/platform_specific/mobile/local_platform.dart';
+import 'package:shared_platform/shared_platform_io.dart';
 
 void main() {
+  setUp(() {
+    SharedPlatform.overridePlatform = PlatformOverride.android;
+  });
+
+  tearDown(() {
+    SharedPlatform.overridePlatform = null;
+  });
+
   test('Should not work on non Android platform', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.unsupported;
+    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
     try {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
@@ -21,7 +29,7 @@ void main() {
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
 
-    LocalPlatform.overridePlatform = PlatformOverride.ios;
+    SharedPlatform.overridePlatform = PlatformOverride.ios;
     try {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
@@ -31,7 +39,7 @@ void main() {
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
 
-    LocalPlatform.overridePlatform = PlatformOverride.web;
+    SharedPlatform.overridePlatform = PlatformOverride.web;
     try {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
@@ -41,7 +49,7 @@ void main() {
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
 
-    LocalPlatform.overridePlatform = PlatformOverride.linux;
+    SharedPlatform.overridePlatform = PlatformOverride.linux;
     try {
       AndroidLauncherShortcut.instance;
       fail('Should fail');
@@ -50,8 +58,6 @@ void main() {
       expect((e as UnsupportedError).message,
           'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
     }
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Unsupported should throw errors', () async {
@@ -99,7 +105,6 @@ void main() {
 
   test('Should return shortcuts supported', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
 
     AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
@@ -127,12 +132,10 @@ void main() {
     expect(await instance.shortcutSupported(), isFalse);
 
     AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should handle ready for data', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
 
     int readyForDataCalled = 0;
@@ -149,12 +152,10 @@ void main() {
     expect(readyForDataCalled, 1);
 
     AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should handle mac shortcuts', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
     instance.clearStateStream();
 
@@ -167,12 +168,10 @@ void main() {
     expect(stateChange.type, ShortcutTypes.macType);
 
     instance.clearStateStream();
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should not handle mac shortcuts with incorrect data', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.android;
     final instance = AndroidLauncherShortcut.instance;
     instance.clearStateStream();
 
@@ -187,13 +186,10 @@ void main() {
     } catch (e) {
       expect(e, isA<TimeoutException>());
     }
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Should not handle unsupported method', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    LocalPlatform.overridePlatform = PlatformOverride.android;
 
     try {
       await AndroidLauncherShortcut.messageHandler(
@@ -204,8 +200,6 @@ void main() {
       expect(e.toString(), contains('unsupportedMethod'));
       expect(e.toString(), contains('AndroidLauncherShortcut'));
     }
-
-    LocalPlatform.overridePlatform = null;
   });
 
   test('Shortcut handle to string should work', () {

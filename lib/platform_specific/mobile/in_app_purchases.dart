@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'in_app_purchases/in_app_purchase_item.dart';
 
@@ -14,7 +14,7 @@ class InAppPurchases {
   static InAppPurchases? _instance;
 
   static InAppPurchases get instance {
-    if (!LocalPlatform.isAndroid) {
+    if (!SharedPlatform.isAndroid) {
       debugPrint(
           "Creating an instance of in app purchases on a non Android platform!");
     }
@@ -29,7 +29,7 @@ class InAppPurchases {
   /// doesn't work if the flavor isn't correct.
   ///
   Future<List<InAppPurchaseItem>> requestPrices() async {
-    if (!LocalPlatform.isAndroid) {
+    if (!SharedPlatform.isAndroid) {
       if (!kReleaseMode) {
         throw UnsupportedError(
             "Can't get purchase items on a non Android platform");
@@ -70,7 +70,7 @@ class InAppPurchases {
   /// success, 1 is still pending.
   ///
   Future<int> startBillingFlow(String id) async {
-    if (!LocalPlatform.isAndroid) {
+    if (!SharedPlatform.isAndroid) {
       if (!kReleaseMode) {
         throw UnsupportedError(
             "Can't get purchase items on a non Android platform");
@@ -87,7 +87,7 @@ class InAppPurchases {
   /// Go through the list of pending purchases and handle it.
   ///
   Future<void> handlePendingPurchases() async {
-    if (!LocalPlatform.isAndroid) {
+    if (!SharedPlatform.isAndroid) {
       if (!kReleaseMode) {
         throw UnsupportedError(
             "Can't get purchase items on a non Android platform");

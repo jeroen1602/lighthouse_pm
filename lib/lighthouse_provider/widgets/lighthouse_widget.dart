@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_pm/lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 import 'lighthouse_metadata_page.dart';

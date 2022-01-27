@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/validators/mac_validator.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_simple_change_string_alert_widget.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -50,7 +50,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
       DaoDataCreateAlertStringDecorator('Nickname', null),
     ];
     final saveNewItem =
@@ -58,7 +58,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
       final String? value =
@@ -121,7 +121,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
       // TODO: use date picker
       DaoDataCreateAlertStringDecorator(
           'Last seen', DateTime.now().toIso8601String()),
@@ -131,7 +131,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
       final String? value =

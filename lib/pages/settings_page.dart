@@ -4,20 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/pages/settings/lh_license_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_nicknames_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_vive_base_station_ids_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/clear_last_seen_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dropdown_menu_list_tile.dart';
 import 'package:lighthouse_pm/widgets/shortcut_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/vive_base_station_alert_widget.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -327,7 +327,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // endregion
 
     // region shortcut
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       items.add(FutureBuilder<bool>(
         future: AndroidLauncherShortcut.instance.shortcutSupported(),
         builder: (context, supportedSnapshot) {
@@ -397,7 +397,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         thickness: 1.5,
       ),
       ListTile(
-        title: Text('Licences'),
+        title: Text('Licenses'),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () => Navigator.pushNamed(context, '/settings/license'),
       ),
@@ -432,7 +432,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         },
       ),
       Divider(),
-      if (LocalPlatform.isWeb || LocalPlatform.isLinux) ...[
+      if (SharedPlatform.isWeb || SharedPlatform.isLinux) ...[
         ListTile(
           title: const Text('Try the Android app'),
           subtitle: const Text('On Google Play'),
@@ -463,7 +463,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         ),
         const Divider(),
       ],
-      if (!LocalPlatform.isWeb) ...[
+      if (!SharedPlatform.isWeb) ...[
         ListTile(
           title: const Text('Try the Webapp'),
           trailing: const Icon(Icons.arrow_forward_ios),

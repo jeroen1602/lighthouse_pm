@@ -1,13 +1,13 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/validators/mac_validator.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_simple_change_string_alert_widget.dart';
-import 'package:drift/drift.dart' as drift;
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -117,7 +117,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: false),
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
     ];
     final saveNewItem =
         await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
@@ -126,7 +126,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
       String? deviceId =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
       if (groupId == null) {

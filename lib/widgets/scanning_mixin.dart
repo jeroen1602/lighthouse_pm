@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 abstract class ScanningMixin {
   Future<bool> _hasConnectedDevices() async =>
@@ -11,7 +11,7 @@ abstract class ScanningMixin {
 
   Future<bool> _onWillPop() async {
     // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       if (await LighthouseProvider.instance.isScanning.first ||
           await _hasConnectedDevices()) {
         await LighthouseProvider.instance.cleanUp();
