@@ -5,14 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lighthouse_pm/widgets/scanning_mixin.dart';
 
 class MainPageDrawer extends StatelessWidget with ScanningMixin {
-  const MainPageDrawer(this.scanDuration, this.updateInterval, {Key? key})
+  const MainPageDrawer(this.scanDuration, this.updateInterval, {final Key? key})
       : super(key: key);
 
   final Duration scanDuration;
   final Duration updateInterval;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final children = <Widget>[
       DrawerHeader(
           decoration: const BoxDecoration(

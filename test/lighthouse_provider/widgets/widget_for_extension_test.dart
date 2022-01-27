@@ -40,20 +40,20 @@ void main() {
     final extensions = [
       ShortcutExtension("00:00:00:00:00:00", () {
         return "DEVICE_NAME";
-      }, (mac, name) {}),
+      }, (final mac, final name) {}),
       OnExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => const Stream.empty()),
       SleepExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => const Stream.empty()),
       StandbyExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => const Stream.empty()),
       IdentifyDeviceExtension(onTap: () async {}),
       ClearIdExtension(
           persistence: persistence,
-          deviceId: LHDeviceIdentifier("12345678901234567"),
+          deviceId: const LHDeviceIdentifier("12345678901234567"),
           clearId: () {})
     ];
 

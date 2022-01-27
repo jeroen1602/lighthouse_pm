@@ -32,15 +32,16 @@ part 'database.g.dart';
   GroupDao,
 ])
 class LighthouseDatabase extends _$LighthouseDatabase {
-  LighthouseDatabase(QueryExecutor e) : super(e);
+  LighthouseDatabase(final QueryExecutor e) : super(e);
 
   @override
   int get schemaVersion => 4;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
+  MigrationStrategy get migration =>
+      MigrationStrategy(onCreate: (final Migrator m) {
         return m.createAll();
-      }, onUpgrade: (Migrator m, int from, int to) async {
+      }, onUpgrade: (final Migrator m, final int from, final int to) async {
         if (from == 1 && (to >= 2 && to <= 4)) {
           await m.renameColumn(simpleSettings, 'id', simpleSettings.settingsId);
         }
@@ -60,7 +61,7 @@ class LighthouseDatabase extends _$LighthouseDatabase {
           await m.deleteTable('vive_base_station_ids');
           await m.createTable(viveBaseStationIds);
         }
-      }, beforeOpen: (details) async {
+      }, beforeOpen: (final details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       });
 }

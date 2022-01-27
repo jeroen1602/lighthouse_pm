@@ -3,33 +3,33 @@ import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class DeleteGroupAlertWidget extends StatelessWidget {
-  const DeleteGroupAlertWidget({required this.group, Key? key})
+  const DeleteGroupAlertWidget({required this.group, final Key? key})
       : super(key: key);
 
   final Group group;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
-      title: Text('Delete group'),
+      title: const Text('Delete group'),
       content: RichText(
         text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
-          TextSpan(text: "Are you sure you want to delete the group "),
+          const TextSpan(text: "Are you sure you want to delete the group "),
           TextSpan(style: theming.bodyTextBold, text: group.name),
-          TextSpan(text: '?')
+          const TextSpan(text: '?')
         ]),
       ),
       actions: [
         SimpleDialogOption(
-          child: Text('No'),
+          child: const Text('No'),
           onPressed: () {
             Navigator.pop(context, false);
           },
         ),
         SimpleDialogOption(
-          child: Text('Yes'),
+          child: const Text('Yes'),
           onPressed: () {
             Navigator.pop(context, true);
           },
@@ -40,15 +40,15 @@ class DeleteGroupAlertWidget extends StatelessWidget {
 
   /// Show a dialog asking the user if they are sure if they want to delete
   /// the device.
-  static Future<bool> showCustomDialog(BuildContext context,
-      {required Group group}) {
+  static Future<bool> showCustomDialog(final BuildContext context,
+      {required final Group group}) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return DeleteGroupAlertWidget(
             group: group,
           );
-        }).then((value) {
+        }).then((final value) {
       if (value is bool) {
         return value;
       }

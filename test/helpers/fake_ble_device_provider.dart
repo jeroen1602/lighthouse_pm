@@ -5,7 +5,7 @@ import 'fake_high_level_device.dart';
 
 class FakeBLEDeviceProvider extends BLEDeviceProvider {
   @override
-  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
+  Future<BLEDevice> internalGetDevice(final LHBluetoothDevice device) async {
     return FakeHighLevelDevice(device);
   }
 

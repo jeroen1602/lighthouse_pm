@@ -14,7 +14,7 @@ class ContentContainerWidget extends StatelessWidget {
       this.maxSize = ContentContainerWidget.defaultMaxSize,
       this.contentSize = ContentContainerWidget.defaultContentSize,
       this.addMaterial = true,
-      Key? key})
+      final Key? key})
       : super(key: key);
 
   /// At what size should the content become smaller?
@@ -29,8 +29,8 @@ class ContentContainerWidget extends StatelessWidget {
   final bool addMaterial;
 
   @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+  Widget build(final BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     if (screenWidth >= maxSize) {
       final double contentWidth = screenWidth * contentSize;
@@ -42,7 +42,7 @@ class ContentContainerWidget extends StatelessWidget {
             width: spacerWidth / 2.0,
           ),
           if (addMaterial)
-            Container(
+            SizedBox(
               child: Material(
                 child: builder(context),
                 elevation: 2.0,
@@ -50,7 +50,7 @@ class ContentContainerWidget extends StatelessWidget {
               width: contentWidth,
             )
           else
-            Container(
+            SizedBox(
               child: builder(context),
               width: contentWidth,
             ),
@@ -70,7 +70,7 @@ class ContentContainerListView extends StatelessWidget {
     required this.children,
     this.maxSize = ContentContainerWidget.defaultMaxSize,
     this.contentSize = ContentContainerWidget.defaultContentSize,
-    Key? key,
+    final Key? key,
   }) : super(key: key);
 
   /// At what size should the content become smaller?
@@ -80,28 +80,29 @@ class ContentContainerListView extends StatelessWidget {
   final double contentSize;
 
   static Widget builder({
-    Key? key,
-    int? itemCount,
-    double maxSize = ContentContainerWidget.defaultMaxSize,
-    double contentSize = ContentContainerWidget.defaultContentSize,
-    required IndexedWidgetBuilder itemBuilder,
+    final Key? key,
+    final int? itemCount,
+    final double maxSize = ContentContainerWidget.defaultMaxSize,
+    final double contentSize = ContentContainerWidget.defaultContentSize,
+    required final IndexedWidgetBuilder itemBuilder,
   }) {
     return Stack(
       children: [
         ContentContainerWidget(
-          builder: (context) {
+          builder: (final context) {
             return Container();
           },
           maxSize: maxSize,
           contentSize: contentSize,
         ),
-        ContentScrollbar(scrollbarChildBuilder: (context, controller) {
+        ContentScrollbar(
+            scrollbarChildBuilder: (final context, final controller) {
           return ListView.builder(
             controller: controller,
-            itemBuilder: (BuildContext context, int index) {
+            itemBuilder: (final BuildContext context, final int index) {
               final Widget content = itemBuilder(context, index);
               return ContentContainerWidget(
-                builder: (BuildContext context) {
+                builder: (final BuildContext context) {
                   return content;
                 },
                 addMaterial: false,
@@ -119,23 +120,23 @@ class ContentContainerListView extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Stack(
       children: [
         ContentContainerWidget(
-          builder: (context) {
+          builder: (final context) {
             return Container();
           },
           maxSize: maxSize,
           contentSize: contentSize,
         ),
         ContentScrollbar(
-          scrollbarChildBuilder: (context, controller) {
+          scrollbarChildBuilder: (final context, final controller) {
             return ListView(
                 controller: controller,
                 children: children
-                    .map((item) => ContentContainerWidget(
-                          builder: (context) {
+                    .map((final item) => ContentContainerWidget(
+                          builder: (final context) {
                             return item;
                           },
                           addMaterial: false,
@@ -156,8 +157,8 @@ typedef ScrollbarChildBuilder = Widget Function(
 
 class ContentScrollbar extends StatelessWidget {
   ContentScrollbar({
-    Key? key,
-    ScrollController? controller,
+    final Key? key,
+    final ScrollController? controller,
     required this.scrollbarChildBuilder,
     this.maxSize = ContentContainerWidget.defaultMaxSize,
   })  : controller = controller ?? ScrollController(),
@@ -170,7 +171,7 @@ class ContentScrollbar extends StatelessWidget {
   final double maxSize;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final child = scrollbarChildBuilder(context, controller);
     return Scrollbar(
         controller: controller,
@@ -179,13 +180,13 @@ class ContentScrollbar extends StatelessWidget {
   }
 
   static bool alwaysShowScrollbar(
-    BuildContext context, {
-    double maxSize = ContentContainerWidget.defaultMaxSize,
+    final BuildContext context, {
+    final double maxSize = ContentContainerWidget.defaultMaxSize,
   }) {
     if (SharedPlatform.isLinux) {
       return true;
     } else if (SharedPlatform.isWeb) {
-      double screenWidth = MediaQuery.of(context).size.width;
+      final double screenWidth = MediaQuery.of(context).size.width;
 
       return screenWidth >= maxSize;
     }
@@ -199,7 +200,7 @@ class ContentScrollbar extends StatelessWidget {
   static Stream<bool> get alwaysShowScrollbarStream =>
       _alwaysShowScrollbarSubject.stream;
 
-  static void updateShowScrollbarSubject(BuildContext context) {
+  static void updateShowScrollbarSubject(final BuildContext context) {
     final startValue = _alwaysShowScrollbarSubject.valueOrNull;
     final newValue = alwaysShowScrollbar(context);
     if (newValue != startValue) {

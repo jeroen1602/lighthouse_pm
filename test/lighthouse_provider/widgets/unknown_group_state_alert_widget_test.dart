@@ -7,8 +7,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create an universal Unknown group state alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownGroupStateAlertWidget.showCustomDialog(context, false, true);
     }));
 
@@ -34,8 +34,8 @@ void main() {
   });
 
   testWidgets("Should create a non universal Unknown group state alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownGroupStateAlertWidget.showCustomDialog(context, false, false);
     }));
 
@@ -57,8 +57,8 @@ void main() {
   });
 
   testWidgets("Should create actions for Unknown group state alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownGroupStateAlertWidget.showCustomDialog(context, false, true);
     }));
 
@@ -81,8 +81,8 @@ void main() {
 
   testWidgets(
       "Should add standby if supported for Unknown group state alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownGroupStateAlertWidget.showCustomDialog(context, true, true);
     }));
 
@@ -104,9 +104,9 @@ void main() {
   });
 
   testWidgets("Should return null on cancel Unknown group state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future =
           UnknownGroupStateAlertWidget.showCustomDialog(context, true, false);
     }));
@@ -122,14 +122,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNull);
   });
 
   testWidgets("Should return on state on 'on' Unknown group state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future =
           UnknownGroupStateAlertWidget.showCustomDialog(context, true, false);
     }));
@@ -145,16 +145,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.on);
   });
 
   testWidgets(
       "Should return sleep state on 'sleep' Unknown group state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future =
           UnknownGroupStateAlertWidget.showCustomDialog(context, true, false);
     }));
@@ -170,16 +170,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.sleep);
   });
 
   testWidgets(
       "Should return standby state on 'standby' Unknown group state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future =
           UnknownGroupStateAlertWidget.showCustomDialog(context, true, false);
     }));
@@ -195,7 +195,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.standby);
   });

@@ -8,26 +8,29 @@ class ViveBaseStationBloc implements ViveBaseStationPersistence {
   final LighthousePMBloc bloc;
 
   @override
-  Future<void> deleteId(LHDeviceIdentifier deviceId) {
+  Future<void> deleteId(final LHDeviceIdentifier deviceId) {
     return bloc.viveBaseStation.deleteId(deviceId.toString());
   }
 
   @override
-  Future<int?> getId(LHDeviceIdentifier deviceId) {
+  Future<int?> getId(final LHDeviceIdentifier deviceId) {
     return bloc.viveBaseStation.getId(deviceId.toString());
   }
 
   @override
-  Stream<bool> hasIdStored(LHDeviceIdentifier deviceId) {
+  Stream<bool> hasIdStored(final LHDeviceIdentifier deviceId) {
     final deviceIdString = deviceId.toString();
-    return bloc.viveBaseStation.getViveBaseStationIdsAsStream().map((ids) {
-      return (ids.indexWhere((element) => element.deviceId == deviceIdString) >=
+    return bloc.viveBaseStation
+        .getViveBaseStationIdsAsStream()
+        .map((final ids) {
+      return (ids.indexWhere(
+              (final element) => element.deviceId == deviceIdString) >=
           0);
     });
   }
 
   @override
-  Future<void> insertId(LHDeviceIdentifier deviceId, int id) {
+  Future<void> insertId(final LHDeviceIdentifier deviceId, final int id) {
     return bloc.viveBaseStation.insertId(deviceId.toString(), id);
   }
 }

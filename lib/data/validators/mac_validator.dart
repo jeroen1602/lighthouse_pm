@@ -3,7 +3,7 @@
 class MacValidator {
   MacValidator._();
 
-  static String? macValidator(String? input) {
+  static String? macValidator(final String? input) {
     if (input == null || input.trim() == '') {
       return null;
     }

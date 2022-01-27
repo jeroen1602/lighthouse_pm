@@ -38,7 +38,7 @@ class InAppPurchases {
       }
     }
     final items = await _channel.invokeListMethod('requestPrices') ?? [];
-    return items.map((e) {
+    return items.map((final e) {
       return InAppPurchaseItem.fromMap(e as Map<dynamic, dynamic>);
     }).toList()
       ..sort(_sortInAppPurchases);
@@ -47,7 +47,8 @@ class InAppPurchases {
   ///
   /// Sort the [InAppPurchaseItem]s.
   ///
-  int _sortInAppPurchases(InAppPurchaseItem a, InAppPurchaseItem b) {
+  int _sortInAppPurchases(
+      final InAppPurchaseItem a, final InAppPurchaseItem b) {
     final aWithoutEuro = a.originalPrice
         .replaceAll("€", "")
         .replaceAll(".", "")
@@ -69,7 +70,7 @@ class InAppPurchases {
   /// Returns an int with the current billing state. -1 is user Canceled, 0 is
   /// success, 1 is still pending.
   ///
-  Future<int> startBillingFlow(String id) async {
+  Future<int> startBillingFlow(final String id) async {
     if (!SharedPlatform.isAndroid) {
       if (!kReleaseMode) {
         throw UnsupportedError(

@@ -25,7 +25,7 @@ void main() {
   });
 
   test('Should convert a string to int list', () {
-    final string = "ABCDEF";
+    const string = "ABCDEF";
 
     final list = intListFromString(string);
     expect(list, [0x41, 0x42, 0x43, 0x44, 0x45, 0x46]);

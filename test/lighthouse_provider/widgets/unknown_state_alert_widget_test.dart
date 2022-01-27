@@ -15,12 +15,12 @@ void main() {
   });
 
   testWidgets("Should create an universal unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -48,12 +48,12 @@ void main() {
   });
 
   testWidgets("Should create actions for unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -75,15 +75,15 @@ void main() {
   });
 
   testWidgets("Should add standby if supported for unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
-        changeState: (LighthousePowerState newState) async {},
+        changeState: (final LighthousePowerState newState) async {},
         powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -105,16 +105,16 @@ void main() {
   });
 
   testWidgets("Should return null on cancel unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
-        changeState: (LighthousePowerState newState) async {},
+        changeState: (final LighthousePowerState newState) async {},
         powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -129,21 +129,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNull);
   });
 
   testWidgets("Should return on state on 'on' unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
-        changeState: (LighthousePowerState newState) async {},
+        changeState: (final LighthousePowerState newState) async {},
         powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -158,22 +158,22 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.on);
   });
 
   testWidgets("Should return sleep state on 'sleep' unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
-        changeState: (LighthousePowerState newState) async {},
+        changeState: (final LighthousePowerState newState) async {},
         powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -188,23 +188,23 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.sleep);
   });
 
   testWidgets(
       "Should return standby state on 'standby' unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     device.extensions.add(StandbyExtension(
-        changeState: (LighthousePowerState newState) async {},
+        changeState: (final LighthousePowerState newState) async {},
         powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -219,18 +219,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isNotNull);
     expect(value, LighthousePowerState.standby);
   });
 
   testWidgets("Open help out alert widget unknown state alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -261,7 +261,7 @@ void main() {
   });
 
   testWidgets("Should create unknown state help out alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
@@ -273,7 +273,7 @@ void main() {
         buildNumber: "-9",
         buildSignature: "SIGN_HERE_PLEASE");
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -295,7 +295,7 @@ void main() {
   });
 
   testWidgets("Should open issue for unknown state help out alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
@@ -307,7 +307,7 @@ void main() {
         buildNumber: "-9",
         buildSignature: "SIGN_HERE_PLEASE");
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 
@@ -333,7 +333,7 @@ void main() {
 
   testWidgets(
       "Should copy to clipboard for unknown state help out alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
@@ -345,7 +345,7 @@ void main() {
         buildNumber: "-9",
         buildSignature: "SIGN_HERE_PLEASE");
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
     }));
 

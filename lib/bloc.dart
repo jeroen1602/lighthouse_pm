@@ -24,17 +24,17 @@ class LighthousePMBloc {
         .customSelect(
             'SELECT `name` FROM `sqlite_master` WHERE `type` IN (\'table\',\'view\') AND `name` NOT LIKE \'sqlite_%\' ORDER BY 1;')
         .get()
-        .then((rows) {
-      return rows.map((row) => row.read<String>('name')).toList()
-        ..sort((a, b) => a.compareTo(b));
+        .then((final rows) {
+      return rows.map((final row) => row.read<String>('name')).toList()
+        ..sort((final a, final b) => a.compareTo(b));
     });
   }
 
   List<String> getKnownTables() {
     return db.allTables
-        .map((e) => e.actualTableName.replaceAll('"', ''))
+        .map((final e) => e.actualTableName.replaceAll('"', ''))
         .toList()
-      ..sort((a, b) => a.compareTo(b));
+      ..sort((final a, final b) => a.compareTo(b));
   }
 
   void close() {
@@ -43,13 +43,14 @@ class LighthousePMBloc {
 }
 
 abstract class WithBlocStateless {
-  LighthousePMBloc bloc(BuildContext context, {bool listen = true}) =>
+  LighthousePMBloc bloc(final BuildContext context,
+          {final bool listen = true}) =>
       Provider.of<LighthousePMBloc>(context, listen: listen);
 
-  LighthousePMBloc blocWithoutListen(BuildContext context) =>
+  LighthousePMBloc blocWithoutListen(final BuildContext context) =>
       bloc(context, listen: false);
 
-  static blocStatic(BuildContext context, {bool listen = true}) =>
+  static blocStatic(final BuildContext context, {final bool listen = true}) =>
       Provider.of<LighthousePMBloc>(context, listen: listen);
 }
 

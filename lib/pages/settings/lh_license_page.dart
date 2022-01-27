@@ -8,16 +8,19 @@ import '../simple_base_page.dart';
 /// A wrapper for the license page so it's compatible.
 ///
 class LHLicensePage extends SimpleBasePage {
-  LHLicensePage()
-      : super(FutureBuilder<PackageInfo>(
-            future: PackageInfo.fromPlatform(),
-            builder: (_, snapshot) {
-              final data = snapshot.data;
-              return LicensePage(
-                applicationName: "Lighthouse Power management",
-                applicationIcon: SvgPicture.asset('assets/images/app-icon.svg'),
-                applicationVersion: data?.version,
-                applicationLegalese: "Copyright© 2020-2022 Jeroen1602",
-              );
-            }));
+  LHLicensePage({final Key? key})
+      : super(
+            FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (final _, final snapshot) {
+                  final data = snapshot.data;
+                  return LicensePage(
+                    applicationName: "Lighthouse Power management",
+                    applicationIcon:
+                        SvgPicture.asset('assets/images/app-icon.svg'),
+                    applicationVersion: data?.version,
+                    applicationLegalese: "Copyright© 2020-2022 Jeroen1602",
+                  );
+                }),
+            key: key);
 }

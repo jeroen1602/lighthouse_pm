@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:fake_back_end/fake_back_end.dart';
@@ -88,7 +89,7 @@ void main() {
 
     for (final characteristic in expectedCharacteristics) {
       final index = characteristics
-          .indexWhere((element) => element.uuid == characteristic);
+          .indexWhere((final element) => element.uuid == characteristic);
       expect(index, isNot(-1),
           reason: 'Should have "${characteristic.toString()}" characteristic');
     }
@@ -123,7 +124,7 @@ void main() {
 
     for (final characteristic in expectedCharacteristics) {
       final index = characteristics
-          .indexWhere((element) => element.uuid == characteristic);
+          .indexWhere((final element) => element.uuid == characteristic);
       expect(index, isNot(-1),
           reason: 'Should have "${characteristic.toString()}" characteristic');
     }
@@ -142,9 +143,12 @@ void main() {
     power.write([0x01]);
 
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
 
     expect(first, 0x01, reason: "Should first switch to on command");
     expect(second, 0x09, reason: "Should then switch to booting");
@@ -164,9 +168,12 @@ void main() {
     power.write([0x02]);
 
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
 
     expect(first, 0x02, reason: "Should first switch to standby command");
     expect(second, 0x09, reason: "Should then switch to booting");
@@ -185,9 +192,12 @@ void main() {
     // First turn the device on
     power.write([0x01]);
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
     expect(first, 0x01, reason: "Should first switch to on command");
     expect(second, 0x09, reason: "Should then switch to booting");
     expect(third, 0x0b, reason: "Should then switch to on");
@@ -210,9 +220,12 @@ void main() {
     // Now set it to standby
     power.write([0x02]);
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
     expect(first, 0x02, reason: "Should first switch to standby command");
     expect(second, 0x09, reason: "Should then switch to booting");
     expect(third, 0x02, reason: "Should then switch to standby");
@@ -235,9 +248,12 @@ void main() {
     // Now set it to standby
     power.write([0x02]);
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
     expect(first, 0x02, reason: "Should first switch to standby command");
     expect(second, 0x09, reason: "Should then switch to booting");
     expect(third, 0x02, reason: "Should then switch to standby");
@@ -260,9 +276,12 @@ void main() {
     // First turn the device on
     power.write([0x01]);
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
     expect(first, 0x01, reason: "Should first switch to on command");
     expect(second, 0x09, reason: "Should then switch to booting");
     expect(third, 0x0b, reason: "Should then switch to on");
@@ -285,11 +304,12 @@ void main() {
     // Change the state to something unrecognized
     power.write([0xFF]);
     // Should not change within a second
-    final end = DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+    final end =
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
   });
 
@@ -305,22 +325,23 @@ void main() {
     // Change the state with too many bytes
     power.write([0x01, 0x00]);
     // Should not change within a second
-    final end = DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+    final end =
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
 
     // Change the state with not enough bytes
     power.write([]);
     // Should not change within a second
     final end2 =
-        DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end2) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
   });
 
@@ -336,9 +357,12 @@ void main() {
     identify.write([0x00]);
 
     // Get the next states in order. This should take around 10ms + 1200ms = 1210ms = 1.21s. But just in case I added a timeout.
-    final first = await getNextPowerState(power, 0x00, Duration(seconds: 1));
-    final second = await getNextPowerState(power, first, Duration(seconds: 1));
-    final third = await getNextPowerState(power, second, Duration(seconds: 3));
+    final first =
+        await getNextPowerState(power, 0x00, const Duration(seconds: 1));
+    final second =
+        await getNextPowerState(power, first, const Duration(seconds: 1));
+    final third =
+        await getNextPowerState(power, second, const Duration(seconds: 3));
 
     expect(first, 0x01, reason: "Should first switch to on command");
     expect(second, 0x09, reason: "Should then switch to booting");
@@ -358,22 +382,23 @@ void main() {
     //Now identify with too many bytes
     identify.write([0x00, 0x00]);
     // Should not change within a second
-    final end = DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+    final end =
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
 
     //Now identify with not enough
     identify.write([]);
     // Should not change within a second
     final end2 =
-        DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end2) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
   });
 
@@ -390,11 +415,12 @@ void main() {
     //Now send an incorrect command.
     identify.write([0xFF]);
     // Should not change within a second
-    final end = DateTime.now().add(Duration(seconds: 1)).millisecondsSinceEpoch;
+    final end =
+        DateTime.now().add(const Duration(seconds: 1)).millisecondsSinceEpoch;
     while (DateTime.now().millisecondsSinceEpoch < end) {
       expect(await power.readUint32(), 0x00,
           reason: "Power state should stay off.");
-      await Future.delayed(Duration(milliseconds: 1));
+      await Future.delayed(const Duration(milliseconds: 1));
     }
   });
 
@@ -449,8 +475,8 @@ void main() {
   });
 }
 
-Future<int> getNextPowerState(FakeLighthouseV2PowerCharacteristic power,
-    int previous, Duration timeout) async {
+Future<int> getNextPowerState(final FakeLighthouseV2PowerCharacteristic power,
+    final int previous, final Duration timeout) async {
   final beforeTime = DateTime.now().add(timeout).millisecondsSinceEpoch;
   while (true) {
     final currentState = await power.readUint32();
@@ -460,9 +486,9 @@ Future<int> getNextPowerState(FakeLighthouseV2PowerCharacteristic power,
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now > beforeTime) {
-      print("Now: $now, before: $beforeTime, diff = ${beforeTime - now}");
+      debugPrint("Now: $now, before: $beforeTime, diff = ${beforeTime - now}");
       throw TimeoutException('Could not get a new value within $timeout');
     }
-    await Future.delayed(Duration(microseconds: 10));
+    await Future.delayed(const Duration(microseconds: 10));
   }
 }

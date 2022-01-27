@@ -6,8 +6,8 @@ import 'change_group_name_alert_widget.dart';
 
 /// Change the group for the items selected.
 class ChangeGroupAlertWidget extends StatefulWidget {
-  ChangeGroupAlertWidget(
-      {required this.groups, required this.selectedGroup, Key? key})
+  const ChangeGroupAlertWidget(
+      {required this.groups, required this.selectedGroup, final Key? key})
       : super(key: key);
 
   static const int removeGroupId = -1;
@@ -34,14 +34,15 @@ class ChangeGroupAlertWidget extends StatefulWidget {
   ///
   /// The [groups] should contain the known groups.
   /// The [selectedGroup] can be the group that is already selected, may be `null`.
-  static Future<Group?> showCustomDialog(BuildContext context,
-      {required List<GroupWithEntries> groups, required Group? selectedGroup}) {
+  static Future<Group?> showCustomDialog(final BuildContext context,
+      {required final List<GroupWithEntries> groups,
+      required final Group? selectedGroup}) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return ChangeGroupAlertWidget(
               groups: groups, selectedGroup: selectedGroup);
-        }).then((value) {
+        }).then((final value) {
       if (value is Group) {
         return value;
       }
@@ -68,7 +69,7 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
 
   List<DropdownMenuItem<Group>> _getGroupMenuItems() {
     final list = widget.groups
-        .map((e) => DropdownMenuItem(
+        .map((final e) => DropdownMenuItem(
               child: Text(e.group.name),
               value: e.group,
             ))
@@ -77,15 +78,15 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
     final localSelected = selected;
     if (localSelected != null &&
         localSelected.id != _removeGroup.id &&
-        widget.groups
-                .indexWhere((element) => element.group.id == localSelected.id) <
+        widget.groups.indexWhere(
+                (final element) => element.group.id == localSelected.id) <
             0) {
       list.add(DropdownMenuItem(
           child: Text(localSelected.name), value: localSelected));
     }
     list.add(DropdownMenuItem(
         child: Row(
-      children: [
+      children: const [
         Icon(Icons.add),
         VerticalDivider(
           color: Colors.transparent,
@@ -99,7 +100,7 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
         DropdownMenuItem(
             value: _removeGroup,
             child: Row(
-              children: [
+              children: const [
                 Icon(Icons.clear),
                 VerticalDivider(
                   color: Colors.transparent,
@@ -112,16 +113,16 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
-      title: Text('Set the group'),
+      title: const Text('Set the group'),
       content: IntrinsicHeight(
         child: Column(
           children: [
             DropdownButton<Group>(
               value: selected,
               items: _getGroupMenuItems(),
-              onChanged: (newValue) async {
+              onChanged: (final newValue) async {
                 if (newValue == null) {
                   final name =
                       await ChangeGroupNameAlertWidget.showCustomDialog(
@@ -144,13 +145,13 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
       ),
       actions: [
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(context, null);
           },
         ),
         SimpleDialogOption(
-          child: Text('Save'),
+          child: const Text('Save'),
           onPressed: () {
             Navigator.pop(context, selected);
           },

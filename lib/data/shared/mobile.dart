@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart' as paths;
 
 import '../database.dart';
 
-LighthouseDatabase constructDb({bool logStatements = false}) {
+LighthouseDatabase constructDb({final bool logStatements = false}) {
   if (Platform.isIOS || Platform.isAndroid) {
     final executor = LazyDatabase(() async {
       final dbFolder = await paths.getApplicationDocumentsDirectory();

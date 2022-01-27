@@ -15,15 +15,17 @@ import 'base_page.dart';
 /// A widget showing the a material scaffold with some help items the user may need.
 ///
 class HelpPage extends BasePage with WithBlocStateless {
+  const HelpPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Scaffold(
         appBar: AppBar(title: const Text('Help')),
         body: MainPageSettings.mainPageSettingsStreamBuilder(
             bloc: blocWithoutListen(context),
-            builder: (context, settings) {
+            builder: (final context, final settings) {
               return ContentContainerListView(
                 children: [
                   _HelpItem(
@@ -196,7 +198,7 @@ class HelpPage extends BasePage with WithBlocStateless {
                                     'Lighthouses version 2.0 should start with '),
                             TextSpan(text: 'LHB-', style: theming.bodyTextBold),
                             const TextSpan(text: '.\n'),
-                            if (settings?.viveBaseStationsEnabled == true) ...[
+                            if (settings?.viveBaseStationsEnabled ?? false) ...[
                               const TextSpan(
                                   text:
                                       'Vive base stations should start with '),
@@ -234,14 +236,14 @@ class HelpPage extends BasePage with WithBlocStateless {
 }
 
 class _HelpItem extends StatelessWidget {
-  const _HelpItem({Key? key, required this.title, required this.body})
+  const _HelpItem({final Key? key, required this.title, required this.body})
       : super(key: key);
 
   final String title;
   final Widget body;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Container(

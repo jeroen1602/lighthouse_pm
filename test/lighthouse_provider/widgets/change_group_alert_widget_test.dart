@@ -8,8 +8,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create a group alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupAlertWidget.showCustomDialog(context,
           groups: [], selectedGroup: null);
     }));
@@ -27,7 +27,7 @@ void main() {
   });
 
   testWidgets("Should show groups in group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
@@ -35,7 +35,7 @@ void main() {
       GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
     ];
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupAlertWidget.showCustomDialog(context,
           groups: groups, selectedGroup: null);
     }));
@@ -78,7 +78,7 @@ void main() {
   });
 
   testWidgets("Should show selected group in group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
@@ -86,7 +86,7 @@ void main() {
       GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
     ];
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupAlertWidget.showCustomDialog(context,
           groups: groups, selectedGroup: groups[1].group);
     }));
@@ -115,7 +115,7 @@ void main() {
   });
 
   testWidgets("Should create a new group in group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
@@ -124,7 +124,7 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = ChangeGroupAlertWidget.showCustomDialog(context,
           groups: groups, selectedGroup: groups[1].group);
     }));
@@ -171,7 +171,7 @@ void main() {
   });
 
   testWidgets("Should select no group in group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
@@ -180,7 +180,7 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = ChangeGroupAlertWidget.showCustomDialog(context,
           groups: groups, selectedGroup: groups[1].group);
     }));
@@ -218,7 +218,7 @@ void main() {
   });
 
   testWidgets("Should select a group in group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
@@ -227,7 +227,7 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = ChangeGroupAlertWidget.showCustomDialog(context,
           groups: groups, selectedGroup: null);
     }));
@@ -265,8 +265,8 @@ void main() {
   });
 }
 
-Future<void> scrollIntoViewAndTap(WidgetTester tester, String item,
-    {bool openSelector = true}) async {
+Future<void> scrollIntoViewAndTap(final WidgetTester tester, final String item,
+    {final bool openSelector = true}) async {
   if (openSelector) {
     await tester.tap(find.descendant(
         of: find.byType(Dialog),

@@ -14,8 +14,10 @@ import 'package:toast/toast.dart';
 import '../base_page.dart';
 
 class SettingsNicknamesPage extends BasePage {
+  const SettingsNicknamesPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     return _SettingsNicknamesPageContent();
   }
 }
@@ -30,42 +32,42 @@ class _SettingsNicknamesPageContent extends StatefulWidget {
 class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   final Set<LHDeviceIdentifier> selected = {};
 
-  void _selectItem(String deviceId) {
+  void _selectItem(final String deviceId) {
     setState(() {
       selected.add(LHDeviceIdentifier(deviceId));
     });
   }
 
-  void _deselectItem(String deviceId) {
+  void _deselectItem(final String deviceId) {
     setState(() {
       selected.remove(LHDeviceIdentifier(deviceId));
     });
   }
 
-  bool _isSelected(String deviceId) {
+  bool _isSelected(final String deviceId) {
     return selected.contains(LHDeviceIdentifier(deviceId));
   }
 
-  Future _deleteItem(String deviceId) {
+  Future _deleteItem(final String deviceId) {
     return blocWithoutListen.nicknames.deleteNicknames([deviceId]);
   }
 
-  Future _updateItem(Nickname nickname) {
+  Future _updateItem(final Nickname nickname) {
     return blocWithoutListen.nicknames.insertNickname(nickname);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<List<NicknamesLastSeenJoin>>(
       stream: bloc.nicknames.watchSavedNicknamesWithLastSeen(),
-      builder: (BuildContext _,
-          AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
+      builder: (final BuildContext _,
+          final AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
         Widget body = const Center(
           child: CircularProgressIndicator(),
         );
         final data = snapshot.data;
         if (data != null) {
-          data.sort((a, b) {
+          data.sort((final a, final b) {
             return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
@@ -107,8 +109,8 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
                   icon: const Icon(Icons.delete),
                   tooltip: 'Delete selected',
                   onPressed: () async {
-                    await blocWithoutListen.nicknames
-                        .deleteNicknames(selected.map((e) => e.id).toList());
+                    await blocWithoutListen.nicknames.deleteNicknames(
+                        selected.map((final e) => e.id).toList());
                     setState(() {
                       selected.clear();
                     });
@@ -148,8 +150,8 @@ typedef _DeleteItem = Future Function(String deviceId);
 typedef _UpdateItem = Future Function(Nickname nickname);
 
 class _DataNicknamePage extends StatelessWidget {
-  _DataNicknamePage(
-      {Key? key,
+  const _DataNicknamePage(
+      {final Key? key,
       required this.selecting,
       required this.nicknames,
       required this.selectItem,
@@ -167,8 +169,8 @@ class _DataNicknamePage extends StatelessWidget {
   final _DeleteItem deleteItem;
   final _UpdateItem updateItem;
 
-  Future _changeNickname(
-      BuildContext context, NicknamesLastSeenJoin oldNickname) async {
+  Future _changeNickname(final BuildContext context,
+      final NicknamesLastSeenJoin oldNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
         deviceId: oldNickname.deviceId, nickname: oldNickname.nickname);
     if (newNickname != null) {
@@ -181,9 +183,9 @@ class _DataNicknamePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ContentContainerListView.builder(
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final item = nicknames[index];
         final selected = isSelected(item.deviceId);
         final lastSeen = item.lastSeen;
@@ -196,7 +198,7 @@ class _DataNicknamePage extends StatelessWidget {
               child: ListTile(
                 title: Text(item.nickname),
                 subtitle: Text(
-                    '${item.deviceId}${lastSeen != null ? ' | last seen: ' + DateFormat.yMd(Intl.systemLocale).format(lastSeen) : ''}'),
+                    '${item.deviceId}${lastSeen != null ? ' | last seen: ${DateFormat.yMd(Intl.systemLocale).format(lastSeen)}' : ''}'),
                 onLongPress: () {
                   if (!selecting) {
                     selectItem(item.deviceId);
@@ -227,7 +229,7 @@ class _DataNicknamePage extends StatelessWidget {
 }
 
 class _EmptyNicknamePage extends StatefulWidget {
-  const _EmptyNicknamePage({Key? key}) : super(key: key);
+  const _EmptyNicknamePage({final Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -240,7 +242,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
   int tapCounter = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     final Widget blockIcon = kReleaseMode

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
-  const PermissionsAlertWidget(this.sdkInt, {Key? key}) : super(key: key);
+  const PermissionsAlertWidget(this.sdkInt, {final Key? key}) : super(key: key);
 
   final int sdkInt;
 
@@ -25,7 +25,7 @@ class PermissionsAlertWidget extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
@@ -59,13 +59,13 @@ class PermissionsAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool> showCustomDialog(BuildContext context) {
-    return DeviceInfoPlugin().androidInfo.then((deviceInto) {
+  static Future<bool> showCustomDialog(final BuildContext context) {
+    return DeviceInfoPlugin().androidInfo.then((final deviceInto) {
       return showDialog(
           context: context,
-          builder: (BuildContext context) {
+          builder: (final BuildContext context) {
             return PermissionsAlertWidget(deviceInto.version.sdkInt);
-          }).then((value) {
+          }).then((final value) {
         if (value is bool) {
           return value;
         }

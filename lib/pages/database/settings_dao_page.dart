@@ -16,7 +16,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 
   _SimpleSettingConverter(this.bloc);
 
-  String convertSettingIdToString(int id) {
+  String convertSettingIdToString(final int id) {
     switch (id) {
       case SettingsDao.defaultSleepStateId:
         return 'DEFAULT_SLEEP_STATE_ID';
@@ -37,7 +37,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
     }
   }
 
-  String convertToBoolean(String? data) {
+  String convertToBoolean(final String? data) {
     if (data == "1") {
       return 'true';
     } else if (data == "0") {
@@ -49,7 +49,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
     }
   }
 
-  String convertDataToString(int settingId, String? data) {
+  String convertDataToString(final int settingId, final String? data) {
     switch (settingId) {
       case SettingsDao.defaultSleepStateId:
         if (data == null) {
@@ -107,23 +107,23 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
   }
 
   @override
-  String getDataSubtitle(SimpleSetting data) {
+  String getDataSubtitle(final SimpleSetting data) {
     return '"${data.data ?? 'null'}" (${convertDataToString(data.settingsId, data.data)})';
   }
 
   @override
-  String getDataTitle(SimpleSetting data) {
+  String getDataTitle(final SimpleSetting data) {
     return '${data.settingsId} (${convertSettingIdToString(data.settingsId)})';
   }
 
   @override
-  Future<void> deleteItem(SimpleSetting item) {
+  Future<void> deleteItem(final SimpleSetting item) {
     return bloc.settings.deleteSimpleSetting(item);
   }
 
   @override
   Future<void> openChangeDialog(
-      BuildContext context, SimpleSetting data) async {
+      final BuildContext context, final SimpleSetting data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: '${data.settingsId}',
@@ -136,7 +136,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertIntDecorator('Id', null, autoIncrement: false),
       DaoDataCreateAlertStringDecorator('Value', null),
@@ -159,8 +159,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 }
 
 class SettingsDaoPage extends BasePage with WithBlocStateless {
+  const SettingsDaoPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(

@@ -14,14 +14,15 @@ import '../helpers/custom_long_press_gesture_recognizer.dart';
 
 /// An alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
-  UnknownStateAlertWidget(this.device, this.currentState, {Key? key})
+  const UnknownStateAlertWidget(this.device, this.currentState,
+      {final Key? key})
       : super(key: key);
 
   final LighthouseDevice device;
   final int currentState;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     final actions = <Widget>[
@@ -76,10 +77,12 @@ class UnknownStateAlertWidget extends StatelessWidget {
   }
 
   static Future<LighthousePowerState?> showCustomDialog(
-      BuildContext context, LighthouseDevice device, int currentState) {
+      final BuildContext context,
+      final LighthouseDevice device,
+      final int currentState) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return UnknownStateAlertWidget(device, currentState);
         });
   }
@@ -87,24 +90,26 @@ class UnknownStateAlertWidget extends StatelessWidget {
 
 /// A dialog to ask the user to help out with unknown states
 class UnknownStateHelpOutAlertWidget extends StatelessWidget {
-  UnknownStateHelpOutAlertWidget(this.device, this.currentState, {Key? key})
+  const UnknownStateHelpOutAlertWidget(this.device, this.currentState,
+      {final Key? key})
       : super(key: key);
 
   final LighthouseDevice device;
   final int currentState;
 
-  String _getClipboardString(String version) {
+  String _getClipboardString(final String version) {
     return 'App version: $version\n'
         'Device type: ${device.runtimeType}\n'
         'Firmware version: ${device.firmwareVersion}\n'
         'Current reported state: 0x${currentState.toRadixString(16).padLeft(2, '0')}\n';
   }
 
-  GestureRecognizer createRecognizer(BuildContext context, String version) {
+  GestureRecognizer createRecognizer(
+      final BuildContext context, final String version) {
     return CustomLongPressGestureRecognizer()
       ..onLongPress = () async {
         Clipboard.setData(ClipboardData(text: _getClipboardString(version)));
-        if (await Vibration.hasVibrator() == true) {
+        if (await Vibration.hasVibrator() ?? false) {
           Vibration.vibrate(duration: 200);
         }
         Toast.show('Copied to clipboard', context,
@@ -113,14 +118,14 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
-      title: Text('Help out!'),
+      title: const Text('Help out!'),
       content: FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
+        builder: (final context, final snapshot) {
           final version = snapshot.data;
           final recognizer = version != null
               ? createRecognizer(context, version.version)
@@ -171,13 +176,13 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
       ),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text("Open issue"),
+          child: const Text("Open issue"),
           onPressed: () async {
             await launch(Links.stateIssueUrl);
           },
         ),
         SimpleDialogOption(
-          child: Text("Cancel"),
+          child: const Text("Cancel"),
           onPressed: () {
             Navigator.pop(context, null);
           },
@@ -186,11 +191,11 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
     );
   }
 
-  static Future<void> showCustomDialog(
-      BuildContext context, LighthouseDevice device, int currentState) {
+  static Future<void> showCustomDialog(final BuildContext context,
+      final LighthouseDevice device, final int currentState) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return UnknownStateHelpOutAlertWidget(device, currentState);
         });
   }

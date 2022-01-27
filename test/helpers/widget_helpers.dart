@@ -4,9 +4,9 @@ import 'package:lighthouse_pm/lighthouse_provider/helpers/custom_long_press_gest
 
 typedef ButtonCallback = void Function(BuildContext context);
 
-MaterialApp buildTestAppForWidgets(ButtonCallback onPressed,
-    {String buttonText = "X"}) {
-  return buildTestApp((context) {
+MaterialApp buildTestAppForWidgets(final ButtonCallback onPressed,
+    {final String buttonText = "X"}) {
+  return buildTestApp((final context) {
     return Center(
       child: ElevatedButton(
         child: Text(buttonText),
@@ -18,7 +18,7 @@ MaterialApp buildTestAppForWidgets(ButtonCallback onPressed,
   });
 }
 
-MaterialApp buildTestApp(WidgetBuilder builder) {
+MaterialApp buildTestApp(final WidgetBuilder builder) {
   return MaterialApp(
     home: Material(
       child: Builder(builder: builder),
@@ -26,7 +26,7 @@ MaterialApp buildTestApp(WidgetBuilder builder) {
   );
 }
 
-bool findTextAndTap(InlineSpan visitor, String text) {
+bool findTextAndTap(final InlineSpan visitor, final String text) {
   if (visitor is TextSpan && visitor.text == text) {
     (visitor.recognizer as TapGestureRecognizer).onTap!();
 
@@ -36,15 +36,15 @@ bool findTextAndTap(InlineSpan visitor, String text) {
   return true;
 }
 
-bool tapTextSpan(RichText richText, String text) {
+bool tapTextSpan(final RichText richText, final String text) {
   final isTapped = !richText.text.visitChildren(
-    (visitor) => findTextAndTap(visitor, text),
+    (final visitor) => findTextAndTap(visitor, text),
   );
 
   return isTapped;
 }
 
-bool findTextAndHold(InlineSpan visitor, String text) {
+bool findTextAndHold(final InlineSpan visitor, final String text) {
   if (visitor is TextSpan && visitor.text == text) {
     (visitor.recognizer as CustomLongPressGestureRecognizer).onLongPress!();
 
@@ -53,9 +53,9 @@ bool findTextAndHold(InlineSpan visitor, String text) {
   return true;
 }
 
-bool holdTextSpan(RichText richText, String text) {
-  final hasHeld =
-      !richText.text.visitChildren((visitor) => findTextAndHold(visitor, text));
+bool holdTextSpan(final RichText richText, final String text) {
+  final hasHeld = !richText.text
+      .visitChildren((final visitor) => findTextAndHold(visitor, text));
 
   return hasHeld;
 }

@@ -10,7 +10,7 @@ import '../base_page.dart';
 class _NotesCounter {
   final List<String> _values = [];
 
-  int getValue(String name) {
+  int getValue(final String name) {
     final index = _values.indexOf(name);
     if (index >= 0) {
       return index + 1;
@@ -21,6 +21,8 @@ class _NotesCounter {
 }
 
 class PrivacyPage extends BasePage {
+  const PrivacyPage({final Key? key}) : super(key: key);
+
   static const version1_1Date = "January 1st 2022";
 
   static const superScript = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
@@ -52,7 +54,7 @@ class PrivacyPage extends BasePage {
   static get _userGeneratedData => _notesCounter.getValue("userGeneratedData");
 
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Scaffold(

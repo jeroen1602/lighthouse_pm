@@ -19,7 +19,7 @@ class ShortcutHandle {
   const ShortcutHandle(this.type, this.data);
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(final Object other) {
     if (other is ShortcutHandle) {
       return other.type == type && other.data == data;
     }

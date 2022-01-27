@@ -1,5 +1,5 @@
 import '../database.dart';
 
-LighthouseDatabase constructDb({bool logStatements = false}) {
+LighthouseDatabase constructDb({final bool logStatements = false}) {
   throw 'Platform not supported';
 }

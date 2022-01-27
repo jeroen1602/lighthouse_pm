@@ -123,7 +123,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
           return output;
         })
         // Give the listener at least 2ms to process the data before firing again.
-        .debounce((_) => TimerStream(true, Duration(milliseconds: 2)))
+        .debounce((_) => TimerStream(true, const Duration(milliseconds: 2)))
         .listen((scanResults) {
           if (scanResults.isEmpty) {
             return;

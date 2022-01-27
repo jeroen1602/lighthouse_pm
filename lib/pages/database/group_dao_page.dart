@@ -18,22 +18,23 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
   _GroupConverter(this.bloc);
 
   @override
-  String getDataSubtitle(Group data) {
+  String getDataSubtitle(final Group data) {
     return data.name;
   }
 
   @override
-  String getDataTitle(Group data) {
+  String getDataTitle(final Group data) {
     return '${data.id}';
   }
 
   @override
-  Future<void> deleteItem(Group item) {
+  Future<void> deleteItem(final Group item) {
     return bloc.groups.deleteGroup(item.id);
   }
 
   @override
-  Future<void> openChangeDialog(BuildContext context, Group data) async {
+  Future<void> openChangeDialog(
+      final BuildContext context, final Group data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: '${data.id}',
@@ -46,7 +47,7 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: true),
       DaoDataCreateAlertStringDecorator('Name', null),
@@ -78,22 +79,23 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
   _GroupEntryConverter(this.bloc);
 
   @override
-  String getDataSubtitle(GroupEntry data) {
+  String getDataSubtitle(final GroupEntry data) {
     return '${data.groupId}';
   }
 
   @override
-  String getDataTitle(GroupEntry data) {
+  String getDataTitle(final GroupEntry data) {
     return data.deviceId;
   }
 
   @override
-  Future<void> deleteItem(GroupEntry item) {
+  Future<void> deleteItem(final GroupEntry item) {
     return bloc.groups.deleteGroupEntry(item.deviceId);
   }
 
   @override
-  Future<void> openChangeDialog(BuildContext context, GroupEntry data) async {
+  Future<void> openChangeDialog(
+      final BuildContext context, final GroupEntry data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: data.deviceId,
@@ -112,7 +114,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: false),
       DaoDataCreateAlertStringDecorator('Device id', null,
@@ -144,8 +146,10 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
 }
 
 class GroupDaoPage extends BasePage with WithBlocStateless {
+  const GroupDaoPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(

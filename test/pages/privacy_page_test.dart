@@ -18,9 +18,9 @@ void main() {
     expect(script3, equals("⁻⁴⁰"));
   });
 
-  testWidgets('Should create privacy page', (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestApp((context) {
-      return PrivacyPage();
+  testWidgets('Should create privacy page', (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestApp((final context) {
+      return const PrivacyPage();
     }));
 
     await tester.pumpAndSettle();
@@ -30,9 +30,9 @@ void main() {
         reason: "Should find privacy versions");
   });
 
-  testWidgets('Should open links', (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestApp((context) {
-      return PrivacyPage();
+  testWidgets('Should open links', (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestApp((final context) {
+      return const PrivacyPage();
     }));
 
     await tester.pumpAndSettle();

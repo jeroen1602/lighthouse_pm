@@ -9,20 +9,20 @@ import 'shortcut/mac_shortcut_handle.dart';
 class ShortcutHandlerPage extends BasePage {
   final Object? handle;
 
-  ShortcutHandlerPage(this.handle, {Key? key})
+  const ShortcutHandlerPage(this.handle, {final Key? key})
       : super(
             key: key,
             shortcutHandleArgument: handle as ShortcutHandle?,
             replace: true);
 
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shortcut'),
+        title: const Text('Shortcut'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(25),
+        padding: const EdgeInsets.all(25),
         child: Center(
           child: ShortcutHandlerWidget(handle),
         ),
@@ -36,10 +36,11 @@ class ShortcutHandlerWidget extends StatefulWidget with CloseCurrentRouteMixin {
 
   ShortcutHandle get shortcutHandle => handle as ShortcutHandle;
 
-  const ShortcutHandlerWidget(this.handle, {Key? key}) : super(key: key);
+  const ShortcutHandlerWidget(this.handle, {final Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
+    // ignore_for_file: no_logic_in_create_state
     if (handle == null || handle is! ShortcutHandle) {
       return _ShortcutHandleNullState();
     }
@@ -59,19 +60,19 @@ class ShortcutHandlerWidget extends StatefulWidget with CloseCurrentRouteMixin {
 
 class _ShortcutHandleNullState extends State<ShortcutHandlerWidget> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     if (!kReleaseMode) {
-      return Text('Not sure how you got here\n'
+      return const Text('Not sure how you got here\n'
           'If you do know please create an issue as you shouldn\'t be here right now');
     } else {
-      return Text('shortcut Handle is `null`. How did you get here!?');
+      return const Text('shortcut Handle is `null`. How did you get here!?');
     }
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((final _) {
       widget.closeCurrentRouteWithWait(context);
     });
   }

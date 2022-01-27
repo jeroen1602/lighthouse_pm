@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
-  PermanentPermissionDeniedAlertWidget(this.sdkInt, {Key? key})
+  const PermanentPermissionDeniedAlertWidget(this.sdkInt, {final Key? key})
       : super(key: key);
 
   final int sdkInt;
@@ -30,7 +30,7 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
@@ -50,13 +50,13 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
         ])),
         actions: <Widget>[
           SimpleDialogOption(
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             onPressed: () {
               Navigator.pop(context, false);
             },
           ),
           SimpleDialogOption(
-            child: Text("Open settings"),
+            child: const Text("Open settings"),
             onPressed: () {
               Navigator.pop(context, true);
             },
@@ -64,14 +64,14 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool> showCustomDialog(BuildContext context) {
-    return DeviceInfoPlugin().androidInfo.then((deviceInto) {
+  static Future<bool> showCustomDialog(final BuildContext context) {
+    return DeviceInfoPlugin().androidInfo.then((final deviceInto) {
       return showDialog(
           context: context,
-          builder: (BuildContext context) {
+          builder: (final BuildContext context) {
             return PermanentPermissionDeniedAlertWidget(
                 deviceInto.version.sdkInt);
-          }).then((value) {
+          }).then((final value) {
         if (value is bool) {
           return value;
         }

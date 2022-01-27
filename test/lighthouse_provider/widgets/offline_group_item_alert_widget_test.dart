@@ -6,8 +6,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create a offline group item alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       OfflineGroupItemAlertWidget.showCustomDialog(context);
     }));
 
@@ -29,9 +29,9 @@ void main() {
 
   testWidgets(
       "Should return canceled is true when cancel is hit offline group item alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<OfflineGroupItemAlertWidgetReturn>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = OfflineGroupItemAlertWidget.showCustomDialog(context);
     }));
 
@@ -46,16 +46,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value.dialogCanceled, isTrue);
     expect(value.disableWarning, isFalse);
   });
 
   testWidgets(
       "Should return canceled is false when I'm sure is hit offline group item alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<OfflineGroupItemAlertWidgetReturn>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = OfflineGroupItemAlertWidget.showCustomDialog(context);
     }));
 
@@ -70,16 +70,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value.dialogCanceled, isFalse);
     expect(value.disableWarning, isFalse);
   });
 
   testWidgets(
       "Should return disable warning is false when cancel is hit and disable warning offline group item alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<OfflineGroupItemAlertWidgetReturn>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = OfflineGroupItemAlertWidget.showCustomDialog(context);
     }));
 
@@ -96,16 +96,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value.dialogCanceled, isTrue);
     expect(value.disableWarning, isFalse);
   });
 
   testWidgets(
       "Should return disable warning is true when I'm sure is hit and disable warning  offline group item alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<OfflineGroupItemAlertWidgetReturn>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = OfflineGroupItemAlertWidget.showCustomDialog(context);
     }));
 
@@ -122,7 +122,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value.dialogCanceled, isFalse);
     expect(value.disableWarning, isTrue);
   });

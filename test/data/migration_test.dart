@@ -5,6 +5,7 @@ import 'package:drift/drift.dart'
         driftRuntimeOptions,
         OpeningDetails,
         QueryExecutorUser;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/database.dart';
 
@@ -12,14 +13,15 @@ import 'migration_helpers/fake_migrator.dart';
 
 class FakeQueryExecutor extends Fake implements QueryExecutor {
   @override
-  Future<bool> ensureOpen(QueryExecutorUser user) async {
+  Future<bool> ensureOpen(final QueryExecutorUser user) async {
     return true;
   }
 
   String? lastStatement;
 
   @override
-  Future<void> runCustom(String statement, [List<Object?>? args]) async {
+  Future<void> runCustom(final String statement,
+      [final List<Object?>? args]) async {
     lastStatement = statement;
   }
 }
@@ -45,7 +47,7 @@ void main() {
           } catch (e) {
             expect(e, isA<TestSchemaIncorrectError>());
             final String key = '${schema1.key}to${schema2.key}';
-            print('Checking error for: $key');
+            debugPrint('Checking error for: $key');
             expect(e.toString(), FinalSchemas.expectedErrors[key]);
           }
         }
@@ -78,7 +80,7 @@ void main() {
         if (schemaEnd.key <= schemaStart.key) {
           continue;
         }
-        print(
+        debugPrint(
             "Test migrating from schema version ${schemaStart.key} to ${schemaEnd.key}");
         final migrator = FakeMigrator(schemaStart.key);
         migrator.toHint = schemaEnd.key;

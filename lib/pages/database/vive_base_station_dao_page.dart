@@ -18,23 +18,23 @@ class _ViveBaseStationIdConverter
   _ViveBaseStationIdConverter(this.bloc);
 
   @override
-  String getDataSubtitle(ViveBaseStationId data) {
+  String getDataSubtitle(final ViveBaseStationId data) {
     return '0x${data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase()} (${data.baseStationId})';
   }
 
   @override
-  String getDataTitle(ViveBaseStationId data) {
+  String getDataTitle(final ViveBaseStationId data) {
     return data.deviceId;
   }
 
   @override
-  Future<void> deleteItem(ViveBaseStationId item) {
+  Future<void> deleteItem(final ViveBaseStationId item) {
     return bloc.viveBaseStation.deleteId(item.deviceId);
   }
 
   @override
   Future<void> openChangeDialog(
-      BuildContext context, ViveBaseStationId data) async {
+      final BuildContext context, final ViveBaseStationId data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: data.deviceId,
@@ -52,7 +52,7 @@ class _ViveBaseStationIdConverter
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
@@ -91,8 +91,10 @@ class _ViveBaseStationIdConverter
 }
 
 class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
+  const ViveBaseStationDaoPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(

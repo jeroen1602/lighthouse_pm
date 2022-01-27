@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut_io.dart';
@@ -107,7 +108,8 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     final instance = AndroidLauncherShortcut.instance;
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+    AndroidLauncherShortcut.channel
+        .setMockMethodCallHandler((final call) async {
       if (call.method == 'supportShortcut') {
         return true;
       }
@@ -115,7 +117,8 @@ void main() {
 
     expect(await instance.shortcutSupported(), isTrue);
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+    AndroidLauncherShortcut.channel
+        .setMockMethodCallHandler((final call) async {
       if (call.method == 'supportShortcut') {
         return false;
       }
@@ -123,7 +126,8 @@ void main() {
 
     expect(await instance.shortcutSupported(), isFalse);
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+    AndroidLauncherShortcut.channel
+        .setMockMethodCallHandler((final call) async {
       if (call.method == 'supportShortcut') {
         return "something";
       }
@@ -140,7 +144,8 @@ void main() {
 
     int readyForDataCalled = 0;
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler((call) async {
+    AndroidLauncherShortcut.channel
+        .setMockMethodCallHandler((final call) async {
       if (call.method == 'readyForData') {
         readyForDataCalled++;
         return;
@@ -160,7 +165,7 @@ void main() {
     instance.clearStateStream();
 
     await AndroidLauncherShortcut.messageHandler(
-        MethodCall('handleMacShortcut', '00:00:00:00:00:00'));
+        const MethodCall('handleMacShortcut', '00:00:00:00:00:00'));
 
     final stateChange = await instance.changePowerStateMac.first;
     expect(stateChange, isNotNull);
@@ -176,12 +181,12 @@ void main() {
     instance.clearStateStream();
 
     await AndroidLauncherShortcut.messageHandler(
-        MethodCall('handleMacShortcut', 12345));
+        const MethodCall('handleMacShortcut', 12345));
 
     try {
       final stateChange = await instance.changePowerStateMac.first
-          .timeout(Duration(seconds: 1));
-      print(stateChange);
+          .timeout(const Duration(seconds: 1));
+      debugPrint('$stateChange');
       fail('Should timeout');
     } catch (e) {
       expect(e, isA<TimeoutException>());
@@ -193,7 +198,7 @@ void main() {
 
     try {
       await AndroidLauncherShortcut.messageHandler(
-          MethodCall('unsupportedMethod'));
+          const MethodCall('unsupportedMethod'));
       fail('Should fail');
     } catch (e) {
       expect(e, isA<NoSuchMethodError>());
@@ -203,37 +208,37 @@ void main() {
   });
 
   test('Shortcut handle to string should work', () {
-    final handle = ShortcutHandle(ShortcutTypes.macType, 'Data');
+    const handle = ShortcutHandle(ShortcutTypes.macType, 'Data');
 
     expect(
         handle.toString(), 'ShortcutHandle: {"type": "mac", "data": "Data"}');
   });
 
   test('Shortcut handle should compare', () {
-    final handle1 = ShortcutHandle(ShortcutTypes.macType, 'Data');
-    final handle2 = ShortcutHandle(ShortcutTypes.macType, 'Data');
+    const handle1 = ShortcutHandle(ShortcutTypes.macType, 'Data');
+    const handle2 = ShortcutHandle(ShortcutTypes.macType, 'Data');
 
     expect(handle1, handle2);
 
-    final handle3 = ShortcutHandle(ShortcutTypes.macType, 'data');
+    const handle3 = ShortcutHandle(ShortcutTypes.macType, 'data');
     expect(handle1, isNot(handle3));
 
     // TODO: change type if others become available.
     // final handle4 = ShortcutHandle(ShortcutTypes.macType, 'Data');
     // expect(handle1, isNot(handle4));
 
-    final otherObject = "Wow";
+    const otherObject = "Wow";
     expect(handle1, isNot(otherObject));
   });
 
   test('Shortcut handle should generate hashcode', () {
-    final handle1 = ShortcutHandle(ShortcutTypes.macType, 'Data');
-    final handle2 = ShortcutHandle(ShortcutTypes.macType, 'Data');
+    const handle1 = ShortcutHandle(ShortcutTypes.macType, 'Data');
+    const handle2 = ShortcutHandle(ShortcutTypes.macType, 'Data');
 
     // Same objects should have the same hashcode
     expect(handle1.hashCode, handle2.hashCode);
 
-    final handle3 = ShortcutHandle(ShortcutTypes.macType, 'data');
+    const handle3 = ShortcutHandle(ShortcutTypes.macType, 'data');
 
     // Different objects should not have the same hashcode
     expect(handle1.hashCode, isNot(handle3.hashCode));

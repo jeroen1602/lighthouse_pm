@@ -15,17 +15,18 @@ abstract class BasePage extends StatelessWidget {
   final ShortcutHandle? shortcutHandleArgument;
   final bool replace;
 
-  const BasePage({Key? key, this.shortcutHandleArgument, this.replace = false})
+  const BasePage(
+      {final Key? key, this.shortcutHandleArgument, this.replace = false})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     ContentScrollbar.updateShowScrollbarSubject(context);
     return _ShortcutLaunchHandleWidget(
         buildPage(context), shortcutHandleArgument, replace);
   }
 
-  Widget buildPage(BuildContext context);
+  Widget buildPage(final BuildContext context);
 }
 
 class _ShortcutLaunchHandleWidget extends StatefulWidget {
@@ -34,7 +35,7 @@ class _ShortcutLaunchHandleWidget extends StatefulWidget {
   final bool replace;
 
   const _ShortcutLaunchHandleWidget(this.body, this.handle, this.replace,
-      {Key? key})
+      {final Key? key})
       : super(key: key);
 
   @override
@@ -49,20 +50,20 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
     if (SharedPlatform.isAndroid) {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance?.addPostFrameCallback((final timeStamp) {
         AndroidLauncherShortcut.instance.readyForData();
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<ShortcutHandle?>(
         stream: _shortcutStream(),
         initialData: null,
-        builder: (BuildContext shortcutContext,
-            AsyncSnapshot<ShortcutHandle?> shortcutSnapshot) {
-          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        builder: (final BuildContext shortcutContext,
+            final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot) {
+          WidgetsBinding.instance?.addPostFrameCallback((final timeStamp) {
             if (shortcutSnapshot.data != null &&
                 shortcutSnapshot.data != widget.handle) {
               if (widget.replace) {
@@ -84,6 +85,6 @@ Stream<ShortcutHandle?> _shortcutStream() {
     return AndroidLauncherShortcut.instance.changePowerStateMac;
   } else {
     // This platform doesn't support shortcuts so let's return an empty stream.
-    return Stream.empty();
+    return const Stream.empty();
   }
 }

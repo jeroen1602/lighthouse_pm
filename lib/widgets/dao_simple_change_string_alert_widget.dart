@@ -3,8 +3,8 @@ import 'package:lighthouse_pm/theming.dart';
 
 /// A dialog for changing the nickname of a lighthouse
 class DaoSimpleChangeStringAlertWidget extends StatefulWidget {
-  DaoSimpleChangeStringAlertWidget({
-    Key? key,
+  const DaoSimpleChangeStringAlertWidget({
+    final Key? key,
     required this.primaryKey,
     this.startValue,
   }) : super(key: key);
@@ -18,11 +18,11 @@ class DaoSimpleChangeStringAlertWidget extends StatefulWidget {
 
   /// Open a dialog and return a [String] with the new value.
   /// Can return `null` if the dialog is cancelled.
-  static Future<String?> showCustomDialog(BuildContext context,
-      {required String primaryKey, String? startValue}) {
+  static Future<String?> showCustomDialog(final BuildContext context,
+      {required final String primaryKey, final String? startValue}) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return DaoSimpleChangeStringAlertWidget(
             primaryKey: primaryKey,
             startValue: startValue,
@@ -45,7 +45,7 @@ class _DaoSimpleChangeStringAlertWidget
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
@@ -53,9 +53,9 @@ class _DaoSimpleChangeStringAlertWidget
           text: TextSpan(
         style: theming.bodyText,
         children: <InlineSpan>[
-          TextSpan(text: "Set a new value for "),
+          const TextSpan(text: "Set a new value for "),
           TextSpan(style: theming.bodyTextBold, text: widget.primaryKey),
-          TextSpan(
+          const TextSpan(
               text: ".\n"
                   "NOTE doing this may force the app into an illegal state."),
         ],
@@ -66,13 +66,13 @@ class _DaoSimpleChangeStringAlertWidget
       ),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         SimpleDialogOption(
-          child: Text('Save'),
+          child: const Text('Save'),
           onPressed: () {
             final text = textController.text;
             Navigator.pop(context, text);

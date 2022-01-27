@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:device_info_platform_interface/device_info_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
@@ -14,7 +16,7 @@ class FakePermissionHandlerPlatform extends Fake
 
   PermissionStatus get status => _status;
 
-  set status(PermissionStatus status) {
+  set status(final PermissionStatus status) {
     _status = status;
     statusMap.clear();
   }
@@ -22,14 +24,15 @@ class FakePermissionHandlerPlatform extends Fake
   Map<Permission, PermissionStatus> statusMap = {};
 
   @override
-  Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
+  Future<PermissionStatus> checkPermissionStatus(
+      final Permission permission) async {
     return statusMap[permission] ?? status;
   }
 
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) async {
-    var output = <Permission, PermissionStatus>{};
+      final List<Permission> permissions) async {
+    final output = <Permission, PermissionStatus>{};
     for (final permission in permissions) {
       output[permission] = statusMap[permission] ?? status;
     }
@@ -84,7 +87,6 @@ void main() {
     SharedPlatform.overridePlatform = PlatformOverride.linux;
     expect(await BLEPermissionsHelper.requestBLEPermissions(),
         PermissionStatus.granted);
-    ;
   });
 
   test('Should not open BLE settings on platforms that don\'t support it',
@@ -309,7 +311,7 @@ void main() {
 
   test('Should open BLE settings on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openBLESettings") {
         return true;
       }
@@ -317,7 +319,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.openBLESettings(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openBLESettings") {
         return false;
       }
@@ -325,7 +327,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openBLESettings") {
         return 'other';
       }
@@ -343,7 +345,7 @@ void main() {
 
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "enableBluetooth") {
         return true;
       }
@@ -351,7 +353,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.enableBLE(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "enableBluetooth") {
         return false;
       }
@@ -359,7 +361,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.enableBLE(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "enableBluetooth") {
         return 'other';
       }
@@ -377,7 +379,7 @@ void main() {
 
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openLocationSettings") {
         return true;
       }
@@ -385,7 +387,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openLocationSettings") {
         return false;
       }
@@ -393,7 +395,7 @@ void main() {
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((call) async {
+    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
       if (call.method == "openLocationSettings") {
         return 'other';
       }
@@ -414,7 +416,7 @@ void main() {
 /// Get the first non granted permission from the list.
 /// Wil return [PermissionStatus.granted] if all of them are granted.
 ///
-PermissionStatus getLowest(List<PermissionStatus> states) {
+PermissionStatus getLowest(final List<PermissionStatus> states) {
   for (final state in states) {
     if (!(state.isGranted)) {
       return state;

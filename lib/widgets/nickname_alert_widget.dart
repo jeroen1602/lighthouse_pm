@@ -5,8 +5,8 @@ import 'package:lighthouse_pm/theming.dart';
 
 /// A dialog for changing the nickname of a lighthouse
 class NicknameAlertWidget extends StatefulWidget {
-  NicknameAlertWidget({
-    Key? key,
+  const NicknameAlertWidget({
+    final Key? key,
     required this.deviceId,
     this.deviceName,
     this.nickname,
@@ -22,11 +22,13 @@ class NicknameAlertWidget extends StatefulWidget {
 
   /// Open a dialog and return a [Nickname] with the new setting.
   /// Can return `null` if the dialog is cancelled.
-  static Future<NicknamesHelper?> showCustomDialog(BuildContext context,
-      {required String deviceId, String? deviceName, String? nickname}) {
+  static Future<NicknamesHelper?> showCustomDialog(final BuildContext context,
+      {required final String deviceId,
+      final String? deviceName,
+      final String? nickname}) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return NicknameAlertWidget(
             deviceId: deviceId,
             deviceName: deviceName,
@@ -49,7 +51,7 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
@@ -57,26 +59,26 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           text: TextSpan(
         style: theming.bodyText,
         children: <InlineSpan>[
-          TextSpan(text: "Set a nickname for "),
+          const TextSpan(text: "Set a nickname for "),
           TextSpan(
               style: theming.bodyTextBold,
               text: widget.deviceName ?? widget.deviceId),
-          TextSpan(text: "."),
+          const TextSpan(text: "."),
         ],
       )),
       content: TextField(
-        decoration: InputDecoration(labelText: 'Nickname'),
+        decoration: const InputDecoration(labelText: 'Nickname'),
         controller: textController,
       ),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         SimpleDialogOption(
-          child: Text('Save'),
+          child: const Text('Save'),
           onPressed: () {
             final text = textController.text.trim();
             if (text.isEmpty) {

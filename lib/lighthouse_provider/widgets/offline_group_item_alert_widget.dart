@@ -16,7 +16,7 @@ class OfflineGroupItemAlertWidgetReturn {
 /// A dialog that displays a warning to the user if one of the devices in a
 /// group is offline.
 class OfflineGroupItemAlertWidget extends StatefulWidget {
-  OfflineGroupItemAlertWidget({Key? key}) : super(key: key);
+  const OfflineGroupItemAlertWidget({final Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,12 +24,12 @@ class OfflineGroupItemAlertWidget extends StatefulWidget {
   }
 
   static Future<OfflineGroupItemAlertWidgetReturn> showCustomDialog(
-      BuildContext context) {
+      final BuildContext context) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return OfflineGroupItemAlertWidget();
-        }).then((value) {
+        builder: (final BuildContext context) {
+          return const OfflineGroupItemAlertWidget();
+        }).then((final value) {
       if (value is OfflineGroupItemAlertWidgetReturn) {
         return value;
       }
@@ -43,7 +43,7 @@ class _OfflineGroupItemAlertWidgetContent
   bool disableWarning = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
       title: const Text('Some devices are offline'),
       content: IntrinsicHeight(
@@ -55,7 +55,7 @@ class _OfflineGroupItemAlertWidgetContent
           CheckboxListTile(
               title: const Text("Don't show this warning again."),
               value: disableWarning,
-              onChanged: (value) {
+              onChanged: (final value) {
                 setState(() {
                   if (value != null) {
                     disableWarning = value;

@@ -21,7 +21,7 @@ CloseApp -> Future
 class ShortcutHandleMacState extends State<ShortcutHandlerWidget>
     with WidgetsBindingObserver, ScanningMixin {
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return WaterfallWidgetContainer(stream: [
       SettingsStream.createBuilder(),
       PermissionsStream.createBuilder(),
@@ -37,7 +37,7 @@ class ShortcutHandleMacState extends State<ShortcutHandlerWidget>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
         cleanUp();

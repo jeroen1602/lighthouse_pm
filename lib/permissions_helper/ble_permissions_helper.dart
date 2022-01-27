@@ -70,8 +70,8 @@ abstract class BLEPermissionsHelper {
         // Request the new bluetooth permission for Android 12 and higher.
         return await [Permission.bluetoothScan, Permission.bluetoothConnect]
             .request()
-            .then((map) => map.values)
-            .then((statuses) {
+            .then((final map) => map.values)
+            .then((final statuses) {
           for (final status in statuses) {
             if (!status.isGranted) {
               return status;
@@ -106,7 +106,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openBLESettings() async {
     if (SharedPlatform.isAndroid) {
-      return channel.invokeMethod("openBLESettings").then((value) {
+      return channel.invokeMethod("openBLESettings").then((final value) {
         if (value is bool) {
           return value;
         } else {
@@ -141,7 +141,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> enableBLE() async {
     if (SharedPlatform.isAndroid) {
-      return channel.invokeMethod("enableBluetooth").then((value) {
+      return channel.invokeMethod("enableBluetooth").then((final value) {
         if (value is bool) {
           return value;
         } else {
@@ -175,7 +175,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<bool> openLocationSettings() async {
     if (SharedPlatform.isAndroid) {
-      return channel.invokeMethod("openLocationSettings").then((value) {
+      return channel.invokeMethod("openLocationSettings").then((final value) {
         if (value is bool) {
           return value;
         } else {

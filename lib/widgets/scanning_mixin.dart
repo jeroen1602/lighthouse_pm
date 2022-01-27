@@ -15,7 +15,7 @@ abstract class ScanningMixin {
       if (await LighthouseProvider.instance.isScanning.first ||
           await _hasConnectedDevices()) {
         await LighthouseProvider.instance.cleanUp();
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
     }
     return true;
@@ -25,7 +25,8 @@ abstract class ScanningMixin {
     await LighthouseProvider.instance.stopScan();
   }
 
-  Future startScan(Duration scanDuration, {Duration? updateInterval}) async {
+  Future startScan(final Duration scanDuration,
+      {final Duration? updateInterval}) async {
     try {
       await LighthouseProvider.instance
           .startScan(timeout: scanDuration, updateInterval: updateInterval);
@@ -35,8 +36,8 @@ abstract class ScanningMixin {
     }
   }
 
-  Future startScanWithCheck(Duration scanDuration,
-      {Duration? updateInterval, String failMessage = ""}) async {
+  Future startScanWithCheck(final Duration scanDuration,
+      {final Duration? updateInterval, final String failMessage = ""}) async {
     if (await BLEPermissionsHelper.hasBLEPermissions() ==
         PermissionStatus.granted) {
       await startScan(scanDuration, updateInterval: updateInterval);
@@ -48,9 +49,9 @@ abstract class ScanningMixin {
   Future cleanUp() async => await LighthouseProvider.instance.cleanUp();
 
   Widget buildScanPopScope(
-      {required Widget child,
-      WillPopCallback? beforeWillPop,
-      WillPopCallback? afterWillPop}) {
+      {required final Widget child,
+      final WillPopCallback? beforeWillPop,
+      final WillPopCallback? afterWillPop}) {
     return WillPopScope(
       onWillPop: () async {
         if (beforeWillPop != null) {

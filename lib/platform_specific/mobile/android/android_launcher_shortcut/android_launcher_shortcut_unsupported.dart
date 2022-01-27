@@ -32,14 +32,15 @@ class AndroidLauncherShortcut {
 
   Stream<ShortcutHandle?> get changePowerStateMac {
     _throwUnsupportedError();
-    return Stream.empty();
+    return const Stream.empty();
   }
 
   Future<bool> shortcutSupported() async {
     return false;
   }
 
-  Future<bool> requestShortcutLighthouse(String macAddress, String name) async {
+  Future<bool> requestShortcutLighthouse(
+      final String macAddress, final String name) async {
     _throwUnsupportedError();
     return false;
   }

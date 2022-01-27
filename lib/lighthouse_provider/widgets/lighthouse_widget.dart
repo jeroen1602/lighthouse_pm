@@ -18,7 +18,7 @@ class LighthouseWidgetContent extends StatelessWidget {
       required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.sleep,
-      Key? key})
+      final Key? key})
       : super(key: key) {
     assert(
         sleepState == LighthousePowerState.sleep ||
@@ -36,15 +36,15 @@ class LighthouseWidgetContent extends StatelessWidget {
   final LighthousePowerState sleepState;
   final bool selecting;
 
-  Future _openMetadataPage(BuildContext context) async {
+  Future _openMetadataPage(final BuildContext context) async {
     return await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (c) => LighthouseMetadataPage(lighthouseDevice)));
+            builder: (final c) => LighthouseMetadataPage(lighthouseDevice)));
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
     return Container(
         color: selected ? theming.selectedRowColor : Colors.transparent,
@@ -78,7 +78,7 @@ class LighthouseWidgetContent extends StatelessWidget {
                                       toPowerState:
                                           lighthouseDevice.powerStateFromByte,
                                     ),
-                                    VerticalDivider(),
+                                    const VerticalDivider(),
                                     Text('${lighthouseDevice.deviceIdentifier}')
                                   ],
                                 ))
@@ -94,7 +94,7 @@ class LighthouseWidgetContent extends StatelessWidget {
                 ]))));
   }
 
-  Future<void> _switchToSleepState(BuildContext context) async {
+  Future<void> _switchToSleepState(final BuildContext context) async {
     if (lighthouseDevice.hasStandbyExtension) {
       await lighthouseDevice.changeState(sleepState, context);
       return;
@@ -104,7 +104,8 @@ class LighthouseWidgetContent extends StatelessWidget {
     await lighthouseDevice.changeState(LighthousePowerState.sleep, context);
   }
 
-  Future<void> _stateSwitch(BuildContext context, int powerStateData) async {
+  Future<void> _stateSwitch(
+      final BuildContext context, final int powerStateData) async {
     if (!await lighthouseDevice.requestExtraInfo(context)) {
       return;
     }
@@ -112,7 +113,7 @@ class LighthouseWidgetContent extends StatelessWidget {
     switch (state) {
       case LighthousePowerState.booting:
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-            content: Text('Lighthouse is already booting!'),
+            content: const Text('Lighthouse is already booting!'),
             action: SnackBarAction(
               label: 'I\'m sure',
               onPressed: () async {
@@ -141,13 +142,13 @@ class LighthouseWidgetContent extends StatelessWidget {
 /// A widget for showing a [LighthouseDevice] in a list with automatic updating
 /// of the power state.
 class LighthouseWidget extends StatelessWidget {
-  LighthouseWidget(this.lighthouseDevice,
+  const LighthouseWidget(this.lighthouseDevice,
       {required this.onSelected,
       required this.selected,
       required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.sleep,
-      Key? key})
+      final Key? key})
       : super(key: key);
 
   final LighthouseDevice lighthouseDevice;
@@ -158,10 +159,11 @@ class LighthouseWidget extends StatelessWidget {
   final bool selecting;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<int>(
       stream: lighthouseDevice.powerState,
-      builder: (BuildContext context, AsyncSnapshot<int> powerStateSnapshot) {
+      builder: (final BuildContext context,
+          final AsyncSnapshot<int> powerStateSnapshot) {
         final powerStateData = powerStateSnapshot.data ?? 0xFF;
 
         return LighthouseWidgetContent(
@@ -180,15 +182,17 @@ class LighthouseWidget extends StatelessWidget {
 
 /// Display the state of the device together with the state as a number in hex.
 class _LHItemPowerStateWidget extends StatelessWidget {
-  _LHItemPowerStateWidget(
-      {Key? key, required this.powerStateByte, required this.toPowerState})
+  const _LHItemPowerStateWidget(
+      {final Key? key,
+      required this.powerStateByte,
+      required this.toPowerState})
       : super(key: key);
 
   final int powerStateByte;
   final _ToPowerState toPowerState;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final state = toPowerState(powerStateByte);
     final hexString = powerStateByte.toRadixString(16);
     return Text(

@@ -33,7 +33,7 @@ import 'base_page.dart';
 const double _deviceListScrollPadding = 80.0;
 
 Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
-    _mergeNicknameAndLighthouseDevice(LighthousePMBloc bloc) {
+    _mergeNicknameAndLighthouseDevice(final LighthousePMBloc bloc) {
   return Rx.combineLatest3<
           List<Nickname>,
           List<LighthouseDevice>,
@@ -44,33 +44,33 @@ Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
       MergeStream(
           [Stream.value([]), LighthouseProvider.instance.lighthouseDevices]),
       MergeStream([Stream.value([]), bloc.groups.watchGroups()]),
-      (nicknames, devices, groups) {
-    groups.sort((a, b) => a.group.name.compareTo(b.group.name));
+      (final nicknames, final devices, final groups) {
+    groups.sort((final a, final b) => a.group.name.compareTo(b.group.name));
     return Tuple3(nicknames, devices, groups);
   });
 }
 
 class MainPage extends BasePage with WithBlocStateless {
-  MainPage({Key? key}) : super(key: key, replace: true);
+  MainPage({final Key? key}) : super(key: key, replace: true);
 
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     return MainPageSettings.mainPageSettingsStreamBuilder(
       bloc: blocWithoutListen(context),
-      builder: (context, settings) {
+      builder: (final context, final settings) {
         if (settings != null) {
           return StreamBuilder<BluetoothAdapterState>(
               stream: LighthouseProvider.instance.state,
               initialData: BluetoothAdapterState.unknown,
-              builder: (BuildContext context,
-                  AsyncSnapshot<BluetoothAdapterState> snapshot) {
+              builder: (final BuildContext context,
+                  final AsyncSnapshot<BluetoothAdapterState> snapshot) {
                 final state = snapshot.data;
                 return state == BluetoothAdapterState.on
                     ? ScanDevicesPage(settings: settings)
                     : BluetoothOffScreen(state: state, settings: settings);
               });
         } else {
-          return Text('Booting');
+          return const Text('Booting');
         }
       },
     );
@@ -78,18 +78,20 @@ class MainPage extends BasePage with WithBlocStateless {
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
-  const _ScanFloatingButtonWidget({Key? key, required this.settings})
+  const _ScanFloatingButtonWidget({final Key? key, required this.settings})
       : super(key: key);
 
   final MainPageSettings settings;
 
-  Stream<int> getPairedDevicesStream(List<PairBackEnd> backEnds) {
-    return Rx.combineLatestList(backEnds.map((e) => e.numberOfPairedDevices()))
-        .map((event) => event.reduce((value, element) => element + value));
+  Stream<int> getPairedDevicesStream(final List<PairBackEnd> backEnds) {
+    return Rx.combineLatestList(
+            backEnds.map((final e) => e.numberOfPairedDevices()))
+        .map((final event) =>
+            event.reduce((final value, final element) => element + value));
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final pairBackEnds = LighthouseProvider.instance.getPairBackEnds();
     final onlyPairBackEnds = LighthouseProvider.instance.hasOnlyPairBackends();
     final pairedDevicesStream = getPairedDevicesStream(pairBackEnds);
@@ -97,8 +99,8 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
     return StreamBuilder<int>(
       stream: pairedDevicesStream,
       initialData: 0,
-      builder:
-          (BuildContext context, AsyncSnapshot<int> pairedDevicesSnapshot) {
+      builder: (final BuildContext context,
+          final AsyncSnapshot<int> pairedDevicesSnapshot) {
         var pairedDevices = 0;
         if (pairedDevicesSnapshot.hasError) {
           debugPrint(pairedDevicesSnapshot.error.toString());
@@ -110,11 +112,11 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 
         return Row(
           children: [
-            Spacer(),
+            const Spacer(),
             if (pairBackEnds.isNotEmpty) ...[
               FloatingActionButton(
                 heroTag: 'pairButton',
-                child: Icon(Icons.bluetooth_connected),
+                child: const Icon(Icons.bluetooth_connected),
                 onPressed: () {
                   if (pairBackEnds.length > 1) {
                     // TODO show dialog to select the provider
@@ -127,7 +129,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                 },
                 tooltip: 'Pair a new device',
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(4.0),
               ),
             ],
@@ -135,12 +137,12 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
             StreamBuilder<bool>(
               stream: LighthouseProvider.instance.isScanning,
               initialData: false,
-              builder: (c, snapshot) {
+              builder: (final c, final snapshot) {
                 final isScanning = snapshot.data;
-                if (isScanning == true) {
+                if (isScanning ?? false) {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
-                    child: Icon(Icons.stop),
+                    child: const Icon(Icons.stop),
                     onPressed: () => stopScan(),
                     backgroundColor: Colors.red,
                     tooltip: 'Stop scanning',
@@ -148,14 +150,14 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                 } else {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
-                    child: Icon(Icons.search),
+                    child: const Icon(Icons.search),
                     backgroundColor:
                         shouldScanBeDisabled ? theming.disabledColor : null,
                     elevation: shouldScanBeDisabled ? 0 : null,
                     hoverElevation: shouldScanBeDisabled ? 0 : null,
                     onPressed: () async {
                       if (shouldScanBeDisabled) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                             content: Text(
                                 'Please pair a device first, before scanning for devices.')));
                         return;
@@ -182,7 +184,8 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 }
 
 class ScanDevicesPage extends StatefulWidget {
-  ScanDevicesPage({Key? key, required this.settings}) : super(key: key);
+  const ScanDevicesPage({final Key? key, required this.settings})
+      : super(key: key);
 
   final MainPageSettings settings;
 
@@ -219,14 +222,15 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     super.dispose();
   }
 
-  Map<String, String> _nicknamesToMap(List<Nickname> nicknames) {
-    return Map.fromEntries(nicknames
-        .map((nickname) => MapEntry(nickname.deviceId, nickname.nickname)));
+  Map<String, String> _nicknamesToMap(final List<Nickname> nicknames) {
+    return Map.fromEntries(nicknames.map(
+        (final nickname) => MapEntry(nickname.deviceId, nickname.nickname)));
   }
 
   List<LighthouseDevice> _devicesNotInAGroup(
-      List<LighthouseDevice> devices, List<GroupWithEntries> groups) {
-    List<LighthouseDevice> output = [];
+      final List<LighthouseDevice> devices,
+      final List<GroupWithEntries> groups) {
+    final List<LighthouseDevice> output = [];
     final selectedCopy = <LHDeviceIdentifier>{};
     selectedCopy.addAll(selected);
     final newSelected = <LHDeviceIdentifier>{};
@@ -269,7 +273,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final selecting = selected.isNotEmpty || selectedGroup != null;
     return buildScanPopScope(
         beforeWillPop: () async {
@@ -286,12 +290,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     List<GroupWithEntries>>>(
             stream: _mergeNicknameAndLighthouseDevice(bloc),
             initialData: const Tuple3([], [], []),
-            builder: (c, snapshot) {
+            builder: (final c, final snapshot) {
               updates++;
               final tuple = snapshot.requireData;
               final devices = tuple.item2;
               if (devices.isNotEmpty) {
-                devices.sort((a, b) =>
+                devices.sort((final a, final b) =>
                     a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id));
               }
               final nicknames = _nicknamesToMap(tuple.item1);
@@ -304,21 +308,21 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                   ? StreamBuilder<bool>(
                       stream: LighthouseProvider.instance.isScanning,
                       initialData: true,
-                      builder: (context, scanningSnapshot) {
+                      builder: (final context, final scanningSnapshot) {
                         final scanning = scanningSnapshot.data;
-                        if (scanning == true) {
+                        if (scanning ?? false) {
                           return Container();
                         } else {
                           return ContentContainerListView(children: [
                             Padding(
-                              padding: EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
                               child: Text(
                                 'Unable to find lighthouses, try some troubleshooting.',
                                 style: theming.headline4,
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            Divider(
+                            const Divider(
                               thickness: 1.5,
                             ),
                             ...TroubleshootingContentWidget.getContent(context),
@@ -332,10 +336,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       },
                     )
                   : ContentScrollbar(
-                      scrollbarChildBuilder: (context, controller) {
+                      scrollbarChildBuilder: (final context, final controller) {
                         return ListView.builder(
                           controller: controller,
-                          itemBuilder: (BuildContext context, int index) {
+                          itemBuilder: (final BuildContext context, int index) {
                             if (index == listLength) {
                               // Add an extra container at the bottom to stop the floating
                               // button from obstructing the last item.
@@ -363,18 +367,20 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                     if (LighthouseGroupWidget.isGroupSelected(
                                         groups[index].deviceIds,
                                         selected
-                                            .map((e) => e.toString())
+                                            .map((final e) => e.toString())
                                             .toList())) {
                                       clearSelected();
                                     } else {
                                       clearSelected();
                                       selected.addAll(groups[index]
                                           .deviceIds
-                                          .map((e) => LHDeviceIdentifier(e)));
+                                          .map((final e) =>
+                                              LHDeviceIdentifier(e)));
                                     }
                                   });
                                 },
-                                onSelectedDevice: (LHDeviceIdentifier device) {
+                                onSelectedDevice:
+                                    (final LHDeviceIdentifier device) {
                                   setState(() {
                                     selectedGroup = null;
                                     if (selected.contains(device)) {
@@ -441,7 +447,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final Widget? leading = selecting
                   ? IconButton(
                       tooltip: 'Cancel selection',
-                      icon: Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back),
                       onPressed: () {
                         setState(() {
                           clearSelected();
@@ -467,20 +473,20 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     shortcuts: <LogicalKeySet, Intent>{
                       if (!SharedPlatform.isWeb) ...{
                         LogicalKeySet(LogicalKeyboardKey.f5):
-                            ScanDevicesIntent(),
+                            const ScanDevicesIntent(),
                         LogicalKeySet(LogicalKeyboardKey.control,
-                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                            LogicalKeyboardKey.keyR): const ScanDevicesIntent(),
                         LogicalKeySet(LogicalKeyboardKey.superKey,
-                            LogicalKeyboardKey.keyR): ScanDevicesIntent(),
+                            LogicalKeyboardKey.keyR): const ScanDevicesIntent(),
                       } else ...{
                         LogicalKeySet(LogicalKeyboardKey.alt,
-                            LogicalKeyboardKey.keyR): ScanDevicesIntent()
+                            LogicalKeyboardKey.keyR): const ScanDevicesIntent()
                       }
                     },
                     child: Actions(
                       actions: <Type, Action<Intent>>{
                         ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
-                            onInvoke: (ScanDevicesIntent intent) {
+                            onInvoke: (final ScanDevicesIntent intent) {
                           startScanWithCheck(
                               Duration(seconds: widget.settings.scanDuration),
                               updateInterval: Duration(
@@ -497,10 +503,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the change nickname action, this action is only for a single item.
   IconButton _getChangeNicknameAction(
-    BuildContext context,
-    List<LighthouseDevice> devices,
-    Map<String, String> nicknames,
-    Theming theming,
+    final BuildContext context,
+    final List<LighthouseDevice> devices,
+    final Map<String, String> nicknames,
+    final Theming theming,
   ) {
     return IconButton(
       tooltip: 'Change nickname',
@@ -509,13 +515,14 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       onPressed: () async {
         if (selected.length == 1) {
           final item = selected.first;
-          final name = devices.cast<LighthouseDevice?>().singleWhere((element) {
-                if (element != null) {
-                  return element.deviceIdentifier == item;
-                }
-                return false;
-              }, orElse: () => null)?.name ??
-              item.toString();
+          final name =
+              devices.cast<LighthouseDevice?>().singleWhere((final element) {
+                    if (element != null) {
+                      return element.deviceIdentifier == item;
+                    }
+                    return false;
+                  }, orElse: () => null)?.name ??
+                  item.toString();
           final String? nickname = nicknames[item.toString()];
 
           final newNickname = await NicknameAlertWidget.showCustomDialog(
@@ -542,10 +549,10 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the action for changing a group.
   IconButton _getChangeGroupAction(
-      BuildContext context,
-      List<GroupWithEntries> groups,
-      List<LighthouseDevice> devices,
-      Theming theming) {
+      final BuildContext context,
+      final List<GroupWithEntries> groups,
+      final List<LighthouseDevice> devices,
+      final Theming theming) {
     return IconButton(
         tooltip: 'Change group',
         icon: SvgPicture.asset('assets/images/group-add-icon.svg',
@@ -559,11 +566,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
           if (newGroup != null) {
             if (newGroup.id == ChangeGroupAlertWidget.removeGroupId) {
               await blocWithoutListen.groups.deleteGroupEntries(
-                  selected.map((e) => e.toString()).toList());
+                  selected.map((final e) => e.toString()).toList());
             } else if (newGroup.id == ChangeGroupAlertWidget.newGroupId) {
               // The devices that have been selected.
               final List<LighthouseDevice> selectedDevices =
-                  devices.where((device) {
+                  devices.where((final device) {
                 return selected.contains(device.deviceIdentifier);
               }).toList();
 
@@ -577,18 +584,19 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
               if (saveChanges) {
                 await blocWithoutListen.groups.insertGroup(GroupWithEntries(
-                    insertGroup, selected.map((e) => e.toString()).toList()));
+                    insertGroup,
+                    selected.map((final e) => e.toString()).toList()));
               }
             } else {
-              final foundGroup = groups
-                  .firstWhere((element) => element.group.id == newGroup.id);
+              final foundGroup = groups.firstWhere(
+                  (final element) => element.group.id == newGroup.id);
               final Set<String> items = <String>{};
               items.addAll(foundGroup.deviceIds);
-              items.addAll(selected.map((e) => e.toString()));
+              items.addAll(selected.map((final e) => e.toString()));
 
               // The devices that have been selected.
               final List<LighthouseDevice> selectedDevices =
-                  devices.where((device) {
+                  devices.where((final device) {
                 return items.contains(device.deviceIdentifier.toString());
               }).toList();
 
@@ -608,7 +616,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the change name action for a group.
   IconButton _getChangeGroupNameAction(
-      BuildContext context, Group group, Theming theming) {
+      final BuildContext context, final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Rename group',
         icon: SvgPicture.asset('assets/images/group-edit-icon.svg',
@@ -629,7 +637,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the action for deleting a group.
   IconButton _getDeleteGroupNameAction(
-      BuildContext context, Group group, Theming theming) {
+      final BuildContext context, final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Delete group',
         icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
@@ -647,8 +655,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Check if the devices to be added to a group have some compatibility error
   /// This will show a dialog if this is the case.
-  Future<bool> _checkDevicesBeforeAddingToAGroup(
-      BuildContext context, List<LighthouseDevice> devicesToBeInAGroup) async {
+  Future<bool> _checkDevicesBeforeAddingToAGroup(final BuildContext context,
+      final List<LighthouseDevice> devicesToBeInAGroup) async {
     // check channel.
     if (!_checkDevicesHaveUniqueChannel(devicesToBeInAGroup)) {
       if (!await DifferentGroupItemChannelAlertWidget.showCustomDialog(
@@ -666,7 +674,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   bool _checkDevicesHaveUniqueChannel(
-      List<LighthouseDevice> devicesToBeInAGroup) {
+      final List<LighthouseDevice> devicesToBeInAGroup) {
     final Set<String> knownChannels = <String>{};
     for (final device in devicesToBeInAGroup) {
       String? channel = device.otherMetadata['Channel'];
@@ -684,7 +692,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Check if all the devices in the selected group are of the same type.
   /// If they aren't we should show a warning.
-  bool _allSameDeviceType(List<LighthouseDevice> devicesToBeInAGroup) {
+  bool _allSameDeviceType(final List<LighthouseDevice> devicesToBeInAGroup) {
     final foundTypes = <String>{};
     for (final device in devicesToBeInAGroup) {
       foundTypes.add(device.runtimeType.toString());
@@ -698,7 +706,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   /// Get the group in common between all the selected groups. If not all the
   /// devices are in the same group or no devices are selected then it will
   /// return `null`.
-  Group? _getGroupFromSelected(List<GroupWithEntries> groups) {
+  Group? _getGroupFromSelected(final List<GroupWithEntries> groups) {
     Group? firstGroup;
     for (final selectedDevice in selected) {
       bool found = false;
@@ -723,14 +731,14 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   /// Get the currently selected group if a group is selected.
   /// A group is selected if all it's devices are selected, or if it doesn't
   /// have any devices it is the current [selectedGroup].
-  Group? _getSelectedGroupFromSelected(List<GroupWithEntries> groups) {
+  Group? _getSelectedGroupFromSelected(final List<GroupWithEntries> groups) {
     if (selected.isEmpty) {
       return selectedGroup;
     }
     selectedGroup = null;
     for (final group in groups) {
       if (LighthouseGroupWidget.isGroupSelected(
-          group.deviceIds, selected.map((e) => e.toString()).toList())) {
+          group.deviceIds, selected.map((final e) => e.toString()).toList())) {
         return group.group;
       }
     }
@@ -739,7 +747,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
         setState(() {
@@ -768,13 +776,13 @@ class ScanDevicesIntent extends Intent {
 
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
-      {Key? key, required this.state, required this.settings})
+      {final Key? key, required this.state, required this.settings})
       : super(key: key);
 
   final BluetoothAdapterState? state;
   final MainPageSettings settings;
 
-  Widget _toSettingsButton(BuildContext context, Theming theming) {
+  Widget _toSettingsButton(final BuildContext context, final Theming theming) {
     if (SharedPlatform.isAndroid && state == BluetoothAdapterState.off) {
       return ElevatedButton(
           onPressed: () async {
@@ -790,7 +798,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
     final stateName = state != null
         ? BluetoothAdapterStateFunctions.stateToString(state!)

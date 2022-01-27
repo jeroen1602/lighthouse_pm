@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DropdownMenuListTile<T> extends StatelessWidget {
-  DropdownMenuListTile(
-      {Key? key,
+  const DropdownMenuListTile(
+      {final Key? key,
       this.title,
       this.subTitle,
       required this.value,
@@ -23,7 +23,7 @@ class DropdownMenuListTile<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ListTile(
       title: title,
       subtitle: subTitle,

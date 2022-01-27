@@ -33,14 +33,14 @@ class FakeSettingsDao extends Fake implements SettingsDao {
 
 class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   @override
-  Future<int?> getId(String deviceId) async {
+  Future<int?> getId(final String deviceId) async {
     final stream = idsStream;
     if (stream == null) {
       return null;
     }
     return stream.valueOrNull
         ?.cast<ViveBaseStationId?>()
-        .firstWhere((element) => element?.deviceId == deviceId,
+        .firstWhere((final element) => element?.deviceId == deviceId,
             orElse: () => null)
         ?.baseStationId;
   }
@@ -48,11 +48,11 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   BehaviorSubject<List<ViveBaseStationId>>? idsStream;
 
   @override
-  Future<void> insertId(String deviceId, int id) async {
+  Future<void> insertId(final String deviceId, final int id) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
       final index = idsStream.valueOrNull
-              ?.indexWhere((element) => element.deviceId == deviceId) ??
+              ?.indexWhere((final element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
         idsStream.valueOrNull?.removeAt(index);
@@ -64,11 +64,11 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   }
 
   @override
-  Future<void> deleteId(String deviceId) async {
+  Future<void> deleteId(final String deviceId) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
       final index = idsStream.valueOrNull
-              ?.indexWhere((element) => element.deviceId == deviceId) ??
+              ?.indexWhere((final element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
         idsStream.valueOrNull?.removeAt(index);
@@ -84,7 +84,7 @@ class FakeViveBaseStationDao extends Fake implements ViveBaseStationDao {
   }
 
   void startViveBaseStationIdsStream(
-      [List<ViveBaseStationId> data = const []]) {
+      [final List<ViveBaseStationId> data = const []]) {
     idsStream ??= BehaviorSubject.seeded(data.toList());
   }
 }

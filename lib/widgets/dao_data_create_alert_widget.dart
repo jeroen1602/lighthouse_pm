@@ -11,7 +11,8 @@ import 'package:lighthouse_pm/theming.dart';
 /// [DaoDataCreateAlertDecorator.getNewValue] call. These can be `null`.
 ///
 class DaoDataCreateAlertWidget extends StatefulWidget {
-  DaoDataCreateAlertWidget(this.decorators, {Key? key}) : super(key: key);
+  const DaoDataCreateAlertWidget(this.decorators, {final Key? key})
+      : super(key: key);
 
   final List<DaoDataCreateAlertDecorator<dynamic>> decorators;
 
@@ -22,13 +23,13 @@ class DaoDataCreateAlertWidget extends StatefulWidget {
 
   /// Open a dialog with the question if the user wants to delete a database entry.
   /// `true` if the use has selected the yes option, `false` otherwise.
-  static Future<bool> showCustomDialog(BuildContext context,
-      List<DaoDataCreateAlertDecorator<dynamic>> decorators) {
+  static Future<bool> showCustomDialog(final BuildContext context,
+      final List<DaoDataCreateAlertDecorator<dynamic>> decorators) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return DaoDataCreateAlertWidget(decorators);
-        }).then((value) {
+        }).then((final value) {
       if (value is bool) {
         return value;
       }
@@ -42,19 +43,19 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
   var saveEnabled = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final List<Widget> children = widget.decorators
-        .map((e) => e.getEdit(context, (value) {
+        .map((final e) => e.getEdit(context, (final value) {
               e.value = value;
               setState(() {
                 final value = _formKey.currentState?.validate();
-                saveEnabled = value == true;
+                saveEnabled = value ?? false;
               });
             }))
         .toList();
 
     return AlertDialog(
-      title: Text('Create new item!'),
+      title: const Text('Create new item!'),
       content: IntrinsicHeight(
           child: Form(
               key: _formKey,
@@ -63,11 +64,11 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
               ))),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () => Navigator.pop(context, false),
         ),
         SimpleDialogOption(
-          child: Text('Save'),
+          child: const Text('Save'),
           onPressed: saveEnabled ? () => Navigator.pop(context, true) : null,
         ),
       ],
@@ -83,7 +84,7 @@ abstract class DaoDataCreateAlertDecorator<T> {
 
   DaoDataCreateAlertDecorator(this.name, this.originalValue);
 
-  Widget getEdit(BuildContext context, ValueChanged<T?> onChange);
+  Widget getEdit(final BuildContext context, final ValueChanged<T?> onChange);
 
   T? getNewValue() {
     return value;
@@ -96,14 +97,16 @@ abstract class DaoDataCreateAlertDecorator<T> {
 ///
 class DaoDataCreateAlertStringDecorator
     extends DaoDataCreateAlertDecorator<String> {
-  DaoDataCreateAlertStringDecorator(String name, String? originalValue,
+  DaoDataCreateAlertStringDecorator(
+      final String name, final String? originalValue,
       {this.validator})
       : super(name, originalValue);
 
   final FormFieldValidator<String>? validator;
 
   @override
-  Widget getEdit(BuildContext context, ValueChanged<String> onChange) {
+  Widget getEdit(
+      final BuildContext context, final ValueChanged<String> onChange) {
     return _DaoDataCreateAlertStringDecoratorWidget(
       this,
       onChange,
@@ -118,22 +121,22 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
   final FormFieldValidator<String>? validator;
 
   const _DaoDataCreateAlertStringDecoratorWidget(this.item, this.onChange,
-      {Key? key, this.validator})
+      {final Key? key, this.validator})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Column(
       children: [
         TextFormField(
           initialValue: item.originalValue,
           validator: validator,
           decoration: InputDecoration(labelText: item.name),
-          onChanged: (val) {
+          onChanged: (final val) {
             onChange(val);
           },
         ),
-        Divider(),
+        const Divider(),
       ],
     );
   }
@@ -145,7 +148,7 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
 /// Use [autoIncrement] if the int can also be null and thus set via autoincrement.
 ///
 class DaoDataCreateAlertIntDecorator extends DaoDataCreateAlertDecorator<int> {
-  DaoDataCreateAlertIntDecorator(String name, int? originalValue,
+  DaoDataCreateAlertIntDecorator(final String name, final int? originalValue,
       {this.autoIncrement = false, this.negative = false})
       : super(name, originalValue);
 
@@ -153,7 +156,8 @@ class DaoDataCreateAlertIntDecorator extends DaoDataCreateAlertDecorator<int> {
   final bool negative;
 
   @override
-  Widget getEdit(BuildContext context, ValueChanged<int?> onChange) {
+  Widget getEdit(
+      final BuildContext context, final ValueChanged<int?> onChange) {
     return _DaoDataCreateAlertIntDecoratorWidget(this, onChange);
   }
 }
@@ -163,10 +167,10 @@ class _DaoDataCreateAlertIntDecoratorWidget extends StatefulWidget {
   final ValueChanged<int?> onChange;
 
   const _DaoDataCreateAlertIntDecoratorWidget(this.item, this.onChange,
-      {Key? key})
+      {final Key? key})
       : super(key: key);
 
-  String? _validateId(String? value) {
+  String? _validateId(final String? value) {
     if (value == null) {
       return null;
     }
@@ -198,14 +202,14 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final List<Widget> children = [];
 
     if (widget.item.autoIncrement) {
       children.add(SwitchListTile(
-        title: Text('Auto increment'),
+        title: const Text('Auto increment'),
         value: autoIncrementEnabled,
-        onChanged: (newValue) {
+        onChanged: (final newValue) {
           setState(() {
             autoIncrementEnabled = newValue == true;
           });
@@ -221,7 +225,7 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
         initialValue: widget.item.originalValue?.toRadixString(10),
         validator: widget._validateId,
         decoration: InputDecoration(labelText: widget.item.name),
-        onChanged: (val) {
+        onChanged: (final val) {
           final intValue = int.tryParse(val, radix: 10);
           if (intValue != null) {
             widget.onChange(intValue);
@@ -240,7 +244,7 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
           )));
     }
 
-    children.add(Divider());
+    children.add(const Divider());
 
     return Column(
       children: children,

@@ -17,20 +17,22 @@ void main() {
   test('Should assert updateLastSeen', () async {
     expect(() async {
       await FakeBLEBackEnd.instance.startScan(
-          timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
+          timeout: const Duration(seconds: 1),
+          updateInterval: const Duration(seconds: 1));
     }, throwsA(isA<AssertionError>()),
         reason: "updateLastSeen has not been set so it should throw an error.");
   });
 
   test('Should throw state error if no providers are set', () async {
     final backEnd = FakeBLEBackEnd.instance;
-    backEnd.updateLastSeen = (LHDeviceIdentifier deviceIdentifier) {
+    backEnd.updateLastSeen = (final LHDeviceIdentifier deviceIdentifier) {
       return true;
     };
 
     expect(() async {
       await FakeBLEBackEnd.instance.startScan(
-          timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
+          timeout: const Duration(seconds: 1),
+          updateInterval: const Duration(seconds: 1));
     }, throwsA(isA<StateError>()),
         reason:
             "Should throw a StateError if no device providers have been set.");
@@ -46,7 +48,7 @@ void main() {
     final persistence = LighthouseV2Bloc(FakeBloc.normal());
 
     final backEnd = FakeBLEBackEnd.instance;
-    backEnd.updateLastSeen = (LHDeviceIdentifier deviceIdentifier) {
+    backEnd.updateLastSeen = (final LHDeviceIdentifier deviceIdentifier) {
       return true;
     };
 
@@ -57,16 +59,17 @@ void main() {
     backEnd.addProvider(provider);
 
     backEnd.startScan(
-        timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
+        timeout: const Duration(seconds: 1),
+        updateInterval: const Duration(seconds: 1));
 
     final firstDevice = await backEnd.lighthouseStream
-        .firstWhere((element) => element != null)
-        .timeout(Duration(seconds: 2));
+        .firstWhere((final element) => element != null)
+        .timeout(const Duration(seconds: 2));
     final secondDevice = await backEnd.lighthouseStream
-        .firstWhere((element) =>
+        .firstWhere((final element) =>
             element != null &&
             element.deviceIdentifier != firstDevice?.deviceIdentifier)
-        .timeout(Duration(seconds: 2));
+        .timeout(const Duration(seconds: 2));
 
     expect(firstDevice, isNot(null));
     expect(secondDevice, isNot(null));
@@ -91,7 +94,7 @@ void main() {
     final persistence = ViveBaseStationBloc(FakeBloc.normal());
 
     final backEnd = FakeBLEBackEnd.instance;
-    backEnd.updateLastSeen = (LHDeviceIdentifier deviceIdentifier) {
+    backEnd.updateLastSeen = (final LHDeviceIdentifier deviceIdentifier) {
       return true;
     };
 
@@ -102,16 +105,17 @@ void main() {
     backEnd.addProvider(provider);
 
     backEnd.startScan(
-        timeout: Duration(seconds: 1), updateInterval: Duration(seconds: 1));
+        timeout: const Duration(seconds: 1),
+        updateInterval: const Duration(seconds: 1));
 
     final firstDevice = await backEnd.lighthouseStream
-        .firstWhere((element) => element != null)
-        .timeout(Duration(seconds: 2));
+        .firstWhere((final element) => element != null)
+        .timeout(const Duration(seconds: 2));
     final secondDevice = await backEnd.lighthouseStream
-        .firstWhere((element) =>
+        .firstWhere((final element) =>
             element != null &&
             element.deviceIdentifier != firstDevice?.deviceIdentifier)
-        .timeout(Duration(seconds: 2));
+        .timeout(const Duration(seconds: 2));
 
     expect(firstDevice, isNot(null));
     expect(secondDevice, isNot(null));

@@ -13,7 +13,7 @@ import '../../bloc.dart';
 import 'widget_for_extension.dart';
 
 class LighthouseMetadataPage extends StatefulWidget {
-  LighthouseMetadataPage(this.device, {Key? key}) : super(key: key);
+  LighthouseMetadataPage(this.device, {final Key? key}) : super(key: key);
 
   final LighthouseDevice device;
   final BehaviorSubject<int> _updateSubject = BehaviorSubject.seeded(0);
@@ -25,7 +25,7 @@ class LighthouseMetadataPage extends StatefulWidget {
 }
 
 class LighthouseMetadataState extends State<LighthouseMetadataPage> {
-  Future<void> changeNicknameHandler(String? currentNickname) async {
+  Future<void> changeNicknameHandler(final String? currentNickname) async {
     final newNickname = await NicknameAlertWidget.showCustomDialog(context,
         deviceId: widget.device.deviceIdentifier.toString(),
         deviceName: widget.device.name,
@@ -42,7 +42,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
   }
 
   List<Widget> _generateBody() {
-    Map<String, String?> map = {};
+    final Map<String, String?> map = {};
     map["Device type"] = "${widget.device.runtimeType}";
     map["Name"] = widget.device.name;
     map["Firmware version"] = widget.device.firmwareVersion;
@@ -68,7 +68,8 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
     body.add(StreamBuilder<Nickname?>(
       stream: bloc.nicknames
           .watchNicknameForDeviceIds(widget.device.deviceIdentifier.toString()),
-      builder: (BuildContext context, AsyncSnapshot<Nickname?> snapshot) {
+      builder: (final BuildContext context,
+          final AsyncSnapshot<Nickname?> snapshot) {
         final nickname = snapshot.data;
         if (nickname != null) {
           return _MetadataInkWell(
@@ -82,7 +83,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
           final theming = Theming.of(context);
           return InkWell(
             child: ListTile(
-              title: Text('Nickname'),
+              title: const Text('Nickname'),
               subtitle: Text(
                 'Not set',
                 style: theming.bodyText?.copyWith(
@@ -101,12 +102,12 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lighthouse Metadata')),
+      appBar: AppBar(title: const Text('Lighthouse Metadata')),
       body: StreamBuilder<int>(
         stream: widget._updateSubject.stream,
-        builder: (c, s) => ListView(
+        builder: (final c, final s) => ListView(
           children: _generateBody(),
         ),
       ),
@@ -115,7 +116,8 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 }
 
 class _MetadataInkWell extends StatelessWidget {
-  _MetadataInkWell({Key? key, required this.name, this.value, this.onTap})
+  const _MetadataInkWell(
+      {final Key? key, required this.name, this.value, this.onTap})
       : super(key: key);
 
   final String name;
@@ -123,7 +125,7 @@ class _MetadataInkWell extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
     return InkWell(
       child: ListTile(
@@ -138,7 +140,7 @@ class _MetadataInkWell extends StatelessWidget {
       ),
       onLongPress: () async {
         Clipboard.setData(ClipboardData(text: value));
-        if (await Vibration.hasVibrator() == true) {
+        if (await Vibration.hasVibrator() ?? false) {
           Vibration.vibrate(duration: 200);
         }
         Toast.show('Copied to clipboard', context,
@@ -150,18 +152,18 @@ class _MetadataInkWell extends StatelessWidget {
 }
 
 class _ExtraActionsWidget extends StatelessWidget {
-  _ExtraActionsWidget(this.device, {Key? key, this.updateList})
+  const _ExtraActionsWidget(this.device, {final Key? key, this.updateList})
       : super(key: key);
 
   final DeviceWithExtensions device;
   final VoidCallback? updateList;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final extensions = device.deviceExtensions.toList(growable: false);
     final theming = Theming.of(context);
 
-    return Container(
+    return SizedBox(
         height: 165.0,
         child: Column(
           children: [
@@ -173,20 +175,20 @@ class _ExtraActionsWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(),
-            Container(
+            const Divider(),
+            SizedBox(
               height: 85.0,
               child: ListView.builder(
-                itemBuilder: (c, index) {
+                itemBuilder: (final c, final index) {
                   return Column(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 60.0,
                         child: StreamBuilder<bool>(
                           stream: extensions[index].enabledStream,
                           initialData: false,
-                          builder: (c, snapshot) {
-                            final enabled = snapshot.data == true;
+                          builder: (final c, final snapshot) {
+                            final enabled = snapshot.data ?? false;
                             return RawMaterialButton(
                               onPressed: () async {
                                 await extensions[index].onTap();
@@ -200,7 +202,7 @@ class _ExtraActionsWidget extends StatelessWidget {
                                   ? theming.buttonColor
                                   : theming.disabledColor,
                               padding: const EdgeInsets.all(2.0),
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               child: getWidgetFromDeviceExtension(
                                   extensions[index]),
                             );
@@ -218,7 +220,7 @@ class _ExtraActionsWidget extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
               ),
             ),
-            Divider(
+            const Divider(
               thickness: 1.5,
             ),
           ],

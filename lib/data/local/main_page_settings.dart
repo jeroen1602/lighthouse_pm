@@ -36,7 +36,7 @@ class MainPageSettings {
   );
 
   static Stream<MainPageSettings> mainPageSettingsStream(
-      LighthousePMBloc bloc) {
+      final LighthousePMBloc bloc) {
     LighthousePowerState sleepState = defaultMainPageSettings.sleepState;
     bool viveBaseStationsEnabled =
         defaultMainPageSettings.viveBaseStationsEnabled;
@@ -49,23 +49,21 @@ class MainPageSettings {
     return MergeStream<Tuple2<int, dynamic>>([
       bloc.settings
           .getSleepStateAsStream()
-          .map((state) => Tuple2(SettingsDao.defaultSleepStateId, state)),
-      bloc.settings
-          .getViveBaseStationsEnabledStream()
-          .map((state) => Tuple2(SettingsDao.viveBaseStationEnabledId, state)),
+          .map((final state) => Tuple2(SettingsDao.defaultSleepStateId, state)),
+      bloc.settings.getViveBaseStationsEnabledStream().map(
+          (final state) => Tuple2(SettingsDao.viveBaseStationEnabledId, state)),
       bloc.settings
           .getScanDurationsAsStream(defaultValue: scanDuration)
-          .map((state) => Tuple2(SettingsDao.scanDurationId, state)),
+          .map((final state) => Tuple2(SettingsDao.scanDurationId, state)),
       bloc.settings
           .getUpdateIntervalAsStream(defaultUpdateInterval: updateInterval)
-          .map((state) => Tuple2(SettingsDao.updateIntervalId, state)),
+          .map((final state) => Tuple2(SettingsDao.updateIntervalId, state)),
       bloc.settings
           .getShortcutsEnabledStream()
-          .map((state) => Tuple2(SettingsDao.shortcutEnabledId, state)),
-      bloc.settings
-          .getGroupOfflineWarningEnabledStream()
-          .map((state) => Tuple2(SettingsDao.groupShowOfflineWarningId, state)),
-    ]).map((event) {
+          .map((final state) => Tuple2(SettingsDao.shortcutEnabledId, state)),
+      bloc.settings.getGroupOfflineWarningEnabledStream().map((final state) =>
+          Tuple2(SettingsDao.groupShowOfflineWarningId, state)),
+    ]).map((final event) {
       switch (event.item1) {
         case SettingsDao.defaultSleepStateId:
           if (event.item2 != null) {
@@ -113,15 +111,15 @@ class MainPageSettings {
   /// A little helper function for creating a [StreamBuilder] for getting the
   /// [MainPageSettings].
   static Widget mainPageSettingsStreamBuilder(
-      {required LighthousePMBloc bloc,
-      required MainPageSettingsWidgetBuilder builder}) {
+      {required final LighthousePMBloc bloc,
+      required final MainPageSettingsWidgetBuilder builder}) {
     return StreamBuilder<MainPageSettings>(
       stream: mainPageSettingsStream(bloc),
       initialData: MainPageSettings.defaultMainPageSettings,
-      builder: (BuildContext context,
-          AsyncSnapshot<MainPageSettings> settingsSnapshot) {
+      builder: (final BuildContext context,
+          final AsyncSnapshot<MainPageSettings> settingsSnapshot) {
         // Not sure if I want to keep this logic in here.
-        if (settingsSnapshot.data?.viveBaseStationsEnabled == true) {
+        if (settingsSnapshot.data?.viveBaseStationsEnabled ?? false) {
           LighthouseProvider.instance
               .addProvider(ViveBaseStationDeviceProvider.instance);
         } else {
