@@ -16,7 +16,7 @@ class FakeViveBaseStationBloc extends Fake
   BehaviorSubject<List<ViveBaseStationStorage>>? idsStream;
 
   @override
-  Future<int?> getId(LHDeviceIdentifier deviceId) async {
+  Future<int?> getId(final LHDeviceIdentifier deviceId) async {
     final stream = idsStream;
     if (stream == null) {
       return null;
@@ -24,17 +24,17 @@ class FakeViveBaseStationBloc extends Fake
 
     return stream.valueOrNull
         ?.cast<ViveBaseStationStorage?>()
-        .firstWhere((element) => element?.deviceId == deviceId,
+        .firstWhere((final element) => element?.deviceId == deviceId,
             orElse: () => null)
         ?.baseStationId;
   }
 
   @override
-  Future<void> insertId(LHDeviceIdentifier deviceId, int id) async {
+  Future<void> insertId(final LHDeviceIdentifier deviceId, final int id) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
       final index = idsStream.valueOrNull
-              ?.indexWhere((element) => element.deviceId == deviceId) ??
+              ?.indexWhere((final element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
         idsStream.valueOrNull?.removeAt(index);
@@ -45,11 +45,11 @@ class FakeViveBaseStationBloc extends Fake
   }
 
   @override
-  Future<void> deleteId(LHDeviceIdentifier deviceId) async {
+  Future<void> deleteId(final LHDeviceIdentifier deviceId) async {
     final idsStream = this.idsStream;
     if (idsStream != null) {
       final index = idsStream.valueOrNull
-              ?.indexWhere((element) => element.deviceId == deviceId) ??
+              ?.indexWhere((final element) => element.deviceId == deviceId) ??
           -1;
       if (index >= 0) {
         idsStream.valueOrNull?.removeAt(index);
@@ -59,7 +59,7 @@ class FakeViveBaseStationBloc extends Fake
   }
 
   void startViveBaseStationIdsStream(
-      [List<ViveBaseStationStorage> data = const []]) {
+      [final List<ViveBaseStationStorage> data = const []]) {
     idsStream ??= BehaviorSubject.seeded(data.toList());
   }
 }

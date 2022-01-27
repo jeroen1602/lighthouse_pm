@@ -12,7 +12,7 @@ class MutexWithStack extends Mutex {
   StackTrace? get lockTrace => _lockTrace;
 
   @override
-  Future acquire([StackTrace? trace]) async {
+  Future acquire([final StackTrace? trace]) async {
     await super.acquire();
     _lockTrace = trace ?? StackTrace.current;
   }
@@ -24,8 +24,8 @@ class MutexWithStack extends Mutex {
   }
 
   @override
-  Future<T> protect<T>(Future<T> Function() criticalSection,
-      [StackTrace? trace]) async {
+  Future<T> protect<T>(final Future<T> Function() criticalSection,
+      [final StackTrace? trace]) async {
     await acquire(trace);
     try {
       return await criticalSection();

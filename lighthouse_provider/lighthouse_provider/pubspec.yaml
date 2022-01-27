@@ -12,6 +12,8 @@ dependencies:
   mutex: ^3.0.0
   rxdart: ^0.27.3
   tuple: ^2.0.0
+  collection: ^1.15.0
+  convert: ^3.0.1
   lighthouse_back_end:
     path: ../lighthouse_back_end
   shared_platform:

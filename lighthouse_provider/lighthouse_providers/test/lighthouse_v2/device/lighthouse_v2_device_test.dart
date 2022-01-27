@@ -168,7 +168,7 @@ void main() {
     final persistence = FakeLighthouseV2Bloc();
     persistence.shortcutsEnabled = true;
     final device = LighthouseV2Device(
-        FakeLighthouseV2Device(0, 0), persistence, (mac, name) {});
+        FakeLighthouseV2Device(0, 0), persistence, (final mac, final name) {});
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -197,7 +197,7 @@ void main() {
     final persistence = FakeLighthouseV2Bloc();
     persistence.shortcutsEnabled = true;
     final device = LighthouseV2Device(
-        FakeLighthouseV2Device(0, 0), persistence, (mac, name) {});
+        FakeLighthouseV2Device(0, 0), persistence, (final mac, final name) {});
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -216,7 +216,7 @@ void main() {
     persistence.shortcutsEnabled = true;
 
     final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence,
-        (mac, name) {
+        (final mac, final name) {
       expect(mac, "00:00:00:00:00:00");
       expect(name, "LHB-00000000");
     });
@@ -229,7 +229,7 @@ void main() {
 
     expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
     final extension = device.deviceExtensions
-        .firstWhere((element) => element is ShortcutExtension);
+        .firstWhere((final element) => element is ShortcutExtension);
     expect(extension, isNotNull);
     expect(extension, isA<ShortcutExtension>());
 
@@ -241,7 +241,7 @@ void main() {
     persistence.shortcutsEnabled = true;
 
     final device = LighthouseV2Device(FakeLighthouseV2Device(0, 0), persistence,
-        (mac, name) {
+        (final mac, final name) {
       expect(mac, "00:00:00:00:00:00");
       expect(name, "WOW!");
     });
@@ -256,7 +256,7 @@ void main() {
 
     expect(device.deviceExtensions, contains(isA<ShortcutExtension>()));
     final extension = device.deviceExtensions
-        .firstWhere((element) => element is ShortcutExtension);
+        .firstWhere((final element) => element is ShortcutExtension);
     expect(extension, isNotNull);
     expect(extension, isA<ShortcutExtension>());
 
@@ -297,8 +297,8 @@ void main() {
     await Future.delayed(Duration(milliseconds: 10));
 
     // Set the device in sleep mode (the hard way)
-    (lowLevel.service.characteristics.firstWhere(
-                (element) => element is FakeLighthouseV2PowerCharacteristic)
+    (lowLevel.service.characteristics.firstWhere((final element) =>
+                element is FakeLighthouseV2PowerCharacteristic)
             as FakeLighthouseV2PowerCharacteristic)
         .data
       ..clear()
@@ -676,9 +676,9 @@ void main() {
   });
 }
 
-Future<LighthousePowerState> getNextPowerState(LighthouseDevice device,
-    LighthousePowerState previous, Duration timeout) async {
+Future<LighthousePowerState> getNextPowerState(final LighthouseDevice device,
+    final LighthousePowerState previous, final Duration timeout) async {
   return device.powerStateEnum
-      .firstWhere((element) => element != previous)
+      .firstWhere((final element) => element != previous)
       .timeout(timeout);
 }

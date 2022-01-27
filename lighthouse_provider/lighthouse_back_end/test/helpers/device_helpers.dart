@@ -7,8 +7,9 @@ import 'package:shared_platform/shared_platform_io.dart';
 import 'fake_bloc.dart';
 
 Future<ViveBaseStationDevice> createValidViveDevice(
-    int deviceName, int deviceId,
-    [ViveBaseStationPersistence? persistence, RequestPairId? pairId]) async {
+    final int deviceName, final int deviceId,
+    [ViveBaseStationPersistence? persistence,
+    final RequestPairId? pairId]) async {
   SharedPlatform.overridePlatform = PlatformOverride.android;
   persistence ??= FakeViveBaseStationBloc();
   final device = ViveBaseStationDevice(
@@ -19,7 +20,7 @@ Future<ViveBaseStationDevice> createValidViveDevice(
 }
 
 Future<LighthouseV2Device> createValidLighthouseV2Device(
-    int deviceName, int deviceId,
+    final int deviceName, final int deviceId,
     [LighthouseV2Persistence? persistence]) async {
   SharedPlatform.overridePlatform = PlatformOverride.android;
   persistence ??= FakeLighthouseV2Bloc();
@@ -30,7 +31,7 @@ Future<LighthouseV2Device> createValidLighthouseV2Device(
   return await doTheIsValid(device);
 }
 
-Future<T> doTheIsValid<T extends BLEDevice>(T device) async {
+Future<T> doTheIsValid<T extends BLEDevice>(final T device) async {
   final valid = await device.isValid();
   if (!valid) {
     throw StateError("Should be valid!");

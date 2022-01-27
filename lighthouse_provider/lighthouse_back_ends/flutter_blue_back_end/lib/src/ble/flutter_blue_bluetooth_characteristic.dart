@@ -13,6 +13,7 @@ class FlutterBlueBluetoothCharacteristic extends LHBluetoothCharacteristic {
   LighthouseGuid get uuid => characteristic.uuid.toLighthouseGuid();
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) =>
+  Future<void> write(final List<int> data,
+          {final bool withoutResponse = false}) =>
       characteristic.write(data, withoutResponse: withoutResponse);
 }

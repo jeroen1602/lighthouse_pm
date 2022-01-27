@@ -5,8 +5,8 @@ part of device_extension;
 ///
 class OnExtension extends StateExtension {
   OnExtension(
-      {required ChangeStateFunction changeState,
-      required GetPowerStateStream powerStateStream})
+      {required final ChangeStateFunction changeState,
+      required final GetPowerStateStream powerStateStream})
       : super(
             toolTip: "On",
             changeState: changeState,

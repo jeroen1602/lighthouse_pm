@@ -10,6 +10,7 @@ environment:
 dependencies:
   meta: ^1.7.0
   convert: ^3.0.1
+  collection: ^1.15.0
   lighthouse_provider:
     path: ../lighthouse_provider
 
@@ -20,3 +21,6 @@ dev_dependencies:
     path: ../lighthouse_back_ends/fake_back_end
   shared_platform:
     path: ../../shared/shared_platform
+  lighthouse_providers:
+    path: ../lighthouse_providers
+  rxdart: ^0.27.3

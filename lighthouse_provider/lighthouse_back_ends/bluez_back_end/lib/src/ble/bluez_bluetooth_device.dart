@@ -11,7 +11,7 @@ class BlueZBluetoothDevice extends LHBluetoothDevice {
   final BlueZDevice device;
 
   @override
-  Future<void> connect({Duration? timeout}) async {
+  Future<void> connect({final Duration? timeout}) async {
     if (timeout != null) {
       await device.connect().timeout(timeout);
     } else {
@@ -26,7 +26,9 @@ class BlueZBluetoothDevice extends LHBluetoothDevice {
 
   @override
   Future<List<LHBluetoothService>> discoverServices() async {
-    return device.gattServices.map((e) => BlueZBluetoothService(e)).toList();
+    return device.gattServices
+        .map((final e) => BlueZBluetoothService(e))
+        .toList();
   }
 
   @override
@@ -42,11 +44,11 @@ class BlueZBluetoothDevice extends LHBluetoothDevice {
   void _startStateStream() {
     _stateStream ??=
         MergeStream([Stream.value(null), Stream.periodic(Duration(seconds: 2))])
-            .map((event) => device.connected)
-            .map((event) => event
+            .map((final event) => device.connected)
+            .map((final event) => event
                 ? LHBluetoothDeviceState.connected
                 : LHBluetoothDeviceState.disconnected)
-            .listen((event) {
+            .listen((final event) {
       _stateSubject.add(event);
     });
   }

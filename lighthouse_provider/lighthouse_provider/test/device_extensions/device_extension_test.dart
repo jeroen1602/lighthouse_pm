@@ -29,15 +29,16 @@ void main() {
           persistence: persistence,
           deviceId: LHDeviceIdentifier("12345678901234567"),
           clearId: () {}),
-      ShortcutExtension("00:00:00:00:00:00", () => "Device 1", (mac, name) {}),
+      ShortcutExtension(
+          "00:00:00:00:00:00", () => "Device 1", (final mac, final name) {}),
       OnExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.on)),
       SleepExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.sleep)),
       StandbyExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.standby)),
       IdentifyDeviceExtension(onTap: () async {}),
     ];
@@ -47,15 +48,16 @@ void main() {
           persistence: persistence,
           deviceId: LHDeviceIdentifier("12345678901234568"),
           clearId: () {}),
-      ShortcutExtension("00:00:00:00:00:01", () => "Device 2", (mac, name) {}),
+      ShortcutExtension(
+          "00:00:00:00:00:01", () => "Device 2", (final mac, final name) {}),
       OnExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.on)),
       SleepExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.sleep)),
       StandbyExtension(
-          changeState: (newState) async {},
+          changeState: (final newState) async {},
           powerStateStream: () => Stream.value(LighthousePowerState.standby)),
       IdentifyDeviceExtension(onTap: () async {}),
     ];

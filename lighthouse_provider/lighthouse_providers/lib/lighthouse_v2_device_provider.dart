@@ -37,7 +37,7 @@ class LighthouseV2DeviceProvider
   CreateShortcutCallback? _createShortcutCallback;
 
   void setCreateShortcutCallback(
-      CreateShortcutCallback? createShortcutCallback) {
+      final CreateShortcutCallback? createShortcutCallback) {
     _createShortcutCallback = createShortcutCallback;
   }
 
@@ -45,7 +45,7 @@ class LighthouseV2DeviceProvider
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
-  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
+  Future<BLEDevice> internalGetDevice(final LHBluetoothDevice device) async {
     return LighthouseV2Device(
         device, requirePersistence(), _createShortcutCallback);
   }

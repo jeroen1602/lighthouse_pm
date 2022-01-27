@@ -3,9 +3,9 @@ part of vive_base_station_device_provider;
 class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     implements DeviceWithExtensions {
   ViveBaseStationDevice(
-      LHBluetoothDevice device,
-      ViveBaseStationPersistence? persistence,
-      RequestPairId<dynamic>? requestCallback)
+      final LHBluetoothDevice device,
+      final ViveBaseStationPersistence? persistence,
+      final RequestPairId<dynamic>? requestCallback)
       : _requestCallback = requestCallback,
         super(device, persistence);
 
@@ -21,7 +21,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
 
   int? get pairId => _pairIdStorage;
 
-  set pairId(int? id) {
+  set pairId(final int? id) {
     _pairIdStorage = id;
     _hasDeviceIdSubject.add(id != null);
     if (id == null) {
@@ -91,7 +91,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   /// May throw [UnsupportedError] if state is something else than [LighthousePowerState.on] or [LighthousePowerState.standby].
   ///
   @override
-  Future internalChangeState(LighthousePowerState newState) async {
+  Future internalChangeState(final LighthousePowerState newState) async {
     final characteristic = _characteristic;
     if (characteristic == null) {
       return;
@@ -118,7 +118,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  LighthousePowerState powerStateFromByte(int byte) {
+  LighthousePowerState powerStateFromByte(final int byte) {
     // revert back to unknown, still needs some research.
     return LighthousePowerState.unknown;
     // switch (byte) {
@@ -220,7 +220,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     LighthousePowerState lastState = LighthousePowerState.unknown;
     bool hasId = false;
     return MergeStream<dynamic>([powerStateEnum, _hasDeviceIdSubject.stream])
-        .map((event) {
+        .map((final event) {
       if (event is LighthousePowerState) {
         lastState = event;
       } else if (event is bool) {
@@ -235,7 +235,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  Future<bool> requestExtraInfo<C>([C? context]) async {
+  Future<bool> requestExtraInfo<C>([final C? context]) async {
     if (pairId != null) {
       return true;
     }

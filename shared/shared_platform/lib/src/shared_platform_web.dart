@@ -13,7 +13,7 @@ class SharedPlatform {
 
   static const String current = "web";
 
-  static void exit(int code) {
+  static void exit(final int code) {
     assert(() {
       throw UnsupportedError(
           "Hey developer this platform doesn't support exit!");

@@ -15,9 +15,15 @@ include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
 
-# linter:
-#   rules:
-#     - camel_case_types
+linter:
+  rules:
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - prefer_final_parameters
+    - prefer_interpolation_to_compose_strings
+    - prefer_null_aware_method_calls
+    - use_if_null_to_convert_nulls_to_bools
+    - depend_on_referenced_packages
 
 # analyzer:
 #   exclude:

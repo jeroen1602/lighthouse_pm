@@ -34,7 +34,7 @@ class SharedPlatform {
     return "unsupported";
   }
 
-  static void exit(int code) {
+  static void exit(final int code) {
     _throwUnsupportedError();
   }
 

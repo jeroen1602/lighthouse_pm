@@ -7,7 +7,7 @@ class FlutterWebBluetoothDevice extends LHBluetoothDevice {
   final List<LighthouseGuid> characteristicsGuid;
 
   @override
-  Future<void> connect({Duration? timeout}) async {
+  Future<void> connect({final Duration? timeout}) async {
     await device.connect(timeout: timeout);
   }
 
@@ -36,7 +36,7 @@ class FlutterWebBluetoothDevice extends LHBluetoothDevice {
 
   @override
   Stream<LHBluetoothDeviceState> get state =>
-      device.connected.map((connected) => connected
+      device.connected.map((final connected) => connected
           ? LHBluetoothDeviceState.connected
           : LHBluetoothDeviceState.disconnected);
 }

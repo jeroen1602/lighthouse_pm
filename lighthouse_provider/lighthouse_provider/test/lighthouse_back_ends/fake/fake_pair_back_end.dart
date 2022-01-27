@@ -21,7 +21,8 @@ class FakePairBackEnd extends BLELighthouseBackEnd with PairBackEnd {
 
   @override
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     _isScanningSubject.add(true);
     for (final lowLevelDevice in devices) {
@@ -51,7 +52,8 @@ class FakePairBackEnd extends BLELighthouseBackEnd with PairBackEnd {
 
   @override
   Future<void> pairNewDevice(
-      {required Duration timeout, required Duration? updateInterval}) {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) {
     // TODO: implement pairNewDevice
     throw UnimplementedError();
   }

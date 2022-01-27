@@ -1,7 +1,7 @@
 part of fake_back_end;
 
 abstract class FakeDeviceIdentifier {
-  static LHDeviceIdentifier generateDeviceIdentifier(int seed) {
+  static LHDeviceIdentifier generateDeviceIdentifier(final int seed) {
     if (SharedPlatform.isAndroid) {
       return generateDeviceIdentifierAndroid(seed);
     } else if (SharedPlatform.isIOS) {
@@ -36,12 +36,12 @@ abstract class FakeDeviceIdentifier {
   }
 
   @visibleForTesting
-  static LHDeviceIdentifier generateDeviceIdentifierLinux(int seed) {
+  static LHDeviceIdentifier generateDeviceIdentifierLinux(final int seed) {
     return generateBasicMacIdentifier(seed);
   }
 
   @visibleForTesting
-  static LHDeviceIdentifier generateDeviceIdentifierAndroid(int seed) {
+  static LHDeviceIdentifier generateDeviceIdentifierAndroid(final int seed) {
     return generateBasicMacIdentifier(seed);
   }
 
@@ -60,7 +60,7 @@ abstract class FakeDeviceIdentifier {
   }
 
   @visibleForTesting
-  static LHDeviceIdentifier generateDeviceIdentifierIOS(int seed) {
+  static LHDeviceIdentifier generateDeviceIdentifierIOS(final int seed) {
     throw UnimplementedError('TODO implement ios fake device Identifier');
   }
 }

@@ -19,9 +19,9 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   static const String controlServiceUUID =
       "00001523-1212-efde-1523-785feabcd124";
 
-  LighthouseV2Device(
-      LHBluetoothDevice device, LighthouseV2Persistence? persistence,
-      [CreateShortcutCallback? createShortcut])
+  LighthouseV2Device(final LHBluetoothDevice device,
+      final LighthouseV2Persistence? persistence,
+      [final CreateShortcutCallback? createShortcut])
       : _createShortcut = createShortcut,
         super(device, persistence) {
     // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
@@ -43,7 +43,7 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   ];
 
   IdentifyDeviceExtension get _identifyDeviceExtension => (deviceExtensions
-          .firstWhere((element) => element is IdentifyDeviceExtension)
+          .firstWhere((final element) => element is IdentifyDeviceExtension)
       as IdentifyDeviceExtension);
 
   @override
@@ -77,7 +77,7 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   }
 
   @override
-  LighthousePowerState powerStateFromByte(int byte) {
+  LighthousePowerState powerStateFromByte(final int byte) {
     switch (byte) {
       case 0x00:
         return LighthousePowerState.sleep;
@@ -180,7 +180,7 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
 
     final callback = _createShortcut;
     if (SharedPlatform.isAndroid && callback != null) {
-      persistence?.areShortcutsEnabled().then((value) {
+      persistence?.areShortcutsEnabled().then((final value) {
         if (value) {
           deviceExtensions
               .add(ShortcutExtension(deviceIdentifier.toString(), () {
@@ -202,7 +202,7 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   }
 
   @override
-  Future internalChangeState(LighthousePowerState newState) async {
+  Future internalChangeState(final LighthousePowerState newState) async {
     final characteristic = _characteristic;
     if (characteristic != null) {
       switch (newState) {

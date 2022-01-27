@@ -4,7 +4,7 @@ part of flutter_blue_back_end;
 class FlutterBlueBluetoothService extends LHBluetoothService {
   FlutterBlueBluetoothService(this.service) {
     _characteristics.addAll(service.characteristics
-        .map((e) => FlutterBlueBluetoothCharacteristic(e)));
+        .map((final e) => FlutterBlueBluetoothCharacteristic(e)));
   }
 
   final BluetoothService service;

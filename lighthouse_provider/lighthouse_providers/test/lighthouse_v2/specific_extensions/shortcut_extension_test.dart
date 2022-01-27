@@ -10,7 +10,7 @@ void main() {
   test('Should be able to create shortcut extension', () async {
     final extension = ShortcutExtension("00:00:00:00:00:00", () {
       return "DEVICE_NAME";
-    }, (mac, name) {});
+    }, (final mac, final name) {});
 
     expect(extension.toolTip, 'Create shortcut');
     expect(extension.updateListAfter, false);
@@ -24,7 +24,7 @@ void main() {
 
     final extension = ShortcutExtension("00:00:00:00:00:00", () {
       return "DEVICE_NAME";
-    }, (mac, name) {
+    }, (final mac, final name) {
       receivedMac = mac;
       receivedName = name;
     });

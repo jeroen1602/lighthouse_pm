@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   flutter_web_bluetooth: ^0.0.6+2
+  meta: ^1.7.0
   rxdart: ^0.27.3
   lighthouse_provider:
     path: ../lighthouse_provider

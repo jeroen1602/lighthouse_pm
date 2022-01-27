@@ -52,10 +52,10 @@ abstract class BLEDevice<T> extends LighthouseDevice {
   @visibleForTesting
   @protected
   Future<void> checkCharacteristicForDefaultValue(
-      List<DefaultCharacteristics> supportedCharacteristic,
-      LHBluetoothCharacteristic characteristic,
-      Map<String, String?> metadataMap) async {
-    LighthouseGuid uuid = characteristic.uuid;
+      final List<DefaultCharacteristics> supportedCharacteristic,
+      final LHBluetoothCharacteristic characteristic,
+      final Map<String, String?> metadataMap) async {
+    final LighthouseGuid uuid = characteristic.uuid;
     for (final defaultCharacteristic in supportedCharacteristic) {
       if (defaultCharacteristic.isEqualToGuid(uuid)) {
         try {

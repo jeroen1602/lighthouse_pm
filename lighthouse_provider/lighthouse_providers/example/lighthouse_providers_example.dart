@@ -17,22 +17,22 @@ void setupLighthouseV2DeviceProvider() {
 
 class ExampleViveBaseStationPersistence extends ViveBaseStationPersistence {
   @override
-  Future<void> deleteId(LHDeviceIdentifier deviceId) {
+  Future<void> deleteId(final LHDeviceIdentifier deviceId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<int?> getId(LHDeviceIdentifier deviceId) {
+  Future<int?> getId(final LHDeviceIdentifier deviceId) {
     throw UnimplementedError();
   }
 
   @override
-  Stream<bool> hasIdStored(LHDeviceIdentifier deviceId) {
+  Stream<bool> hasIdStored(final LHDeviceIdentifier deviceId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> insertId(LHDeviceIdentifier deviceId, int id) {
+  Future<void> insertId(final LHDeviceIdentifier deviceId, final int id) {
     throw UnimplementedError();
   }
 }
@@ -41,7 +41,7 @@ void setupViveBaseStationDeviceProvider() {
   final instance = ViveBaseStationDeviceProvider.instance;
 
   instance.setPersistence(ExampleViveBaseStationPersistence());
-  instance.setRequestPairIdCallback((context, pairIdHint) async {
+  instance.setRequestPairIdCallback((final context, final pairIdHint) async {
     return "PAIR_ID_FOR_DEVICE";
   });
 }

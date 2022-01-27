@@ -10,8 +10,10 @@ typedef CreateShortcutCallback = FutureOr<void> Function(
 /// Extension for adding a button so the the user can add a shortcut
 ///
 class ShortcutExtension extends DeviceExtension {
-  ShortcutExtension(String macAddress, GetDeviceNickname getDeviceNickname,
-      CreateShortcutCallback createShortcut)
+  ShortcutExtension(
+      final String macAddress,
+      final GetDeviceNickname getDeviceNickname,
+      final CreateShortcutCallback createShortcut)
       : super(
             toolTip: 'Create shortcut',
             updateListAfter: false,

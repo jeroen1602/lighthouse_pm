@@ -35,7 +35,7 @@ void main() {
     await extension.onTap();
     expect(clicked, true, reason: "Button should have been clicked.");
     final index = persistence.idsStream!.valueOrNull!.indexWhere(
-        (element) => element.deviceId.toString() == "12345678901234567");
+        (final element) => element.deviceId.toString() == "12345678901234567");
     expect(index < 0, true, reason: 'Expect the item to be removed');
   });
 

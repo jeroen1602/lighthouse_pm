@@ -7,11 +7,12 @@ class LighthouseGuid {
   final ByteData _bytes;
   final int _hashCode;
 
-  LighthouseGuid.fromBytes(ByteData bytes)
+  LighthouseGuid.fromBytes(final ByteData bytes)
       : _bytes = bytes,
         _hashCode = _calculateHashCode(bytes);
 
-  LighthouseGuid.fromString(String input) : this.fromBytes(_fromString(input));
+  LighthouseGuid.fromString(final String input)
+      : this.fromBytes(_fromString(input));
 
   LighthouseGuid.empty() : this.fromBytes(ByteData(16));
 
@@ -47,7 +48,8 @@ class LighthouseGuid {
   }
 
   @override
-  operator ==(other) => other is LighthouseGuid && hashCode == other.hashCode;
+  operator ==(final other) =>
+      other is LighthouseGuid && hashCode == other.hashCode;
 
   @override
   int get hashCode => _hashCode;
@@ -59,8 +61,8 @@ class LighthouseGuid {
     return _bytes;
   }
 
-  static String _removeNonHexCharacters(String sourceString) {
-    return String.fromCharCodes(sourceString.runes.where((r) =>
+  static String _removeNonHexCharacters(final String sourceString) {
+    return String.fromCharCodes(sourceString.runes.where((final r) =>
             (r >= 48 && r <= 57) // characters 0 to 9
             ||
             (r >= 65 && r <= 70) // characters A to F
@@ -69,7 +71,7 @@ class LighthouseGuid {
         ));
   }
 
-  static int _calculateHashCode(ByteData bytes) {
+  static int _calculateHashCode(final ByteData bytes) {
     return bytes.calculateHashCode();
   }
 }
@@ -77,18 +79,18 @@ class LighthouseGuid {
 class Guid32 extends LighthouseGuid {
   Guid32.empty() : super.fromBytes(ByteData(4));
 
-  Guid32.fromInt32(int input) : super.fromBytes(_fromInt32(input));
+  Guid32.fromInt32(final int input) : super.fromBytes(_fromInt32(input));
 
-  Guid32.fromLighthouseGuid(LighthouseGuid old)
+  Guid32.fromLighthouseGuid(final LighthouseGuid old)
       : super.fromBytes(_lighthouseGuid(old));
 
-  static ByteData _fromInt32(int input) {
+  static ByteData _fromInt32(final int input) {
     final bytes = ByteData(4);
     bytes.setInt32(0, input, Endian.big);
     return bytes;
   }
 
-  static ByteData _lighthouseGuid(LighthouseGuid old) {
+  static ByteData _lighthouseGuid(final LighthouseGuid old) {
     final bytes = ByteData(4);
     bytes.setInt32(0, old._bytes.getInt32(0, Endian.big), Endian.big);
     return bytes;
@@ -104,16 +106,16 @@ class Guid32 extends LighthouseGuid {
   }
 
   @override
-  operator ==(other) => other is Guid32 && hashCode == other.hashCode;
+  operator ==(final other) => other is Guid32 && hashCode == other.hashCode;
 
   @override
   int get hashCode => _hashCode;
 
-  bool isEqualToInt32(int other) {
+  bool isEqualToInt32(final int other) {
     return _bytes.getUint32(0, Endian.big) == other;
   }
 
-  bool isEqualToGuid(LighthouseGuid guid) {
+  bool isEqualToGuid(final LighthouseGuid guid) {
     final other = guid.getByteData();
     return _bytes.getUint32(0, Endian.big) == other.getUint32(0, Endian.big);
   }

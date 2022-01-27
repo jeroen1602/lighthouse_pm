@@ -4,9 +4,9 @@ typedef ClearIdCallback = Function();
 
 class ClearIdExtension extends DeviceExtension {
   ClearIdExtension(
-      {required ViveBaseStationPersistence persistence,
-      required LHDeviceIdentifier deviceId,
-      required ClearIdCallback clearId})
+      {required final ViveBaseStationPersistence persistence,
+      required final LHDeviceIdentifier deviceId,
+      required final ClearIdCallback clearId})
       : super(
             toolTip: 'Clear id',
             updateListAfter: true,

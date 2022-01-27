@@ -1,13 +1,13 @@
 part of flutter_web_bluetooth_back_end;
 
 class FlutterWebBluetoothService extends LHBluetoothService {
-  FlutterWebBluetoothService(
-      this.service, List<FlutterWebBluetoothCharacteristic> characteristics)
+  FlutterWebBluetoothService(this.service,
+      final List<FlutterWebBluetoothCharacteristic> characteristics)
       : _characteristics = characteristics;
 
   static Future<FlutterWebBluetoothService> withCharacteristics(
-      BluetoothService service,
-      List<LighthouseGuid> characteristicsGuid) async {
+      final BluetoothService service,
+      final List<LighthouseGuid> characteristicsGuid) async {
     final List<FlutterWebBluetoothCharacteristic> characteristics = [];
 
     for (final characteristicGuid in characteristicsGuid) {

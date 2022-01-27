@@ -273,15 +273,18 @@ void main() {
 
     try {
       final devices = await instance.lighthouseDevices
-          .firstWhere((element) => element.length == 2)
+          .firstWhere((final element) => element.length == 2)
           .timeout(Duration(seconds: 5));
 
       expect(devices.length, equals(2),
           reason: "Should have returned 2 devices");
-      expect(devices.firstWhere((element) => element is LighthouseV2Device),
+      expect(
+          devices.firstWhere((final element) => element is LighthouseV2Device),
           isNotNull,
           reason: "One device should be a lighthouse v2");
-      expect(devices.firstWhere((element) => element is ViveBaseStationDevice),
+      expect(
+          devices
+              .firstWhere((final element) => element is ViveBaseStationDevice),
           isNotNull,
           reason: "One device should be a lighthouse v2");
     } on TimeoutException {
@@ -324,15 +327,18 @@ void main() {
 
     try {
       final devices = await instance.lighthouseDevices
-          .firstWhere((element) => element.length == 2)
+          .firstWhere((final element) => element.length == 2)
           .timeout(Duration(seconds: 5));
 
       expect(devices.length, equals(2),
           reason: "Should have returned 2 devices");
-      expect(devices.firstWhere((element) => element is LighthouseV2Device),
+      expect(
+          devices.firstWhere((final element) => element is LighthouseV2Device),
           isNotNull,
           reason: "One device should be a lighthouse v2");
-      expect(devices.firstWhere((element) => element is ViveBaseStationDevice),
+      expect(
+          devices
+              .firstWhere((final element) => element is ViveBaseStationDevice),
           isNotNull,
           reason: "One device should be a lighthouse v2");
     } on TimeoutException {

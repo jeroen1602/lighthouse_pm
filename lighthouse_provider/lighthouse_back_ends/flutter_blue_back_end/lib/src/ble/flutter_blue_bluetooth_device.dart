@@ -7,7 +7,7 @@ class FlutterBlueBluetoothDevice extends LHBluetoothDevice {
   final BluetoothDevice device;
 
   @override
-  Future<void> connect({Duration? timeout}) {
+  Future<void> connect({final Duration? timeout}) {
     return device.connect(timeout: timeout);
   }
 
@@ -18,13 +18,13 @@ class FlutterBlueBluetoothDevice extends LHBluetoothDevice {
 
   @override
   Future<List<LHBluetoothService>> discoverServices() {
-    return device.discoverServices().then((services) =>
-        services.map((e) => FlutterBlueBluetoothService(e)).toList());
+    return device.discoverServices().then((final services) =>
+        services.map((final e) => FlutterBlueBluetoothService(e)).toList());
   }
 
   @override
   Stream<LHBluetoothDeviceState> get state =>
-      device.state.map((state) => state.toLHState());
+      device.state.map((final state) => state.toLHState());
 
   @override
   LHDeviceIdentifier get id => device.id.toLHDeviceIdentifier();

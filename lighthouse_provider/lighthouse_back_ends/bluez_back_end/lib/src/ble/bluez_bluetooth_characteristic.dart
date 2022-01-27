@@ -15,7 +15,8 @@ class BlueZBluetoothCharacteristic extends LHBluetoothCharacteristic {
       ByteData.sublistView(Int8List.fromList(characteristic.uuid.value)));
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false}) async {
     await characteristic.writeValue(data);
   }
 }

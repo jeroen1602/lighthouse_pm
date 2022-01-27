@@ -16,7 +16,7 @@ class TestBootingStateExtension extends StateExtension {
   TestBootingStateExtension()
       : super(
             toolTip: "Booting",
-            changeState: (newState) async {},
+            changeState: (final newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.booting);
 }
@@ -28,7 +28,7 @@ class TestUnknownStateExtension extends StateExtension {
   TestUnknownStateExtension()
       : super(
             toolTip: "Unknown",
-            changeState: (newState) async {},
+            changeState: (final newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.unknown);
 }
@@ -43,11 +43,11 @@ void main() {
   });
 
   test('Should create on state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.standby);
 
     final extension = OnExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);
@@ -59,11 +59,11 @@ void main() {
   });
 
   test('Should change enabled for on state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.standby);
 
     final extension = OnExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);
@@ -76,11 +76,11 @@ void main() {
   });
 
   test('Should create sleep state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.on);
 
     final extension = SleepExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);
@@ -92,11 +92,11 @@ void main() {
   });
 
   test('Should change enabled for sleep state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.on);
 
     final extension = SleepExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);
@@ -109,11 +109,11 @@ void main() {
   });
 
   test('Should create standby state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.on);
 
     final extension = StandbyExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);
@@ -125,11 +125,11 @@ void main() {
   });
 
   test('Should change enabled for standby state extension', () async {
-    BehaviorSubject<LighthousePowerState> powerState =
+    final BehaviorSubject<LighthousePowerState> powerState =
         BehaviorSubject.seeded(LighthousePowerState.on);
 
     final extension = StandbyExtension(
-        changeState: (newState) async {
+        changeState: (final newState) async {
           powerState.add(newState);
         },
         powerStateStream: () => powerState.stream);

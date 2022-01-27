@@ -14,7 +14,7 @@ abstract class LHBluetoothCharacteristic {
     return Utf8Decoder().convert(list);
   }
 
-  Future<int> readUint32([Endian endian = Endian.big]) async {
+  Future<int> readUint32([final Endian endian = Endian.big]) async {
     final data = await readByteData();
     switch (data.lengthInBytes) {
       case 0:
@@ -41,10 +41,11 @@ abstract class LHBluetoothCharacteristic {
   // endregion
 
   // region write
-  Future<void> write(List<int> data, {bool withoutResponse = false});
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false});
 
-  Future<void> writeByteData(ByteData value,
-      {bool withoutResponse = false}) async {
+  Future<void> writeByteData(final ByteData value,
+      {final bool withoutResponse = false}) async {
     final list = List<int>.filled(value.lengthInBytes, 0);
     for (var i = 0; i < value.lengthInBytes; i++) {
       list[i] = value.getUint8(i);

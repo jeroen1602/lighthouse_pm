@@ -39,7 +39,7 @@ class ViveBaseStationDeviceProvider
   /// Returns a new instance of a [LighthouseV2Device].
   ///
   @override
-  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device) async {
+  Future<BLEDevice> internalGetDevice(final LHBluetoothDevice device) async {
     return ViveBaseStationDevice(device, requirePersistence(), requestCallback);
   }
 
@@ -58,8 +58,8 @@ class ViveBaseStationDeviceProvider
   /// [ViveBaseStationDevice]s need to be set before
   /// [LighthouseDevice.changeState] is called.
   ///
-  void setRequestPairIdCallback<C>(RequestPairId<C> method) {
-    requestCallback = (dynamic context, int? pairIdHint) {
+  void setRequestPairIdCallback<C>(final RequestPairId<C> method) {
+    requestCallback = (final dynamic context, final int? pairIdHint) {
       return method(context, pairIdHint);
     };
   }

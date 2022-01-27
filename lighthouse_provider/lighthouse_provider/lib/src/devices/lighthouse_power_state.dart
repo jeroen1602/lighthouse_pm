@@ -25,7 +25,7 @@ class LighthousePowerState {
     standby,
   ];
 
-  static LighthousePowerState fromId(int id) {
+  static LighthousePowerState fromId(final int id) {
     if (id >= 0 && id < values.length) {
       return values[id];
     }

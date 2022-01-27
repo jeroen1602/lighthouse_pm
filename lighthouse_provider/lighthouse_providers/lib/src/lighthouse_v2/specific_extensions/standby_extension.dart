@@ -5,8 +5,8 @@ part of lighthouse_v2_device_provider;
 ///
 class StandbyExtension extends StateExtension {
   StandbyExtension(
-      {required ChangeStateFunction changeState,
-      required GetPowerStateStream powerStateStream})
+      {required final ChangeStateFunction changeState,
+      required final GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Standby",
             changeState: changeState,
@@ -21,7 +21,7 @@ extension StandbyExtensionExtensions on LighthouseDevice {
     }
     final device = this as DeviceWithExtensions;
     return device.deviceExtensions.cast<DeviceExtension?>().firstWhere(
-            (element) => element is StandbyExtension,
+            (final element) => element is StandbyExtension,
             orElse: () => null) !=
         null;
   }

@@ -7,12 +7,13 @@ part of lighthouse_back_end;
 /// If there is a back end with this then there should be a pair button visible.
 abstract class PairBackEnd {
   Future<void> pairNewDevice(
-      {required Duration timeout, required Duration? updateInterval});
+      {required final Duration timeout,
+      required final Duration? updateInterval});
 
   Stream<int> numberOfPairedDevices();
 
   Stream<bool> hasPairedDevices() {
-    return numberOfPairedDevices().map((event) => event > 0);
+    return numberOfPairedDevices().map((final event) => event > 0);
   }
 }
 

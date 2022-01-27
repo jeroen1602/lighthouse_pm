@@ -15,7 +15,7 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
   /// Set the database persistence for saving the ids of vive base stations.
   /// Not every provider requires this.
   ///
-  void setPersistence(T persistence) {
+  void setPersistence(final T persistence) {
     this.persistence = persistence;
   }
 
@@ -41,9 +41,9 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
   ///
   /// Can return `null` if the device is not support by this [DeviceProvider].
   @override
-  Future<LighthouseDevice?> getDevice(LHBluetoothDevice device,
-      {Duration? updateInterval}) async {
-    BLEDevice bleDevice = await internalGetDevice(device);
+  Future<LighthouseDevice?> getDevice(final LHBluetoothDevice device,
+      {final Duration? updateInterval}) async {
+    final BLEDevice bleDevice = await internalGetDevice(device);
     if (updateInterval != null) {
       bleDevice.setUpdateInterval(updateInterval);
     }
@@ -74,7 +74,7 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
   /// Any subclass should extend this and return a [BLEDevice] back.
   ///
   @protected
-  Future<BLEDevice> internalGetDevice(LHBluetoothDevice device);
+  Future<BLEDevice> internalGetDevice(final LHBluetoothDevice device);
 
   ///
   /// Close any open connections that may have been made for discovering devices.

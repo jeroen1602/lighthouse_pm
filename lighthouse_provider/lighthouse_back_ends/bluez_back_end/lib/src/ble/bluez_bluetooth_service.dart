@@ -7,7 +7,7 @@ class BlueZBluetoothService extends LHBluetoothService {
 
   @override
   List<LHBluetoothCharacteristic> get characteristics => service.characteristics
-      .map((e) => BlueZBluetoothCharacteristic(e))
+      .map((final e) => BlueZBluetoothCharacteristic(e))
       .toList();
 
   @override

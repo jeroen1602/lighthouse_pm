@@ -44,8 +44,9 @@ void main() {
 
     persistence.startViveBaseStationIdsStream();
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, __) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final __) async {
       return null;
     });
     persistence.insertId(device.deviceIdentifier, 0x12345678);
@@ -244,8 +245,9 @@ void main() {
 
     bool requested = false;
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final hint) async {
       expect(hint, isNotNull);
       expect(hint, equals(0x0000));
       requested = true;
@@ -266,7 +268,7 @@ void main() {
     bool requested = false;
 
     final device = ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), null,
-        (_, hint) async {
+        (final _, final hint) async {
       expect(hint, isNotNull);
       expect(hint, equals(0x0000));
       requested = true;
@@ -292,8 +294,9 @@ void main() {
 
     bool requested = false;
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final hint) async {
       expect(hint, isNotNull);
       expect(hint, equals(0x0000));
       requested = true;
@@ -317,8 +320,9 @@ void main() {
 
     bool requested = false;
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final hint) async {
       expect(hint, isNull);
       requested = true;
       return null;
@@ -343,8 +347,9 @@ void main() {
 
     bool requested = false;
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final hint) async {
       expect(hint, isNotNull);
       expect(hint, equals(0x0000));
       requested = true;
@@ -381,7 +386,7 @@ void main() {
     //First turn off the device
     await device.changeState(LighthousePowerState.sleep);
     final currentState = await device.powerStateEnum
-        .firstWhere((element) => element == LighthousePowerState.unknown)
+        .firstWhere((final element) => element == LighthousePowerState.unknown)
         .timeout(Duration(seconds: 3));
 
     expect(currentState, LighthousePowerState.unknown);
@@ -390,7 +395,7 @@ void main() {
     await device.changeState(LighthousePowerState.on);
 
     final nextState = await device.powerStateEnum
-        .firstWhere((element) => element == LighthousePowerState.unknown)
+        .firstWhere((final element) => element == LighthousePowerState.unknown)
         .timeout(Duration(seconds: 3));
 
     expect(nextState, LighthousePowerState.unknown);
@@ -415,7 +420,7 @@ void main() {
     //First turn on the device
     await device.changeState(LighthousePowerState.on);
     final currentState = await device.powerStateEnum
-        .firstWhere((element) => element == LighthousePowerState.unknown)
+        .firstWhere((final element) => element == LighthousePowerState.unknown)
         .timeout(Duration(seconds: 3));
 
     expect(currentState, LighthousePowerState.unknown);
@@ -424,7 +429,7 @@ void main() {
     await device.changeState(LighthousePowerState.sleep);
 
     final nextState = await device.powerStateEnum
-        .firstWhere((element) => element == LighthousePowerState.unknown)
+        .firstWhere((final element) => element == LighthousePowerState.unknown)
         .timeout(Duration(seconds: 3));
 
     expect(nextState, LighthousePowerState.unknown);
@@ -462,8 +467,9 @@ void main() {
     final persistence = FakeViveBaseStationBloc();
     persistence.startViveBaseStationIdsStream();
 
-    final device = ViveBaseStationDevice(
-        FakeViveBaseStationDevice(0, 0), persistence, (_, hint) async {
+    final device =
+        ViveBaseStationDevice(FakeViveBaseStationDevice(0, 0), persistence,
+            (final _, final hint) async {
       expect(hint, isNotNull);
       expect(hint, equals(0x0000));
       return null;
@@ -476,7 +482,7 @@ void main() {
     expect(valid, true);
 
     final start = await device.powerState
-        .firstWhere((element) => element != 0xFF)
+        .firstWhere((final element) => element != 0xFF)
         .timeout(Duration(seconds: 2));
 
     await device.changeState(LighthousePowerState.on);

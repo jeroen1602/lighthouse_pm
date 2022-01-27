@@ -37,7 +37,8 @@ class ExampleBackEnd extends LighthouseBackEnd {
   ///
   @override
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     throw UnsupportedError("Do some start scanning");
   }

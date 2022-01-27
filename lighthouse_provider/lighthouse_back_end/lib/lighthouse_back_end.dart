@@ -47,7 +47,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
     D extends LowLevelDevice> {
   /// Check if a [DeviceProvider] is of a type that this [LighthouseBackEnd]
   /// supports/ uses.
-  bool isMyProviderType(DeviceProvider provider) {
+  bool isMyProviderType(final DeviceProvider provider) {
     return provider is T;
   }
 
@@ -62,12 +62,12 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   Duration? updateInterval;
 
   /// Add a provider for this back end.
-  void addProvider(T provider) {
+  void addProvider(final T provider) {
     providers.add(provider);
   }
 
   /// Remove a provider for this back end.
-  void removeProvider(T provider) {
+  void removeProvider(final T provider) {
     providers.remove(provider);
   }
 
@@ -79,7 +79,8 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// Any back end that implements this method MUST await the super function first.
   @mustCallSuper
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     assert(updateLastSeen != null,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
@@ -119,7 +120,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
 
   /// Will return `null` if no device provider could validate the device.
   @protected
-  Future<LighthouseDevice?> getLighthouseDevice(D device) async {
+  Future<LighthouseDevice?> getLighthouseDevice(final D device) async {
     print('Trying to connect to device with name: ${device.name}');
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {

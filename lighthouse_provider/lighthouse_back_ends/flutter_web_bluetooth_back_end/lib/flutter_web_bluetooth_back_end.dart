@@ -47,7 +47,7 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
     if (!FlutterWebBluetooth.instance.isBluetoothApiSupported) {
       return Stream.value(BluetoothAdapterState.unavailable);
     }
-    return FlutterWebBluetooth.instance.isAvailable.map((available) {
+    return FlutterWebBluetooth.instance.isAvailable.map((final available) {
       return available
           ? BluetoothAdapterState.on
           : BluetoothAdapterState.unavailable;
@@ -66,7 +66,8 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
 
   @override
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     await _startListeningScanResult();
     await _pairedDevicesSetMutex.acquire();
@@ -100,7 +101,7 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
     }
 
     scanResultSubscription =
-        FlutterWebBluetooth.instance.devices.listen((devices) async {
+        FlutterWebBluetooth.instance.devices.listen((final devices) async {
       await _pairedDevicesSetMutex.acquire();
       try {
         _pairedDevices.clear();
@@ -118,8 +119,8 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
   }
 
   RequestOptionsBuilder _createBuilder() {
-    Set<LighthouseGuid> services = {};
-    List<RequestFilterBuilder> requestFilters = [];
+    final Set<LighthouseGuid> services = {};
+    final List<RequestFilterBuilder> requestFilters = [];
     for (final provider in providers) {
       services.addAll(provider.requiredServices);
       services.addAll(provider.optionalServices);
@@ -127,11 +128,11 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
     }
     return RequestOptionsBuilder(requestFilters,
         optionalServices:
-            services.map((e) => e.toString().toLowerCase()).toList());
+            services.map((final e) => e.toString().toLowerCase()).toList());
   }
 
-  List<LighthouseGuid> _getCharacteristicsForDevice(String deviceName) {
-    List<LighthouseGuid> characteristicsGuid = [];
+  List<LighthouseGuid> _getCharacteristicsForDevice(final String deviceName) {
+    final List<LighthouseGuid> characteristicsGuid = [];
     for (final provider in providers) {
       if (provider.nameCheck(deviceName)) {
         characteristicsGuid.addAll(provider.characteristics);
@@ -142,7 +143,8 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
 
   @override
   Future<void> pairNewDevice(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     this.updateInterval = updateInterval;
     await _startListeningScanResult();
     try {

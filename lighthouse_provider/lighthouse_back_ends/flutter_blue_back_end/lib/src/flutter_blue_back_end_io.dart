@@ -47,7 +47,8 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
   /// Will call the [FlutterBlue.startScan] function in the background.
   @override
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     await _startListeningScanResults();
     try {
@@ -108,7 +109,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
     }
 
     scanResultSubscription = FlutterBlue.instance.scanResults
-        .map((scanResults) {
+        .map((final scanResults) {
           //TODO: Maybe move this to be a bit more generic.
           // Filter out all devices that don't have a correct name.
           final List<ScanResult> output = <ScanResult>[];
@@ -123,8 +124,9 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
           return output;
         })
         // Give the listener at least 2ms to process the data before firing again.
-        .debounce((_) => TimerStream(true, const Duration(milliseconds: 2)))
-        .listen((scanResults) {
+        .debounce(
+            (final _) => TimerStream(true, const Duration(milliseconds: 2)))
+        .listen((final scanResults) {
           if (scanResults.isEmpty) {
             return;
           }
@@ -139,11 +141,11 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
               continue;
             }
             // Update the last seen item.
-            if (updateLastSeen?.call(deviceIdentifier) == true) {
+            if (updateLastSeen?.call(deviceIdentifier) ?? false) {
               continue;
             }
             // Possibly a new lighthouse, let's make sure it's valid.
-            _devicesMutex.acquire().then((_) async {
+            _devicesMutex.acquire().then((final _) async {
               _connectingDevices.add(deviceIdentifier);
               if (_devicesMutex.isLocked) {
                 _devicesMutex.release();
@@ -181,7 +183,7 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
 
   @override
   Stream<BluetoothAdapterState> get state =>
-      FlutterBlue.instance.state.map((event) {
+      FlutterBlue.instance.state.map((final event) {
         switch (event) {
           case BluetoothState.unknown:
             return BluetoothAdapterState.unknown;

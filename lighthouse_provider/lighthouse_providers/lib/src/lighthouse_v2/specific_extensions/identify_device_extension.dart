@@ -2,7 +2,7 @@ part of lighthouse_v2_device_provider;
 
 /// A device extension that allow the device to be identified.
 class IdentifyDeviceExtension extends DeviceExtension {
-  IdentifyDeviceExtension({required FutureCallback onTap})
+  IdentifyDeviceExtension({required final FutureCallback onTap})
       : super(onTap: onTap, toolTip: 'Identify') {
     super.streamEnabledFunction = _enabledStream;
   }
@@ -17,7 +17,7 @@ class IdentifyDeviceExtension extends DeviceExtension {
     return _enabledSubject ??= BehaviorSubject.seeded(true);
   }
 
-  void setEnabled(bool enabled) {
+  void setEnabled(final bool enabled) {
     _nonNullEnabledSubject().add(enabled);
   }
 

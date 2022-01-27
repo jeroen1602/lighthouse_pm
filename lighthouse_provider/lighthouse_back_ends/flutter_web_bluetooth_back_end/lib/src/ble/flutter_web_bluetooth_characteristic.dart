@@ -16,7 +16,8 @@ class FlutterWebBluetoothCharacteristic extends LHBluetoothCharacteristic {
   LighthouseGuid get uuid => LighthouseGuid.fromString(characteristic.uuid);
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false}) async {
     final payload = Uint8List.fromList(data);
     if (withoutResponse) {
       return characteristic.writeValueWithoutResponse(payload);

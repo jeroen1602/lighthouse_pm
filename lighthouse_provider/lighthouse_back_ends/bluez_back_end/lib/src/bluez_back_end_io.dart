@@ -48,9 +48,9 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
       Stream.value(blueZClient.devices), // Always fires at least once
       blueZClient.adapterAdded,
       blueZClient.adapterRemoved
-    ]).map((event) {
+    ]).map((final event) {
       return blueZClient.adapters;
-    }).map((adapters) {
+    }).map((final adapters) {
       if (adapters.isEmpty) {
         return BluetoothAdapterState.unavailable;
       }
@@ -68,22 +68,24 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
 
   @override
   Future<void> startScan(
-      {required Duration timeout, required Duration? updateInterval}) async {
+      {required final Duration timeout,
+      required final Duration? updateInterval}) async {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     await _ensureConnected();
     await _startListeningScanResults();
     try {
-      final adapters =
-          blueZClient.adapters.where((adapter) => adapter.powered).toList();
+      final adapters = blueZClient.adapters
+          .where((final adapter) => adapter.powered)
+          .toList();
       if (adapters.isNotEmpty) {
         _scanningSubject.add(true);
       }
-      await Future.wait(adapters.map((adapter) {
+      await Future.wait(adapters.map((final adapter) {
         // TODO: we may need this, but probably not.
         //adapter.setDiscoveryFilter(filter);
         return adapter.startDiscovery();
       }));
-      _stopScan = Future.delayed(timeout).asStream().listen((event) {
+      _stopScan = Future.delayed(timeout).asStream().listen((final event) {
         _stopScan = null;
         _scanningSubject.add(false);
         stopScan();
@@ -108,8 +110,8 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
     _stopScan?.cancel();
     _stopScan = null;
     await Future.wait(blueZClient.adapters
-        .where((adapter) => adapter.powered && adapter.discovering)
-        .map((adapter) async {
+        .where((final adapter) => adapter.powered && adapter.discovering)
+        .map((final adapter) async {
       try {
         await adapter.stopDiscovery();
       } catch (e, s) {
@@ -132,7 +134,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
 
     scanResultSubscription = MergeStream(
             [Stream.fromIterable(blueZClient.devices), blueZClient.deviceAdded])
-        .where((device) {
+        .where((final device) {
           //TODO: Maybe move this to be a bit more generic.
           // Filter out all devices that don't have a correct name.
           for (final deviceProvider in providers) {
@@ -143,8 +145,8 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
           return false;
         })
         // Give the listener at least 2ms to process the data before firing again.
-        .debounce((_) => TimerStream(true, Duration(milliseconds: 2)))
-        .listen((device) async {
+        .debounce((final _) => TimerStream(true, Duration(milliseconds: 2)))
+        .listen((final device) async {
           await device.setTrusted(true);
           final lighthouseDevice =
               await getLighthouseDevice(BlueZBluetoothDevice(device));

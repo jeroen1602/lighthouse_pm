@@ -5,8 +5,8 @@ part of device_extension;
 ///
 class SleepExtension extends StateExtension {
   SleepExtension(
-      {required ChangeStateFunction changeState,
-      required GetPowerStateStream powerStateStream})
+      {required final ChangeStateFunction changeState,
+      required final GetPowerStateStream powerStateStream})
       : super(
             toolTip: "Sleep",
             changeState: changeState,

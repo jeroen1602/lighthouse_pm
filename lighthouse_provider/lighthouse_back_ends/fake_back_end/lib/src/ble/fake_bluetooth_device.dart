@@ -5,13 +5,13 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
   final SimpleBluetoothService service;
   final String _name;
 
-  FakeBluetoothDevice(
-      List<LHBluetoothCharacteristic> characteristics, int id, String name)
+  FakeBluetoothDevice(final List<LHBluetoothCharacteristic> characteristics,
+      final int id, final String name)
       : service = SimpleBluetoothService(characteristics),
         deviceIdentifier = _generateIdentifier(id),
         _name = name;
 
-  static LHDeviceIdentifier _generateIdentifier(int id) {
+  static LHDeviceIdentifier _generateIdentifier(final int id) {
     if (SharedPlatform.isWeb) {
       return LHDeviceIdentifier(
           'a${FakeDeviceIdentifier.generateDeviceIdentifier(id).toString().substring(1)}');
@@ -20,7 +20,7 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
   }
 
   @override
-  Future<void> connect({Duration? timeout}) async {
+  Future<void> connect({final Duration? timeout}) async {
     // do nothing
   }
 
@@ -44,7 +44,7 @@ class FakeBluetoothDevice extends LHBluetoothDevice {
 }
 
 class FakeLighthouseV2Device extends FakeBluetoothDevice {
-  FakeLighthouseV2Device(int deviceName, int deviceId)
+  FakeLighthouseV2Device(final int deviceName, final int deviceId)
       : super([
           FakeFirmwareCharacteristic(),
           FakeModelNumberCharacteristic(),
@@ -55,7 +55,7 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
           ...getPowerAndIdentifyCharacteristic(),
         ], deviceId, _getNameFromInt(deviceName));
 
-  static String _getNameFromInt(int deviceName) {
+  static String _getNameFromInt(final int deviceName) {
     return 'LHB-000000${deviceName.toRadixString(16).padLeft(2, '0').toUpperCase()}';
   }
 
@@ -70,7 +70,7 @@ class FakeLighthouseV2Device extends FakeBluetoothDevice {
 }
 
 class FakeViveBaseStationDevice extends FakeBluetoothDevice {
-  FakeViveBaseStationDevice(int deviceName, int deviceId)
+  FakeViveBaseStationDevice(final int deviceName, final int deviceId)
       : super([
           FakeFirmwareCharacteristic(),
           FakeModelNumberCharacteristic(),
@@ -80,14 +80,14 @@ class FakeViveBaseStationDevice extends FakeBluetoothDevice {
           FakeViveBaseStationCharacteristic()
         ], deviceId, _getNameFromInt(deviceName));
 
-  static String _getNameFromInt(int deviceName) {
+  static String _getNameFromInt(final int deviceName) {
     return 'HTC BS 0000${deviceName.toRadixString(16).padLeft(2, '0').toUpperCase()}';
   }
 }
 
 @visibleForTesting
 class SimpleBluetoothService extends LHBluetoothService {
-  SimpleBluetoothService(List<LHBluetoothCharacteristic> characteristics)
+  SimpleBluetoothService(final List<LHBluetoothCharacteristic> characteristics)
       : _characteristics = characteristics;
 
   final List<LHBluetoothCharacteristic> _characteristics;
@@ -107,7 +107,7 @@ abstract class FakeReadWriteCharacteristic extends LHBluetoothCharacteristic {
 
   List<int> data = [];
 
-  FakeReadWriteCharacteristic(LighthouseGuid uuid) : _uuid = uuid;
+  FakeReadWriteCharacteristic(final LighthouseGuid uuid) : _uuid = uuid;
 
   @override
   LighthouseGuid get uuid => _uuid;
@@ -122,7 +122,8 @@ abstract class FakeReadOnlyCharacteristic extends LHBluetoothCharacteristic {
   final List<int> data;
   final LighthouseGuid _uuid;
 
-  FakeReadOnlyCharacteristic(this.data, LighthouseGuid uuid) : _uuid = uuid;
+  FakeReadOnlyCharacteristic(this.data, final LighthouseGuid uuid)
+      : _uuid = uuid;
 
   @override
   LighthouseGuid get uuid => _uuid;
@@ -131,7 +132,8 @@ abstract class FakeReadOnlyCharacteristic extends LHBluetoothCharacteristic {
   Future<List<int>> read() async => data;
 
   @override
-  Future<Function> write(List<int> data, {bool withoutResponse = false}) {
+  Future<Function> write(final List<int> data,
+      {final bool withoutResponse = false}) {
     throw UnimplementedError(
         'Write is not supported by FakeReadOnlyCharacteristic');
   }
@@ -215,7 +217,8 @@ class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
   final random = Random();
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false}) async {
     if (data.length != 1) {
       print(
           'Send incorrect amount of bytes to fake lighthouse v2 power characteristic');
@@ -240,11 +243,11 @@ class FakeLighthouseV2PowerCharacteristic extends FakeReadWriteCharacteristic {
         }
         // Go from off to standby/ on.
         this.data[0] = byte;
-        Future.delayed(Duration(milliseconds: 10)).then((value) async {
+        Future.delayed(Duration(milliseconds: 10)).then((final value) async {
           // booting
           this.data[0] = 0x09;
           await Future.delayed(Duration(milliseconds: 1200));
-        }).then((value) {
+        }).then((final value) {
           if (byte == 0x01) {
             this.data[0] = 0x0b; // on
           } else {
@@ -273,7 +276,8 @@ class FakeLighthouseV2IdentifyCharacteristic
   final FakeLighthouseV2PowerCharacteristic powerCharacteristic;
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false}) async {
     if (data.length == 1 && data[0] == 0x00) {
       await powerCharacteristic.write([0x01], withoutResponse: withoutResponse);
     } else {
@@ -291,7 +295,7 @@ class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
     data.addAll([0x00, 0x12]);
   }
 
-  void changeState(LighthousePowerState state) {
+  void changeState(final LighthousePowerState state) {
     switch (state) {
       case LighthousePowerState.on:
         data.clear();
@@ -307,7 +311,8 @@ class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
   }
 
   @override
-  Future<void> write(List<int> data, {bool withoutResponse = false}) async {
+  Future<void> write(final List<int> data,
+      {final bool withoutResponse = false}) async {
     if (data.length < 4) {
       print("Incorrect command send to FakeViveBaseStationCharacteristic");
       return;
@@ -324,7 +329,7 @@ class FakeViveBaseStationCharacteristic extends FakeReadWriteCharacteristic {
 }
 
 @visibleForTesting
-List<int> intListFromString(String data) {
+List<int> intListFromString(final String data) {
   return Utf8Encoder().convert(data).toList();
 }
 
@@ -339,7 +344,7 @@ List<int> intListFromString(String data) {
 /// If the input is 0x00, then the output will be [] (empty list).
 ///
 @visibleForTesting
-List<int> intListFromNumber(int number) {
+List<int> intListFromNumber(final int number) {
   final data = ByteData(SharedPlatform.isWeb ? 4 : 8);
   if (SharedPlatform.isWeb) {
     data.setUint32(0, number, Endian.big);

@@ -12,7 +12,7 @@ enum BluetoothAdapterState {
 }
 
 abstract class BluetoothAdapterStateFunctions {
-  static String stateToString(BluetoothAdapterState state) {
+  static String stateToString(final BluetoothAdapterState state) {
     switch (state) {
       case BluetoothAdapterState.unknown:
         return "unknown";

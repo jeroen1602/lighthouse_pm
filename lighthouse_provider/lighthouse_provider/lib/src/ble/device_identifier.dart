@@ -15,6 +15,6 @@ class LHDeviceIdentifier {
   int get hashCode => id.hashCode;
 
   @override
-  bool operator ==(Object other) =>
+  bool operator ==(final Object other) =>
       other is LHDeviceIdentifier && compareAsciiLowerCase(id, other.id) == 0;
 }

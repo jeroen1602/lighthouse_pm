@@ -29,8 +29,8 @@ class LighthouseProvider {
   /// [LighthouseDevice]s.
   ///
   Stream<List<LighthouseDevice>> get lighthouseDevices =>
-      _lightHouseDevices.stream.map((containers) =>
-          containers.map((container) => container.data).toList());
+      _lightHouseDevices.stream.map((final containers) =>
+          containers.map((final container) => container.data).toList());
 
   /// Get an instance of [LighthouseProvider].
   static LighthouseProvider get instance {
@@ -56,11 +56,11 @@ class LighthouseProvider {
   final BehaviorSubject<Map<LighthouseBackEnd, BluetoothAdapterState>> _state =
       BehaviorSubject.seeded({});
 
-  Stream<BluetoothAdapterState> get state => _state.stream.map((map) {
+  Stream<BluetoothAdapterState> get state => _state.stream.map((final map) {
         if (map.isEmpty) {
           return BluetoothAdapterState.unknown;
         }
-        return map.values.reduce((value, element) {
+        return map.values.reduce((final value, final element) {
           if (value == BluetoothAdapterState.on ||
               element == BluetoothAdapterState.on) {
             return BluetoothAdapterState.on;
@@ -70,14 +70,14 @@ class LighthouseProvider {
       });
 
   /// Add a back end for providing data.
-  void addBackEnd(LighthouseBackEnd backEnd) {
+  void addBackEnd(final LighthouseBackEnd backEnd) {
     backEnd.updateLastSeen = _updateLastSeen;
     backEndSet.add(backEnd);
     _addStateSubscription(backEnd);
   }
 
   /// Remove a back end for providing data.
-  void removeBackEnd(LighthouseBackEnd backEnd) {
+  void removeBackEnd(final LighthouseBackEnd backEnd) {
     if (backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
     }
@@ -116,17 +116,17 @@ class LighthouseProvider {
     return true;
   }
 
-  void _addStateSubscription(LighthouseBackEnd backEnd) {
+  void _addStateSubscription(final LighthouseBackEnd backEnd) {
     if (_stateSubscriptions.containsKey(backEnd)) {
       return;
     }
-    _stateSubscriptions[backEnd] = backEnd.state.listen((newState) {
+    _stateSubscriptions[backEnd] = backEnd.state.listen((final newState) {
       _savedStates[backEnd] = newState;
       _state.add(_savedStates);
     });
   }
 
-  void _removeStateSubscription(LighthouseBackEnd backEnd) {
+  void _removeStateSubscription(final LighthouseBackEnd backEnd) {
     _stateSubscriptions[backEnd]?.cancel();
     _savedStates.remove(backEnd);
     _state.add(_savedStates);
@@ -134,7 +134,7 @@ class LighthouseProvider {
 
   /// Get a list of all the back ends that this [DeviceProvider] can be used with.
   List<LighthouseBackEnd> _getBackEndForDeviceProvider(
-      DeviceProvider provider) {
+      final DeviceProvider provider) {
     final List<LighthouseBackEnd> backEndList = <LighthouseBackEnd>[];
     for (final backEnd in backEndSet) {
       if (backEnd.isMyProviderType(provider)) {
@@ -148,7 +148,7 @@ class LighthouseProvider {
   ///
   /// Will throw a [UnsupportedError] if no valid back end could be found for the
   /// [DeviceProvider].
-  void addProvider(DeviceProvider provider) {
+  void addProvider(final DeviceProvider provider) {
     final backEndList = _getBackEndForDeviceProvider(provider);
     if (backEndList.isEmpty) {
       throw UnsupportedError(
@@ -163,7 +163,7 @@ class LighthouseProvider {
   ///
   /// Will throw a [UnsupportedError] if no valid back end could be found for the
   /// [DeviceProvider].
-  void removeProvider(DeviceProvider provider) {
+  void removeProvider(final DeviceProvider provider) {
     final backEndList = _getBackEndForDeviceProvider(provider);
     if (backEndList.isEmpty) {
       throw UnsupportedError(
@@ -181,7 +181,7 @@ class LighthouseProvider {
   ///
   /// Will call the [cleanUp] function before starting the scan.
   Future startScan(
-      {required Duration timeout, Duration? updateInterval}) async {
+      {required final Duration timeout, final Duration? updateInterval}) async {
     await _startIsScanningSubscription();
     await cleanUp();
     await _startListeningScanResults();
@@ -237,13 +237,13 @@ class LighthouseProvider {
     }
 
     final List<Stream<Tuple2<int, bool>>> streams = backEndSet
-        .map((element) => element.isScanning)
-        .where((stream) => stream != null)
+        .map((final element) => element.isScanning)
+        .where((final stream) => stream != null)
         .toList(growable: false)
         .asMap()
         .entries
-        .map((entry) =>
-            entry.value!.map((event) => Tuple2<int, bool>(entry.key, event)))
+        .map((final entry) => entry.value!
+            .map((final event) => Tuple2<int, bool>(entry.key, event)))
         .toList(growable: false);
 
     final List<bool> scanResults = List<bool>.filled(streams.length, false);
@@ -252,12 +252,13 @@ class LighthouseProvider {
     }
 
     isScanningSubscription =
-        MergeStream<Tuple2<int, bool>>(streams).map<bool>((scanning) {
+        MergeStream<Tuple2<int, bool>>(streams).map<bool>((final scanning) {
       if (scanning.item1 >= 0 && scanning.item1 < scanResults.length) {
         scanResults[scanning.item1] = scanning.item2;
       }
-      return scanResults.reduce((value, element) => value || element);
-    }).listen((isScanning) {
+      return scanResults
+          .reduce((final value, final element) => value || element);
+    }).listen((final isScanning) {
       _isScanningBehavior.add(isScanning);
     });
 
@@ -268,13 +269,13 @@ class LighthouseProvider {
   ///
   /// This will update the last time a device with teh [deviceIdentifier] has
   /// been seen and return a bool if this was successful.
-  bool _updateLastSeen(LHDeviceIdentifier deviceIdentifier) {
+  bool _updateLastSeen(final LHDeviceIdentifier deviceIdentifier) {
     final list = _lightHouseDevices.valueOrNull;
     if (list == null) {
       return false;
     }
     final device = list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
-        (element) => element?.data.deviceIdentifier == deviceIdentifier,
+        (final element) => element?.data.deviceIdentifier == deviceIdentifier,
         orElse: () => null);
     if (device == null) {
       return false;
@@ -311,7 +312,8 @@ class LighthouseProvider {
       streams.add(backEnd.lighthouseStream);
     }
 
-    backEndResultSubscription = MergeStream(streams).listen((newDevice) async {
+    backEndResultSubscription =
+        MergeStream(streams).listen((final newDevice) async {
       if (newDevice == null) {
         return;
       }
@@ -324,7 +326,7 @@ class LighthouseProvider {
             _lightHouseDevices.valueOrNull ?? [];
         // Check if this device is already in the list, which should never happen.
         if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
-                (element) {
+                (final element) {
               if (element != null) {
                 return element.data == newDevice;
               }

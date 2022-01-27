@@ -47,7 +47,7 @@ void main() {
     final instance = ViveBaseStationDeviceProvider.instance;
 
     bool called = false;
-    method(String? context, int? pairIdHint) async {
+    method(final String? context, final int? pairIdHint) async {
       called = true;
       return context;
     }

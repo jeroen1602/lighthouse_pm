@@ -11,7 +11,7 @@ class FailingBLEDeviceOnConnect extends FakeLighthouseV2Device {
   bool useTimeoutException = true;
 
   @override
-  Future<void> connect({Duration? timeout}) async {
+  Future<void> connect({final Duration? timeout}) async {
     if (useTimeoutException) {
       throw TimeoutException(
           'Always failing ble faked a timeout exception', timeout);
@@ -129,7 +129,7 @@ class CountingFakeLighthouseV2Device extends FakeLighthouseV2Device {
 }
 
 class OfflineAbleLighthouseDevice extends FakeLighthouseV2Device {
-  OfflineAbleLighthouseDevice(int deviceName, int deviceId)
+  OfflineAbleLighthouseDevice(final int deviceName, final int deviceId)
       : super(deviceName, deviceId);
 
   LHBluetoothDeviceState currentState = LHBluetoothDeviceState.connected;

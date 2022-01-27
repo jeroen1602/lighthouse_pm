@@ -17,7 +17,7 @@ abstract class LighthouseDevice {
   ///
   /// Set the nickname of the device.
   ///
-  set nickname(String? nickname) {
+  set nickname(final String? nickname) {
     nicknameInternal = nickname;
   }
 
@@ -64,7 +64,7 @@ abstract class LighthouseDevice {
   ///
   /// Convert a device specific state byte to a global `LighthousePowerState`.
   ///
-  LighthousePowerState powerStateFromByte(int byte);
+  LighthousePowerState powerStateFromByte(final int byte);
 
   ///
   /// Get the minimum update interval that this device supports.
@@ -110,7 +110,7 @@ abstract class LighthouseDevice {
   /// value returned by [getMinUpdateInterval].
   ///
   @nonVirtual
-  void setUpdateInterval(Duration interval) {
+  void setUpdateInterval(final Duration interval) {
     updateInterval = interval;
   }
 
@@ -125,7 +125,7 @@ abstract class LighthouseDevice {
   /// For implementing you don't have to check the [newState] to see if it's legal
   /// since the parent [changeState] function already did this.
   @protected
-  Future internalChangeState(LighthousePowerState newState);
+  Future internalChangeState(final LighthousePowerState newState);
 
   ///
   /// If the device has an open connection.
@@ -139,7 +139,7 @@ abstract class LighthouseDevice {
   }
 
   ///Get the power state of the device as a [LighthousePowerState] "enum".
-  Stream<LighthousePowerState> get powerStateEnum => powerState.map((e) {
+  Stream<LighthousePowerState> get powerStateEnum => powerState.map((final e) {
         return powerStateFromByte(e);
       });
 
@@ -178,8 +178,8 @@ abstract class LighthouseDevice {
   /// specific [DeviceProvider] class. Make sure to set the handler function or
   /// else you may run into errors.
   ///
-  Future<void> changeState<C>(LighthousePowerState newState,
-      [C? context]) async {
+  Future<void> changeState<C>(final LighthousePowerState newState,
+      [final C? context]) async {
     if (newState == LighthousePowerState.unknown) {
       print('Cannot set power state to unknown');
       return;
@@ -214,7 +214,7 @@ abstract class LighthouseDevice {
   /// state. If it is `false`, then that means that the device is not ready to
   /// change state and thus unable to do so.
   ///
-  Future<bool> requestExtraInfo<C>([C? context]) async {
+  Future<bool> requestExtraInfo<C>([final C? context]) async {
     return true;
   }
 
@@ -235,7 +235,7 @@ abstract class LighthouseDevice {
     }
     powerStateSubscription =
         MergeStream([Stream.value(null), Stream.periodic(getUpdateInterval())])
-            .listen((_) async {
+            .listen((final _) async {
       if (hasOpenConnection) {
         if (!transactionMutex.isLocked) {
           retryCount = 0;

@@ -20,7 +20,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isAndroid {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.android && !release) {
       return true;
     }
@@ -31,7 +31,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isFuchsia {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.fuchsia && !release) {
       return true;
     }
@@ -42,7 +42,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isIOS {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.ios && !release) {
       return true;
     }
@@ -53,7 +53,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isWeb {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.web && !release) {
       return true;
     }
@@ -61,7 +61,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isLinux {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.linux && !release) {
       return true;
     }
@@ -72,7 +72,7 @@ abstract class SharedPlatform {
   }
 
   static bool get isWindows {
-    bool release = _isRelease();
+    final bool release = _isRelease();
     if (overridePlatform == PlatformOverride.windows && !release) {
       return true;
     }
@@ -104,7 +104,7 @@ abstract class SharedPlatform {
     return "UNKNOWN";
   }
 
-  static void exit(int code) {
+  static void exit(final int code) {
     exit(code);
   }
 }
