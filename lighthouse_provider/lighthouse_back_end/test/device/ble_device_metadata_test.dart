@@ -1,8 +1,7 @@
 import 'package:fake_back_end/fake_back_end.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:test/test.dart';
-
-import '../helpers/device_helpers.dart';
 
 void main() {
   test('ble device metadata should be able to convert string', () async {

@@ -1,8 +1,6 @@
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:shared_platform/shared_platform_io.dart';
 import 'package:test/test.dart';
-
-import '../helpers/failing_ble_device.dart';
-import '../helpers/fake_ble_device_provider.dart';
 
 void main() {
   setUp(() {

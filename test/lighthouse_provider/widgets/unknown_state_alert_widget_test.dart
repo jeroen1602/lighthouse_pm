@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/unknown_state_alert_widget.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_platform/shared_platform_io.dart';
 
-import '../../helpers/fake_high_level_device.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {

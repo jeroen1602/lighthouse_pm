@@ -1,15 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
-
-import '../../helpers/fake_bloc.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 
 class DefaultEnabledDeviceExtension extends DeviceExtension {
   DefaultEnabledDeviceExtension()
@@ -26,7 +24,7 @@ void main() {
   });
 
   test('Should get correct widget for shortcut type', () {
-    final persistence = ViveBaseStationBloc(FakeBloc.normal());
+    final persistence = FakeViveBaseStationBloc();
 
     final lut = {
       ShortcutExtension: isA<Icon>(),

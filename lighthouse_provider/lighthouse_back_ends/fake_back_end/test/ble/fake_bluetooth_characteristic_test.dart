@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-import '../../../helpers/test_characteristic.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('Should be able to read data from FakeReadOnlyCharacteristic', () async {

@@ -23,3 +23,5 @@ dev_dependencies:
   test: ^1.16.0
   fake_back_end:
     path: ../lighthouse_back_ends/fake_back_end
+  lighthouse_test_helper:
+    path: ../lighthouse_test_helper

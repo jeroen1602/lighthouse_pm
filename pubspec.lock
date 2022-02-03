@@ -431,6 +431,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  lighthouse_test_helper:
+    dependency: "direct dev"
+    description:
+      path: "lighthouse_provider/lighthouse_test_helper"
+      relative: true
+    source: path
+    version: "1.0.0"
   lints:
     dependency: transitive
     description:

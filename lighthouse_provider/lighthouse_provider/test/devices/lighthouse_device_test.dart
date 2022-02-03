@@ -1,9 +1,8 @@
 import 'package:fake_back_end/fake_back_end.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:shared_platform/shared_platform_io.dart';
 import 'package:test/test.dart';
-
-import '../helpers/fake_high_level_device.dart';
 
 void main() {
   setUp(() {

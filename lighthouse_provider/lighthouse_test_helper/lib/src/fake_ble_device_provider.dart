@@ -1,8 +1,10 @@
 import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:meta/meta.dart';
 
 import 'fake_high_level_device.dart';
 
+@visibleForTesting
 class FakeBLEDeviceProvider extends BLEDeviceProvider {
   @override
   Future<BLEDevice> internalGetDevice(final LHBluetoothDevice device) async {

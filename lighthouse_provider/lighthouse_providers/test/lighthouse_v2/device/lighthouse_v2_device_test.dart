@@ -6,11 +6,9 @@ import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:shared_platform/shared_platform_io.dart';
 import 'package:test/test.dart';
-
-import '../../helpers/failing_ble_device.dart';
-import '../../helpers/fake_bloc.dart';
 
 void main() {
   setUp(() {

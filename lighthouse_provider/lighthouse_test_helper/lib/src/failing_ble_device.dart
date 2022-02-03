@@ -1,8 +1,12 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
-import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:fake_back_end/fake_back_end.dart';
+import 'package:lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:meta/meta.dart';
 
+@visibleForTesting
 class FailingBLEDeviceOnConnect extends FakeLighthouseV2Device {
   FailingBLEDeviceOnConnect() : super(1, 2);
 
@@ -26,6 +30,7 @@ class FailingBLEDeviceOnConnect extends FakeLighthouseV2Device {
   }
 }
 
+@visibleForTesting
 class FailingBLEDeviceOnDiscover extends FakeLighthouseV2Device {
   FailingBLEDeviceOnDiscover() : super(1, 2);
 
@@ -43,6 +48,7 @@ class FailingBLEDeviceOnDiscover extends FakeLighthouseV2Device {
   }
 }
 
+@visibleForTesting
 class FailingV2DeviceOnSpecificCharacteristics extends FakeLighthouseV2Device {
   FailingV2DeviceOnSpecificCharacteristics() : super(1, 2) {
     service.characteristics.clear();
@@ -58,6 +64,7 @@ class FailingV2DeviceOnSpecificCharacteristics extends FakeLighthouseV2Device {
   }
 }
 
+@visibleForTesting
 class FailingFakeFirmwareCharacteristic extends FakeFirmwareCharacteristic {
   @override
   Future<List<int>> read() {
@@ -65,6 +72,7 @@ class FailingFakeFirmwareCharacteristic extends FakeFirmwareCharacteristic {
   }
 }
 
+@visibleForTesting
 class FailingFakeModelNumberCharacteristic
     extends FakeModelNumberCharacteristic {
   @override
@@ -73,6 +81,7 @@ class FailingFakeModelNumberCharacteristic
   }
 }
 
+@visibleForTesting
 class FailingFakeSerialNumberCharacteristic
     extends FakeSerialNumberCharacteristic {
   @override
@@ -81,6 +90,7 @@ class FailingFakeSerialNumberCharacteristic
   }
 }
 
+@visibleForTesting
 class FailingFakeHardwareRevisionCharacteristic
     extends FakeHardwareRevisionCharacteristic {
   @override
@@ -89,6 +99,7 @@ class FailingFakeHardwareRevisionCharacteristic
   }
 }
 
+@visibleForTesting
 class FailingFakeManufacturerNameCharacteristic
     extends FakeManufacturerNameCharacteristic {
   @override
@@ -97,6 +108,7 @@ class FailingFakeManufacturerNameCharacteristic
   }
 }
 
+@visibleForTesting
 class FailingFakeChannelCharacteristic extends FakeChannelCharacteristic {
   @override
   Future<List<int>> read() {
@@ -104,6 +116,7 @@ class FailingFakeChannelCharacteristic extends FakeChannelCharacteristic {
   }
 }
 
+@visibleForTesting
 class CountingViveBaseStationDevice extends FakeViveBaseStationDevice {
   CountingViveBaseStationDevice() : super(4, 4);
 
@@ -116,6 +129,7 @@ class CountingViveBaseStationDevice extends FakeViveBaseStationDevice {
   }
 }
 
+@visibleForTesting
 class CountingFakeLighthouseV2Device extends FakeLighthouseV2Device {
   CountingFakeLighthouseV2Device() : super(4, 4);
 
@@ -128,6 +142,7 @@ class CountingFakeLighthouseV2Device extends FakeLighthouseV2Device {
   }
 }
 
+@visibleForTesting
 class OfflineAbleLighthouseDevice extends FakeLighthouseV2Device {
   OfflineAbleLighthouseDevice(final int deviceName, final int deviceId)
       : super(deviceName, deviceId);
@@ -146,6 +161,7 @@ class OfflineAbleLighthouseDevice extends FakeLighthouseV2Device {
   }
 }
 
+@visibleForTesting
 class ViveBaseStationWithIncorrectName extends FakeBluetoothDevice {
   ViveBaseStationWithIncorrectName()
       : super([
@@ -158,6 +174,7 @@ class ViveBaseStationWithIncorrectName extends FakeBluetoothDevice {
         ], 0, "HTC BS 0000GH");
 }
 
+@visibleForTesting
 class FailingViveBaseStationDeviceOnSpecificCharacteristics
     extends FakeLighthouseV2Device {
   FailingViveBaseStationDeviceOnSpecificCharacteristics() : super(1, 2) {

@@ -23,4 +23,5 @@ dev_dependencies:
     path: ../../shared/shared_platform
   lighthouse_providers:
     path: ../lighthouse_providers
-  rxdart: ^0.27.3
+  lighthouse_test_helper:
+    path: ../lighthouse_test_helper

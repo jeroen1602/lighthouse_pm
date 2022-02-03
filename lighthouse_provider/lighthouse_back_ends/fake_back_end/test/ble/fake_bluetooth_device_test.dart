@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:fake_back_end/fake_back_end.dart';
+import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:shared_platform/shared_platform_io.dart';
+import 'package:test/test.dart';
 
 void main() {
   setUp(() {
@@ -486,7 +485,7 @@ Future<int> getNextPowerState(final FakeLighthouseV2PowerCharacteristic power,
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now > beforeTime) {
-      debugPrint("Now: $now, before: $beforeTime, diff = ${beforeTime - now}");
+      print("Now: $now, before: $beforeTime, diff = ${beforeTime - now}");
       throw TimeoutException('Could not get a new value within $timeout');
     }
     await Future.delayed(const Duration(microseconds: 10));

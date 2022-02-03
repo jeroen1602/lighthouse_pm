@@ -1,9 +1,11 @@
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:test/fake.dart';
 
+@visibleForTesting
 class ViveBaseStationStorage {
   LHDeviceIdentifier deviceId;
   int baseStationId;
@@ -11,6 +13,7 @@ class ViveBaseStationStorage {
   ViveBaseStationStorage(this.deviceId, this.baseStationId);
 }
 
+@visibleForTesting
 class FakeViveBaseStationBloc extends Fake
     implements ViveBaseStationPersistence {
   BehaviorSubject<List<ViveBaseStationStorage>>? idsStream;
@@ -58,10 +61,34 @@ class FakeViveBaseStationBloc extends Fake
     }
   }
 
+  @override
+  Stream<bool> hasIdStored(final LHDeviceIdentifier deviceId) {
+    final idsStream = this.idsStream;
+    if (idsStream == null) {
+      return Stream.value(false);
+    }
+    return idsStream.map((final ids) {
+      for (final id in ids) {
+        if (deviceId == id.deviceId) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
   void startViveBaseStationIdsStream(
       [final List<ViveBaseStationStorage> data = const []]) {
     idsStream ??= BehaviorSubject.seeded(data.toList());
   }
 }
 
-class FakeLighthouseV2Bloc extends Fake implements LighthouseV2Persistence {}
+@visibleForTesting
+class FakeLighthouseV2Bloc extends Fake implements LighthouseV2Persistence {
+  bool shortcutsEnabled = false;
+
+  @override
+  Future<bool> areShortcutsEnabled() async {
+    return shortcutsEnabled;
+  }
+}

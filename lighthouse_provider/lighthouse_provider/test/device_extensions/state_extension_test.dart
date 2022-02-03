@@ -3,11 +3,10 @@ import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
+import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_platform/shared_platform_io.dart';
 import 'package:test/test.dart';
-
-import '../helpers/fake_bloc.dart';
 
 ///
 /// A state that shouldn't exist

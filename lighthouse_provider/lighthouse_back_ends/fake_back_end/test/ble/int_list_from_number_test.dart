@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_back_end/fake_back_end.dart';
 import 'package:shared_platform/shared_platform_io.dart';
+import 'package:test/test.dart';
 
 void main() {
   tearDown(() {

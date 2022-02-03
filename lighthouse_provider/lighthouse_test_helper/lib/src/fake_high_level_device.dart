@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:fake_back_end/fake_back_end.dart';
+import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:meta/meta.dart';
 
+@visibleForTesting
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(final LHBluetoothDevice device) : super(device, null);
 
