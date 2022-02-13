@@ -1,4 +1,4 @@
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,7 +28,8 @@ abstract class BLEPermissionsHelper {
       return await Permission.bluetooth.status;
     }
     if (SharedPlatform.isAndroid) {
-      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+      final version =
+          (await DeviceInfoPlugin().androidInfo).version.sdkInt ?? 0;
       // Check the new bluetooth permission for Android 12 and higher.
       if (version >= 31) {
         final scan = await Permission.bluetoothScan.status;
@@ -65,7 +66,8 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
     if (SharedPlatform.isAndroid) {
-      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+      final version =
+          (await DeviceInfoPlugin().androidInfo).version.sdkInt ?? 0;
       if (version >= 31) {
         // Request the new bluetooth permission for Android 12 and higher.
         return await [Permission.bluetoothScan, Permission.bluetoothConnect]

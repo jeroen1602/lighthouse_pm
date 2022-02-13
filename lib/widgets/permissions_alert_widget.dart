@@ -1,4 +1,4 @@
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
@@ -64,7 +64,7 @@ class PermissionsAlertWidget extends StatelessWidget {
       return showDialog(
           context: context,
           builder: (final BuildContext context) {
-            return PermissionsAlertWidget(deviceInto.version.sdkInt);
+            return PermissionsAlertWidget(deviceInto.version.sdkInt ?? 0);
           }).then((final value) {
         if (value is bool) {
           return value;

@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:device_info_platform_interface/device_info_platform_interface.dart';
+import 'package:device_info_plus_platform_interface/device_info_plus_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';

@@ -1,4 +1,4 @@
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
@@ -205,12 +205,12 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (SharedPlatform.isAndroid) {
       final android = await deviceInfo.androidInfo;
-      if (android.version.sdkInt >= 29 /* Android 10 */) {
+      if ((android.version.sdkInt ?? 0) >= 29 /* Android 10 */) {
         return true;
       }
     } else if (SharedPlatform.isIOS) {
       final ios = await deviceInfo.iosInfo;
-      final iosVersion = double.tryParse(ios.systemVersion);
+      final iosVersion = double.tryParse(ios.systemVersion ?? "0.0");
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
