@@ -17,9 +17,9 @@ jobs:
           fetch-depth: 0
 
       - name: Install and set Flutter version
-        uses: subosito/flutter-action@v1.5.3
+        uses: subosito/flutter-action@v2.3.0
         with:
-          flutter-version: '2.8.1'
+          flutter-version: '2.9.2'
 
       - name: Restore packages
         run: flutter pub get
