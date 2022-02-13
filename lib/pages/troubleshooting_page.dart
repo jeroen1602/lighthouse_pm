@@ -1,5 +1,5 @@
 import 'package:community_material_icon/community_material_icon.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
@@ -74,7 +74,7 @@ class TroubleshootingContentWidget extends StatelessWidget
                   if (!snapshot.hasData) {
                     return Container();
                   } else {
-                    final sdkInt = snapshot.requireData.version.sdkInt;
+                    final sdkInt = snapshot.requireData.version.sdkInt ?? 0;
                     return Column(
                       children: [
                         if (sdkInt >= 31)

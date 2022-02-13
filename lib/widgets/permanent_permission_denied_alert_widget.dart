@@ -1,4 +1,4 @@
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
@@ -70,7 +70,7 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
           context: context,
           builder: (final BuildContext context) {
             return PermanentPermissionDeniedAlertWidget(
-                deviceInto.version.sdkInt);
+                deviceInto.version.sdkInt ?? 0);
           }).then((final value) {
         if (value is bool) {
           return value;
