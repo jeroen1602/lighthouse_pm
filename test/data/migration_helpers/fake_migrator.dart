@@ -445,7 +445,7 @@ abstract class FinalSchemas {
       ]),
     ]),
     3: TestSchema([
-      TestTable('"groups"', [
+      TestTable('groups', [
         TestColumn('id', ColumnType.integer),
         TestColumn('name', ColumnType.string)
       ]),
@@ -470,7 +470,7 @@ abstract class FinalSchemas {
       ]),
     ]),
     4: TestSchema([
-      TestTable('"groups"', [
+      TestTable('groups', [
         TestColumn('id', ColumnType.integer),
         TestColumn('name', ColumnType.string)
       ]),
@@ -507,7 +507,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n',
     '1to3': 'Error for schema!\n'
         'Missing tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
@@ -517,7 +517,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n',
     '1to4': 'Error for schema!\n'
         'Missing tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table last_seen_devices.\n'
@@ -550,11 +550,11 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '2to3': 'Error for schema!\n'
         'Missing tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n',
     '2to4': 'Error for schema!\n'
         'Missing tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table last_seen_devices.\n'
@@ -575,7 +575,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
     '3to1': 'Error for schema!\n'
         'Extra tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
@@ -585,7 +585,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '3to2': 'Error for schema!\n'
         'Extra tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n',
     '3to4': 'Error for schema!\n'
         'Incorrect tables:\n'
@@ -612,7 +612,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
     '4to1': 'Error for schema!\n'
         'Extra tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table last_seen_devices.\n'
@@ -638,7 +638,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '4to2': 'Error for schema!\n'
         'Extra tables:\n'
-        '\t"groups"\n'
+        '\tgroups\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table last_seen_devices.\n'
