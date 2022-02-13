@@ -9,6 +9,7 @@ import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/device_extensions/shortcut_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 
 part 'src/lighthouse_v2/device/lighthouse_v2_device.dart';
 

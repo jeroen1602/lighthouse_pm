@@ -136,32 +136,32 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     try {
       final subStringLocation = name.length - 4;
       pairIdEndHint = int.parse(name.substring(subStringLocation), radix: 16);
-    } on FormatException {
-      print('Could not get device id end from name. "$name"');
+    } on FormatException catch (e, s) {
+      lighthouseLogger.warning(
+          "Could not get device id end from name \"$name\"", e, s);
     }
     if (persistence == null) {
-      print(
-          'Persistence not set for ViveBaseStationDevice, will not be able to store the id');
+      lighthouseLogger.warning("Persistence not set for ViveBaseStationDevice, "
+          "will not be able to store the id");
     }
     pairId = await persistence?.getId(deviceIdentifier);
     if (pairId == null) {
-      print('Pair id not set yet for "$name"');
+      lighthouseLogger.warning("Pair di is not set yet for \"$name\"");
     }
-    print('Connecting to device: $deviceIdentifier');
+    lighthouseLogger.info("Connecting to device: $deviceIdentifier");
     try {
       await device.connect(timeout: Duration(seconds: 10));
-    } on TimeoutException {
-      print('Connection timed-out for device: $deviceIdentifier');
+    } on TimeoutException catch (e, s) {
+      lighthouseLogger.warning(
+          "Connection timed-out for device: $deviceIdentifier", e, s);
       return false;
     } catch (e, s) {
       // other connection error
-      print('Other connection error:');
-      print('$e');
-      print('$s');
+      lighthouseLogger.severe("Unknown connection error", e, s);
       return false;
     }
 
-    print('Finding service for device: $deviceIdentifier');
+    lighthouseLogger.info("Finding services for device: $deviceIdentifier");
     final List<LHBluetoothService> services = await device.discoverServices();
 
     final powerCharacteristic =
@@ -183,8 +183,7 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
             _firmwareVersion =
                 firmwareVersion.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
-            print('Unable to get firmware version because: $e');
-            print('$s');
+            lighthouseLogger.severe("Unable to get firmware version", e, s);
           }
           continue;
         }
@@ -262,11 +261,13 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
         if (storage != null) {
           await storage.insertId(deviceIdentifier, pairId!);
         } else {
-          print('Could not save device id because the storage was null');
+          lighthouseLogger
+              .warning("Could not save device id because the storage was null");
         }
         return true;
-      } on FormatException {
-        print('Could not convert device id to a number');
+      } on FormatException catch (e, s) {
+        lighthouseLogger.warning(
+            "Could not convert device id to a number", e, s);
       }
     }
     return false;

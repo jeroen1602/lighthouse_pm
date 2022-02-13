@@ -5,7 +5,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:flutter_web_bluetooth/js_web_bluetooth.dart';
+import 'package:flutter_web_bluetooth/web_bluetooth_logger.dart';
 import 'package:lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,7 +21,9 @@ part 'src/ble/flutter_web_bluetooth_service.dart';
 class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
   static FlutterWebBluetoothBackEnd? _instance;
 
-  FlutterWebBluetoothBackEnd._();
+  FlutterWebBluetoothBackEnd._() {
+    setWebBluetoothLogger(lighthouseLogger);
+  }
 
   static FlutterWebBluetoothBackEnd get instance {
     return _instance ??= FlutterWebBluetoothBackEnd._();
@@ -82,7 +86,8 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
         if (lhDevice != null) {
           _foundDeviceSubject.add(lhDevice);
         } else {
-          print("Could not connected to an earlier paired device.");
+          lighthouseLogger
+              .info("Could not connect to an earlier paired device.");
         }
       }
     } finally {
@@ -160,12 +165,12 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
       if (lhDevice != null) {
         _foundDeviceSubject.add(lhDevice);
       } else {
-        print(
-            "User selected non valid device. Maybe we should restrict the options more");
+        lighthouseLogger.warning("user selected a non valid device. "
+            "Maybe the settings should be restricted more.");
       }
     } on DeviceNotFoundError {
       // well what now?
-      print('No devices found!');
+      lighthouseLogger.warning("No device found!");
     }
   }
 

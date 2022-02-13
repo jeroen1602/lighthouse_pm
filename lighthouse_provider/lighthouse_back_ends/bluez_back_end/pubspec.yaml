@@ -8,13 +8,15 @@ environment:
 
 
 dependencies:
-  bluez: ^0.7.4
+  bluez: ^0.7.6
   mutex: ^3.0.0
   rxdart: ^0.27.3
   lighthouse_back_end:
     path: ../../lighthouse_back_end
   lighthouse_provider:
     path: ../../lighthouse_provider
+  lighthouse_logger:
+    path: ../../lighthouse_logger
 
 dev_dependencies:
   lints: ^1.0.0

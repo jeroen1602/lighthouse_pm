@@ -333,8 +333,8 @@ class LighthouseProvider {
               return false;
             }, orElse: () => null) !=
             null) {
-          print(
-              'Found a device that has already been found! Device id: ${newDevice.deviceIdentifier}, name: ${newDevice.name}');
+          lighthouseLogger.info("Found a device that has already been found! "
+              "Device id: ${newDevice.deviceIdentifier}, name: ${newDevice.name}");
           return;
         }
 

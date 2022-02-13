@@ -493,6 +493,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                                   seconds: widget.settings.updateInterval),
                               failMessage:
                                   "Could not start scan because the permission has not been granted on keyboard shortcut.");
+                          return null;
                         })
                       },
                       child: Focus(autofocus: true, child: body),

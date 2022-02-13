@@ -74,6 +74,8 @@ dependencies:
     path: lighthouse_provider/lighthouse_back_ends/fake_back_end
   shared_platform:
     path: shared/shared_platform
+  lighthouse_logger:
+    path: lighthouse_provider/lighthouse_logger
 
   # This may need to be enabled again if the build runner doesn't like it.
   #dependency_overrides:

@@ -12,6 +12,7 @@ import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:shared_platform/shared_platform.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 
 part 'src/ble/fake_bluetooth_device.dart';
 

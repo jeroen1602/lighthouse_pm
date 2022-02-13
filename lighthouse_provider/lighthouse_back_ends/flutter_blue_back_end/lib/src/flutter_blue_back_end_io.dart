@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:lighthouse_back_end/lighthouse_back_end.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
@@ -56,16 +57,17 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
           scanMode: ScanMode.lowLatency,
           timeout: timeout,
           allowDuplicates: true);
-    } catch (e, s) {
-      if (e is PlatformException) {
-        if (e.code == "bluetooth_unavailable") {
-          print("Bluetooth not available on this device!");
-          await cleanUp();
-          return;
-        }
+    } on PlatformException catch (e, s) {
+      if (e.code == "bluetooth_unavailable") {
+        lighthouseLogger.info(
+            "Bluetooth is not available on this device", e, s);
+        await cleanUp();
+        return;
       }
-      print("Unhandled exception! $e");
-      print("$s");
+      lighthouseLogger.severe("Unhandled exception", e, s);
+      rethrow;
+    } catch (e, s) {
+      lighthouseLogger.severe("Unhandled exception", e, s);
       rethrow;
     }
   }
@@ -75,15 +77,16 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
     _scanResultSubscription?.pause();
     try {
       await FlutterBlue.instance.stopScan();
-    } catch (e, s) {
-      if (e is PlatformException) {
-        if (e.code == "bluetooth_unavailable") {
-          print("Handled bluetooth unavailable error on stop scan");
-          return;
-        }
+    } on PlatformException catch (e, s) {
+      if (e.code == "bluetooth_unavailable") {
+        lighthouseLogger.info(
+            "Handled bluetooth unavailable error on stop scan", e, s);
+        return;
       }
-      print("Unhandled exception! $e");
-      print("$s");
+      lighthouseLogger.severe("Unhandled exception", e, s);
+      rethrow;
+    } catch (e, s) {
+      lighthouseLogger.severe("Unhandled exception", e, s);
       rethrow;
     }
   }
@@ -156,8 +159,11 @@ class FlutterBlueLighthouseBackEnd extends BLELighthouseBackEnd {
               try {
                 await _devicesMutex.acquire();
                 if (lighthouseDevice == null) {
-                  print(
-                      'Found a non valid device! Device id: ${scanResult.device.id.toString()}');
+                  lighthouseLogger.warning(
+                      "Found a non valid device! Device id: "
+                      "${scanResult.device.id.toString()}",
+                      null,
+                      StackTrace.current);
                   _rejectedDevices.add(deviceIdentifier);
                 } else {
                   _foundDeviceSubject.add(lighthouseDevice);

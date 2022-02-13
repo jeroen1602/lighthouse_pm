@@ -485,6 +485,7 @@ Future<int> getNextPowerState(final FakeLighthouseV2PowerCharacteristic power,
     }
     final now = DateTime.now().millisecondsSinceEpoch;
     if (now > beforeTime) {
+      // ignore: avoid_print
       print("Now: $now, before: $beforeTime, diff = ${beforeTime - now}");
       throw TimeoutException('Could not get a new value within $timeout');
     }

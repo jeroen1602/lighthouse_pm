@@ -17,6 +17,8 @@ dependencies:
     path: ../lighthouse_back_end
   shared_platform:
     path: ../../shared/shared_platform
+  lighthouse_logger:
+    path: ../lighthouse_logger
 
 dev_dependencies:
   lints: ^1.0.0

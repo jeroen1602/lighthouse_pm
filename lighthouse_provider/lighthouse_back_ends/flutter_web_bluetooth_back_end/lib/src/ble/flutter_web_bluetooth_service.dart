@@ -15,16 +15,22 @@ class FlutterWebBluetoothService extends LHBluetoothService {
         final characteristic = await service
             .getCharacteristic(characteristicGuid.toString().toLowerCase());
         characteristics.add(FlutterWebBluetoothCharacteristic(characteristic));
+      } on NotFoundError catch (e, s) {
+        lighthouseLogger.info(
+            "Characteristic "
+            "${characteristicsGuid.toString()} not found in service "
+            "${service.uuid}, that's ok.",
+            e,
+            s);
+      } on SecurityError catch (e, s) {
+        lighthouseLogger.info(
+            "Security error for characteristic "
+            "${characteristicsGuid.toString()} in service ${service.uuid}, "
+            "that's ok.",
+            e,
+            s);
       } catch (error) {
-        if (error is NotFoundError) {
-          print(
-              "Characteristic ${characteristicGuid.toString()} not found in service ${service.uuid}, that's ok.");
-        } else if (error is SecurityError) {
-          print(
-              "Security error for characteristic ${characteristicGuid.toString()} in service ${service.uuid}, that's ok.");
-        } else {
-          rethrow;
-        }
+        rethrow;
       }
     }
     return FlutterWebBluetoothService(service, characteristics);

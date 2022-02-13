@@ -3,6 +3,7 @@ library vive_base_station_device_provider;
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart';
 import 'package:lighthouse_back_end/lighthouse_back_end.dart';

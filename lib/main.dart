@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_back_end/flutter_blue_back_end.dart';
 import 'package:flutter_web_bluetooth_back_end/flutter_web_bluetooth_back_end.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
@@ -63,6 +64,15 @@ class MainApp extends StatelessWidget {
       LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
     }
     if (!kReleaseMode) {
+      lighthouseLogger.onRecord.listen((final record) {
+        debugPrint("${record.loggerName}|${record.time}: ${record.message}");
+        if (record.error != null) {
+          debugPrint("Error: ${record.error}");
+        }
+        if (record.stackTrace != null) {
+          debugPrint("Trace: ${record.stackTrace.toString()}");
+        }
+      });
       // Add this back if you need to test for devices you don't own.
       // you'll also need to
       // import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';

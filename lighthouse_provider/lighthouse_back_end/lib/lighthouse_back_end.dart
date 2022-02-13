@@ -5,8 +5,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:meta/meta.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:meta/meta.dart';
 
 part 'src/back_end/ble_lighthouse_back_end.dart';
 
@@ -88,8 +89,8 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
         throw StateError('No device providers added for $runtimeType.'
             ' It\'s still in debug mode so FIX it!');
       }());
-      print('WARNING! No device providers added for $runtimeType, no '
-          'scan will be run.');
+      lighthouseLogger.warning("No device providers added for $runtimeType, "
+          "no scan will be run!");
     }
     this.updateInterval = updateInterval;
   }
@@ -121,7 +122,8 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// Will return `null` if no device provider could validate the device.
   @protected
   Future<LighthouseDevice?> getLighthouseDevice(final D device) async {
-    print('Trying to connect to device with name: ${device.name}');
+    lighthouseLogger
+        .info("Trying to connect to device with name: ${device.name}");
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {
         continue;

@@ -92,8 +92,8 @@ abstract class LighthouseDevice {
     var min = getMinUpdateInterval();
     assert(() {
       if (testingOverwriteMinUpdateInterval != null) {
-        print(
-            "Overwritten min update interval, stuttering devices may be in your future");
+        lighthouseLogger.config("Overwritten min update interval, "
+            "stuttering devices may be in your future");
         min = testingOverwriteMinUpdateInterval!;
       }
       return true;
@@ -181,11 +181,11 @@ abstract class LighthouseDevice {
   Future<void> changeState<C>(final LighthousePowerState newState,
       [final C? context]) async {
     if (newState == LighthousePowerState.unknown) {
-      print('Cannot set power state to unknown');
+      lighthouseLogger.warning("Cannot set power state to unknown");
       return;
     }
     if (newState == LighthousePowerState.booting) {
-      print('Cannot change power state to booting');
+      lighthouseLogger.warning("Cannot set power state to booting");
       return;
     }
     final request = await requestExtraInfo(context);
@@ -194,8 +194,8 @@ abstract class LighthouseDevice {
       await transactionMutex.protect(
           () => internalChangeState(newState), stack);
     } else {
-      print(
-          "Could not change state because the extra info hasn't been provided");
+      lighthouseLogger.warning("Could not change state because the needed "
+          "extra info hasn't been provided");
     }
   }
 
@@ -250,9 +250,10 @@ abstract class LighthouseDevice {
               _powerState.add(data);
             }
           } catch (e, s) {
-            print("Could not get state, maybe we are disconnected");
-            print('$e');
-            print('$s');
+            lighthouseLogger.severe(
+                "Could not get state, maybe the device is already disconnected",
+                e,
+                s);
             await disconnect();
             return;
           } finally {
@@ -260,17 +261,18 @@ abstract class LighthouseDevice {
           }
         } else {
           if (retryCount++ > 5) {
-            print(
-                'Unable to get power state because the mutex has been locked for a while ($retryCount). \nLocked by: ${transactionMutex.lockTrace?.toString()}');
+            lighthouseLogger.shout("Unable to get power state because the "
+                "mutex has been locked for a while ($retryCount)."
+                "\nLocked by: ${transactionMutex.lockTrace?.toString()}");
           }
         }
       } else {
-        print('Cleaning-up old subscription!');
+        lighthouseLogger.info("Cleaning-up old subscription!");
         disconnect();
       }
     });
     powerStateSubscription.onDone(() {
-      print('Cleaning-up power state subscription!');
+      lighthouseLogger.info("Cleaning-up power state subscription!");
       _powerStateSubscription = null;
     });
     _powerStateSubscription = powerStateSubscription;

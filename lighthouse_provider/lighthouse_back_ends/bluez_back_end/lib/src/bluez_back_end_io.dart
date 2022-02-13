@@ -8,6 +8,7 @@ import 'package:lighthouse_back_end/lighthouse_back_end.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:mutex/mutex.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:lighthouse_logger/lighthouse_logger.dart';
 
 part 'ble/bluez_bluetooth_characteristic.dart';
 
@@ -91,7 +92,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
         stopScan();
       });
     } catch (e, s) {
-      print("Error with BlueZ scanning $e\n$s");
+      lighthouseLogger.severe("Error with BlueZ scanning", e, s);
     }
   }
 
@@ -115,8 +116,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
       try {
         await adapter.stopDiscovery();
       } catch (e, s) {
-        print(
-            "Cannot stop discovery because: ${e.toString()}\n${s.toString()}");
+        lighthouseLogger.severe("Cannot stop discovery", e, s);
       }
     }));
     _scanningSubject.add(false);
@@ -153,7 +153,8 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
           try {
             await _devicesMutex.acquire();
             if (lighthouseDevice == null) {
-              print('Found a non valid device! Device id: ${device.address}');
+              lighthouseLogger.warning(
+                  "Found a not valid device! Device id: ${device.address}");
             } else {
               _foundDeviceSubject.add(lighthouseDevice);
             }

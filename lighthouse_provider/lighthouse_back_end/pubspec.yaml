@@ -13,6 +13,8 @@ dependencies:
   collection: ^1.15.0
   lighthouse_provider:
     path: ../lighthouse_provider
+  lighthouse_logger:
+    path: ../lighthouse_logger
 
 dev_dependencies:
   lints: ^1.0.0
