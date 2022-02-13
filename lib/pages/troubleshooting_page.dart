@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/enable_bluetooth_dialog_flow.dart';
 import 'package:lighthouse_pm/dialogs/location_permission_dialog_flow.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'base_page.dart';
 
@@ -20,8 +20,10 @@ const double _troubleshootingScrollPadding = 20;
 /// A widget showing the a material scaffold with the troubleshooting widget.
 ///
 class TroubleshootingPage extends BasePage {
+  const TroubleshootingPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Troubleshooting')),
         body: const ContentContainerListView(
@@ -39,14 +41,14 @@ class TroubleshootingPage extends BasePage {
 ///
 class TroubleshootingContentWidget extends StatelessWidget
     with WithBlocStateless {
-  const TroubleshootingContentWidget({Key? key}) : super(key: key);
+  const TroubleshootingContentWidget({final Key? key}) : super(key: key);
 
-  static List<Widget> getContent(BuildContext context) {
+  static List<Widget> getContent(final BuildContext context) {
     return [
       Container(
         height: _troubleshootingScrollPadding,
       ),
-      if (LocalPlatform.isAndroid) ...[
+      if (SharedPlatform.isAndroid) ...[
         _TroubleshootingItemWithAction(
           leadingIcon: Icons.location_off,
           leadingColor: Colors.green,
@@ -61,14 +63,14 @@ class TroubleshootingContentWidget extends StatelessWidget
         const Divider(),
         FutureBuilder<PermissionStatus>(
           future: BLEPermissionsHelper.hasBLEPermissions(),
-          builder: (context, snapshot) {
+          builder: (final context, final snapshot) {
             final permissionState = snapshot.data;
             if (permissionState == PermissionStatus.granted) {
               return Container();
             }
             return FutureBuilder<AndroidDeviceInfo>(
                 future: DeviceInfoPlugin().androidInfo,
-                builder: (context, snapshot) {
+                builder: (final context, final snapshot) {
                   if (!snapshot.hasData) {
                     return Container();
                   } else {
@@ -79,8 +81,8 @@ class TroubleshootingContentWidget extends StatelessWidget
                           _TroubleshootingItemWithAction(
                             leadingIcon: Icons.lock,
                             leadingColor: Colors.red,
-                            title: Text('Allow Bluetooth permission'),
-                            subtitle: Text(
+                            title: const Text('Allow Bluetooth permission'),
+                            subtitle: const Text(
                                 'Bluetooth permission is required to scan for devices'),
                             actionIcon: Icons.bluetooth,
                             onTap: () async {
@@ -92,8 +94,8 @@ class TroubleshootingContentWidget extends StatelessWidget
                           _TroubleshootingItemWithAction(
                             leadingIcon: Icons.lock,
                             leadingColor: Colors.red,
-                            title: Text('Allow Location permissions'),
-                            subtitle: Text(
+                            title: const Text('Allow Location permissions'),
+                            subtitle: const Text(
                                 'On Android you need to allow location permissions to scan for devices'),
                             actionIcon: Icons.location_on,
                             onTap: () async {
@@ -115,7 +117,7 @@ class TroubleshootingContentWidget extends StatelessWidget
         FutureBuilder<BluetoothAdapterState>(
           future: LighthouseProvider.instance.state.first,
           initialData: BluetoothAdapterState.unknown,
-          builder: (context, snapshot) {
+          builder: (final context, final snapshot) {
             if (!snapshot.hasData) {
               return Container();
             }
@@ -165,8 +167,9 @@ class TroubleshootingContentWidget extends StatelessWidget
         stream: WithBlocStateless.blocStatic(context, listen: false)
             .settings
             .getViveBaseStationsEnabledStream(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          final baseStationEnabled = snapshot.data == true;
+        builder:
+            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
+          final baseStationEnabled = snapshot.data ?? false;
           return ListTile(
               title: Text(baseStationEnabled
                   ? 'Vive Base station support is still in beta'
@@ -197,7 +200,7 @@ class TroubleshootingContentWidget extends StatelessWidget
               'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
           leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
       const Divider(),
-      if (LocalPlatform.isWeb)
+      if (SharedPlatform.isWeb)
         const ListTile(
             title: Text('Sometimes the page needs to be reloaded'),
             subtitle: Text('Try to reload the web page and connect again'),
@@ -209,7 +212,7 @@ class TroubleshootingContentWidget extends StatelessWidget
                 'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
             leading: Icon(Icons.replay, color: Colors.deepOrange)),
       const Divider(),
-      if (LocalPlatform.isWeb)
+      if (SharedPlatform.isWeb)
         const ListTile(
             title: Text(
                 'Make sure no other tab is communicating with the lighthouse'),
@@ -231,7 +234,7 @@ class TroubleshootingContentWidget extends StatelessWidget
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final List<Widget> children = getContent(context);
 
     return Column(children: children);
@@ -244,7 +247,7 @@ class TroubleshootingContentWidget extends StatelessWidget
 ///
 class _TroubleshootingItemWithAction extends StatelessWidget {
   const _TroubleshootingItemWithAction(
-      {Key? key,
+      {final Key? key,
       required this.leadingIcon,
       required this.leadingColor,
       required this.actionIcon,
@@ -261,7 +264,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
   final Widget? subtitle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Row(

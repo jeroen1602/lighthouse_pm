@@ -9,7 +9,7 @@ import 'package:flutter/gestures.dart';
 ///
 class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   CustomLongPressGestureRecognizer(
-      {Object? debugOwner, Duration duration = kLongPressTimeout})
+      {final Object? debugOwner, final Duration duration = kLongPressTimeout})
       : _duration = duration,
         super(debugOwner: debugOwner) {
     super.onTapDown = _onTapDownHandler;
@@ -26,21 +26,21 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   GestureTapUpCallback? _internalOnTapUp;
 
   @override
-  set onTapUp(_onTapUp) {
+  set onTapUp(final _onTapUp) {
     _internalOnTapUp = _onTapUp;
   }
 
   @override
-  set onTapDown(_onTapDown) {
+  set onTapDown(final _onTapDown) {
     _internalOnTapDown = _onTapDown;
   }
 
   @override
-  set onTap(_onTap) {
+  set onTap(final _onTap) {
     _internalOnTap = onTap;
   }
 
-  void _onTapDownHandler(TapDownDetails details) {
+  void _onTapDownHandler(final TapDownDetails details) {
     Timer(_duration, () {
       _waitTimer = null;
       onLongPress?.call();
@@ -49,7 +49,7 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
     _internalOnTapDown?.call(details);
   }
 
-  void _onTapUpHandler(TapUpDetails details) {
+  void _onTapUpHandler(final TapUpDetails details) {
     _waitTimer?.cancel();
     _internalOnTapUp?.call(details);
   }

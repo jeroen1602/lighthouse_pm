@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 class ClearLastSeenAlertWidget extends StatelessWidget {
+  const ClearLastSeenAlertWidget({final Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
-      title: Text('Clear last seen devices?'),
-      content: Text(
-          'Are you sure you want to clear the last seen devices?\nThis is just for displaying when the app has last seen the device and has no effect on functionality.'),
+      title: const Text('Clear last seen devices?'),
+      content:
+          const Text('Are you sure you want to clear the last seen devices?\n'
+              'This is just for displaying when the app has last seen the '
+              'device and has no effect on functionality.'),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('No'),
+          child: const Text('No'),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         SimpleDialogOption(
-          child: Text('Yes'),
+          child: const Text('Yes'),
           onPressed: () {
             Navigator.pop(context, true);
           },
@@ -24,11 +28,11 @@ class ClearLastSeenAlertWidget extends StatelessWidget {
     );
   }
 
-  static Future<bool?> showCustomDialog(BuildContext context) {
+  static Future<bool?> showCustomDialog(final BuildContext context) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return ClearLastSeenAlertWidget();
+        builder: (final BuildContext context) {
+          return const ClearLastSeenAlertWidget();
         });
   }
 }

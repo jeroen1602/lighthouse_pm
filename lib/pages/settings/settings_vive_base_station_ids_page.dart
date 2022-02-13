@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
+import 'package:fake_back_end/fake_back_end.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:toast/toast.dart';
@@ -10,8 +10,10 @@ import 'package:toast/toast.dart';
 import '../base_page.dart';
 
 class SettingsViveBaseStationIdsPage extends BasePage {
+  const SettingsViveBaseStationIdsPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     return _SettingsViveBaseStationIdsPageContent();
   }
 }
@@ -27,38 +29,38 @@ class _SettingsViveBaseStationIdsPageState
     extends State<_SettingsViveBaseStationIdsPageContent> {
   final Set<String> selected = {};
 
-  void _selectItem(String deviceId) {
+  void _selectItem(final String deviceId) {
     setState(() {
       selected.add(deviceId);
     });
   }
 
-  void _deselectItem(String deviceId) {
+  void _deselectItem(final String deviceId) {
     setState(() {
       selected.remove(deviceId);
     });
   }
 
-  bool _isSelected(String deviceId) {
+  bool _isSelected(final String deviceId) {
     return selected.contains(deviceId);
   }
 
-  Future _deleteItem(String deviceId) {
+  Future _deleteItem(final String deviceId) {
     return blocWithoutListen.viveBaseStation.deleteId(deviceId);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<List<ViveBaseStationId>>(
       stream: bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
-      builder:
-          (BuildContext _, AsyncSnapshot<List<ViveBaseStationId>> snapshot) {
-        Widget body = Center(
+      builder: (final BuildContext _,
+          final AsyncSnapshot<List<ViveBaseStationId>> snapshot) {
+        Widget body = const Center(
           child: CircularProgressIndicator(),
         );
         final data = snapshot.data;
         if (data != null) {
-          data.sort((a, b) {
+          data.sort((final a, final b) {
             return a.deviceId.compareTo(b.deviceId);
           });
           if (data.isEmpty) {
@@ -83,7 +85,7 @@ class _SettingsViveBaseStationIdsPageState
             ? const []
             : [
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   tooltip: 'Delete selected',
                   onPressed: () async {
                     for (final id in selected) {
@@ -100,7 +102,7 @@ class _SettingsViveBaseStationIdsPageState
             ? null
             : IconButton(
                 tooltip: 'Cancel selection',
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   setState(() {
                     selected.clear();
@@ -110,7 +112,7 @@ class _SettingsViveBaseStationIdsPageState
 
         return Scaffold(
             appBar: AppBar(
-              title: Text('Vive Base station ids'),
+              title: const Text('Vive Base station ids'),
               backgroundColor: scaffoldColor,
               actions: actions,
               leading: leading,
@@ -128,7 +130,7 @@ typedef _DeleteItem = Future Function(String deviceId);
 
 class _DataPage extends StatelessWidget {
   const _DataPage(
-      {Key? key,
+      {final Key? key,
       required this.selecting,
       required this.ids,
       required this.selectItem,
@@ -145,11 +147,11 @@ class _DataPage extends StatelessWidget {
   final _DeleteItem deleteItem;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return ContentContainerListView.builder(
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final id = ids[index];
         final selected = isSelected(id.deviceId);
         return Column(
@@ -186,7 +188,7 @@ class _DataPage extends StatelessWidget {
 }
 
 class _EmptyPage extends StatefulWidget {
-  const _EmptyPage({Key? key}) : super(key: key);
+  const _EmptyPage({final Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -199,7 +201,7 @@ class _EmptyState extends State<_EmptyPage> {
   int tapCounter = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     final Widget blockIcon = kReleaseMode

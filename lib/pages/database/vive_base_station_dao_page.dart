@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/validators/mac_validator.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_simple_change_string_alert_widget.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -18,23 +18,23 @@ class _ViveBaseStationIdConverter
   _ViveBaseStationIdConverter(this.bloc);
 
   @override
-  String getDataSubtitle(ViveBaseStationId data) {
+  String getDataSubtitle(final ViveBaseStationId data) {
     return '0x${data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase()} (${data.baseStationId})';
   }
 
   @override
-  String getDataTitle(ViveBaseStationId data) {
+  String getDataTitle(final ViveBaseStationId data) {
     return data.deviceId;
   }
 
   @override
-  Future<void> deleteItem(ViveBaseStationId item) {
+  Future<void> deleteItem(final ViveBaseStationId item) {
     return bloc.viveBaseStation.deleteId(item.deviceId);
   }
 
   @override
   Future<void> openChangeDialog(
-      BuildContext context, ViveBaseStationId data) async {
+      final BuildContext context, final ViveBaseStationId data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: data.deviceId,
@@ -52,11 +52,11 @@ class _ViveBaseStationIdConverter
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
       DaoDataCreateAlertStringDecorator('Base station id', null)
     ];
     final storeValue =
@@ -67,7 +67,7 @@ class _ViveBaseStationIdConverter
 
     String? deviceId =
         (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       deviceId = deviceId?.trim().toUpperCase();
     }
     final String? newValueString =
@@ -91,8 +91,10 @@ class _ViveBaseStationIdConverter
 }
 
 class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
+  const ViveBaseStationDaoPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(

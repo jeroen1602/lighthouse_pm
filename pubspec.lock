@@ -37,12 +37,19 @@ packages:
     source: hosted
     version: "2.8.2"
   bluez:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: bluez
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.4"
+    version: "0.7.6"
+  bluez_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/bluez_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -203,7 +210,7 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.6"
+    version: "0.7.1"
   device_info:
     dependency: "direct main"
     description:
@@ -239,6 +246,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  fake_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/fake_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   ffi:
     dependency: transitive
     description:
@@ -266,7 +280,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_blue:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
       ref: "0.13.0"
@@ -274,6 +288,13 @@ packages:
       url: "https://github.com/boskokg/flutter_blue"
     source: git
     version: "0.13.0"
+  flutter_blue_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -300,6 +321,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.6+2"
+  flutter_web_bluetooth_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -382,6 +410,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  lighthouse_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_logger:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_logger"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_provider:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_provider"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_providers:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_providers"
+      relative: true
+    source: path
+    version: "1.0.0"
+  lighthouse_test_helper:
+    dependency: "direct dev"
+    description:
+      path: "lighthouse_provider/lighthouse_test_helper"
+      relative: true
+    source: path
+    version: "1.0.0"
   lints:
     dependency: transitive
     description:
@@ -403,6 +466,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.11"
+  material_color_utilities:
+    dependency: transitive
+    description:
+      name: material_color_utilities
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   meta:
     dependency: "direct main"
     description:
@@ -488,7 +558,7 @@ packages:
     source: hosted
     version: "1.0.4"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.dartlang.org"
@@ -557,13 +627,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
-  pedantic:
-    dependency: transitive
-    description:
-      name: pedantic
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.11.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -662,6 +725,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.3"
+  shared_platform:
+    dependency: "direct main"
+    description:
+      path: "shared/shared_platform"
+      relative: true
+    source: path
+    version: "1.0.0"
   shelf:
     dependency: transitive
     description:
@@ -785,21 +855,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.17.12"
+    version: "1.19.5"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.8"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.9"
   timing:
     dependency: transitive
     description:
@@ -985,5 +1055,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.15.1 <3.0.0"
+  dart: ">=2.16.1 <3.0.0"
   flutter: ">=2.5.0"

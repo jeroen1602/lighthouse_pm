@@ -3,12 +3,12 @@ import 'package:lighthouse_pm/theming.dart';
 
 /// A widget for showing an OFFLINE [LighthouseDevice] in a list.
 class OfflineLighthouseWidget extends StatelessWidget {
-  OfflineLighthouseWidget(this.deviceId,
+  const OfflineLighthouseWidget(this.deviceId,
       {required this.onSelected,
       required this.selected,
       required this.selecting,
       this.nickname,
-      Key? key})
+      final Key? key})
       : super(key: key);
 
   final String deviceId;
@@ -18,7 +18,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
   final String? nickname;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Container(
@@ -38,7 +38,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
                     Row(
                       children: [
                         Text('Offline', style: theming.disabledBodyText),
-                        VerticalDivider(),
+                        const VerticalDivider(),
                         Container(
                             alignment: Alignment.bottomLeft,
                             child: Text(deviceId,

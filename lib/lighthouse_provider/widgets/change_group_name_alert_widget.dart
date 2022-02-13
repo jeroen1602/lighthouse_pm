@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// A dialog for changing the name of a group.
 /// Can also be used for creating a new group.
 class ChangeGroupNameAlertWidget extends StatefulWidget {
-  ChangeGroupNameAlertWidget({this.initialGroupName, Key? key})
+  const ChangeGroupNameAlertWidget({this.initialGroupName, final Key? key})
       : super(key: key);
 
   final String? initialGroupName;
@@ -17,15 +17,15 @@ class ChangeGroupNameAlertWidget extends StatefulWidget {
   ///
   /// Returns `null` if the user cancels the change or enters a string that
   /// is empty after trimming. Will return the new [String].
-  static Future<String?> showCustomDialog(BuildContext context,
-      {String? initialGroupName}) {
+  static Future<String?> showCustomDialog(final BuildContext context,
+      {final String? initialGroupName}) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return ChangeGroupNameAlertWidget(
             initialGroupName: initialGroupName,
           );
-        }).then((value) {
+        }).then((final value) {
       if (value is String) {
         if (value.trim().isEmpty) {
           return null;
@@ -51,16 +51,16 @@ class _ChangeGroupNameAlertWidgetContent
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
-      title: Text('Group name'),
+      title: const Text('Group name'),
       content: TextField(
-        decoration: InputDecoration(labelText: 'Group name'),
+        decoration: const InputDecoration(labelText: 'Group name'),
         controller: textController,
       ),
       actions: [
         SimpleDialogOption(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(context, null);
           },

@@ -15,8 +15,10 @@ import '../base_page.dart';
 const _githubSponsorsColor = Color(0xffdb61a2);
 
 class SettingsSupportPage extends BasePage {
+  const SettingsSupportPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
 
     final items = <Widget>[
@@ -56,9 +58,9 @@ class SettingsSupportPage extends BasePage {
         FutureBuilder<List<InAppPurchaseItem>>(
           future: InAppPurchases.instance
               .handlePendingPurchases()
-              .then((e) => InAppPurchases.instance.requestPrices()),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<InAppPurchaseItem>> pricesSnapshot) {
+              .then((final e) => InAppPurchases.instance.requestPrices()),
+          builder: (final BuildContext context,
+              final AsyncSnapshot<List<InAppPurchaseItem>> pricesSnapshot) {
             if (pricesSnapshot.hasError) {
               final error = pricesSnapshot.error;
               debugPrint(error.toString());
@@ -68,7 +70,7 @@ class SettingsSupportPage extends BasePage {
                     (error.details as String).contains("less than 3")) {
                   return Container(
                     color: Colors.red,
-                    child: ListTile(
+                    child: const ListTile(
                       title: Text("Could not get support items"),
                       subtitle:
                           Text("Maybe you're not logged into Google Play"),
@@ -79,21 +81,21 @@ class SettingsSupportPage extends BasePage {
               return Container(
                 color: Colors.red,
                 child: ListTile(
-                  title: Text('Something went wrong'),
+                  title: const Text('Something went wrong'),
                   subtitle: Text('${pricesSnapshot.error}'),
                 ),
               );
             }
             final prices = pricesSnapshot.data;
             if (prices == null) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
             if (prices.isEmpty) {
               return Container(
                 color: Colors.red,
-                child: ListTile(
+                child: const ListTile(
                   title: Text("Could not get support items"),
                   subtitle:
                       Text("Check to see if you have an internet connection"),

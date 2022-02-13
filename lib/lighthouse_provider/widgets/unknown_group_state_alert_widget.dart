@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 
 /// An alert dialog to ask the user what to do since the group state is unknown.
 class UnknownGroupStateAlertWidget extends StatelessWidget {
-  UnknownGroupStateAlertWidget(this.supportsStandby, this.isStateUniversal,
-      {Key? key})
+  const UnknownGroupStateAlertWidget(
+      this.supportsStandby, this.isStateUniversal,
+      {final Key? key})
       : super(key: key);
 
   final bool supportsStandby;
   final bool isStateUniversal;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final actions = <Widget>[
       SimpleDialogOption(
         child: const Text("Cancel"),
@@ -54,10 +55,12 @@ class UnknownGroupStateAlertWidget extends StatelessWidget {
   }
 
   static Future<LighthousePowerState?> showCustomDialog(
-      BuildContext context, bool supportsStandby, bool isStateUniversal) {
+      final BuildContext context,
+      final bool supportsStandby,
+      final bool isStateUniversal) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return UnknownGroupStateAlertWidget(
               supportsStandby, isStateUniversal);
         });

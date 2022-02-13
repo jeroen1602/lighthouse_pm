@@ -6,8 +6,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create a change group name alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupNameAlertWidget.showCustomDialog(context,
           initialGroupName: null);
     }));
@@ -26,8 +26,8 @@ void main() {
 
   testWidgets(
       "Should show set if no initial name is set for change group name alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupNameAlertWidget.showCustomDialog(context,
           initialGroupName: null);
     }));
@@ -48,8 +48,8 @@ void main() {
 
   testWidgets(
       "Should show save if initial name is set for change group name alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ChangeGroupNameAlertWidget.showCustomDialog(context,
           initialGroupName: "Name");
     }));
@@ -69,10 +69,10 @@ void main() {
   });
 
   testWidgets("Should return new name for change group name alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<String?>? future;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = ChangeGroupNameAlertWidget.showCustomDialog(context,
           initialGroupName: null);
     }));
@@ -99,10 +99,10 @@ void main() {
 
   testWidgets(
       "Should not return new name if whitespace for change group name alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<String?>? future;
 
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = ChangeGroupNameAlertWidget.showCustomDialog(context,
           initialGroupName: null);
     }));

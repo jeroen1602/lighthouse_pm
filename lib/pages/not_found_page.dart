@@ -5,8 +5,10 @@ import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'base_page.dart';
 
 class NotFoundPage extends BasePage {
+  const NotFoundPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
 
     return Scaffold(

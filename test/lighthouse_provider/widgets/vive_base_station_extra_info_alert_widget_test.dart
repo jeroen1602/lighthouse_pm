@@ -6,8 +6,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create vive base station dialog",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
     }));
 
@@ -28,8 +28,8 @@ void main() {
   });
 
   testWidgets("Should create vive base station dialog, no id hint",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, null);
     }));
 
@@ -51,8 +51,8 @@ void main() {
   });
 
   testWidgets("Should validate input vive base station dialog",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
     }));
 
@@ -99,8 +99,8 @@ void main() {
 
   testWidgets(
       "Should ask for confirmation if id doesn't match vive base station dialog",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
     }));
 
@@ -145,8 +145,8 @@ void main() {
 
   testWidgets(
       "Previous dialog should remain if change it is selected vive base station dialog",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
     }));
 
@@ -204,8 +204,8 @@ void main() {
 
   testWidgets(
       "Previous dialog should close if it's correct id is selected vive base station dialog",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       ViveBaseStationExtraInfoAlertWidget.showCustomDialog(context, 0x1020);
     }));
 
@@ -213,10 +213,10 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    var richText = (tester.widgetList<RichText>(find.descendant(
+    final richText = (tester.widgetList<RichText>(find.descendant(
             of: find.byType(Dialog), matching: find.byType(RichText))))
         .first;
-    var text = richText.text.toPlainText();
+    final text = richText.text.toPlainText();
     expect(text, contains('Base station id required.'));
     expect(text, contains('1020'), reason: "Find device id ending");
 

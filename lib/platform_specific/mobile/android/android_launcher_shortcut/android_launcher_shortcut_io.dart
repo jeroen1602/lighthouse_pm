@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 import 'android_launcher_shortcut_shared.dart';
 
@@ -11,14 +11,14 @@ import 'android_launcher_shortcut_shared.dart';
 class AndroidLauncherShortcut {
   AndroidLauncherShortcut._() {
     channel.setMethodCallHandler(AndroidLauncherShortcut.messageHandler);
-    if (!kReleaseMode && !LocalPlatform.isAndroid) {
+    if (!kReleaseMode && !SharedPlatform.isAndroid) {
       throw UnsupportedError(
           "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?");
     }
   }
 
   @visibleForTesting
-  static Future<void> messageHandler(MethodCall call) async {
+  static Future<void> messageHandler(final MethodCall call) async {
     for (final item in _InMethods.items) {
       if (item.functionName == call.method) {
         return item.functionHandler(call);
@@ -61,7 +61,7 @@ class AndroidLauncherShortcut {
   /// higher, but it may also happen if the shortcut manager is `null`.
   ///
   Future<bool> shortcutSupported() async {
-    return channel.invokeMethod('supportShortcut').then((value) {
+    return channel.invokeMethod('supportShortcut').then((final value) {
       if (value is bool) {
         return value;
       }
@@ -69,18 +69,19 @@ class AndroidLauncherShortcut {
     });
   }
 
-  Future<bool> _requestShortcut(
-      ShortcutTypes type, String shortCutString, String name) {
+  Future<bool> _requestShortcut(final ShortcutTypes type,
+      final String shortCutString, final String name) {
     return channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
       'action': "${type.part}/$shortCutString",
       'name': name
-    }).then((value) => value == true);
+    }).then((final value) => value ?? false);
   }
 
   ///
   /// Request the user to a shortcut for a lighthouse.
   ///
-  Future<bool> requestShortcutLighthouse(String macAddress, String name) {
+  Future<bool> requestShortcutLighthouse(
+      final String macAddress, final String name) {
     return _requestShortcut(ShortcutTypes.macType, macAddress, name);
   }
 
@@ -96,7 +97,7 @@ class AndroidLauncherShortcut {
   ///
   /// Handle the incoming mac callback.
   ///
-  static Future<void> _handleMacShortcut(MethodCall call) async {
+  static Future<void> _handleMacShortcut(final MethodCall call) async {
     if (call.arguments != null && call.arguments is String) {
       instance._changePowerStateMac
           .add(ShortcutHandle(ShortcutTypes.macType, call.arguments as String));

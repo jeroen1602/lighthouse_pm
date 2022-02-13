@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 /// A toggle button for the power state of a [LighthouseDevice].
 class LighthousePowerButtonWidget extends StatelessWidget {
-  LighthousePowerButtonWidget({
-    Key? key,
+  const LighthousePowerButtonWidget({
+    final Key? key,
     required this.powerState,
     required this.onPress,
     this.onLongPress,
@@ -17,7 +17,7 @@ class LighthousePowerButtonWidget extends StatelessWidget {
   final bool disabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     Color color = Colors.grey;
@@ -46,7 +46,7 @@ class LighthousePowerButtonWidget extends StatelessWidget {
           elevation: disabled ? 0.0 : 2.0,
           fillColor: disabled ? theming.disabledColor : theming.buttonColor,
           padding: const EdgeInsets.all(2.0),
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           child: Icon(
             Icons.power_settings_new,
             color: disabled ? Colors.grey : color,

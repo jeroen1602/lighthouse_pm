@@ -2,35 +2,37 @@ import 'package:flutter/material.dart';
 
 /// Show a warning to the user about support still being in beta.
 class ShortcutBetaAlertWidget extends StatelessWidget {
+  const ShortcutBetaAlertWidget({final Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
-      title: Text('Shortcuts are still in beta'),
-      content:
-          Text('The support for shortcuts is still in beta and a bit buggy. '
-              'It does currently happen sometimes for the shortcut handler to '
-              'make a lighthouse hang, after this you will need to manually '
-              'restart your lighthouse.\n'
-              'Are you sure you want to enable this?'),
+      title: const Text('Shortcuts are still in beta'),
+      content: const Text(
+          'The support for shortcuts is still in beta and a bit buggy. '
+          'It does currently happen sometimes for the shortcut handler to '
+          'make a lighthouse hang, after this you will need to manually '
+          'restart your lighthouse.\n'
+          'Are you sure you want to enable this?'),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('No'),
+          child: const Text('No'),
           onPressed: () => Navigator.pop(context),
         ),
         SimpleDialogOption(
-          child: Text('Yes'),
+          child: const Text('Yes'),
           onPressed: () => Navigator.pop(context, true),
         ),
       ],
     );
   }
 
-  static Future<bool> showCustomDialog(BuildContext context) {
+  static Future<bool> showCustomDialog(final BuildContext context) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return ShortcutBetaAlertWidget();
-        }).then((value) {
+        builder: (final BuildContext context) {
+          return const ShortcutBetaAlertWidget();
+        }).then((final value) {
       if (value == null) {
         return false;
       }
@@ -44,27 +46,29 @@ class ShortcutBetaAlertWidget extends StatelessWidget {
 /// device.
 ///
 class ShortcutNotSupportedWidget extends StatelessWidget {
+  const ShortcutNotSupportedWidget({final Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AlertDialog(
-      title: Text('Shortcuts are not supported on your device'),
-      content: Text('The Android version on your device is too old to support '
-          'shortcuts. You need Android 8.0 or higher.\n'
+      title: const Text('Shortcuts are not supported on your device'),
+      content: const Text('The Android version on your device is too old to '
+          'support shortcuts. You need Android 8.0 or higher.\n'
           'Sorry.'),
       actions: <Widget>[
         SimpleDialogOption(
-          child: Text('Ok'),
+          child: const Text('Ok'),
           onPressed: () => Navigator.pop(context),
         ),
       ],
     );
   }
 
-  static Future<void> showCustomDialog(BuildContext context) {
+  static Future<void> showCustomDialog(final BuildContext context) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return ShortcutNotSupportedWidget();
+        builder: (final BuildContext context) {
+          return const ShortcutNotSupportedWidget();
         });
   }
 }

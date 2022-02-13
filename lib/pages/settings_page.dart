@@ -4,20 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/pages/settings/lh_license_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_nicknames_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_vive_base_station_ids_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/clear_last_seen_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dropdown_menu_list_tile.dart';
 import 'package:lighthouse_pm/widgets/shortcut_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/vive_base_station_alert_widget.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,6 +29,8 @@ import 'settings/settings_nicknames_page.dart';
 import 'settings/settings_vive_base_station_ids_page.dart';
 
 class SettingsPage extends BasePage with WithBlocStateless {
+  const SettingsPage({final Key? key}) : super(key: key);
+
   Future<List<ThemeMode>> _getSupportedThemeModes() async {
     if (await SettingsDao.supportsThemeModeSystem) {
       return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
@@ -37,7 +39,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
     }
   }
 
-  String _themeModeToString(ThemeMode themeMode) {
+  String _themeModeToString(final ThemeMode themeMode) {
     switch (themeMode) {
       case ThemeMode.system:
         return "System";
@@ -51,7 +53,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
   }
 
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
     final headTheme = theming.headline6?.copyWith(fontWeight: FontWeight.bold);
@@ -67,7 +69,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         ),
         title: Text('Lighthouse Power management', style: headTheme),
       ),
-      Divider(
+      const Divider(
         thickness: 1.5,
       ),
     ];
@@ -76,28 +78,28 @@ class SettingsPage extends BasePage with WithBlocStateless {
     // region main settings
     items.addAll([
       ListTile(
-        title: Text('Lighthouses with nicknames'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Lighthouses with nicknames'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => Navigator.pushNamed(context, '/settings/nicknames'),
       ),
-      Divider(),
+      const Divider(),
       ListTile(
-          title: Text('Clear all last seen devices'),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text('Clear all last seen devices'),
+          trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () async {
             // result can be `null`
-            if (await ClearLastSeenAlertWidget.showCustomDialog(context) ==
-                true) {
+            if (await ClearLastSeenAlertWidget.showCustomDialog(context) ??
+                false) {
               await blocWithoutListen(context).nicknames.deleteAllLastSeen();
               Toast.show('Cleared up all last seen items', context,
                   duration: Toast.lengthShort, gravity: Toast.bottom);
             }
           }),
-      Divider(),
+      const Divider(),
       StreamBuilder<LighthousePowerState>(
         stream: blocWithoutListen(context).settings.getSleepStateAsStream(),
-        builder:
-            (BuildContext c, AsyncSnapshot<LighthousePowerState> snapshot) {
+        builder: (final BuildContext c,
+            final AsyncSnapshot<LighthousePowerState> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return Container(
@@ -114,7 +116,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             title: const Text('Use STANDBY instead of SLEEP'),
             subtitle: const Text('Only V2 lighthouse support this.'),
             value: state,
-            onChanged: (value) {
+            onChanged: (final value) {
               blocWithoutListen(context).settings.setSleepState(value
                   ? LighthousePowerState.standby
                   : LighthousePowerState.sleep);
@@ -122,27 +124,27 @@ class SettingsPage extends BasePage with WithBlocStateless {
           );
         },
       ),
-      Divider(),
+      const Divider(),
       StreamBuilder<int>(
         stream: blocWithoutListen(context).settings.getScanDurationsAsStream(),
-        builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+        builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return Container(
               color: Colors.red,
               child: ListTile(
-                title: Text('Error'),
+                title: const Text('Error'),
                 subtitle: Text(snapshot.error.toString()),
               ),
             );
           }
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return DropdownMenuListTile<int>(
-              title: Text('Set scan duration'),
+              title: const Text('Set scan duration'),
               value: snapshot.requireData,
-              onChanged: (int? value) async {
+              onChanged: (final int? value) async {
                 if (value != null) {
                   await blocWithoutListen(context)
                       .settings
@@ -150,35 +152,36 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 }
               },
               items: SettingsDao.scanDurationValues
-                  .map<DropdownMenuItem<int>>((int value) =>
+                  .map<DropdownMenuItem<int>>((final int value) =>
                       DropdownMenuItem<int>(
                           value: value, child: Text('$value seconds')))
                   .toList());
         },
       ),
-      Divider(),
+      const Divider(),
       StreamBuilder<int>(
         stream: blocWithoutListen(context).settings.getUpdateIntervalAsStream(),
-        builder: (BuildContext c, AsyncSnapshot<int> snapshot) {
+        builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return Container(
               color: Colors.red,
               child: ListTile(
-                title: Text('Error'),
+                title: const Text('Error'),
                 subtitle: Text(snapshot.error.toString()),
               ),
             );
           }
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return DropdownMenuListTile<int>(
-              title: Text('Set update interval'),
-              subTitle: Text('You may want to change this if you have a lot'
-                  ' of devices.'),
+              title: const Text('Set update interval'),
+              subTitle:
+                  const Text('You may want to change this if you have a lot'
+                      ' of devices.'),
               value: snapshot.requireData,
-              onChanged: (int? value) async {
+              onChanged: (final int? value) async {
                 if (value != null) {
                   await blocWithoutListen(context)
                       .settings
@@ -186,42 +189,43 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 }
               },
               items: SettingsDao.updateIntervalValues
-                  .map<DropdownMenuItem<int>>((int value) =>
+                  .map<DropdownMenuItem<int>>((final int value) =>
                       DropdownMenuItem<int>(
                           value: value, child: Text('$value seconds')))
                   .toList());
         },
       ),
-      Divider(),
+      const Divider(),
       FutureBuilder<List<ThemeMode>>(
         future: _getSupportedThemeModes(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot) {
+        builder: (final BuildContext context,
+            final AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot) {
           final supportedThemes = supportedThemesSnapshot.data;
           if (supportedThemes == null) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return StreamBuilder<ThemeMode>(
             stream:
                 blocWithoutListen(context).settings.getPreferredThemeAsStream(),
-            builder: (BuildContext context, AsyncSnapshot<ThemeMode> snapshot) {
+            builder: (final BuildContext context,
+                final AsyncSnapshot<ThemeMode> snapshot) {
               if (snapshot.hasError) {
                 debugPrint(snapshot.error.toString());
                 return Container(
                   color: Colors.red,
                   child: ListTile(
-                    title: Text('Error'),
+                    title: const Text('Error'),
                     subtitle: Text(snapshot.error.toString()),
                   ),
                 );
               }
               if (!snapshot.hasData) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               return DropdownMenuListTile<ThemeMode>(
-                title: Text('Set preferred theme'),
+                title: const Text('Set preferred theme'),
                 value: snapshot.requireData,
-                onChanged: (ThemeMode? theme) async {
+                onChanged: (final ThemeMode? theme) async {
                   if (theme != null) {
                     await blocWithoutListen(context)
                         .settings
@@ -230,7 +234,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 },
                 items: supportedThemes
                     .map<DropdownMenuItem<ThemeMode>>(
-                        (ThemeMode theme) => DropdownMenuItem<ThemeMode>(
+                        (final ThemeMode theme) => DropdownMenuItem<ThemeMode>(
                               value: theme,
                               child: Text(_themeModeToString(theme)),
                             ))
@@ -240,36 +244,37 @@ class SettingsPage extends BasePage with WithBlocStateless {
           );
         },
       ),
-      Divider(),
+      const Divider(),
       StreamBuilder(
         stream: blocWithoutListen(context)
             .settings
             .getGroupOfflineWarningEnabledStream(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        builder:
+            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return Container(
               color: Colors.red,
               child: ListTile(
-                title: Text('Error'),
+                title: const Text('Error'),
                 subtitle: Text(snapshot.error.toString()),
               ),
             );
           }
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return SwitchListTile(
               title: const Text('Show devices in group offline warning'),
               value: snapshot.requireData,
-              onChanged: (value) {
+              onChanged: (final value) {
                 blocWithoutListen(context)
                     .settings
                     .setGroupOfflineWarningEnabled(value);
               });
         },
       ),
-      Divider(),
+      const Divider(),
     ]);
     // endregion
 
@@ -278,16 +283,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ListTile(
         title: Text('Vive Base station | BETA', style: headTheme),
       ),
-      Divider(thickness: 1.5),
+      const Divider(thickness: 1.5),
       ListTile(
-        title: Text('Vive Base station ids'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Vive Base station ids'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => Navigator.pushNamed(context, '/settings/vive'),
       ),
-      Divider(),
+      const Divider(),
       ListTile(
-        title: Text('Clear all Vive Base station ids'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Clear all Vive Base station ids'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () async {
           if (await ViveBaseStationClearIds.showCustomDialog(context)) {
             await blocWithoutListen(context).viveBaseStation.deleteIds();
@@ -296,15 +301,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
           }
         },
       ),
-      Divider(),
+      const Divider(),
       StreamBuilder<bool>(
         stream: blocWithoutListen(context)
             .settings
             .getViveBaseStationsEnabledStream(),
         initialData: false,
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        builder:
+            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
           return SwitchListTile(
-            title: Text('BETA: enable support for Vive Base stations'),
+            title: const Text('BETA: enable support for Vive Base stations'),
             value: snapshot.requireData,
             onChanged: (enabled) async {
               if (enabled) {
@@ -322,18 +328,18 @@ class SettingsPage extends BasePage with WithBlocStateless {
           );
         },
       ),
-      Divider(),
+      const Divider(),
     ]);
     // endregion
 
     // region shortcut
-    if (LocalPlatform.isAndroid) {
+    if (SharedPlatform.isAndroid) {
       items.add(FutureBuilder<bool>(
         future: AndroidLauncherShortcut.instance.shortcutSupported(),
-        builder: (context, supportedSnapshot) {
+        builder: (final context, final supportedSnapshot) {
           final supported = supportedSnapshot.data;
           if (supported == null) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return Column(
             children: [
@@ -344,16 +350,17 @@ class SettingsPage extends BasePage with WithBlocStateless {
                     .settings
                     .getShortcutsEnabledStream(),
                 initialData: false,
-                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                builder: (final BuildContext context,
+                    final AsyncSnapshot<bool> snapshot) {
                   // Disable the setting if for some reason it got set to true,
                   // while not being supported.
-                  if (!supported && snapshot.data == true) {
+                  if (!supported && (snapshot.data ?? false)) {
                     blocWithoutListen(context)
                         .settings
                         .setShortcutsEnabledStream(false);
                   }
                   return SwitchListTile(
-                    title: Text('BETA: enable support for shortcuts'),
+                    title: const Text('BETA: enable support for shortcuts'),
                     value: snapshot.requireData,
                     inactiveThumbColor:
                         (supported) ? null : theming.disabledColor,
@@ -380,7 +387,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                   );
                 },
               ),
-              Divider(),
+              const Divider(),
             ],
           );
         },
@@ -397,25 +404,25 @@ class SettingsPage extends BasePage with WithBlocStateless {
         thickness: 1.5,
       ),
       ListTile(
-        title: Text('Licences'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Licenses'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => Navigator.pushNamed(context, '/settings/license'),
       ),
-      Divider(),
+      const Divider(),
       ListTile(
-        title: Text('Privacy'),
-        trailing: Icon(Icons.arrow_forward_ios),
+        title: const Text('Privacy'),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () => Navigator.pushNamed(context, '/settings/privacy'),
       ),
-      Divider(),
+      const Divider(),
       if (BuildOptions.includeSupportButtons &&
           BuildOptions.includeSupportPage) ...[
         ListTile(
-          title: Text('Support'),
-          trailing: Icon(Icons.arrow_forward_ios),
+          title: const Text('Support'),
+          trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () => Navigator.pushNamed(context, '/settings/support'),
         ),
-        Divider(),
+        const Divider(),
       ],
       ListTile(
         title: const Text('Fork me on Github'),
@@ -431,8 +438,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
           await launch(Links.projectUrl);
         },
       ),
-      Divider(),
-      if (LocalPlatform.isWeb || LocalPlatform.isLinux) ...[
+      const Divider(),
+      if (SharedPlatform.isWeb || SharedPlatform.isLinux) ...[
         ListTile(
           title: const Text('Try the Android app'),
           subtitle: const Text('On Google Play'),
@@ -446,7 +453,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             await launch(Links.googlePlayUrl);
           },
         ),
-        Divider(),
+        const Divider(),
         ListTile(
           title: const Text('Try the Android app'),
           subtitle: const Text('On F-Droid'),
@@ -463,7 +470,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         ),
         const Divider(),
       ],
-      if (!LocalPlatform.isWeb) ...[
+      if (!SharedPlatform.isWeb) ...[
         ListTile(
           title: const Text('Try the Webapp'),
           trailing: const Icon(Icons.arrow_forward_ios),
@@ -480,7 +487,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ],
       FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
-        builder: (_, snapshot) {
+        builder: (final _, final snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return ListTile(
@@ -503,7 +510,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           );
         },
       ),
-      Divider(),
+      const Divider(),
     ]);
     // endregion
 
@@ -516,16 +523,16 @@ class SettingsPage extends BasePage with WithBlocStateless {
   }
 
   static final Map<String, PageBuilder> _subPages = {
-    '/nicknames': (context) => SettingsNicknamesPage(),
-    '/vive': (context) => SettingsViveBaseStationIdsPage(),
-    '/privacy': (context) => PrivacyPage(),
-    '/license': (context) => LHLicensePage(),
+    '/nicknames': (final context) => const SettingsNicknamesPage(),
+    '/vive': (final context) => const SettingsViveBaseStationIdsPage(),
+    '/privacy': (final context) => const PrivacyPage(),
+    '/license': (final context) => LHLicensePage(),
     if (BuildOptions.includeSupportButtons && BuildOptions.includeSupportPage)
-      '/support': (context) => SettingsSupportPage(),
+      '/support': (final context) => const SettingsSupportPage(),
   };
 
-  static Map<String, PageBuilder> getSubPages(String parentPath) {
-    Map<String, PageBuilder> subPages = {};
+  static Map<String, PageBuilder> getSubPages(final String parentPath) {
+    final Map<String, PageBuilder> subPages = {};
 
     for (final subPage in _subPages.entries) {
       subPages['$parentPath${subPage.key}'] = subPage.value;

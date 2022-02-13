@@ -13,7 +13,7 @@ class InAppPurchases {
 
     fun init(flutterEngine: FlutterEngine, context: Activity) {
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, IAP_ID)
-        methodChannel.setMethodCallHandler { call, result ->
+        methodChannel.setMethodCallHandler { _, result ->
             result.error("99", "IAP not implemented, try switching Android flavors!", null)
         }
     }

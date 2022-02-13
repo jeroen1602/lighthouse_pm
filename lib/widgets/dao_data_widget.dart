@@ -4,15 +4,15 @@ import 'package:toast/toast.dart';
 import 'dao_delete_alert_widget.dart';
 
 abstract class DaoTableDataConverter<T> {
-  String getDataTitle(T data);
+  String getDataTitle(final T data);
 
-  String getDataSubtitle(T data);
+  String getDataSubtitle(final T data);
 
-  Future<void> openChangeDialog(BuildContext context, T data);
+  Future<void> openChangeDialog(final BuildContext context, final T data);
 
-  Future<void> openAddNewItemDialog(BuildContext context);
+  Future<void> openAddNewItemDialog(final BuildContext context);
 
-  Future<void> deleteItem(T item);
+  Future<void> deleteItem(final T item);
 }
 
 class DaoTableDataWidget<T> extends StatelessWidget {
@@ -21,14 +21,14 @@ class DaoTableDataWidget<T> extends StatelessWidget {
   final DaoTableDataConverter<T> converter;
 
   const DaoTableDataWidget(this.tableName, this.entriesStream, this.converter,
-      {Key? key})
+      {final Key? key})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return StreamBuilder<List<T>>(
       stream: entriesStream,
-      builder: (context, snapshot) {
+      builder: (final context, final snapshot) {
         final data = snapshot.data;
 
         final children = <Widget>[

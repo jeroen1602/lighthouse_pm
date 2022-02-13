@@ -13,10 +13,10 @@ import 'database/settings_dao_page.dart';
 import 'database/vive_base_station_dao_page.dart';
 
 class DatabaseTestPage extends BasePage with WithBlocStateless {
-  DatabaseTestPage({Key? key}) : super(key: key, replace: true);
+  DatabaseTestPage({final Key? key}) : super(key: key, replace: true);
 
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
 
     final bloc = blocWithoutListen(context);
@@ -57,7 +57,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
       const Divider(),
       FutureBuilder<String>(
           future: _getInstalledTables(bloc),
-          builder: (context, snapshot) {
+          builder: (final context, final snapshot) {
             final data = snapshot.data;
             if (snapshot.hasError) {
               final error = snapshot.error;
@@ -91,7 +91,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                             duration: Toast.lengthShort, gravity: Toast.bottom);
                       },
                     ),
-                    Divider(),
+                    const Divider(),
                     ListTile(
                       title: Text(
                           'WARNING installed tables do not match known tables!'
@@ -107,7 +107,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                 );
               }
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           }),
       const Divider(),
@@ -129,7 +129,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
             Navigator.pushNamed(context, '/databaseTest${dao.pageLink}');
           },
         ),
-        Divider(),
+        const Divider(),
       ]);
     }
 
@@ -142,7 +142,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
         ));
   }
 
-  String _getTables(LighthousePMBloc bloc) {
+  String _getTables(final LighthousePMBloc bloc) {
     final tableList = bloc.getKnownTables();
     var tables = '';
     for (final table in tableList) {
@@ -152,8 +152,8 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
     return tables.trim();
   }
 
-  Future<String> _getInstalledTables(LighthousePMBloc bloc) async {
-    return bloc.getInstalledTables().then((tableList) {
+  Future<String> _getInstalledTables(final LighthousePMBloc bloc) async {
+    return bloc.getInstalledTables().then((final tableList) {
       var tables = '';
       for (final table in tableList) {
         tables += '$table\n';
@@ -164,14 +164,14 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
   }
 
   static final Map<String, PageBuilder> _subPages = {
-    '/nicknameDao': (context) => NicknameDaoPage(),
-    '/settingsDao': (context) => SettingsDaoPage(),
-    '/viveBaseStationDao': (context) => ViveBaseStationDaoPage(),
-    '/groupDao': (context) => GroupDaoPage(),
+    '/nicknameDao': (final context) => const NicknameDaoPage(),
+    '/settingsDao': (final context) => const SettingsDaoPage(),
+    '/viveBaseStationDao': (final context) => const ViveBaseStationDaoPage(),
+    '/groupDao': (final context) => const GroupDaoPage(),
   };
 
-  static Map<String, PageBuilder> getSubPages(String parentPath) {
-    Map<String, PageBuilder> subPages = {};
+  static Map<String, PageBuilder> getSubPages(final String parentPath) {
+    final Map<String, PageBuilder> subPages = {};
 
     for (final subPage in _subPages.entries) {
       subPages['$parentPath${subPage.key}'] = subPage.value;

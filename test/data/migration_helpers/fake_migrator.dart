@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MigrationError extends Error {
@@ -25,17 +26,17 @@ class FakeMigrator extends Fake implements Migrator {
   }
 
   @override
-  Future<void> renameColumn(TableInfo<Table, dynamic> table, String oldName,
-      GeneratedColumn column) async {
+  Future<void> renameColumn(final TableInfo<Table, dynamic> table,
+      final String oldName, final GeneratedColumn column) async {
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (element) => element!.tableName == table.actualTableName,
+        (final element) => element!.tableName == table.actualTableName,
         orElse: () => null);
     if (testTable == null) {
       throw MigrationError("Could not find table ${table.actualTableName}");
     }
 
     final testColumn = testTable.columns.cast<TestColumn?>().firstWhere(
-        (element) => element!.columnName == oldName,
+        (final element) => element!.columnName == oldName,
         orElse: () => null);
     if (testColumn == null) {
       throw MigrationError(
@@ -46,9 +47,9 @@ class FakeMigrator extends Fake implements Migrator {
   }
 
   @override
-  Future<void> createTable(TableInfo<Table, dynamic> table) async {
+  Future<void> createTable(final TableInfo<Table, dynamic> table) async {
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (element) => element!.tableName == table.actualTableName,
+        (final element) => element!.tableName == table.actualTableName,
         orElse: () => null);
     if (testTable != null) {
       throw MigrationError("Table already exists! ${table.actualTableName}");
@@ -57,17 +58,18 @@ class FakeMigrator extends Fake implements Migrator {
     if (toHint != null) {
       final testTable = FinalSchemas.schemas[toHint]?.testTables
           .cast<TestTable?>()
-          .firstWhere((element) => element!.tableName == table.actualTableName,
+          .firstWhere(
+              (final element) => element!.tableName == table.actualTableName,
               orElse: () => null);
       if (testTable != null) {
         currentSchema!.testTables.add(testTable.copy());
         return;
       }
-      print(
+      debugPrint(
           "Warning: could not find table ${table.actualTableName} in final schema version $toHint");
     }
 
-    final columns = table.columnsByName.entries.map((entry) {
+    final columns = table.columnsByName.entries.map((final entry) {
       return TestColumn(
           entry.key,
           TestColumn.columnTypeFromDriftTypeString(
@@ -78,9 +80,9 @@ class FakeMigrator extends Fake implements Migrator {
   }
 
   @override
-  Future<void> deleteTable(String name) async {
+  Future<void> deleteTable(final String name) async {
     final index = currentSchema!.testTables
-        .indexWhere((element) => element.tableName == name);
+        .indexWhere((final element) => element.tableName == name);
     if (index < 0) {
       throw MigrationError(
           "Can't remove table because it doesn't exists ($name)");
@@ -151,21 +153,21 @@ class TestTableIncorrectError extends Error {
       output += "Extra columns:\n";
       output += extraColumns.fold(
           "",
-          (previousValue, element) =>
+          (final previousValue, final element) =>
               "$previousValue\t${element.toString()}\n");
     }
     if (missingColumns.isNotEmpty) {
       output += "Missing columns:\n";
       output += missingColumns.fold(
           "",
-          (previousValue, element) =>
+          (final previousValue, final element) =>
               "$previousValue\t${element.toString()}\n");
     }
     if (incorrectColumnErrors.isNotEmpty) {
       output += "Incorrect columns:\n";
       output += incorrectColumnErrors.fold(
           "",
-          (previousValue, element) =>
+          (final previousValue, final element) =>
               "$previousValue\t${element.toString()}\n");
     }
 
@@ -188,13 +190,17 @@ class TestSchemaIncorrectError extends Error {
     String output = "Error for schema!\n";
     if (extraTables.isNotEmpty) {
       output += "Extra tables:\n";
-      output += extraTables.fold("",
-          (previousValue, element) => "$previousValue\t${element.tableName}\n");
+      output += extraTables.fold(
+          "",
+          (final previousValue, final element) =>
+              "$previousValue\t${element.tableName}\n");
     }
     if (missingTables.isNotEmpty) {
       output += "Missing tables:\n";
-      output += missingTables.fold("",
-          (previousValue, element) => "$previousValue\t${element.tableName}\n");
+      output += missingTables.fold(
+          "",
+          (final previousValue, final element) =>
+              "$previousValue\t${element.tableName}\n");
     }
     if (incorrectTableErrors.isNotEmpty) {
       output += "Incorrect tables:\n";
@@ -202,8 +208,11 @@ class TestSchemaIncorrectError extends Error {
         output += tableError
             .toString()
             .split("\n")
-            .where((element) => element.trim().isNotEmpty)
-            .fold("", (previousValue, element) => "$previousValue\t$element\n");
+            .where((final element) => element.trim().isNotEmpty)
+            .fold(
+                "",
+                (final previousValue, final element) =>
+                    "$previousValue\t$element\n");
       }
     }
 
@@ -221,9 +230,9 @@ class TestColumn {
     return TestColumn(columnName, type);
   }
 
-  bool compare(TestColumn truth, [bool shouldThrow = true]) {
-    bool nameIncorrect = columnName != truth.columnName;
-    bool typeIncorrect = type != truth.type;
+  bool compare(final TestColumn truth, [final bool shouldThrow = true]) {
+    final bool nameIncorrect = columnName != truth.columnName;
+    final bool typeIncorrect = type != truth.type;
     if (nameIncorrect || typeIncorrect) {
       if (shouldThrow) {
         throw TestColumnIncorrectError(this, truth);
@@ -239,7 +248,7 @@ class TestColumn {
     return 'Column {"columnName": "$columnName", "type": "${columnTypeToString(type)}"}';
   }
 
-  static String columnTypeToString(ColumnType type) {
+  static String columnTypeToString(final ColumnType type) {
     switch (type) {
       case ColumnType.integer:
         return 'integer';
@@ -250,7 +259,7 @@ class TestColumn {
     }
   }
 
-  static ColumnType columnTypeFromDriftTypeString(String type) {
+  static ColumnType columnTypeFromDriftTypeString(final String type) {
     switch (type) {
       case 'INTEGER':
         return ColumnType.integer;
@@ -270,16 +279,16 @@ class TestTable {
   List<TestColumn> columns;
 
   TestTable copy() {
-    return TestTable(tableName, columns.map((e) => e.copy()).toList());
+    return TestTable(tableName, columns.map((final e) => e.copy()).toList());
   }
 
-  bool compare(TestTable truth, [bool shouldThrow = true]) {
+  bool compare(final TestTable truth, [final bool shouldThrow = true]) {
     final List<TestColumn> extraColumns = [];
     final List<TestColumn> missingColumns = [];
     // Look for extra columns.
     for (final column in columns) {
       if (truth.columns.indexWhere(
-              (element) => element.columnName == column.columnName) <
+              (final element) => element.columnName == column.columnName) <
           0) {
         // we've got an extra column.
         extraColumns.add(column);
@@ -289,7 +298,7 @@ class TestTable {
     // Look for missing columns.
     for (final column in truth.columns) {
       if (columns.indexWhere(
-              (element) => element.columnName == column.columnName) <
+              (final element) => element.columnName == column.columnName) <
           0) {
         // we've got a missing column.
         missingColumns.add(column);
@@ -300,8 +309,8 @@ class TestTable {
     final List<TestColumnIncorrectError> incorrectColumnErrors = [];
 
     for (final column in columns) {
-      final index = truth.columns
-          .indexWhere((element) => element.columnName == column.columnName);
+      final index = truth.columns.indexWhere(
+          (final element) => element.columnName == column.columnName);
       if (index >= 0) {
         try {
           if (!column.compare(truth.columns[index], shouldThrow)) {
@@ -338,16 +347,16 @@ class TestSchema {
   List<TestTable> testTables;
 
   TestSchema copy() {
-    return TestSchema(testTables.map((e) => e.copy()).toList());
+    return TestSchema(testTables.map((final e) => e.copy()).toList());
   }
 
-  bool compare(TestSchema truth, [bool shouldThrow = true]) {
+  bool compare(final TestSchema truth, [final bool shouldThrow = true]) {
     final List<TestTable> extraTables = [];
     final List<TestTable> missingTables = [];
     // Look for extra tables.
     for (final table in testTables) {
-      if (truth.testTables
-              .indexWhere((element) => element.tableName == table.tableName) <
+      if (truth.testTables.indexWhere(
+              (final element) => element.tableName == table.tableName) <
           0) {
         // we've got an extra table.
         extraTables.add(table);
@@ -355,8 +364,8 @@ class TestSchema {
     }
     // Look for missing tables.
     for (final table in truth.testTables) {
-      if (testTables
-              .indexWhere((element) => element.tableName == table.tableName) <
+      if (testTables.indexWhere(
+              (final element) => element.tableName == table.tableName) <
           0) {
         // we've got an missing table.
         missingTables.add(table);
@@ -368,7 +377,7 @@ class TestSchema {
 
     for (final table in testTables) {
       final index = truth.testTables
-          .indexWhere((element) => element.tableName == table.tableName);
+          .indexWhere((final element) => element.tableName == table.tableName);
       if (index >= 0) {
         try {
           if (!table.compare(truth.testTables[index], shouldThrow)) {

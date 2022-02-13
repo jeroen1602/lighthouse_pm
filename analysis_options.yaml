@@ -11,19 +11,24 @@
 # (the recommended set includes the core lints).
 # The core lints are also what is used by pub.dev for scoring packages.
 
-# TODO: upgrade this to the new version
-#include: package:flutter_lints/flutter.yaml
-include: package:lints/recommended.yaml
+include: package:flutter_lints/flutter.yaml
 
 # Uncomment the following section to specify additional rules.
 
-# linter:
-#   rules:
-#     - camel_case_types
+linter:
+  rules:
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - prefer_final_parameters
+    - prefer_interpolation_to_compose_strings
+    - prefer_null_aware_method_calls
+    - use_if_null_to_convert_nulls_to_bools
+    - depend_on_referenced_packages
 
-#analyzer:
-#  exclude:
-#    - example/**
+analyzer:
+  exclude:
+    - lib/generated_plugin_registrant.dart
+    - lib/**/*.g.dart
 
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints

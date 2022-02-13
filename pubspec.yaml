@@ -46,21 +46,36 @@ dependencies:
   drift: ^1.2.0
   sqlite3_flutter_libs: ^0.5.2
   path_provider: ^2.0.8
+  path: ^1.8.0
   provider: ^6.0.2
   tuple: ^2.0.0
   intl: ^0.17.0
   device_info: ^2.0.3
   meta: ^1.7.0
   # Android/ iOS
-  flutter_blue:
-    git:
-      url: https://github.com/boskokg/flutter_blue
-      ref: 0.13.0
+  flutter_blue_back_end:
+    path: lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end
   # Web:
   flutter_web_bluetooth: ^0.0.6+2
   web_browser_detect: ^2.0.2
+  flutter_web_bluetooth_back_end:
+    path: lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end
   # Linux:
-  bluez: ^0.7.4
+  bluez_back_end:
+    path: lighthouse_provider/lighthouse_back_ends/bluez_back_end
+  # lighthouse provider
+  lighthouse_provider:
+    path: lighthouse_provider/lighthouse_provider
+  lighthouse_back_end:
+    path: lighthouse_provider/lighthouse_back_end
+  lighthouse_providers:
+    path: lighthouse_provider/lighthouse_providers
+  fake_back_end:
+    path: lighthouse_provider/lighthouse_back_ends/fake_back_end
+  shared_platform:
+    path: shared/shared_platform
+  lighthouse_logger:
+    path: lighthouse_provider/lighthouse_logger
 
   # This may need to be enabled again if the build runner doesn't like it.
   #dependency_overrides:
@@ -78,6 +93,8 @@ dev_dependencies:
   drift_dev: ^1.2.0
   build_runner: 2.1.7
   flutter_lints: ^1.0.4
+  lighthouse_test_helper:
+    path: lighthouse_provider/lighthouse_test_helper
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

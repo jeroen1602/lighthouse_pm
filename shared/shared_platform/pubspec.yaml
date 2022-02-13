@@ -1,0 +1,14 @@
+name: shared_platform
+description: A library that helps with making platform specific code paths available for web and io builds.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=2.15.1 <3.0.0'
+
+dependencies:
+  meta: ^1.7.0
+
+dev_dependencies:
+  lints: ^1.0.0
+  test: ^1.16.0

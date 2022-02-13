@@ -6,28 +6,28 @@ import 'package:lighthouse_pm/widgets/waterfall_widget.dart';
 class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     with WithBlocStateless {
   SettingsStream(
-      {Key? key,
-      required List<Object?> upStream,
-      List<DownStreamBuilder> downStreamBuilders = const []})
+      {final Key? key,
+      required final List<Object?> upStream,
+      final List<DownStreamBuilder> downStreamBuilders = const []})
       : super(
             key: key,
             upStream: upStream,
             downStreamBuilders: downStreamBuilders);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return MainPageSettings.mainPageSettingsStreamBuilder(
         bloc: blocWithoutListen(context),
-        builder: (context, settings) {
+        builder: (final context, final settings) {
           if (settings == null) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
           return getNextStreamDown(context, settings);
         });
   }
 
   static DownStreamBuilder createBuilder() {
-    return (context, upStream, downStream) {
+    return (final context, final upStream, final downStream) {
       return SettingsStream(
         upStream: upStream,
         downStreamBuilders: downStream.cast<DownStreamBuilder>(),

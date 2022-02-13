@@ -7,9 +7,9 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create a delete group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final group = Group(id: 1, name: "Test group");
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
 
@@ -26,9 +26,9 @@ void main() {
   });
 
   testWidgets("Should show group name delete group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final group = Group(id: 1, name: "Test group");
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
 
@@ -53,11 +53,11 @@ void main() {
   });
 
   testWidgets("Should return false when no is hit delete group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
 
@@ -72,16 +72,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isFalse);
   });
 
   testWidgets("Should return true when yes is hit delete group alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     final group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
 
@@ -96,7 +96,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isTrue);
   });
 }

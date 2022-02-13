@@ -6,8 +6,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   testWidgets("Should create a different group item channel alert widget",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+      (final WidgetTester tester) async {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       DifferentGroupItemChannelAlertWidget.showCustomDialog(context);
     }));
 
@@ -29,9 +29,9 @@ void main() {
 
   testWidgets(
       "Should return false when cancel is hit group item channel alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = DifferentGroupItemChannelAlertWidget.showCustomDialog(context);
     }));
 
@@ -46,15 +46,15 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isFalse);
   });
 
   testWidgets(
       "Should return true when I'm sure is hit group item channel alert widget",
-      (WidgetTester tester) async {
+      (final WidgetTester tester) async {
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((context) {
+    await tester.pumpWidget(buildTestAppForWidgets((final context) {
       future = DifferentGroupItemChannelAlertWidget.showCustomDialog(context);
     }));
 
@@ -69,7 +69,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(Duration(seconds: 1));
+    final value = await future!.timeout(const Duration(seconds: 1));
     expect(value, isTrue);
   });
 }

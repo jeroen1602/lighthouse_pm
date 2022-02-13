@@ -9,21 +9,21 @@ part 'vive_base_station_dao.g.dart';
 @DriftAccessor(tables: [ViveBaseStationIds])
 class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
     with _$ViveBaseStationDaoMixin {
-  ViveBaseStationDao(LighthouseDatabase attachedDatabase)
+  ViveBaseStationDao(final LighthouseDatabase attachedDatabase)
       : super(attachedDatabase);
 
-  Future<int?> getId(String deviceId) {
+  Future<int?> getId(final String deviceId) {
     return (select(viveBaseStationIds)
-          ..where((tbl) => tbl.deviceId.equals(deviceId)))
+          ..where((final tbl) => tbl.deviceId.equals(deviceId)))
         .getSingleOrNull()
-        .then((value) => value?.baseStationId);
+        .then((final value) => value?.baseStationId);
   }
 
   Stream<List<ViveBaseStationId>> getViveBaseStationIdsAsStream() {
     return select(viveBaseStationIds).watch();
   }
 
-  Future<void> insertId(String deviceId, int id) {
+  Future<void> insertId(final String deviceId, final int id) {
     assert((id & 0xFFFFFFFF) == id,
         'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16).padLeft(8, '0').toUpperCase()}');
 
@@ -32,9 +32,9 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
         mode: InsertMode.insertOrReplace);
   }
 
-  Future<void> deleteId(String deviceId) {
+  Future<void> deleteId(final String deviceId) {
     return (delete(viveBaseStationIds)
-          ..where((tbl) => tbl.deviceId.equals(deviceId)))
+          ..where((final tbl) => tbl.deviceId.equals(deviceId)))
         .go();
   }
 
@@ -42,7 +42,7 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
     return delete(viveBaseStationIds).go();
   }
 
-  Future<void> insertIdNoValidate(String deviceId, int id) {
+  Future<void> insertIdNoValidate(final String deviceId, final int id) {
     debugPrint(
         'WARNING using insertIdNoValidate, this should not happen in release mode!');
     return into(viveBaseStationIds).insert(

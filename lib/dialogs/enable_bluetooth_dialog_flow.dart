@@ -16,14 +16,14 @@ class EnableBluetoothDialogFlow {
   /// Opening Bluetooth settings if snack bar action is used.
   ///
   /// This flow works only on Android!
-  static Future showEnableBluetoothDialogFlow(BuildContext context,
-      {bool showSnackBarOnFailure = true}) async {
+  static Future showEnableBluetoothDialogFlow(final BuildContext context,
+      {final bool showSnackBarOnFailure = true}) async {
     // Expression can be `null`
-    if (await EnableBluetoothAlertWidget.showCustomDialog(context) == true) {
+    if (await EnableBluetoothAlertWidget.showCustomDialog(context) ?? false) {
       if (!await BLEPermissionsHelper.enableBLE()) {
         if (showSnackBarOnFailure) {
           ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-              content: Text('Could not enable Bluetooth.'),
+              content: const Text('Could not enable Bluetooth.'),
               action: SnackBarAction(
                 label: 'Go to Settings.',
                 onPressed: () async {

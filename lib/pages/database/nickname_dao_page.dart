@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/validators/mac_validator.dart';
-import 'package:lighthouse_pm/platform_specific/shared/local_platform.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_simple_change_string_alert_widget.dart';
+import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -18,22 +18,23 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
   _NicknameConverter(this.bloc);
 
   @override
-  String getDataSubtitle(Nickname data) {
+  String getDataSubtitle(final Nickname data) {
     return data.nickname;
   }
 
   @override
-  String getDataTitle(Nickname data) {
+  String getDataTitle(final Nickname data) {
     return data.deviceId;
   }
 
   @override
-  Future<void> deleteItem(Nickname item) {
+  Future<void> deleteItem(final Nickname item) {
     return bloc.nicknames.deleteNicknames([item.deviceId]);
   }
 
   @override
-  Future<void> openChangeDialog(BuildContext context, Nickname data) async {
+  Future<void> openChangeDialog(
+      final BuildContext context, final Nickname data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: data.deviceId,
@@ -46,11 +47,11 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
       DaoDataCreateAlertStringDecorator('Nickname', null),
     ];
     final saveNewItem =
@@ -58,7 +59,7 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
       final String? value =
@@ -83,23 +84,23 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
   _LastSeenConverter(this.bloc);
 
   @override
-  String getDataSubtitle(LastSeenDevice data) {
+  String getDataSubtitle(final LastSeenDevice data) {
     return data.lastSeen.toIso8601String();
   }
 
   @override
-  String getDataTitle(LastSeenDevice data) {
+  String getDataTitle(final LastSeenDevice data) {
     return data.deviceId;
   }
 
   @override
-  Future<void> deleteItem(LastSeenDevice item) {
+  Future<void> deleteItem(final LastSeenDevice item) {
     return bloc.nicknames.deleteLastSeen(item);
   }
 
   @override
   Future<void> openChangeDialog(
-      BuildContext context, LastSeenDevice data) async {
+      final BuildContext context, final LastSeenDevice data) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
         context,
         primaryKey: data.deviceId,
@@ -117,11 +118,11 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
   }
 
   @override
-  Future<void> openAddNewItemDialog(BuildContext context) async {
+  Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertStringDecorator('Device id', null,
           validator:
-              LocalPlatform.isAndroid ? MacValidator.macValidator : null),
+              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
       // TODO: use date picker
       DaoDataCreateAlertStringDecorator(
           'Last seen', DateTime.now().toIso8601String()),
@@ -131,7 +132,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
-      if (LocalPlatform.isAndroid) {
+      if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
       final String? value =
@@ -152,8 +153,10 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
 }
 
 class NicknameDaoPage extends BasePage with WithBlocStateless {
+  const NicknameDaoPage({final Key? key}) : super(key: key);
+
   @override
-  Widget buildPage(BuildContext context) {
+  Widget buildPage(final BuildContext context) {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(

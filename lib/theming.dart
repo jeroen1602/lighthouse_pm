@@ -42,11 +42,11 @@ class Theming {
 
   final TextStyle? subtitle;
 
-  factory Theming.of(BuildContext context) {
+  factory Theming.of(final BuildContext context) {
     return Theming.fromTheme(Theme.of(context));
   }
 
-  factory Theming.fromTheme(ThemeData theme) {
+  factory Theming.fromTheme(final ThemeData theme) {
     final disabledColor = theme.disabledColor;
 
     final bodyText = theme.textTheme.bodyText2;
@@ -58,7 +58,7 @@ class Theming {
     final linkTheme = createLinkTheme(bodyText, theme);
 
     final bodyTextIconSize = (bodyText?.fontSize ?? 14) + 4;
-    final iconSizeLarge = 24.0;
+    const iconSizeLarge = 24.0;
 
     final iconColor = getIconColor(theme.iconTheme);
     final selectedRowColor = theme.selectedRowColor;
@@ -97,17 +97,18 @@ class Theming {
         subtitle);
   }
 
-  static TextStyle? createDefaultLinkTheme(ThemeData theme) {
+  static TextStyle? createDefaultLinkTheme(final ThemeData theme) {
     return createLinkTheme(theme.textTheme.bodyText2, theme);
   }
 
-  static TextStyle? createLinkTheme(TextStyle? input, ThemeData theme) {
+  static TextStyle? createLinkTheme(
+      final TextStyle? input, final ThemeData theme) {
     return input?.copyWith(
         color: theme.colorScheme.secondary,
         decoration: TextDecoration.underline);
   }
 
-  static Color? getIconColor(IconThemeData iconTheme) {
+  static Color? getIconColor(final IconThemeData iconTheme) {
     final double iconOpacity = iconTheme.opacity ?? 1.0;
     Color iconColor = iconTheme.color!;
     if (iconOpacity != 1.0) {

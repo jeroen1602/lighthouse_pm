@@ -6,7 +6,7 @@ class InAppPurchaseItem {
 
   InAppPurchaseItem(this.id, this.price, this.title, this.originalPrice);
 
-  factory InAppPurchaseItem.fromMap(Map<dynamic, dynamic> value) {
+  factory InAppPurchaseItem.fromMap(final Map<dynamic, dynamic> value) {
     final id = value["id"] as String;
     final price = value["price"] as String;
     final title = value["title"] as String;

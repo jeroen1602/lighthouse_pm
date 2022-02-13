@@ -3,7 +3,7 @@ import 'package:lighthouse_pm/theming.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   const ViveBaseStationExtraInfoAlertWidget(
-      {Key? key, required this.pairIdHint})
+      {final Key? key, required this.pairIdHint})
       : super(key: key);
 
   final int? pairIdHint;
@@ -14,10 +14,10 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   }
 
   static Future<String?> showCustomDialog(
-      BuildContext context, int? pairIdHint) {
+      final BuildContext context, final int? pairIdHint) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return ViveBaseStationExtraInfoAlertWidget(
             pairIdHint: pairIdHint,
           );
@@ -65,7 +65,7 @@ class _ViveBaseStationExtraInfoAlertState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final endHint = widget.pairIdHint;
 
     final theming = Theming.of(context);
@@ -90,7 +90,7 @@ class _ViveBaseStationExtraInfoAlertState
           key: _formKey,
           child: TextFormField(
             validator: _validateId,
-            onChanged: (String value) {
+            onChanged: (final String value) {
               _formKey.currentState?.validate();
             },
             controller: _textController,
@@ -104,7 +104,7 @@ class _ViveBaseStationExtraInfoAlertState
           child: const Text('Set'),
           onPressed: () async {
             final text = _textController.text.trim().toUpperCase();
-            if (_formKey.currentState?.validate() == true) {
+            if (_formKey.currentState?.validate() ?? false) {
               if (endHint != null) {
                 final intValue = int.parse(text, radix: 16);
                 if (text.length == 8 && intValue & 0xFFFF != endHint) {
@@ -132,24 +132,24 @@ class _ViveBaseStationExtraInfoAlertState
 }
 
 class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
-  ViveBaseStationExtraInfoIdWarningAlertWidget(
-      {required this.setId, required this.existingIdEnd, Key? key})
+  const ViveBaseStationExtraInfoIdWarningAlertWidget(
+      {required this.setId, required this.existingIdEnd, final Key? key})
       : super(key: key);
 
   final String setId;
   final int existingIdEnd;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
     return AlertDialog(
-      title: Text("The end of the id doesn't match"),
+      title: const Text("The end of the id doesn't match"),
       content: RichText(
         text: TextSpan(style: theming.bodyText, children: [
-          TextSpan(text: "The id you have provided ("),
+          const TextSpan(text: "The id you have provided ("),
           TextSpan(text: setId, style: theming.bodyTextBold),
-          TextSpan(
+          const TextSpan(
               text: ") doesn't end the same as the end of your lighthouse's "
                   "name ("),
           TextSpan(
@@ -158,18 +158,18 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
                   .toRadixString(16)
                   .padLeft(4, '0')
                   .toUpperCase()),
-          TextSpan(
+          const TextSpan(
               text: "). That doesn't mean that it isn't correct, but please "
                   "double check to be sure!")
         ]),
       ),
       actions: [
         SimpleDialogOption(
-          child: Text('Change it'),
+          child: const Text('Change it'),
           onPressed: () => Navigator.pop(context, false),
         ),
         SimpleDialogOption(
-          child: Text("It's correct"),
+          child: const Text("It's correct"),
           onPressed: () => Navigator.pop(context, true),
         )
       ],
@@ -177,18 +177,18 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
   }
 
   static Future<bool> showCustomDialog(
-    BuildContext context, {
-    required String setId,
-    required int existingIdEnd,
+    final BuildContext context, {
+    required final String setId,
+    required final int existingIdEnd,
   }) {
     return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (final BuildContext context) {
           return ViveBaseStationExtraInfoIdWarningAlertWidget(
             setId: setId,
             existingIdEnd: existingIdEnd,
           );
-        }).then((value) {
+        }).then((final value) {
       if (value is bool) {
         return value;
       }
