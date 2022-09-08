@@ -116,7 +116,9 @@ class _ViveBaseStationExtraInfoAlertState
                   }
                 }
               }
-              Navigator.pop(context, text);
+              if (mounted) {
+                Navigator.pop(context, text);
+              }
             }
           },
         ),

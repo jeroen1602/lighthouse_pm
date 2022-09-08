@@ -6,6 +6,7 @@ const _exitWaitTime = 5;
 abstract class CloseCurrentRouteMixin {
   Future<void> closeCurrentRouteWithWait(final BuildContext context) async {
     await Future.delayed(const Duration(seconds: _exitWaitTime));
+    // ignore: use_build_context_synchronously
     await closeCurrentRoute(context);
   }
 
@@ -18,7 +19,7 @@ abstract class CloseCurrentRouteMixin {
         // on Android.
         SharedPlatform.exit(0);
       } else {
-        Navigator.pushNamed(context, Navigator.defaultRouteName);
+        await Navigator.pushNamed(context, Navigator.defaultRouteName);
       }
     }
   }

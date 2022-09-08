@@ -116,7 +116,6 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
             if (pairBackEnds.isNotEmpty) ...[
               FloatingActionButton(
                 heroTag: 'pairButton',
-                child: const Icon(Icons.bluetooth_connected),
                 onPressed: () {
                   if (pairBackEnds.length > 1) {
                     // TODO show dialog to select the provider
@@ -128,6 +127,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                   }
                 },
                 tooltip: 'Pair a new device',
+                child: const Icon(Icons.bluetooth_connected),
               ),
               const Padding(
                 padding: EdgeInsets.all(4.0),
@@ -142,15 +142,14 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                 if (isScanning ?? false) {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
-                    child: const Icon(Icons.stop),
                     onPressed: () => stopScan(),
                     backgroundColor: Colors.red,
                     tooltip: 'Stop scanning',
+                    child: const Icon(Icons.stop),
                   );
                 } else {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
-                    child: const Icon(Icons.search),
                     backgroundColor:
                         shouldScanBeDisabled ? theming.disabledColor : null,
                     elevation: shouldScanBeDisabled ? 0 : null,
@@ -172,6 +171,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                       }
                     },
                     tooltip: 'Start scanning',
+                    child: const Icon(Icons.search),
                   );
                 }
               },
@@ -428,20 +428,19 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               if (selecting) {
                 actionBarColor = theming.selectedRowColor;
                 if (selected.length == 1) {
-                  actions.add(_getChangeNicknameAction(
-                      context, devices, nicknames, theming));
+                  actions.add(
+                      _getChangeNicknameAction(devices, nicknames, theming));
                 }
                 if (selected.isNotEmpty) {
-                  actions.add(
-                      _getChangeGroupAction(context, groups, devices, theming));
+                  actions.add(_getChangeGroupAction(groups, devices, theming));
                 }
                 final Group? currentlySelectedGroup =
                     _getSelectedGroupFromSelected(groups);
                 if (currentlySelectedGroup != null) {
                   actions.add(_getChangeGroupNameAction(
-                      context, currentlySelectedGroup, theming));
+                      currentlySelectedGroup, theming));
                   actions.add(_getDeleteGroupNameAction(
-                      context, currentlySelectedGroup, theming));
+                      currentlySelectedGroup, theming));
                 }
               }
               final Widget? leading = selecting
@@ -504,7 +503,6 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the change nickname action, this action is only for a single item.
   IconButton _getChangeNicknameAction(
-    final BuildContext context,
     final List<LighthouseDevice> devices,
     final Map<String, String> nicknames,
     final Theming theming,
@@ -549,11 +547,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the action for changing a group.
-  IconButton _getChangeGroupAction(
-      final BuildContext context,
-      final List<GroupWithEntries> groups,
-      final List<LighthouseDevice> devices,
-      final Theming theming) {
+  IconButton _getChangeGroupAction(final List<GroupWithEntries> groups,
+      final List<LighthouseDevice> devices, final Theming theming) {
     return IconButton(
         tooltip: 'Change group',
         icon: SvgPicture.asset('assets/images/group-add-icon.svg',
@@ -580,8 +575,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       GroupsCompanion.insert(name: newGroup.name));
               final insertGroup = Group(id: newGroupId, name: newGroup.name);
 
-              final saveChanges = await _checkDevicesBeforeAddingToAGroup(
-                  context, selectedDevices);
+              final saveChanges =
+                  await _checkDevicesBeforeAddingToAGroup(selectedDevices);
 
               if (saveChanges) {
                 await blocWithoutListen.groups.insertGroup(GroupWithEntries(
@@ -601,8 +596,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                 return items.contains(device.deviceIdentifier.toString());
               }).toList();
 
-              final saveChanges = await _checkDevicesBeforeAddingToAGroup(
-                  context, selectedDevices);
+              final saveChanges =
+                  await _checkDevicesBeforeAddingToAGroup(selectedDevices);
               if (saveChanges) {
                 await blocWithoutListen.groups
                     .insertGroup(GroupWithEntries(newGroup, items.toList()));
@@ -617,7 +612,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the change name action for a group.
   IconButton _getChangeGroupNameAction(
-      final BuildContext context, final Group group, final Theming theming) {
+      final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Rename group',
         icon: SvgPicture.asset('assets/images/group-edit-icon.svg',
@@ -638,7 +633,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Get the action for deleting a group.
   IconButton _getDeleteGroupNameAction(
-      final BuildContext context, final Group group, final Theming theming) {
+      final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Delete group',
         icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
@@ -656,7 +651,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   /// Check if the devices to be added to a group have some compatibility error
   /// This will show a dialog if this is the case.
-  Future<bool> _checkDevicesBeforeAddingToAGroup(final BuildContext context,
+  Future<bool> _checkDevicesBeforeAddingToAGroup(
       final List<LighthouseDevice> devicesToBeInAGroup) async {
     // check channel.
     if (!_checkDevicesHaveUniqueChannel(devicesToBeInAGroup)) {
@@ -667,7 +662,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     }
     // Check device type
     if (!_allSameDeviceType(devicesToBeInAGroup)) {
-      if (!await DifferentGroupItemTypesAlertWidget.showCustomDialog(context)) {
+      if (mounted &&
+          !await DifferentGroupItemTypesAlertWidget.showCustomDialog(context)) {
         return false;
       }
     }

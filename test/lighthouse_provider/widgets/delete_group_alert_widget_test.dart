@@ -8,7 +8,7 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   testWidgets("Should create a delete group alert widget",
       (final WidgetTester tester) async {
-    final group = Group(id: 1, name: "Test group");
+    const group = Group(id: 1, name: "Test group");
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
       DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
@@ -27,7 +27,7 @@ void main() {
 
   testWidgets("Should show group name delete group alert widget",
       (final WidgetTester tester) async {
-    final group = Group(id: 1, name: "Test group");
+    const group = Group(id: 1, name: "Test group");
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
       DeleteGroupAlertWidget.showCustomDialog(context, group: group);
     }));
@@ -54,7 +54,7 @@ void main() {
 
   testWidgets("Should return false when no is hit delete group alert widget",
       (final WidgetTester tester) async {
-    final group = Group(id: 1, name: "Test group");
+    const group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
@@ -78,7 +78,7 @@ void main() {
 
   testWidgets("Should return true when yes is hit delete group alert widget",
       (final WidgetTester tester) async {
-    final group = Group(id: 1, name: "Test group");
+    const group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
     await tester.pumpWidget(buildTestAppForWidgets((final context) {

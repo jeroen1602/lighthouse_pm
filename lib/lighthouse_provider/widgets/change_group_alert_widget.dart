@@ -54,7 +54,7 @@ class ChangeGroupAlertWidget extends StatefulWidget {
 /// The content for the
 class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
   final Group _removeGroup =
-      Group(id: ChangeGroupAlertWidget.removeGroupId, name: '');
+      const Group(id: ChangeGroupAlertWidget.removeGroupId, name: '');
   Group? selected;
 
   @override
@@ -70,8 +70,8 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
   List<DropdownMenuItem<Group>> _getGroupMenuItems() {
     final list = widget.groups
         .map((final e) => DropdownMenuItem(
-              child: Text(e.group.name),
               value: e.group,
+              child: Text(e.group.name),
             ))
         .toList();
 
@@ -82,7 +82,7 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
                 (final element) => element.group.id == localSelected.id) <
             0) {
       list.add(DropdownMenuItem(
-          child: Text(localSelected.name), value: localSelected));
+          value: localSelected, child: Text(localSelected.name)));
     }
     list.add(DropdownMenuItem(
         child: Row(

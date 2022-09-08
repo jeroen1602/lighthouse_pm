@@ -128,6 +128,15 @@ class _MetadataInkWell extends StatelessWidget {
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
     return InkWell(
+      onLongPress: () async {
+        Clipboard.setData(ClipboardData(text: value));
+        if (await Vibration.hasVibrator() ?? false) {
+          Vibration.vibrate(duration: 200);
+        }
+        Toast.show('Copied to clipboard',
+            duration: Toast.lengthShort, gravity: Toast.bottom);
+      },
+      onTap: onTap,
       child: ListTile(
         title: Text(name),
         subtitle: Text(
@@ -138,15 +147,6 @@ class _MetadataInkWell extends StatelessWidget {
                   fontStyle: FontStyle.italic, color: theming.disabledColor),
         ),
       ),
-      onLongPress: () async {
-        Clipboard.setData(ClipboardData(text: value));
-        if (await Vibration.hasVibrator() ?? false) {
-          Vibration.vibrate(duration: 200);
-        }
-        Toast.show('Copied to clipboard',
-            duration: Toast.lengthShort, gravity: Toast.bottom);
-      },
-      onTap: onTap,
     );
   }
 }
