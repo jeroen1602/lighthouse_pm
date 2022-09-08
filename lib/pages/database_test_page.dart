@@ -49,7 +49,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
         subtitle: Text(_getTables(bloc)),
         onLongPress: () async {
           await Clipboard.setData(ClipboardData(text: _getTables(bloc)));
-          Toast.show('Copied to clipboard', context,
+          Toast.show('Copied to clipboard',
               duration: Toast.lengthShort, gravity: Toast.bottom);
         },
         isThreeLine: true,
@@ -75,7 +75,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                   subtitle: Text(data),
                   onLongPress: () async {
                     await Clipboard.setData(ClipboardData(text: data));
-                    Toast.show('Copied to clipboard', context,
+                    Toast.show('Copied to clipboard',
                         duration: Toast.lengthShort, gravity: Toast.bottom);
                   },
                 );
@@ -87,7 +87,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                       subtitle: Text(data),
                       onLongPress: () async {
                         await Clipboard.setData(ClipboardData(text: data));
-                        Toast.show('Copied to clipboard', context,
+                        Toast.show('Copied to clipboard',
                             duration: Toast.lengthShort, gravity: Toast.bottom);
                       },
                     ),

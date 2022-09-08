@@ -50,7 +50,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
     super.initState();
     // Notify the Shortcut handler native code that the app is ready for data.
     if (SharedPlatform.isAndroid) {
-      WidgetsBinding.instance?.addPostFrameCallback((final timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
         AndroidLauncherShortcut.instance.readyForData();
       });
     }
@@ -63,7 +63,7 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
         initialData: null,
         builder: (final BuildContext shortcutContext,
             final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot) {
-          WidgetsBinding.instance?.addPostFrameCallback((final timeStamp) {
+          WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
             if (shortcutSnapshot.data != null &&
                 shortcutSnapshot.data != widget.handle) {
               if (widget.replace) {

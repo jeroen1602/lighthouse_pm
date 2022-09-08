@@ -175,7 +175,7 @@ class ContentScrollbar extends StatelessWidget {
     final child = scrollbarChildBuilder(context, controller);
     return Scrollbar(
         controller: controller,
-        isAlwaysShown: alwaysShowScrollbar(context, maxSize: maxSize),
+        thumbVisibility: alwaysShowScrollbar(context, maxSize: maxSize),
         child: child);
   }
 

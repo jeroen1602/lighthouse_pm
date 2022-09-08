@@ -112,7 +112,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         if (await Vibration.hasVibrator() ?? false) {
           Vibration.vibrate(duration: 200);
         }
-        Toast.show('Copied to clipboard', context,
+        Toast.show('Copied to clipboard',
             duration: Toast.lengthShort, gravity: Toast.bottom);
       };
   }
@@ -178,7 +178,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         SimpleDialogOption(
           child: const Text("Open issue"),
           onPressed: () async {
-            await launch(Links.stateIssueUrl);
+            await launchUrl(Links.stateIssueUrl);
           },
         ),
         SimpleDialogOption(

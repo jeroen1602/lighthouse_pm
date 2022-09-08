@@ -6,8 +6,6 @@ import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as paths;
 
-import '../database.dart';
-
 LighthouseDatabase constructDb({final bool logStatements = false}) {
   if (Platform.isIOS || Platform.isAndroid) {
     final executor = LazyDatabase(() async {

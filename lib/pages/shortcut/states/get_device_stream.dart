@@ -75,7 +75,7 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
       }
     }
     final settings = upStream[settingsIndex] as MainPageSettings;
-    WidgetsBinding.instance?.addPostFrameCallback((final timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
       startScanWithCheck(Duration(seconds: settings.scanDuration),
           failMessage:
               "Could not start scan because the permission has not been granted at shortcut handler.");

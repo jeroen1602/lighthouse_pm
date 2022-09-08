@@ -65,11 +65,11 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (deviceId == null) {
-        Toast.show('No device id set!', context);
+        Toast.show('No device id set!');
         return;
       }
       if (value == null) {
-        Toast.show('No nickname set!', context);
+        Toast.show('No nickname set!');
         return;
       }
       await bloc.nicknames
@@ -113,7 +113,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
       await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
           deviceId: data.deviceId, lastSeen: drift.Value(newData)));
     } on FormatException {
-      Toast.show('That didn\'t work', context);
+      Toast.show('That didn\'t work');
     }
   }
 
@@ -138,7 +138,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (deviceId == null) {
-        Toast.show('No device id set!', context);
+        Toast.show('No device id set!');
         return;
       }
       DateTime? date;

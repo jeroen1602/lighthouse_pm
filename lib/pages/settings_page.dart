@@ -25,8 +25,6 @@ import '../build_options.dart';
 import 'base_page.dart';
 import 'settings/privacy_page.dart';
 import 'settings/settings_donations_page.dart';
-import 'settings/settings_nicknames_page.dart';
-import 'settings/settings_vive_base_station_ids_page.dart';
 
 class SettingsPage extends BasePage with WithBlocStateless {
   const SettingsPage({final Key? key}) : super(key: key);
@@ -91,7 +89,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             if (await ClearLastSeenAlertWidget.showCustomDialog(context) ??
                 false) {
               await blocWithoutListen(context).nicknames.deleteAllLastSeen();
-              Toast.show('Cleared up all last seen items', context,
+              Toast.show('Cleared up all last seen items',
                   duration: Toast.lengthShort, gravity: Toast.bottom);
             }
           }),
@@ -296,7 +294,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
         onTap: () async {
           if (await ViveBaseStationClearIds.showCustomDialog(context)) {
             await blocWithoutListen(context).viveBaseStation.deleteIds();
-            Toast.show('Cleared up all Base station ids', context,
+            Toast.show('Cleared up all Base station ids',
                 duration: Toast.lengthShort, gravity: Toast.bottom);
           }
         },
@@ -321,7 +319,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                   .settings
                   .setViveBaseStationEnabled(enabled);
               if (enabled) {
-                Toast.show('Thanks for participating in the beta', context,
+                Toast.show('Thanks for participating in the beta',
                     duration: Toast.lengthShort, gravity: Toast.bottom);
               }
             },
@@ -378,7 +376,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                             .setShortcutsEnabledStream(enabled);
                         if (enabled) {
                           Toast.show(
-                              'Thanks for participating in the beta', context,
+                              'Thanks for participating in the beta',
                               duration: Toast.lengthShort,
                               gravity: Toast.bottom);
                         }
@@ -435,7 +433,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           height: theming.iconSizeLarge,
         ),
         onTap: () async {
-          await launch(Links.projectUrl);
+          await launchUrl(Links.projectUrl);
         },
       ),
       const Divider(),
@@ -450,7 +448,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.googlePlayUrl);
+            await launchUrl(Links.googlePlayUrl);
           },
         ),
         const Divider(),
@@ -465,7 +463,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.fDroidUrl);
+            await launchUrl(Links.fDroidUrl);
           },
         ),
         const Divider(),
@@ -480,7 +478,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.webUrl);
+            await launchUrl(Links.webUrl);
           },
         ),
         const Divider(),
@@ -504,7 +502,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             subtitle: Text(packageInfo.version),
             onLongPress: () async {
               await Clipboard.setData(ClipboardData(text: packageInfo.version));
-              Toast.show('Copied to clipboard', context,
+              Toast.show('Copied to clipboard',
                   duration: Toast.lengthShort, gravity: Toast.bottom);
             },
           );

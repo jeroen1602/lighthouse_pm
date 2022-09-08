@@ -209,7 +209,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
         updateInterval: Duration(seconds: widget.settings.updateInterval),
         failMessage:
@@ -218,7 +218,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

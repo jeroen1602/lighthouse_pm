@@ -42,7 +42,7 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                   } catch (e, s) {
                     debugPrint('$e');
                     debugPrint('$s');
-                    Toast.show('Error: $e', context,
+                    Toast.show('Error: $e',
                         backgroundColor: Colors.red, duration: 8);
                   }
                 },
@@ -78,7 +78,7 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                     } catch (e, s) {
                       debugPrint('$e');
                       debugPrint('$s');
-                      Toast.show('Error: $e', context,
+                      Toast.show('Error: $e',
                           backgroundColor: Colors.red, duration: 8);
                     }
                   },
@@ -89,11 +89,11 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                             subTitle: converter.getDataSubtitle(data[i]))) {
                           try {
                             await converter.deleteItem(data[i]);
-                            Toast.show('Deleted!', context);
+                            Toast.show('Deleted!');
                           } catch (e, s) {
                             debugPrint('$e');
                             debugPrint('$s');
-                            Toast.show('Error: $e', context,
+                            Toast.show('Error: $e',
                                 backgroundColor: Colors.red, duration: 8);
                           }
                         }

@@ -27,7 +27,7 @@ class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
             return const Text('Loading...');
           }
           if (permissionSnapshot.data != PermissionStatus.granted) {
-            WidgetsBinding.instance?.addPostFrameCallback((final _) async {
+            WidgetsBinding.instance.addPostFrameCallback((final _) async {
               await closeCurrentRouteWithWait(context);
             });
             return const Text('Permission has not been given!');
