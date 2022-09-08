@@ -84,8 +84,7 @@ class _ViveBaseStationIdConverter
       final numberValue = int.parse(newValueString, radix: 16);
       await bloc.viveBaseStation.insertIdNoValidate(deviceId, numberValue);
     } on FormatException {
-      Toast.show(
-          'Could not convert "$newValueString" to a hex number');
+      Toast.show('Could not convert "$newValueString" to a hex number');
     }
   }
 }

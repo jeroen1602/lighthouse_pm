@@ -232,8 +232,7 @@ class _EmptyState extends State<_EmptyPage> {
                     FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC)
                         .toString(),
                     0xFFFFFFFC);
-                Toast.show('Fake ids created!',
-                    duration: Toast.lengthShort);
+                Toast.show('Fake ids created!', duration: Toast.lengthShort);
                 tapCounter++;
               }
             },

@@ -105,8 +105,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
     }
     final intValue = int.tryParse(newValue, radix: 10);
     if (intValue == null || intValue < 0) {
-      Toast.show(
-          'new group id must be a number and cam\'t be negative');
+      Toast.show('new group id must be a number and cam\'t be negative');
       return;
     }
     await bloc.groups.insertGroupEntry(

@@ -375,8 +375,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                             .settings
                             .setShortcutsEnabledStream(enabled);
                         if (enabled) {
-                          Toast.show(
-                              'Thanks for participating in the beta',
+                          Toast.show('Thanks for participating in the beta',
                               duration: Toast.lengthShort,
                               gravity: Toast.bottom);
                         }
