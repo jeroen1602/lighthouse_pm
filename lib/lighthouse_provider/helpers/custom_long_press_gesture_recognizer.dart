@@ -26,17 +26,17 @@ class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   GestureTapUpCallback? _internalOnTapUp;
 
   @override
-  set onTapUp(final _onTapUp) {
-    _internalOnTapUp = _onTapUp;
+  set onTapUp(final onTapUp) {
+    _internalOnTapUp = onTapUp;
   }
 
   @override
-  set onTapDown(final _onTapDown) {
-    _internalOnTapDown = _onTapDown;
+  set onTapDown(final onTapDown) {
+    _internalOnTapDown = onTapDown;
   }
 
   @override
-  set onTap(final _onTap) {
+  set onTap(final onTap) {
     _internalOnTap = onTap;
   }
 

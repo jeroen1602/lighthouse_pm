@@ -2,6 +2,11 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class FakeGenerator extends Fake implements GenerationContext {
+  @override
+  SqlDialect get dialect => SqlDialect.sqlite;
+}
+
 class MigrationError extends Error {
   MigrationError(this.message);
 
@@ -19,6 +24,7 @@ class FakeMigrator extends Fake implements Migrator {
   int seedSchema;
   TestSchema? currentSchema;
   int? toHint;
+  FakeGenerator generator = FakeGenerator();
 
   @override
   Future<void> createAll() async {
@@ -73,7 +79,7 @@ class FakeMigrator extends Fake implements Migrator {
       return TestColumn(
           entry.key,
           TestColumn.columnTypeFromDriftTypeString(
-              entry.value.type.sqlName(SqlDialect.sqlite)));
+              entry.value.type.sqlTypeName(generator)));
     }).toList();
 
     currentSchema!.testTables.add(TestTable(table.actualTableName, columns));

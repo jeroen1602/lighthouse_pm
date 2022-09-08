@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
-import 'package:lighthouse_pm/theming.dart';
 
 import 'lighthouse_metadata_page.dart';
 import 'lighthouse_power_button_widget.dart';
@@ -11,15 +11,14 @@ typedef _ToPowerState = LighthousePowerState Function(int byte);
 
 /// A widget for showing a [LighthouseDevice] in a list without automatic
 /// updating of the power state.
-class LighthouseWidgetContent extends StatelessWidget {
+class LighthouseWidgetContent extends StatefulWidget {
   LighthouseWidgetContent(this.lighthouseDevice, this.powerStateData,
       {required this.onSelected,
       required this.selected,
       required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.sleep,
-      final Key? key})
-      : super(key: key) {
+      super.key}) {
     assert(
         sleepState == LighthousePowerState.sleep ||
             sleepState == LighthousePowerState.standby,
@@ -36,25 +35,25 @@ class LighthouseWidgetContent extends StatelessWidget {
   final LighthousePowerState sleepState;
   final bool selecting;
 
-  Future _openMetadataPage(final BuildContext context) async {
-    return await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (final c) => LighthouseMetadataPage(lighthouseDevice)));
+  @override
+  State<StatefulWidget> createState() {
+    return _LighthouseWidgetContentState();
   }
+}
 
+class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
   @override
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
     return Container(
-        color: selected ? theming.selectedRowColor : Colors.transparent,
+        color: widget.selected ? theming.selectedRowColor : Colors.transparent,
         child: InkWell(
-            onLongPress: onSelected,
+            onLongPress: widget.onSelected,
             onTap: () {
-              if (selecting) {
-                onSelected();
+              if (widget.selecting) {
+                widget.onSelected();
               } else {
-                _openMetadataPage(context);
+                _openMetadataPage();
               }
             },
             child: IntrinsicHeight(
@@ -67,49 +66,60 @@ class LighthouseWidgetContent extends StatelessWidget {
                           child: Column(children: <Widget>[
                             Container(
                                 alignment: Alignment.topLeft,
-                                child: Text(nickname ?? lighthouseDevice.name,
+                                child: Text(
+                                    widget.nickname ??
+                                        widget.lighthouseDevice.name,
                                     style: theming.headline4)),
                             Container(
                                 alignment: Alignment.topLeft,
                                 child: Row(
                                   children: <Widget>[
                                     _LHItemPowerStateWidget(
-                                      powerStateByte: powerStateData,
-                                      toPowerState:
-                                          lighthouseDevice.powerStateFromByte,
+                                      powerStateByte: widget.powerStateData,
+                                      toPowerState: widget
+                                          .lighthouseDevice.powerStateFromByte,
                                     ),
                                     const VerticalDivider(),
-                                    Text('${lighthouseDevice.deviceIdentifier}')
+                                    Text(
+                                        '${widget.lighthouseDevice.deviceIdentifier}')
                                   ],
                                 ))
                           ]))),
                   LighthousePowerButtonWidget(
-                    powerState:
-                        lighthouseDevice.powerStateFromByte(powerStateData),
+                    powerState: widget.lighthouseDevice
+                        .powerStateFromByte(widget.powerStateData),
                     onPress: () async {
-                      await _stateSwitch(context, powerStateData);
+                      await _stateSwitch(widget.powerStateData);
                     },
-                    onLongPress: () => _openMetadataPage(context),
+                    onLongPress: () => _openMetadataPage(),
                   )
                 ]))));
   }
 
-  Future<void> _switchToSleepState(final BuildContext context) async {
-    if (lighthouseDevice.hasStandbyExtension) {
-      await lighthouseDevice.changeState(sleepState, context);
+  Future _openMetadataPage() async {
+    return await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (final c) =>
+                LighthouseMetadataPage(widget.lighthouseDevice)));
+  }
+
+  Future<void> _switchToSleepState() async {
+    if (widget.lighthouseDevice.hasStandbyExtension) {
+      await widget.lighthouseDevice.changeState(widget.sleepState, context);
       return;
     }
     debugPrint(
         'The device doesn\'t support STANDBY so SLEEP will always be used.');
-    await lighthouseDevice.changeState(LighthousePowerState.sleep, context);
+    await widget.lighthouseDevice
+        .changeState(LighthousePowerState.sleep, context);
   }
 
-  Future<void> _stateSwitch(
-      final BuildContext context, final int powerStateData) async {
-    if (!await lighthouseDevice.requestExtraInfo(context)) {
+  Future<void> _stateSwitch(final int powerStateData) async {
+    if (!await widget.lighthouseDevice.requestExtraInfo(context)) {
       return;
     }
-    final state = lighthouseDevice.powerStateFromByte(powerStateData);
+    final state = widget.lighthouseDevice.powerStateFromByte(powerStateData);
     switch (state) {
       case LighthousePowerState.booting:
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
@@ -117,22 +127,25 @@ class LighthouseWidgetContent extends StatelessWidget {
             action: SnackBarAction(
               label: 'I\'m sure',
               onPressed: () async {
-                await _switchToSleepState(context);
+                await _switchToSleepState();
               },
             )));
         break;
       case LighthousePowerState.on:
-        await _switchToSleepState(context);
+        await _switchToSleepState();
         break;
       case LighthousePowerState.standby:
       case LighthousePowerState.sleep:
-        await lighthouseDevice.changeState(LighthousePowerState.on, context);
+        await widget.lighthouseDevice
+            .changeState(LighthousePowerState.on, context);
         break;
       case LighthousePowerState.unknown:
         final newState = await UnknownStateAlertWidget.showCustomDialog(
-            context, lighthouseDevice, powerStateData);
+            context, widget.lighthouseDevice, powerStateData);
         if (newState != null) {
-          await lighthouseDevice.changeState(newState, context);
+          if (mounted) {
+            await widget.lighthouseDevice.changeState(newState, context);
+          }
         }
         break;
     }

@@ -94,7 +94,7 @@ class _SettingsViveBaseStationIdsPageState
                     setState(() {
                       selected.clear();
                     });
-                    Toast.show('Ids have been removed!', context);
+                    Toast.show('Ids have been removed!');
                   },
                 )
               ];
@@ -213,8 +213,7 @@ class _EmptyState extends State<_EmptyPage> {
               }
               if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
                 Toast.show(
-                    'Just ${_tapTop - tapCounter} left until a fake ids are created',
-                    context);
+                    'Just ${_tapTop - tapCounter} left until a fake ids are created');
               }
               if (tapCounter == _tapTop) {
                 blocWithoutListen.viveBaseStation.insertId(
@@ -233,8 +232,7 @@ class _EmptyState extends State<_EmptyPage> {
                     FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC)
                         .toString(),
                     0xFFFFFFFC);
-                Toast.show('Fake ids created!', context,
-                    duration: Toast.lengthShort);
+                Toast.show('Fake ids created!', duration: Toast.lengthShort);
                 tapCounter++;
               }
             },

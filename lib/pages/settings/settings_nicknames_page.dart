@@ -114,7 +114,7 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
                     setState(() {
                       selected.clear();
                     });
-                    Toast.show('Nicknames have been removed', context);
+                    Toast.show('Nicknames have been removed');
                   },
                 )
               ];
@@ -254,8 +254,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
               }
               if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
                 Toast.show(
-                    'Just ${_tapTop - tapCounter} left until a fake nicknames are created',
-                    context);
+                    'Just ${_tapTop - tapCounter} left until a fake nicknames are created');
               }
               if (tapCounter == _tapTop) {
                 blocWithoutListen.nicknames.insertNickname(Nickname(
@@ -278,7 +277,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
                             0xFFFFFFFC)
                         .toString(),
                     nickname: "This is a test nickname4"));
-                Toast.show('Fake nickname created!', context,
+                Toast.show('Fake nickname created!',
                     duration: Toast.lengthShort);
                 tapCounter++;
               }

@@ -107,6 +107,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
       final LighthousePowerState newState, final BuildContext context) async {
     await device.changeState(newState);
     await device.disconnect();
+    // ignore: use_build_context_synchronously
     await closeCurrentRouteWithWait(context);
   }
 

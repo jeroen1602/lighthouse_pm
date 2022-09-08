@@ -60,7 +60,7 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (value == null) {
-        Toast.show('No name set!', context);
+        Toast.show('No name set!');
         return;
       }
       if (id == null) {
@@ -105,8 +105,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
     }
     final intValue = int.tryParse(newValue, radix: 10);
     if (intValue == null || intValue < 0) {
-      Toast.show(
-          'new group id must be a number and cam\'t be negative', context);
+      Toast.show('new group id must be a number and cam\'t be negative');
       return;
     }
     await bloc.groups.insertGroupEntry(
@@ -132,11 +131,11 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
         deviceId = deviceId?.trim().toUpperCase();
       }
       if (groupId == null) {
-        Toast.show('No group id set!', context);
+        Toast.show('No group id set!');
         return;
       }
       if (deviceId == null) {
-        Toast.show('No device id set!', context);
+        Toast.show('No device id set!');
         return;
       }
       await bloc.groups

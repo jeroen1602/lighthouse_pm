@@ -18,7 +18,7 @@ typedef SelectedDeviceFunction = void Function(LHDeviceIdentifier identifier);
 
 /// A widget for showing lighthouses as a group.
 ///
-class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
+class LighthouseGroupWidget extends StatefulWidget with WithBlocStateless {
   LighthouseGroupWidget(
       {required this.group,
       required this.devices,
@@ -29,8 +29,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       required this.selectedDevices,
       required this.selectedGroup,
       this.sleepState = LighthousePowerState.sleep,
-      final Key? key})
-      : super(key: key);
+      super.key});
 
   final GroupWithEntries group;
   final List<LighthouseDevice> devices;
@@ -42,6 +41,38 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   final Set<LHDeviceIdentifier> selectedDevices;
   final Group? selectedGroup;
 
+  bool isSelected() {
+    final selected = isGroupSelected(group.deviceIds,
+        selectedDevices.map((final e) => e.toString()).toList());
+    if (!selected) {
+      return group.group.id == selectedGroup?.id;
+    }
+    return selected;
+  }
+
+  static bool isGroupSelected(
+      final List<String> deviceIds, final List<String> selected) {
+    if (deviceIds.isEmpty) {
+      return false;
+    }
+    if (deviceIds.length != selected.length) {
+      return false;
+    }
+    for (final deviceId in deviceIds) {
+      if (!selected.contains(deviceId)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return _LighthouseGroupWidgetState();
+  }
+}
+
+class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
   @override
   Widget build(final BuildContext context) {
     final TextDirection textDirection = Directionality.of(context);
@@ -63,12 +94,12 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
           children: [
             _LighthouseGroupWidgetHeader(
               powerState: averagePowerState,
-              onSelected: onGroupSelected,
-              selected: isSelected(),
-              selecting: selectedDevices.isNotEmpty || selectedGroup != null,
+              onSelected: widget.onGroupSelected,
+              selected: widget.isSelected(),
+              selecting: widget.selectedDevices.isNotEmpty ||
+                  widget.selectedGroup != null,
               onPowerButtonPress: () async {
                 await _handleGroupPowerButton(
-                  context,
                   combinedState: averagePowerState,
                   isStateUniversal: combinedPowerStateTuple.item1,
                   onlineDevices: onlineAndOfflineDevices.item2,
@@ -77,7 +108,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
                       (final key, final value) => MapEntry(key, value.item2)),
                 );
               },
-              group: group.group,
+              group: widget.group.group,
               stateButtonDisabled: onlineAndOfflineDevices.item2.isEmpty,
             ),
             const Divider(thickness: 0.7),
@@ -152,7 +183,7 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
     final Map<String, Tuple2<int, LighthousePowerState>> powerStates,
     final Tuple2<List<String>, List<LighthouseDevice>> onlineAndOfflineDevices,
   ) {
-    if (group.deviceIds.isEmpty) {
+    if (widget.group.deviceIds.isEmpty) {
       return [
         const ListTile(
           title: Text('No group items yet'),
@@ -169,12 +200,14 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
         device.value,
         powerState,
         onSelected: () {
-          onSelectedDevice(device.value.deviceIdentifier);
+          widget.onSelectedDevice(device.value.deviceIdentifier);
         },
-        selected: selectedDevices.contains(device.value.deviceIdentifier),
-        selecting: selectedDevices.isNotEmpty || selectedGroup != null,
-        nickname: nicknameMap[deviceId],
-        sleepState: sleepState,
+        selected:
+            widget.selectedDevices.contains(device.value.deviceIdentifier),
+        selecting:
+            widget.selectedDevices.isNotEmpty || widget.selectedGroup != null,
+        nickname: widget.nicknameMap[deviceId],
+        sleepState: widget.sleepState,
       ));
       if (device.key < onlineDevices.length - 1 ||
           (device.key == onlineDevices.length - 1 &&
@@ -190,11 +223,12 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       children.add(OfflineLighthouseWidget(
         offlineDevice.value,
         onSelected: () {
-          onSelectedDevice(deviceIdentifier);
+          widget.onSelectedDevice(deviceIdentifier);
         },
-        selected: selectedDevices.contains(deviceIdentifier),
-        selecting: selectedDevices.isNotEmpty || selectedGroup != null,
-        nickname: nicknameMap[offlineDevice.value],
+        selected: widget.selectedDevices.contains(deviceIdentifier),
+        selecting:
+            widget.selectedDevices.isNotEmpty || widget.selectedGroup != null,
+        nickname: widget.nicknameMap[offlineDevice.value],
       ));
       if (offlineDevice.key < offlineDevices.length - 1) {
         children.add(const Divider());
@@ -207,8 +241,9 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
   /// Get a [Tuple2] with a list of offline and online devices. The first item
   /// is offline and the second item is online.
   Tuple2<List<String>, List<LighthouseDevice>> _getOnlineAndOfflineDevices() {
-    final List<String> offlineDeviceIds = List.from(group.deviceIds);
-    final List<LighthouseDevice> foundDevices = devices.where((final device) {
+    final List<String> offlineDeviceIds = List.from(widget.group.deviceIds);
+    final List<LighthouseDevice> foundDevices =
+        widget.devices.where((final device) {
       final index = offlineDeviceIds.indexWhere(
           (final deviceId) => deviceId == device.deviceIdentifier.toString());
       if (index >= 0) {
@@ -236,15 +271,14 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
 
   /// Handle the power button for a group. This will check the current state
   /// and switch over to the opposite one.
-  Future<void> _handleGroupPowerButton(
-    final BuildContext context, {
+  Future<void> _handleGroupPowerButton({
     required final LighthousePowerState combinedState,
     required final bool isStateUniversal,
     required final List<LighthouseDevice> onlineDevices,
     required final bool hasOfflineDevices,
     required final Map<String, LighthousePowerState> states,
   }) async {
-    if (hasOfflineDevices && showOfflineWarning) {
+    if (hasOfflineDevices && widget.showOfflineWarning) {
       final returnValue =
           await OfflineGroupItemAlertWidget.showCustomDialog(context);
       if (returnValue.dialogCanceled) {
@@ -252,30 +286,37 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       }
       if (returnValue.disableWarning) {
         // Disable the dialog in the future.
-        await blocWithoutListen(context)
-            .settings
-            .setGroupOfflineWarningEnabled(false);
+        if (mounted) {
+          await widget
+              .blocWithoutListen(context)
+              .settings
+              .setGroupOfflineWarningEnabled(false);
+        }
       }
     }
     var newState = combinedState;
     if (combinedState == LighthousePowerState.unknown) {
-      final state = await UnknownGroupStateAlertWidget.showCustomDialog(
-          context, _supportsStandby(onlineDevices), isStateUniversal);
-      if (state == null) {
-        return;
+      if (mounted) {
+        final state = await UnknownGroupStateAlertWidget.showCustomDialog(
+            context, _supportsStandby(onlineDevices), isStateUniversal);
+        if (state == null) {
+          return;
+        }
+        newState = state;
       }
-      newState = state;
     } else if (combinedState == LighthousePowerState.on) {
-      newState = sleepState;
+      newState = widget.sleepState;
     } else if (combinedState == LighthousePowerState.booting) {
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
-          content: const Text('Lighthouse is already booting!'),
-          action: SnackBarAction(
-            label: 'I\'m sure',
-            onPressed: () async {
-              await _switchStateAll(onlineDevices, sleepState, states);
-            },
-          )));
+      if (mounted) {
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+            content: const Text('Lighthouse is already booting!'),
+            action: SnackBarAction(
+              label: 'I\'m sure',
+              onPressed: () async {
+                await _switchStateAll(onlineDevices, widget.sleepState, states);
+              },
+            )));
+      }
     } else {
       newState = LighthousePowerState.on;
     }
@@ -307,31 +348,6 @@ class LighthouseGroupWidget extends StatelessWidget with WithBlocStateless {
       futures.add(device.changeState(state));
     }
     await Future.wait(futures);
-  }
-
-  bool isSelected() {
-    final selected = isGroupSelected(group.deviceIds,
-        selectedDevices.map((final e) => e.toString()).toList());
-    if (!selected) {
-      return group.group.id == selectedGroup?.id;
-    }
-    return selected;
-  }
-
-  static bool isGroupSelected(
-      final List<String> deviceIds, final List<String> selected) {
-    if (deviceIds.isEmpty) {
-      return false;
-    }
-    if (deviceIds.length != selected.length) {
-      return false;
-    }
-    for (final deviceId in deviceIds) {
-      if (!selected.contains(deviceId)) {
-        return false;
-      }
-    }
-    return true;
   }
 }
 

@@ -72,7 +72,7 @@ class _ShortcutHandleNullState extends State<ShortcutHandlerWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((final _) {
+    WidgetsBinding.instance.addPostFrameCallback((final _) {
       widget.closeCurrentRouteWithWait(context);
     });
   }

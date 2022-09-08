@@ -33,7 +33,7 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launch(Links.githubSponsorsUrl);
+            await launchUrl(Links.githubSponsorsUrl);
           },
         ),
         const Divider(),
@@ -49,7 +49,7 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launch(Links.paypalMeUrl);
+            await launchUrl(Links.paypalMeUrl);
           },
         ),
         const Divider(),
@@ -113,10 +113,10 @@ class SettingsSupportPage extends BasePage {
                     final result = await InAppPurchases.instance
                         .startBillingFlow(price.id);
                     if (result == 0) {
-                      Toast.show("Thanks for the support!", context,
+                      Toast.show("Thanks for the support!",
                           duration: Toast.lengthLong);
                     } else if (result == 1) {
-                      Toast.show("Purchase is still pending", context,
+                      Toast.show("Purchase is still pending",
                           duration: Toast.lengthLong);
                     }
                   },

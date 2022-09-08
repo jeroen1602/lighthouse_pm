@@ -29,10 +29,10 @@ void main() {
   testWidgets("Should show groups in group alert widget",
       (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
-      GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
-      GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
-      GroupWithEntries(Group(id: 3, name: "Test group 3"), []),
-      GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
+      GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
+      GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
+      GroupWithEntries(const Group(id: 3, name: "Test group 3"), []),
+      GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
@@ -80,10 +80,10 @@ void main() {
   testWidgets("Should show selected group in group alert widget",
       (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
-      GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
-      GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
-      GroupWithEntries(Group(id: 3, name: "Test group 3"), []),
-      GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
+      GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
+      GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
+      GroupWithEntries(const Group(id: 3, name: "Test group 3"), []),
+      GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
@@ -117,10 +117,10 @@ void main() {
   testWidgets("Should create a new group in group alert widget",
       (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
-      GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
-      GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
-      GroupWithEntries(Group(id: 3, name: "Test group 3"), []),
-      GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
+      GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
+      GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
+      GroupWithEntries(const Group(id: 3, name: "Test group 3"), []),
+      GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
     Future<Group?>? future;
@@ -173,10 +173,10 @@ void main() {
   testWidgets("Should select no group in group alert widget",
       (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
-      GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
-      GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
-      GroupWithEntries(Group(id: 3, name: "Test group 3"), []),
-      GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
+      GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
+      GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
+      GroupWithEntries(const Group(id: 3, name: "Test group 3"), []),
+      GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
     Future<Group?>? future;
@@ -220,10 +220,10 @@ void main() {
   testWidgets("Should select a group in group alert widget",
       (final WidgetTester tester) async {
     final groups = <GroupWithEntries>[
-      GroupWithEntries(Group(id: 1, name: "Test group 1"), []),
-      GroupWithEntries(Group(id: 2, name: "Test group 2"), []),
-      GroupWithEntries(Group(id: 3, name: "Test group 3"), []),
-      GroupWithEntries(Group(id: 4, name: "Test group 4"), []),
+      GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
+      GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
+      GroupWithEntries(const Group(id: 3, name: "Test group 3"), []),
+      GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
     Future<Group?>? future;

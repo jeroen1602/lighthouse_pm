@@ -36,7 +36,7 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     ndkVersion "21.3.6528147"
 
     sourceSets {
@@ -58,7 +58,7 @@ android {
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

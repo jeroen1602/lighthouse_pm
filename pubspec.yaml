@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.2.0+8
 
 environment:
-  sdk: ">=2.15.1 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
 
 # TODO: update dependencies from git links to actual releases once they are online.
 dependencies:
@@ -27,37 +27,34 @@ dependencies:
     sdk: flutter
   rxdart: ^0.27.3
   #  package_info: ^2.0.0
-  package_info_plus: ^1.3.0
-  permission_handler: ^8.3.0
-  flutter_svg: ^1.0.3
-  url_launcher: ^6.0.20
+  package_info_plus: ^1.4.3+1
+  permission_handler: ^10.0.0
+  flutter_svg: ^1.1.4
+  url_launcher: ^6.1.5
   community_material_icon: 5.9.55
   #  flutter_icons:
   #    git:
   #      url: https://github.com/adarsh-technocrat/flutter-icons
   #      ref: null-safety-migration
   mutex: ^3.0.0
-  convert: ^3.0.1
-  vibration: ^1.7.4-nullsafety.0
-  toast:
-    git:
-      url: https://github.com/appdev/FlutterToast
-      ref: 7f329a9c1979abb0627fd5e245935d7b461b6fba
-  drift: ^1.4.0
-  sqlite3_flutter_libs: ^0.5.3
-  path_provider: ^2.0.9
-  path: ^1.8.0
-  provider: ^6.0.2
+  convert: ^3.0.2
+  vibration: ^1.7.6
+  toast: ^0.3.0
+  drift: ^2.1.0
+  sqlite3_flutter_libs: ^0.5.9
+  path_provider: ^2.0.11
+  path: ^1.8.2
+  provider: ^6.0.3
   tuple: ^2.0.0
   intl: ^0.17.0
-  device_info_plus: ^3.2.1
-  meta: ^1.7.0
+  device_info_plus: ^4.1.2
+  meta: ^1.8.0
   # Android/ iOS
   flutter_blue_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end
   # Web:
-  flutter_web_bluetooth: ^0.0.6+2
-  web_browser_detect: ^2.0.2
+  flutter_web_bluetooth: ^0.0.9
+  web_browser_detect: ^2.0.3
   flutter_web_bluetooth_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end
   # Linux:
@@ -89,10 +86,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.17.12
-  drift_dev: ^1.4.0
-  build_runner: 2.1.7
-  flutter_lints: ^1.0.4
+#  test: ^1.17.12
+  drift_dev: ^2.1.0
+  build_runner: 2.2.0
+  flutter_lints: ^2.0.1
   lighthouse_test_helper:
     path: lighthouse_provider/lighthouse_test_helper
 

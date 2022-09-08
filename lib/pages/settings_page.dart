@@ -25,20 +25,55 @@ import '../build_options.dart';
 import 'base_page.dart';
 import 'settings/privacy_page.dart';
 import 'settings/settings_donations_page.dart';
-import 'settings/settings_nicknames_page.dart';
-import 'settings/settings_vive_base_station_ids_page.dart';
 
-class SettingsPage extends BasePage with WithBlocStateless {
-  const SettingsPage({final Key? key}) : super(key: key);
+class SettingsPage extends BasePage {
+  const SettingsPage({super.key});
 
-  Future<List<ThemeMode>> _getSupportedThemeModes() async {
-    if (await SettingsDao.supportsThemeModeSystem) {
-      return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
-    } else {
-      return [ThemeMode.light, ThemeMode.dark];
-    }
+  @override
+  Widget buildPage(final BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text('Settings')),
+        body: const SettingsContent());
   }
 
+  static final Map<String, PageBuilder> _subPages = {
+    '/nicknames': (final context) => const SettingsNicknamesPage(),
+    '/vive': (final context) => const SettingsViveBaseStationIdsPage(),
+    '/privacy': (final context) => const PrivacyPage(),
+    '/license': (final context) => LHLicensePage(),
+    if (BuildOptions.includeSupportButtons && BuildOptions.includeSupportPage)
+      '/support': (final context) => const SettingsSupportPage(),
+  };
+
+  static Map<String, PageBuilder> getSubPages(final String parentPath) {
+    final Map<String, PageBuilder> subPages = {};
+
+    for (final subPage in _subPages.entries) {
+      subPages['$parentPath${subPage.key}'] = subPage.value;
+    }
+
+    return subPages;
+  }
+}
+
+class SettingsContent extends StatefulWidget {
+  const SettingsContent({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _SettingsContentState();
+  }
+}
+
+Future<List<ThemeMode>> _getSupportedThemeModes() async {
+  if (await SettingsDao.supportsThemeModeSystem) {
+    return [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
+  } else {
+    return [ThemeMode.light, ThemeMode.dark];
+  }
+}
+
+class _SettingsContentState extends State<SettingsContent> {
   String _themeModeToString(final ThemeMode themeMode) {
     switch (themeMode) {
       case ThemeMode.system:
@@ -53,7 +88,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
   }
 
   @override
-  Widget buildPage(final BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
     final headTheme = theming.headline6?.copyWith(fontWeight: FontWeight.bold);
@@ -90,14 +125,14 @@ class SettingsPage extends BasePage with WithBlocStateless {
             // result can be `null`
             if (await ClearLastSeenAlertWidget.showCustomDialog(context) ??
                 false) {
-              await blocWithoutListen(context).nicknames.deleteAllLastSeen();
-              Toast.show('Cleared up all last seen items', context,
+              await blocWithoutListen.nicknames.deleteAllLastSeen();
+              Toast.show('Cleared up all last seen items',
                   duration: Toast.lengthShort, gravity: Toast.bottom);
             }
           }),
       const Divider(),
       StreamBuilder<LighthousePowerState>(
-        stream: blocWithoutListen(context).settings.getSleepStateAsStream(),
+        stream: blocWithoutListen.settings.getSleepStateAsStream(),
         builder: (final BuildContext c,
             final AsyncSnapshot<LighthousePowerState> snapshot) {
           if (snapshot.hasError) {
@@ -117,7 +152,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             subtitle: const Text('Only V2 lighthouse support this.'),
             value: state,
             onChanged: (final value) {
-              blocWithoutListen(context).settings.setSleepState(value
+              blocWithoutListen.settings.setSleepState(value
                   ? LighthousePowerState.standby
                   : LighthousePowerState.sleep);
             },
@@ -126,7 +161,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ),
       const Divider(),
       StreamBuilder<int>(
-        stream: blocWithoutListen(context).settings.getScanDurationsAsStream(),
+        stream: blocWithoutListen.settings.getScanDurationsAsStream(),
         builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
@@ -146,9 +181,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
               value: snapshot.requireData,
               onChanged: (final int? value) async {
                 if (value != null) {
-                  await blocWithoutListen(context)
-                      .settings
-                      .setScanDuration(value);
+                  await blocWithoutListen.settings.setScanDuration(value);
                 }
               },
               items: SettingsDao.scanDurationValues
@@ -160,7 +193,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ),
       const Divider(),
       StreamBuilder<int>(
-        stream: blocWithoutListen(context).settings.getUpdateIntervalAsStream(),
+        stream: blocWithoutListen.settings.getUpdateIntervalAsStream(),
         builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
@@ -183,9 +216,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
               value: snapshot.requireData,
               onChanged: (final int? value) async {
                 if (value != null) {
-                  await blocWithoutListen(context)
-                      .settings
-                      .setUpdateInterval(value);
+                  await blocWithoutListen.settings.setUpdateInterval(value);
                 }
               },
               items: SettingsDao.updateIntervalValues
@@ -205,8 +236,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             return const CircularProgressIndicator();
           }
           return StreamBuilder<ThemeMode>(
-            stream:
-                blocWithoutListen(context).settings.getPreferredThemeAsStream(),
+            stream: blocWithoutListen.settings.getPreferredThemeAsStream(),
             builder: (final BuildContext context,
                 final AsyncSnapshot<ThemeMode> snapshot) {
               if (snapshot.hasError) {
@@ -227,9 +257,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 value: snapshot.requireData,
                 onChanged: (final ThemeMode? theme) async {
                   if (theme != null) {
-                    await blocWithoutListen(context)
-                        .settings
-                        .setPreferredTheme(theme);
+                    await blocWithoutListen.settings.setPreferredTheme(theme);
                   }
                 },
                 items: supportedThemes
@@ -246,9 +274,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
       ),
       const Divider(),
       StreamBuilder(
-        stream: blocWithoutListen(context)
-            .settings
-            .getGroupOfflineWarningEnabledStream(),
+        stream:
+            blocWithoutListen.settings.getGroupOfflineWarningEnabledStream(),
         builder:
             (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasError) {
@@ -268,9 +295,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
               title: const Text('Show devices in group offline warning'),
               value: snapshot.requireData,
               onChanged: (final value) {
-                blocWithoutListen(context)
-                    .settings
-                    .setGroupOfflineWarningEnabled(value);
+                blocWithoutListen.settings.setGroupOfflineWarningEnabled(value);
               });
         },
       ),
@@ -295,17 +320,15 @@ class SettingsPage extends BasePage with WithBlocStateless {
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () async {
           if (await ViveBaseStationClearIds.showCustomDialog(context)) {
-            await blocWithoutListen(context).viveBaseStation.deleteIds();
-            Toast.show('Cleared up all Base station ids', context,
+            await blocWithoutListen.viveBaseStation.deleteIds();
+            Toast.show('Cleared up all Base station ids',
                 duration: Toast.lengthShort, gravity: Toast.bottom);
           }
         },
       ),
       const Divider(),
       StreamBuilder<bool>(
-        stream: blocWithoutListen(context)
-            .settings
-            .getViveBaseStationsEnabledStream(),
+        stream: blocWithoutListen.settings.getViveBaseStationsEnabledStream(),
         initialData: false,
         builder:
             (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
@@ -317,11 +340,10 @@ class SettingsPage extends BasePage with WithBlocStateless {
                 enabled = await ViveBaseStationBetaAlertWidget.showCustomDialog(
                     context);
               }
-              await blocWithoutListen(context)
-                  .settings
+              await blocWithoutListen.settings
                   .setViveBaseStationEnabled(enabled);
               if (enabled) {
-                Toast.show('Thanks for participating in the beta', context,
+                Toast.show('Thanks for participating in the beta',
                     duration: Toast.lengthShort, gravity: Toast.bottom);
               }
             },
@@ -346,18 +368,14 @@ class SettingsPage extends BasePage with WithBlocStateless {
               ListTile(title: Text('Shortcuts | BETA', style: headTheme)),
               const Divider(thickness: 1.5),
               StreamBuilder<bool>(
-                stream: blocWithoutListen(context)
-                    .settings
-                    .getShortcutsEnabledStream(),
+                stream: blocWithoutListen.settings.getShortcutsEnabledStream(),
                 initialData: false,
                 builder: (final BuildContext context,
                     final AsyncSnapshot<bool> snapshot) {
                   // Disable the setting if for some reason it got set to true,
                   // while not being supported.
                   if (!supported && (snapshot.data ?? false)) {
-                    blocWithoutListen(context)
-                        .settings
-                        .setShortcutsEnabledStream(false);
+                    blocWithoutListen.settings.setShortcutsEnabledStream(false);
                   }
                   return SwitchListTile(
                     title: const Text('BETA: enable support for shortcuts'),
@@ -373,12 +391,10 @@ class SettingsPage extends BasePage with WithBlocStateless {
                               await ShortcutBetaAlertWidget.showCustomDialog(
                                   context);
                         }
-                        await blocWithoutListen(context)
-                            .settings
+                        await blocWithoutListen.settings
                             .setShortcutsEnabledStream(enabled);
                         if (enabled) {
-                          Toast.show(
-                              'Thanks for participating in the beta', context,
+                          Toast.show('Thanks for participating in the beta',
                               duration: Toast.lengthShort,
                               gravity: Toast.bottom);
                         }
@@ -435,7 +451,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
           height: theming.iconSizeLarge,
         ),
         onTap: () async {
-          await launch(Links.projectUrl);
+          await launchUrl(Links.projectUrl);
         },
       ),
       const Divider(),
@@ -450,7 +466,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.googlePlayUrl);
+            await launchUrl(Links.googlePlayUrl);
           },
         ),
         const Divider(),
@@ -465,7 +481,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.fDroidUrl);
+            await launchUrl(Links.fDroidUrl);
           },
         ),
         const Divider(),
@@ -480,7 +496,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launch(Links.webUrl);
+            await launchUrl(Links.webUrl);
           },
         ),
         const Divider(),
@@ -504,7 +520,7 @@ class SettingsPage extends BasePage with WithBlocStateless {
             subtitle: Text(packageInfo.version),
             onLongPress: () async {
               await Clipboard.setData(ClipboardData(text: packageInfo.version));
-              Toast.show('Copied to clipboard', context,
+              Toast.show('Copied to clipboard',
                   duration: Toast.lengthShort, gravity: Toast.bottom);
             },
           );
@@ -514,30 +530,8 @@ class SettingsPage extends BasePage with WithBlocStateless {
     ]);
     // endregion
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ContentContainerListView(
-        children: items,
-      ),
+    return ContentContainerListView(
+      children: items,
     );
-  }
-
-  static final Map<String, PageBuilder> _subPages = {
-    '/nicknames': (final context) => const SettingsNicknamesPage(),
-    '/vive': (final context) => const SettingsViveBaseStationIdsPage(),
-    '/privacy': (final context) => const PrivacyPage(),
-    '/license': (final context) => LHLicensePage(),
-    if (BuildOptions.includeSupportButtons && BuildOptions.includeSupportPage)
-      '/support': (final context) => const SettingsSupportPage(),
-  };
-
-  static Map<String, PageBuilder> getSubPages(final String parentPath) {
-    final Map<String, PageBuilder> subPages = {};
-
-    for (final subPage in _subPages.entries) {
-      subPages['$parentPath${subPage.key}'] = subPage.value;
-    }
-
-    return subPages;
   }
 }

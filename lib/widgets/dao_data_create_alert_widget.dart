@@ -68,8 +68,8 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
           onPressed: () => Navigator.pop(context, false),
         ),
         SimpleDialogOption(
-          child: const Text('Save'),
           onPressed: saveEnabled ? () => Navigator.pop(context, true) : null,
+          child: const Text('Save'),
         ),
       ],
     );

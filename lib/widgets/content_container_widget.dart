@@ -43,16 +43,16 @@ class ContentContainerWidget extends StatelessWidget {
           ),
           if (addMaterial)
             SizedBox(
-              child: Material(
-                child: builder(context),
-                elevation: 2.0,
-              ),
               width: contentWidth,
+              child: Material(
+                elevation: 2.0,
+                child: builder(context),
+              ),
             )
           else
             SizedBox(
-              child: builder(context),
               width: contentWidth,
+              child: builder(context),
             ),
           Container(
             width: spacerWidth / 2.0,
@@ -175,7 +175,7 @@ class ContentScrollbar extends StatelessWidget {
     final child = scrollbarChildBuilder(context, controller);
     return Scrollbar(
         controller: controller,
-        isAlwaysShown: alwaysShowScrollbar(context, maxSize: maxSize),
+        thumbVisibility: alwaysShowScrollbar(context, maxSize: maxSize),
         child: child);
   }
 

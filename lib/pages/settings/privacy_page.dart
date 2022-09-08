@@ -95,7 +95,7 @@ class PrivacyPage extends BasePage {
                   text: "Github privacy statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launch(Links.githubPagesPrivacyUrl);
+                      launchUrl(Links.githubPagesPrivacyUrl);
                     }),
               const TextSpan(
                   text: " if you want more, and up-to-date "
@@ -126,7 +126,7 @@ class PrivacyPage extends BasePage {
                   text: "Switch to a new Android phone",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launch(Links.androidSwitchToNewPhone);
+                      launchUrl(Links.androidSwitchToNewPhone);
                     }),
               const TextSpan(text: " for more info.\n\n"),
               TextSpan(
@@ -232,7 +232,7 @@ class PrivacyPage extends BasePage {
                   text: "Google privacy Statement",
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launch(Links.googlePrivacyUrl);
+                      launchUrl(Links.googlePrivacyUrl);
                     }),
               const TextSpan(
                   text: " for more, and up-to-date information.\n\n"),
