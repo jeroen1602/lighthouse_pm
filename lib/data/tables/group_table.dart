@@ -12,8 +12,8 @@ class Groups extends Table {
 class GroupEntries extends Table {
   TextColumn get deviceId => text().withLength(min: 17, max: 37)();
 
-  IntColumn get groupId => integer().customConstraint(
-      'NOT NULL REFERENCES "groups"(deviceId) ON DELETE CASCADE ON UPDATE CASCADE')();
+  IntColumn get groupId => integer().references(Groups, #id,
+      onUpdate: KeyAction.cascade, onDelete: KeyAction.cascade)();
 
   @override
   Set<Column> get primaryKey => {deviceId};

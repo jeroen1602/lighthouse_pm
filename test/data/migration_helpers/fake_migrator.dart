@@ -54,25 +54,29 @@ class FakeMigrator extends Fake implements Migrator {
 
   @override
   Future<void> createTable(final TableInfo<Table, dynamic> table) async {
+    final String tableName = (toHint != null
+            ? (FinalSchemas.tableRename[toHint]?[table.actualTableName])
+            : null) ??
+        table.actualTableName;
+
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (final element) => element!.tableName == table.actualTableName,
+        (final element) => element!.tableName == tableName,
         orElse: () => null);
     if (testTable != null) {
-      throw MigrationError("Table already exists! ${table.actualTableName}");
+      throw MigrationError("Table already exists! $tableName");
     }
 
     if (toHint != null) {
       final testTable = FinalSchemas.schemas[toHint]?.testTables
           .cast<TestTable?>()
-          .firstWhere(
-              (final element) => element!.tableName == table.actualTableName,
+          .firstWhere((final element) => element!.tableName == tableName,
               orElse: () => null);
       if (testTable != null) {
         currentSchema!.testTables.add(testTable.copy());
         return;
       }
       debugPrint(
-          "Warning: could not find table ${table.actualTableName} in final schema version $toHint");
+          "Warning: could not find table $tableName in final schema version $toHint");
     }
 
     final columns = table.columnsByName.entries.map((final entry) {
@@ -82,7 +86,7 @@ class FakeMigrator extends Fake implements Migrator {
               entry.value.type.sqlTypeName(generator)));
     }).toList();
 
-    currentSchema!.testTables.add(TestTable(table.actualTableName, columns));
+    currentSchema!.testTables.add(TestTable(tableName, columns));
   }
 
   @override
@@ -94,6 +98,57 @@ class FakeMigrator extends Fake implements Migrator {
           "Can't remove table because it doesn't exists ($name)");
     }
     currentSchema!.testTables.removeAt(index);
+  }
+
+  @override
+  Future<void> alterTable(final TableMigration migration) async {
+    final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
+        (final element) =>
+            element!.tableName == migration.affectedTable.actualTableName,
+        orElse: () => null);
+    if (testTable == null) {
+      throw MigrationError(
+          "Table doesn't exists, so it can't be altered! ${migration.affectedTable.actualTableName}");
+    }
+
+    if (toHint != null) {
+      final testTable = FinalSchemas.schemas[toHint]?.testTables
+          .cast<TestTable?>()
+          .firstWhere(
+              (final element) =>
+                  element!.tableName == migration.affectedTable.actualTableName,
+              orElse: () => null);
+      if (testTable != null) {
+        currentSchema!.testTables.add(testTable.copy());
+        return;
+      }
+      debugPrint(
+          "Warning: could not find table ${migration.affectedTable.actualTableName} in final schema version $toHint");
+    }
+
+    final columns =
+        migration.affectedTable.columnsByName.entries.map((final entry) {
+      return TestColumn(
+          entry.key,
+          TestColumn.columnTypeFromDriftTypeString(
+              entry.value.type.sqlTypeName(generator)));
+    }).toList();
+
+    testTable.columns = columns;
+  }
+
+  @override
+  Future<void> renameTable(
+      final TableInfo<Table, dynamic> table, final String oldName) async {
+    final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
+        (final element) => element!.tableName == oldName,
+        orElse: () => null);
+    if (testTable == null) {
+      throw MigrationError(
+          "Table doesn't exists, so it can't be renamed! $oldName");
+    }
+
+    testTable.tableName = table.actualTableName;
   }
 }
 
@@ -415,6 +470,13 @@ class TestSchema {
 }
 
 abstract class FinalSchemas {
+  static final tableRename = {
+    1: {},
+    2: {},
+    3: {"groups": "\"\"groups\"\""},
+    4: {}
+  };
+
   static final schemas = {
     1: TestSchema([
       TestTable('last_seen_devices', [
@@ -451,7 +513,7 @@ abstract class FinalSchemas {
       ]),
     ]),
     3: TestSchema([
-      TestTable('groups', [
+      TestTable('""groups""', [
         TestColumn('id', ColumnType.integer),
         TestColumn('name', ColumnType.string)
       ]),
@@ -513,7 +575,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n',
     '1to3': 'Error for schema!\n'
         'Missing tables:\n'
-        '\tgroups\n'
+        '\t""groups""\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
@@ -556,7 +618,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '2to3': 'Error for schema!\n'
         'Missing tables:\n'
-        '\tgroups\n'
+        '\t""groups""\n'
         '\tgroup_entries\n',
     '2to4': 'Error for schema!\n'
         'Missing tables:\n'
@@ -581,7 +643,7 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
     '3to1': 'Error for schema!\n'
         'Extra tables:\n'
-        '\tgroups\n'
+        '\t""groups""\n'
         '\tgroup_entries\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
@@ -591,9 +653,13 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '3to2': 'Error for schema!\n'
         'Extra tables:\n'
-        '\tgroups\n'
+        '\t""groups""\n'
         '\tgroup_entries\n',
     '3to4': 'Error for schema!\n'
+        'Extra tables:\n'
+        '\t""groups""\n'
+        'Missing tables:\n'
+        '\tgroups\n'
         'Incorrect tables:\n'
         '\tError for table group_entries.\n'
         '\tExtra columns:\n'
@@ -664,6 +730,10 @@ abstract class FinalSchemas {
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
     '4to3': 'Error for schema!\n'
+        'Extra tables:\n'
+        '\tgroups\n'
+        'Missing tables:\n'
+        '\t""groups""\n'
         'Incorrect tables:\n'
         '\tError for table group_entries.\n'
         '\tExtra columns:\n'
