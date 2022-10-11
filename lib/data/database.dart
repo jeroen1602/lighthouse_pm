@@ -54,9 +54,17 @@ class LighthouseDatabase extends _$LighthouseDatabase {
           await m.renameColumn(
               lastSeenDevices, 'mac_address', lastSeenDevices.deviceId);
           if (from >= 3 && from <= 3) {
-            // groups table already exists so we need to rename, otherwise it will be created
-            await m.renameColumn(
-                groupEntries, 'mac_address', groupEntries.deviceId);
+            await transaction(() async {
+              await customStatement('PRAGMA foreign_keys = OFF');
+              // groups table already exists so we need to rename, otherwise it will be created
+              await m.renameColumn(
+                  groupEntries, 'mac_address', groupEntries.deviceId);
+              // Update the references, since the newer version of drift already supports foreign keys
+              await m.alterTable(TableMigration(groupEntries));
+              // Older versions of drift named it `"groups"` while newer versions are able to handle `groups`
+              await m.renameTable(groups, '""groups""');
+              await customStatement('PRAGMA foreign_keys = ON');
+            });
           }
           await m.deleteTable('vive_base_station_ids');
           await m.createTable(viveBaseStationIds);

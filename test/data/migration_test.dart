@@ -1,17 +1,18 @@
 import 'package:drift/drift.dart'
     show
-        QueryExecutor,
         MigrationStrategy,
-        driftRuntimeOptions,
         OpeningDetails,
-        QueryExecutorUser;
+        QueryExecutor,
+        QueryExecutorUser,
+        TransactionExecutor,
+        driftRuntimeOptions;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/data/database.dart';
 
 import 'migration_helpers/fake_migrator.dart';
 
-class FakeQueryExecutor extends Fake implements QueryExecutor {
+class FakeQueryExecutor extends Fake implements TransactionExecutor {
   @override
   Future<bool> ensureOpen(final QueryExecutorUser user) async {
     return true;
@@ -23,6 +24,21 @@ class FakeQueryExecutor extends Fake implements QueryExecutor {
   Future<void> runCustom(final String statement,
       [final List<Object?>? args]) async {
     lastStatement = statement;
+  }
+
+  @override
+  TransactionExecutor beginTransaction() {
+    return this;
+  }
+
+  @override
+  Future<void> send() async {
+    // doing nothing is nice.
+  }
+
+  @override
+  Future<void> rollback() async {
+    throw MigrationError("Got to a rollback, which shouldn't happen!");
   }
 }
 
