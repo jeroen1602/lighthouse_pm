@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/lighthouse_provider/widgets/widget_for_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 
@@ -20,38 +21,15 @@ class LighthousePowerButtonWidget extends StatelessWidget {
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
-    Color color = Colors.grey;
-    switch (powerState) {
-      case LighthousePowerState.on:
-        color = Colors.green;
-        break;
-      case LighthousePowerState.sleep:
-        color = Colors.blue;
-        break;
-      case LighthousePowerState.standby:
-        color = Colors.orange;
-        break;
-      case LighthousePowerState.booting:
-        color = Colors.yellow;
-        break;
-      case LighthousePowerState.unknown:
-        color = Colors.grey;
-        break;
-    }
+    final style = getButtonStyleFromState(theming, powerState);
     return Padding(
       padding: const EdgeInsets.all(6.0),
-      child: RawMaterialButton(
-          onPressed: disabled ? () {} : onPress,
-          onLongPress: onLongPress,
-          elevation: disabled ? 0.0 : 2.0,
-          fillColor: disabled ? theming.disabledColor : theming.buttonColor,
-          padding: const EdgeInsets.all(2.0),
-          shape: const CircleBorder(),
-          child: Icon(
-            Icons.power_settings_new,
-            color: disabled ? Colors.grey : color,
-            size: 24.0,
-          )),
+      child: ElevatedButton(
+        onPressed: disabled ? null : onPress,
+        onLongPress: onLongPress,
+        style: style,
+        child: const Icon(Icons.power_settings_new),
+      ),
     );
   }
 }

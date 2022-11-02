@@ -1,4 +1,5 @@
 import 'package:bluez_back_end/bluez_back_end.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_back_end/flutter_blue_back_end.dart';
@@ -7,6 +8,8 @@ import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
 import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/data/local/app_style.dart';
+import 'package:lighthouse_pm/data/local/theme_data_and_app_style_stream.dart';
 import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
 import 'package:lighthouse_pm/pages/base_page.dart';
 import 'package:lighthouse_pm/pages/database_test_page.dart';
@@ -20,7 +23,6 @@ import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
-import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
@@ -29,6 +31,8 @@ import 'package:shared_platform/shared_platform.dart';
 
 import 'bloc.dart';
 import 'build_options.dart';
+import 'color_schemes.dart';
+import 'pages/material_test_page.dart';
 
 void main() {
   loadIntlStrings();
@@ -122,87 +126,84 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
 
   @override
   Widget build(final BuildContext context) {
-    return StreamBuilder<bool>(
-        initialData: false,
-        stream: ContentScrollbar.alwaysShowScrollbarStream,
+    return DynamicColorBuilder(builder: (final lightColor, final darkColor) {
+      return StreamBuilder<ThemeDataAndAppStyleStream>(
+        stream:
+            ThemeDataAndAppStyleStream.getStream(blocWithoutListen(context)),
+        initialData: const ThemeDataAndAppStyleStream(null, null, null),
         builder: (final BuildContext context,
-            final AsyncSnapshot<bool> desktopScrollbarSnapshot) {
-          final scrollbarDesktop = desktopScrollbarSnapshot.requireData;
+            final AsyncSnapshot<ThemeDataAndAppStyleStream>
+                themeAndStyleSnapshot) {
+          final data = themeAndStyleSnapshot.data;
+          final themeMode = data?.themeMode ?? ThemeMode.system;
+          final useDynamicColors = data?.style == AppStyle.materialDynamic;
+          final dynamicColorsLight = lightColor ?? lightColorScheme;
+          final dynamicColorsDark = darkColor ?? darkColorScheme;
+          final scrollbarDesktop = data?.alwaysShowScrollbar ?? false;
 
-          return StreamBuilder<ThemeMode>(
-              stream: blocWithoutListen(context)
-                  .settings
-                  .getPreferredThemeAsStream(),
-              initialData: ThemeMode.system,
-              builder: (final BuildContext context,
-                  final AsyncSnapshot<ThemeMode> themeSnapshot) {
-                final scrollbarTheme = ScrollbarThemeData(
-                  thumbVisibility: MaterialStateProperty.all(scrollbarDesktop),
-                  radius: scrollbarDesktop ? Radius.zero : null,
-                );
+          final scrollbarTheme = ScrollbarThemeData(
+            thumbVisibility: MaterialStateProperty.all(scrollbarDesktop),
+            radius: scrollbarDesktop ? Radius.zero : null,
+          );
 
-                return MaterialApp(
-                  debugShowCheckedModeBanner: true,
-                  title: 'Lighthouse PM',
-                  theme: ThemeData(
-                      colorScheme: const ColorScheme.light(),
-                      primarySwatch: Colors.blueGrey,
-                      selectedRowColor: Colors.grey,
-                      disabledColor: Colors.grey.shade400,
-                      appBarTheme: const AppBarTheme(
-                          iconTheme: IconThemeData(color: Colors.white)),
-                      scrollbarTheme: scrollbarTheme.copyWith()),
-                  darkTheme: ThemeData(
-                      colorScheme: const ColorScheme.dark(),
-                      primarySwatch: Colors.blueGrey,
-                      selectedRowColor: Colors.blueGrey,
-                      appBarTheme: const AppBarTheme(
-                          iconTheme: IconThemeData(color: Colors.white)),
-                      scrollbarTheme: scrollbarTheme.copyWith()),
-                  themeMode: themeSnapshot.data,
-                  initialRoute: '/',
-                  onGenerateRoute: (final RouteSettings settings) {
-                    // Make sure all these pages extend the Base page or else shortcut
-                    // handling won't work!
-                    final routes = <String, PageBuilder>{
-                      '/': (final context) => MainPage(),
-                      // '/': _createShortcutDebugPage,
-                      // Uncomment the line above if you need to debug the shortcut handler.
-                      '/settings': (final context) => const SettingsPage(),
-                      '/troubleshooting': (final context) =>
-                          const TroubleshootingPage(),
-                      '/help': (final context) => const HelpPage(),
-                      '/shortcutHandler': (final context) =>
-                          ShortcutHandlerPage(settings.arguments),
-                    };
+          return MaterialApp(
+            debugShowCheckedModeBanner: true,
+            title: 'Lighthouse PM',
+            theme: ThemeData(
+                colorScheme:
+                    useDynamicColors ? dynamicColorsLight : lightColorScheme,
+                useMaterial3: true,
+                scrollbarTheme: scrollbarTheme.copyWith()),
+            darkTheme: ThemeData(
+                colorScheme:
+                    useDynamicColors ? dynamicColorsDark : darkColorScheme,
+                useMaterial3: true,
+                scrollbarTheme: scrollbarTheme.copyWith()),
+            themeMode: themeMode,
+            initialRoute: '/',
+            onGenerateRoute: (final RouteSettings settings) {
+              // Make sure all these pages extend the Base page or else shortcut
+              // handling won't work!
+              final routes = <String, PageBuilder>{
+                '/': (final context) => MainPage(),
+                // '/': _createShortcutDebugPage,
+                // Uncomment the line above if you need to debug the shortcut handler.
+                '/settings': (final context) => const SettingsPage(),
+                '/troubleshooting': (final context) =>
+                    const TroubleshootingPage(),
+                '/help': (final context) => const HelpPage(),
+                '/shortcutHandler': (final context) =>
+                    ShortcutHandlerPage(settings.arguments),
+              };
 
-                    routes.addAll(SettingsPage.getSubPages('/settings'));
+              routes.addAll(SettingsPage.getSubPages('/settings'));
 
-                    if (!kReleaseMode) {
-                      routes.addAll(<String, PageBuilder>{
-                        '/databaseTest': (final context) => DatabaseTestPage()
-                      });
-                      routes.addAll(
-                          DatabaseTestPage.getSubPages('/databaseTest'));
-                      routes['/404'] = (final context) => const NotFoundPage();
-                    }
+              if (!kReleaseMode) {
+                routes.addAll(<String, PageBuilder>{
+                  '/databaseTest': (final context) => DatabaseTestPage()
+                });
+                routes.addAll(DatabaseTestPage.getSubPages('/databaseTest'));
+                routes['/material'] =
+                    (final context) => const MaterialTestPage();
+                routes['/404'] = (final context) => const NotFoundPage();
+              }
 
-                    if (SharedPlatform.isWeb || !kReleaseMode) {
-                      final WidgetBuilder? builder = routes[settings.name];
-                      return MaterialPageRoute(
-                          builder: (final ctx) =>
-                              builder?.call(ctx) ?? const NotFoundPage(),
-                          settings: settings);
-                    } else {
-                      final WidgetBuilder builder = routes[settings.name]!;
-                      return MaterialPageRoute(
-                          builder: (final ctx) => builder(ctx),
-                          settings: settings);
-                    }
-                  },
-                );
-              });
-        });
+              if (SharedPlatform.isWeb || !kReleaseMode) {
+                final WidgetBuilder? builder = routes[settings.name];
+                return MaterialPageRoute(
+                    builder: (final ctx) =>
+                        builder?.call(ctx) ?? const NotFoundPage(),
+                    settings: settings);
+              } else {
+                final WidgetBuilder builder = routes[settings.name]!;
+                return MaterialPageRoute(
+                    builder: (final ctx) => builder(ctx), settings: settings);
+              }
+            },
+          );
+        },
+      );
+    });
   }
 }
 

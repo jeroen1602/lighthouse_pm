@@ -1,10 +1,12 @@
+import 'package:fake_back_end/fake_back_end.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:fake_back_end/fake_back_end.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
+import 'package:lighthouse_pm/widgets/material/selectable_app_bar.dart';
+import 'package:lighthouse_pm/widgets/material/selectable_list_tile.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -77,10 +79,6 @@ class _SettingsViveBaseStationIdsPageState
           }
         }
 
-        final theming = Theming.of(context);
-
-        final Color? scaffoldColor =
-            selected.isNotEmpty ? theming.selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [
@@ -98,25 +96,16 @@ class _SettingsViveBaseStationIdsPageState
                   },
                 )
               ];
-        final Widget? leading = selected.isEmpty
-            ? null
-            : IconButton(
-                tooltip: 'Cancel selection',
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  setState(() {
-                    selected.clear();
-                  });
-                },
-              );
 
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('Vive Base station ids'),
-              backgroundColor: scaffoldColor,
-              actions: actions,
-              leading: leading,
-            ),
+            appBar: createSelectableAppBar(context,
+                numberOfSelections: selected.length,
+                title: const Text('Vive Base station ids'),
+                actions: actions, onClearSelection: () {
+              setState(() {
+                selected.clear();
+              });
+            }),
             body: body);
       },
     );
@@ -148,37 +137,29 @@ class _DataPage extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final theming = Theming.of(context);
-
     return ContentContainerListView.builder(
       itemBuilder: (final context, final index) {
         final id = ids[index];
         final selected = isSelected(id.deviceId);
         return Column(
           children: [
-            Container(
-              color: selected ? theming.selectedRowColor : Colors.transparent,
-              child: ListTile(
+            createSelectableListTile(context,
+                selected: selected,
+                selecting: selecting,
                 title: Text(id.baseStationId
                     .toRadixString(16)
                     .padLeft(8, '0')
                     .toUpperCase()),
-                subtitle: Text(id.deviceId),
-                onLongPress: () {
-                  selectItem(id.deviceId);
-                },
-                onTap: () {
-                  if (selecting) {
-                    if (selected) {
-                      deselectItem(id.deviceId);
-                    } else {
-                      selectItem(id.deviceId);
-                    }
-                  }
-                },
-              ),
+                subtitle: Text(id.deviceId), onSelect: (final newState) {
+              if (newState) {
+                selectItem(id.deviceId);
+              } else {
+                deselectItem(id.deviceId);
+              }
+            }),
+            const Divider(
+              height: 0,
             ),
-            const Divider(),
           ],
         );
       },

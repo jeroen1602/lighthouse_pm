@@ -1,0 +1,1 @@
+enum AppStyle { material, materialDynamic }

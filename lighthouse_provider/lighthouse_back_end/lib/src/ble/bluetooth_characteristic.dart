@@ -53,5 +53,4 @@ abstract class LHBluetoothCharacteristic {
     return await write(list, withoutResponse: withoutResponse);
   }
 //end region
-
 }

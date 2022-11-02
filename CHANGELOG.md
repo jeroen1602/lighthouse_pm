@@ -1,5 +1,8 @@
 # Version 1.3.0+9 R.C
 
+ - Updated to material 3 (not all widgets have been updated yet).
+ - (Linux + Android 13) Added dynamic colors.
+ - Updated some widgets to use different colors.
  - (Web) added alt + R keyboard shortcut for rescanning devices.
  - (Desktop) Added F5, ctrl + R, super/ cmd + R keyboard shortcut for rescanning devices. 
  - Calling disconnect if state could not be retrieved.
