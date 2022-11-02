@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
+import 'package:lighthouse_pm/data/local/app_style.dart';
 import 'package:lighthouse_pm/links.dart';
 import 'package:lighthouse_pm/pages/settings/lh_license_page.dart';
 import 'package:lighthouse_pm/pages/settings/settings_nicknames_page.dart';
@@ -273,6 +274,50 @@ class _SettingsContentState extends State<SettingsContent> {
         },
       ),
       const Divider(),
+      FutureBuilder<List<AppStyle>>(
+          future: SettingsDao.supportedAppStyles,
+          initialData: null,
+          builder: (final context, final snapshot) {
+            if (snapshot.data?.contains(AppStyle.materialDynamic) ?? false) {
+              return Column(
+                children: [
+                  StreamBuilder<AppStyle>(
+                    stream:
+                        blocWithoutListen.settings.getPreferredStyleAsStream(),
+                    initialData: null,
+                    builder: (final context, final snapshot) {
+                      if (snapshot.hasError) {
+                        debugPrint(snapshot.error.toString());
+                        return Container(
+                            color: Colors.red,
+                            child: ListTile(
+                              title: const Text('Error'),
+                              subtitle: Text(snapshot.error.toString()),
+                            ));
+                      }
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      final state = snapshot.hasData &&
+                          snapshot.data == AppStyle.materialDynamic;
+                      return SwitchListTile(
+                          title: const Text('Use dynamic colors'),
+                          subtitle:
+                              const Text('Use dynamic colors from your system'),
+                          value: state,
+                          onChanged: (final value) {
+                            blocWithoutListen.settings.setPreferredStyle(value
+                                ? AppStyle.materialDynamic
+                                : AppStyle.material);
+                          });
+                    },
+                  ),
+                  const Divider(),
+                ],
+              );
+            }
+            return Container();
+          }),
       StreamBuilder(
         stream:
             blocWithoutListen.settings.getGroupOfflineWarningEnabledStream(),

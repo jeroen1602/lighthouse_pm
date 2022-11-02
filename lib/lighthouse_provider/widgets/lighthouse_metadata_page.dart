@@ -180,40 +180,40 @@ class _ExtraActionsWidget extends StatelessWidget {
               height: 85.0,
               child: ListView.builder(
                 itemBuilder: (final c, final index) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 60.0,
-                        child: StreamBuilder<bool>(
-                          stream: extensions[index].enabledStream,
-                          initialData: false,
-                          builder: (final c, final snapshot) {
-                            final enabled = snapshot.data ?? false;
-                            return RawMaterialButton(
-                              onPressed: () async {
-                                await extensions[index].onTap();
-                                if (extensions[index].updateListAfter) {
-                                  updateList?.call();
-                                }
-                              },
-                              enableFeedback: enabled,
-                              elevation: 2.0,
-                              fillColor: enabled
-                                  ? theming.buttonColor
-                                  : theming.disabledColor,
-                              padding: const EdgeInsets.all(2.0),
-                              shape: const CircleBorder(),
-                              child: getWidgetFromDeviceExtension(
-                                  extensions[index]),
-                            );
-                          },
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 60.0,
+                          child: StreamBuilder<bool>(
+                            stream: extensions[index].enabledStream,
+                            initialData: false,
+                            builder: (final c, final snapshot) {
+                              final enabled = snapshot.data ?? false;
+                              return ElevatedButton(
+                                onPressed: enabled
+                                    ? () async {
+                                        await extensions[index].onTap();
+                                        if (extensions[index].updateListAfter) {
+                                          updateList?.call();
+                                        }
+                                      }
+                                    : null,
+                                style: getButtonStyleFromDeviceExtension(
+                                    theming, extensions[index]),
+                                child: getWidgetFromDeviceExtension(
+                                    extensions[index]),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: 5,
-                      ),
-                      Text(extensions[index].toolTip),
-                    ],
+                        Container(
+                          height: 5,
+                        ),
+                        Text(extensions[index].toolTip),
+                      ],
+                    ),
                   );
                 },
                 itemCount: extensions.length,

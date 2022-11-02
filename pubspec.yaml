@@ -32,6 +32,7 @@ dependencies:
   flutter_svg: ^1.1.4
   url_launcher: ^6.1.5
   community_material_icon: 5.9.55
+  dynamic_color: ^1.5.4
   #  flutter_icons:
   #    git:
   #      url: https://github.com/adarsh-technocrat/flutter-icons

@@ -20,6 +20,7 @@ import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/main_page_drawer.dart';
+import 'package:lighthouse_pm/widgets/material/selectable_app_bar.dart';
 import 'package:lighthouse_pm/widgets/nickname_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/scanning_mixin.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
@@ -108,7 +109,8 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
           pairedDevices = pairedDevicesSnapshot.requireData;
         }
         final shouldScanBeDisabled = onlyPairBackEnds && pairedDevices <= 0;
-        final theming = Theming.of(context);
+        final theme = Theme.of(context);
+        final theming = Theming.fromTheme(theme);
 
         return Row(
           children: [
@@ -116,6 +118,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
             if (pairBackEnds.isNotEmpty) ...[
               FloatingActionButton(
                 heroTag: 'pairButton',
+                backgroundColor: theming.buttonColor,
                 onPressed: () {
                   if (pairBackEnds.length > 1) {
                     // TODO show dialog to select the provider
@@ -127,7 +130,8 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                   }
                 },
                 tooltip: 'Pair a new device',
-                child: const Icon(Icons.bluetooth_connected),
+                child: Icon(Icons.bluetooth_connected,
+                    color: theme.colorScheme.onPrimary),
               ),
               const Padding(
                 padding: EdgeInsets.all(4.0),
@@ -143,15 +147,18 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
                     onPressed: () => stopScan(),
-                    backgroundColor: Colors.red,
+                    backgroundColor: theme.colorScheme.error,
                     tooltip: 'Stop scanning',
-                    child: const Icon(Icons.stop),
+                    child: Icon(
+                      Icons.stop,
+                      color: theme.colorScheme.onError,
+                    ),
                   );
                 } else {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
-                    backgroundColor:
-                        shouldScanBeDisabled ? theming.disabledColor : null,
+                    backgroundColor: theming.getDisabledColorIf(
+                        !shouldScanBeDisabled, theming.buttonColor),
                     elevation: shouldScanBeDisabled ? 0 : null,
                     hoverElevation: shouldScanBeDisabled ? 0 : null,
                     onPressed: () async {
@@ -171,7 +178,9 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                       }
                     },
                     tooltip: 'Start scanning',
-                    child: const Icon(Icons.search),
+                    child: Icon(Icons.search,
+                        color: theming.getDisabledColorIf(!shouldScanBeDisabled,
+                            theme.colorScheme.onPrimary)),
                   );
                 }
               },
@@ -424,9 +433,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                     );
 
               final List<Widget> actions = [];
-              Color? actionBarColor;
               if (selecting) {
-                actionBarColor = theming.selectedRowColor;
                 if (selected.length == 1) {
                   actions.add(
                       _getChangeNicknameAction(devices, nicknames, theming));
@@ -443,25 +450,16 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       currentlySelectedGroup, theming));
                 }
               }
-              final Widget? leading = selecting
-                  ? IconButton(
-                      tooltip: 'Cancel selection',
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        setState(() {
-                          clearSelected();
-                        });
-                      },
-                    )
-                  : null;
 
               return Scaffold(
-                appBar: AppBar(
-                  title: const Text('Lighthouse PM'),
-                  actions: actions,
-                  backgroundColor: actionBarColor,
-                  leading: leading,
-                ),
+                appBar: createSelectableAppBar(context,
+                    numberOfSelections: selected.length,
+                    title: const Text('Lighthouse PM'),
+                    actions: actions, onClearSelection: () {
+                  setState(() {
+                    clearSelected();
+                  });
+                }),
                 floatingActionButton: _ScanFloatingButtonWidget(
                   settings: widget.settings,
                 ),

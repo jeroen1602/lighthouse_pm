@@ -1,14 +1,16 @@
+import 'package:fake_back_end/fake_back_end.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/tables/nickname_table.dart';
-import 'package:fake_back_end/fake_back_end.dart';
-import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
+import 'package:lighthouse_pm/widgets/material/selectable_app_bar.dart';
+import 'package:lighthouse_pm/widgets/material/selectable_list_tile.dart';
 import 'package:lighthouse_pm/widgets/nickname_alert_widget.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -98,10 +100,6 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
           );
         }
 
-        final theming = Theming.of(context);
-
-        final Color? scaffoldColor =
-            selected.isNotEmpty ? theming.selectedRowColor : null;
         final List<Widget> actions = selected.isEmpty
             ? const []
             : [
@@ -118,25 +116,16 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
                   },
                 )
               ];
-        final Widget? leading = selected.isEmpty
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back),
-                tooltip: 'Cancel selection',
-                onPressed: () {
-                  setState(() {
-                    selected.clear();
-                  });
-                },
-              );
 
         return Scaffold(
-            appBar: AppBar(
-              title: const Text('Nicknames'),
-              backgroundColor: scaffoldColor,
-              actions: actions,
-              leading: leading,
-            ),
+            appBar: createSelectableAppBar(context,
+                numberOfSelections: selected.length,
+                title: const Text('Nicknames'),
+                actions: actions, onClearSelection: () {
+              setState(() {
+                selected.clear();
+              });
+            }),
             body: body);
       },
     );
@@ -189,37 +178,27 @@ class _DataNicknamePage extends StatelessWidget {
         final item = nicknames[index];
         final selected = isSelected(item.deviceId);
         final lastSeen = item.lastSeen;
-        final theming = Theming.of(context);
 
         return Column(
           children: [
-            Container(
-              color: selected ? theming.selectedRowColor : Colors.transparent,
-              child: ListTile(
+            createSelectableListTile(context,
+                selected: selected,
+                selecting: selecting,
                 title: Text(item.nickname),
                 subtitle: Text(
                     '${item.deviceId}${lastSeen != null ? ' | last seen: ${DateFormat.yMd(Intl.systemLocale).format(lastSeen)}' : ''}'),
-                onLongPress: () {
-                  if (!selecting) {
-                    selectItem(item.deviceId);
-                  } else {
-                    _changeNickname(context, item);
-                  }
-                },
                 onTap: () {
-                  if (selecting) {
-                    if (selected) {
-                      deselectItem(item.deviceId);
-                    } else {
-                      selectItem(item.deviceId);
-                    }
-                  } else {
-                    _changeNickname(context, item);
-                  }
-                },
-              ),
+              _changeNickname(context, item);
+            }, onSelect: (final newState) {
+              if (newState) {
+                selectItem(item.deviceId);
+              } else {
+                deselectItem(item.deviceId);
+              }
+            }),
+            const Divider(
+              height: 0,
             ),
-            const Divider(),
           ],
         );
       },

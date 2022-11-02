@@ -58,7 +58,7 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                   "Could not start scan because permission has not been granted. On navigator pop");
         },
       ),
-      if (!kReleaseMode)
+      if (!kReleaseMode) ...[
         ListTile(
             leading: const Icon(CommunityMaterialIcons.database),
             title: const Text('Database test'),
@@ -71,6 +71,20 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                   failMessage:
                       "Could not start scan because permission has not been granted. On navigator pop");
             }),
+        ListTile(
+          leading: const Icon(CommunityMaterialIcons.material_design),
+          title: const Text('Material test page'),
+          onTap: () async {
+            Navigator.pop(context);
+            cleanUp();
+            await Navigator.pushNamed(context, '/material');
+            startScanWithCheck(scanDuration,
+                updateInterval: updateInterval,
+                failMessage:
+                    "Could not start scan because permission has not been granted. On navigator pop");
+          },
+        )
+      ]
     ];
 
     return Drawer(

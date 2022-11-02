@@ -1,6 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/data/local/app_style.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:shared_platform/shared_platform.dart';
 
@@ -27,7 +28,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   static const shortcutEnabledId = 5;
   static const groupShowOfflineWarningId = 6;
   static const updateIntervalId = 7;
-
+  static const appStyleId = 8;
   // endregion
 
   Stream<LighthousePowerState> getSleepStateAsStream(
@@ -182,7 +183,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
             themeIndex < ThemeMode.values.length) {
           var themeMode = ThemeMode.values[themeIndex];
           // Make sure the theme mode is something that the current device supports.
-          // How it´s become a value that isn't support is a question to solve then.
+          // How it´s become a value that isn't supported is a question to solve then.
           if (themeMode == ThemeMode.system && !await supportsThemeModeSystem) {
             themeMode = ThemeMode.light;
           }
@@ -231,6 +232,58 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       return ThemeMode.system;
     }
     return ThemeMode.light;
+  }
+
+  Stream<AppStyle> getPreferredStyleAsStream() {
+    return (select(simpleSettings)
+          ..where((final tbl) => tbl.settingsId.equals(appStyleId)))
+        .watchSingleOrNull()
+        .asyncMap((final event) async {
+      if (event != null && event.data != null) {
+        final styleIndex = int.tryParse(event.data!, radix: 10);
+        if (styleIndex != null &&
+            styleIndex >= 0 &&
+            styleIndex < AppStyle.values.length) {
+          var chosenStyle = AppStyle.values[styleIndex];
+          // Make sure the chosen style is something that the current device supports.
+          // How it´s become a value that isn't supported is a question to solve then.
+          final supportedStyles = await supportedAppStyles;
+          if (!supportedStyles.contains(chosenStyle)) {
+            chosenStyle = await defaultAppStyle;
+          }
+          return chosenStyle;
+        }
+      }
+      return await defaultAppStyle;
+    });
+  }
+
+  Future<void> setPreferredStyle(final AppStyle style) {
+    return into(simpleSettings).insert(
+        SimpleSetting(
+            settingsId: appStyleId, data: style.index.toRadixString(10)),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  static Future<List<AppStyle>> get supportedAppStyles async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final styles = [AppStyle.material];
+    if (SharedPlatform.isLinux ||
+        SharedPlatform.isWindows ||
+        SharedPlatform.isAndroid &&
+            ((await deviceInfo.androidInfo).version.sdkInt ?? 0) >=
+                31 /* Android 12 */) {
+      styles.add(AppStyle.materialDynamic);
+    }
+    return styles;
+  }
+
+  static Future<AppStyle> get defaultAppStyle async {
+    final supportedStyles = await supportedAppStyles;
+    if (supportedStyles.contains(AppStyle.materialDynamic)) {
+      return AppStyle.materialDynamic;
+    }
+    return supportedStyles.cast<AppStyle?>()[0] ?? AppStyle.material;
   }
 
   Stream<List<SimpleSetting>> get watchSimpleSettings {

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
-import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
-import 'package:lighthouse_provider/lighthouse_provider.dart';
+import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/data/local/app_style.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_simple_change_string_alert_widget.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:toast/toast.dart';
 
 import '../base_page.dart';
@@ -19,21 +20,23 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
   String convertSettingIdToString(final int id) {
     switch (id) {
       case SettingsDao.defaultSleepStateId:
-        return 'DEFAULT_SLEEP_STATE_ID';
+        return 'DefaultSleepStateId';
       case SettingsDao.viveBaseStationEnabledId:
-        return 'VIVE_BASE_STATION_ENABLED_ID';
+        return 'ViveBaseStationEnabledId';
       case SettingsDao.scanDurationId:
-        return 'SCAN_DURATION_ID';
+        return 'ScanDurationId';
       case SettingsDao.preferredThemeId:
-        return 'PREFERRED_THEME_ID';
+        return 'PreferredThemeId';
       case SettingsDao.shortcutEnabledId:
-        return 'SHORTCUTS_ENABLED_ID';
+        return 'ShortcutsEnabledId';
       case SettingsDao.groupShowOfflineWarningId:
-        return 'GROUP_SHOW_OFFLINE_WARNING_ID';
+        return 'GroupShowOfflineWarningId';
       case SettingsDao.updateIntervalId:
-        return 'UPDATE_INTERVAL_ID';
+        return 'UpdateIntervalId';
+      case SettingsDao.appStyleId:
+        return 'appStyleId';
       default:
-        return 'UNKNOWN';
+        return 'Unknown';
     }
   }
 
@@ -101,6 +104,19 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
           return 'COULD-NOT-PARSE-VALUE';
         }
         return '$value seconds';
+      case SettingsDao.appStyleId:
+        if (data == null) {
+          return 'DEFAULT';
+        }
+        final value = int.tryParse(data, radix: 10);
+        if (value == null) {
+          return 'COULD-NOT-PARSE-VALUE';
+        }
+        if (value < 0 || value >= AppStyle.values.length) {
+          return 'NOT-LEGAL-APP-STYLE';
+        }
+        final appStyle = AppStyle.values[value];
+        return appStyle.toString();
       default:
         return 'UNKNOWN CONVERSION';
     }

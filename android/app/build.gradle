@@ -49,11 +49,6 @@ android {
         }
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-        //TODO: check to see if this can be removed in future versions, since a lint for release builds is useful
-        checkReleaseBuilds false
-    }
 
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
@@ -96,6 +91,12 @@ android {
             dimension 'productFlavors'
         }
     }
+    lint {
+        //TODO: check to see if this can be removed in future versions, since a lint for release builds is useful
+        checkReleaseBuilds false
+        disable 'InvalidPackage'
+    }
+    namespace 'com.jeroen1602.lighthouse_pm'
 }
 
 flutter {

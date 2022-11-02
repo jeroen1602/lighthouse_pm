@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/color_schemes.dart';
 
 class Theming {
   const Theming(
@@ -11,6 +12,8 @@ class Theming {
     this.iconColor,
     this.disabledColor,
     this.selectedRowColor,
+    this.selectedAppBarColor,
+    this.selectedAppBarTextColor,
     this.buttonColor,
     this.headline1,
     this.headline2,
@@ -19,6 +22,8 @@ class Theming {
     this.headline5,
     this.headline6,
     this.subtitle,
+    this.customColors,
+    this.brightness,
   );
 
   final TextStyle? bodyText;
@@ -30,7 +35,13 @@ class Theming {
 
   final Color? iconColor;
   final Color disabledColor;
+
+  // region selection:
   final Color selectedRowColor;
+
+  final Color selectedAppBarColor;
+  final Color selectedAppBarTextColor;
+
   final Color buttonColor;
 
   final TextStyle? headline1;
@@ -41,6 +52,9 @@ class Theming {
   final TextStyle? headline6;
 
   final TextStyle? subtitle;
+
+  final CustomColors customColors;
+  final Brightness brightness;
 
   factory Theming.of(final BuildContext context) {
     return Theming.fromTheme(Theme.of(context));
@@ -61,7 +75,10 @@ class Theming {
     const iconSizeLarge = 24.0;
 
     final iconColor = getIconColor(theme.iconTheme);
-    final selectedRowColor = theme.selectedRowColor;
+    final selectedRowColor = theme.colorScheme.primary
+        .withAlpha(theme.brightness == Brightness.dark ? 0x55 : 0x33);
+    final selectedAppBarTextColor = theme.colorScheme.onPrimary;
+    final selectedAppBarColor = theme.colorScheme.primary;
     final buttonColor = theme.colorScheme.primary;
 
     final headline1 = theme.textTheme.headline1;
@@ -77,24 +94,33 @@ class Theming {
     final subtitle =
         theme.textTheme.subtitle2?.copyWith(color: theme.disabledColor);
 
+    final customColors = theme.brightness == Brightness.dark
+        ? darkCustomColors
+        : lightCustomColors;
+
     return Theming(
-        bodyText,
-        disabledBodyText,
-        bodyTextBold,
-        linkTheme,
-        bodyTextIconSize,
-        iconSizeLarge,
-        iconColor,
-        disabledColor,
-        selectedRowColor,
-        buttonColor,
-        headline1,
-        headline2,
-        headline3,
-        headline4,
-        headline5,
-        headline6,
-        subtitle);
+      bodyText,
+      disabledBodyText,
+      bodyTextBold,
+      linkTheme,
+      bodyTextIconSize,
+      iconSizeLarge,
+      iconColor,
+      disabledColor,
+      selectedRowColor,
+      selectedAppBarColor,
+      selectedAppBarTextColor,
+      buttonColor,
+      headline1,
+      headline2,
+      headline3,
+      headline4,
+      headline5,
+      headline6,
+      subtitle,
+      customColors,
+      theme.brightness,
+    );
   }
 
   static TextStyle? createDefaultLinkTheme(final ThemeData theme) {
@@ -115,5 +141,22 @@ class Theming {
       iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
     }
     return iconColor;
+  }
+
+  Color getDisabledColor(final Color original) {
+    return staticGetDisabledColor(brightness, original);
+  }
+
+  Color getDisabledColorIf(final bool enabled, final Color original) {
+    if (enabled) {
+      return original;
+    } else {
+      return getDisabledColor(original);
+    }
+  }
+
+  static Color staticGetDisabledColor(
+      final Brightness brightness, final Color original) {
+    return original.withAlpha(brightness == Brightness.dark ? 0x55 : 0x33);
   }
 }
