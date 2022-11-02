@@ -223,7 +223,8 @@ class HelpPage extends BasePage with WithBlocStateless {
                             style: theming.linkTheme,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () async {
-                                await launchUrl(Links.projectIssuesUrl);
+                                await launchUrl(Links.projectIssuesUrl,
+                                    mode: LaunchMode.externalApplication);
                               }),
                         const TextSpan(text: '!')
                       ]),
