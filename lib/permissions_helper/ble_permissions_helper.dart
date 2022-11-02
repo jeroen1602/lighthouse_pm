@@ -28,8 +28,7 @@ abstract class BLEPermissionsHelper {
       return await Permission.bluetooth.status;
     }
     if (SharedPlatform.isAndroid) {
-      final version =
-          (await DeviceInfoPlugin().androidInfo).version.sdkInt ?? 0;
+      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       // Check the new bluetooth permission for Android 12 and higher.
       if (version >= 31) {
         final scan = await Permission.bluetoothScan.status;
@@ -66,8 +65,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> requestBLEPermissions() async {
     if (SharedPlatform.isAndroid) {
-      final version =
-          (await DeviceInfoPlugin().androidInfo).version.sdkInt ?? 0;
+      final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       if (version >= 31) {
         // Request the new bluetooth permission for Android 12 and higher.
         return await [Permission.bluetoothScan, Permission.bluetoothConnect]

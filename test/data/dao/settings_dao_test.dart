@@ -24,7 +24,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 30;
+    fakeVersion.androidDeviceInfo.setSdkInt(30);
 
     SharedPlatform.overridePlatform = PlatformOverride.android;
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
@@ -40,10 +40,10 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 29;
+    fakeVersion.androidDeviceInfo.setSdkInt(29);
     expect(await SettingsDao.supportsThemeModeSystem, isTrue);
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 5;
+    fakeVersion.androidDeviceInfo.setSdkInt(5);
     expect(await SettingsDao.supportsThemeModeSystem, isFalse);
   });
 

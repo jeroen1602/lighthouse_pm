@@ -25,12 +25,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  rxdart: ^0.27.3
+  rxdart: ^0.27.5
   #  package_info: ^2.0.0
-  package_info_plus: ^1.4.3+1
-  permission_handler: ^10.0.0
-  flutter_svg: ^1.1.4
-  url_launcher: ^6.1.5
+  package_info_plus: ^3.0.1
+  permission_handler: ^10.2.0
+  flutter_svg: ^1.1.6
+  url_launcher: ^6.1.6
   community_material_icon: 5.9.55
   dynamic_color: ^1.5.4
   #  flutter_icons:
@@ -38,17 +38,17 @@ dependencies:
   #      url: https://github.com/adarsh-technocrat/flutter-icons
   #      ref: null-safety-migration
   mutex: ^3.0.0
-  convert: ^3.0.2
+  convert: ^3.1.1
   vibration: ^1.7.6
   toast: ^0.3.0
   drift: ^2.1.0
-  sqlite3_flutter_libs: ^0.5.9
+  sqlite3_flutter_libs: ^0.5.10
   path_provider: ^2.0.11
   path: ^1.8.2
-  provider: ^6.0.3
-  tuple: ^2.0.0
+  provider: ^6.0.4
+  tuple: ^2.0.1
   intl: ^0.17.0
-  device_info_plus: ^4.1.2
+  device_info_plus: ^8.0.0
   meta: ^1.8.0
   # Android/ iOS
   flutter_blue_back_end:
@@ -87,9 +87,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-#  test: ^1.17.12
   drift_dev: ^2.1.0
-  build_runner: 2.2.0
+  build_runner: 2.3.0
   flutter_lints: ^2.0.1
   lighthouse_test_helper:
     path: lighthouse_provider/lighthouse_test_helper
