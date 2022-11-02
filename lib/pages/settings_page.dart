@@ -496,7 +496,8 @@ class _SettingsContentState extends State<SettingsContent> {
           height: theming.iconSizeLarge,
         ),
         onTap: () async {
-          await launchUrl(Links.projectUrl);
+          await launchUrl(Links.projectUrl,
+              mode: LaunchMode.externalApplication);
         },
       ),
       const Divider(),
@@ -511,7 +512,8 @@ class _SettingsContentState extends State<SettingsContent> {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launchUrl(Links.googlePlayUrl);
+            await launchUrl(Links.googlePlayUrl,
+                mode: LaunchMode.externalApplication);
           },
         ),
         const Divider(),
@@ -526,7 +528,8 @@ class _SettingsContentState extends State<SettingsContent> {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launchUrl(Links.fDroidUrl);
+            await launchUrl(Links.fDroidUrl,
+                mode: LaunchMode.externalApplication);
           },
         ),
         const Divider(),
@@ -541,7 +544,7 @@ class _SettingsContentState extends State<SettingsContent> {
             color: theming.iconColor,
           ),
           onTap: () async {
-            await launchUrl(Links.webUrl);
+            await launchUrl(Links.webUrl, mode: LaunchMode.externalApplication);
           },
         ),
         const Divider(),

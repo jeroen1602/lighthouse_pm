@@ -178,7 +178,8 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         SimpleDialogOption(
           child: const Text("Open issue"),
           onPressed: () async {
-            await launchUrl(Links.stateIssueUrl);
+            await launchUrl(Links.stateIssueUrl,
+                mode: LaunchMode.externalApplication);
           },
         ),
         SimpleDialogOption(

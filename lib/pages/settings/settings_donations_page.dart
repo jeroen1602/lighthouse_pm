@@ -33,7 +33,8 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launchUrl(Links.githubSponsorsUrl);
+            await launchUrl(Links.githubSponsorsUrl,
+                mode: LaunchMode.externalApplication);
           },
         ),
         const Divider(),
@@ -49,7 +50,8 @@ class SettingsSupportPage extends BasePage {
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launchUrl(Links.paypalMeUrl);
+            await launchUrl(Links.paypalMeUrl,
+                mode: LaunchMode.externalApplication);
           },
         ),
         const Divider(),
