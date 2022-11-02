@@ -64,7 +64,7 @@ class PermissionsAlertWidget extends StatelessWidget {
       return showDialog(
           context: context,
           builder: (final BuildContext context) {
-            return PermissionsAlertWidget(deviceInto.version.sdkInt ?? 0);
+            return PermissionsAlertWidget(deviceInto.version.sdkInt);
           }).then((final value) {
         if (value is bool) {
           return value;

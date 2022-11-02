@@ -200,7 +200,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 30;
+    fakeVersion.androidDeviceInfo.setSdkInt(30);
     fake.status = PermissionStatus.granted;
     expect(await BLEPermissionsHelper.hasBLEPermissions(),
         PermissionStatus.granted);
@@ -221,7 +221,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 31;
+    fakeVersion.androidDeviceInfo.setSdkInt(31);
 
     final permissions = [Permission.bluetoothScan, Permission.bluetoothConnect];
     final states = [
@@ -257,7 +257,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 30;
+    fakeVersion.androidDeviceInfo.setSdkInt(30);
 
     fake.status = PermissionStatus.granted;
     expect(await BLEPermissionsHelper.requestBLEPermissions(),
@@ -280,7 +280,7 @@ void main() {
     final fakeVersion = FakePlatformVersions();
     DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.fakeVersion.sdkInt = 31;
+    fakeVersion.androidDeviceInfo.setSdkInt(31);
 
     final permissions = [Permission.bluetoothScan, Permission.bluetoothConnect];
     final states = [

@@ -70,7 +70,7 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
           context: context,
           builder: (final BuildContext context) {
             return PermanentPermissionDeniedAlertWidget(
-                deviceInto.version.sdkInt ?? 0);
+                deviceInto.version.sdkInt);
           }).then((final value) {
         if (value is bool) {
           return value;

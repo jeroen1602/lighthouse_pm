@@ -267,11 +267,13 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     PackageInfo.setMockInitialValues(
-        appName: "Lighthouse pm",
-        packageName: "com.jeroen1602.lighthouse_pm",
-        version: "fake-version",
-        buildNumber: "-9",
-        buildSignature: "SIGN_HERE_PLEASE");
+      appName: "Lighthouse pm",
+      packageName: "com.jeroen1602.lighthouse_pm",
+      version: "fake-version",
+      buildNumber: "-9",
+      buildSignature: "SIGN_HERE_PLEASE",
+      installerStore: "UNIT_TESTS",
+    );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -301,11 +303,13 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     PackageInfo.setMockInitialValues(
-        appName: "Lighthouse pm",
-        packageName: "com.jeroen1602.lighthouse_pm",
-        version: "fake-version",
-        buildNumber: "-9",
-        buildSignature: "SIGN_HERE_PLEASE");
+      appName: "Lighthouse pm",
+      packageName: "com.jeroen1602.lighthouse_pm",
+      version: "fake-version",
+      buildNumber: "-9",
+      buildSignature: "SIGN_HERE_PLEASE",
+      installerStore: "UNIT_TESTS",
+    );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
@@ -339,11 +343,13 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     PackageInfo.setMockInitialValues(
-        appName: "Lighthouse pm",
-        packageName: "com.jeroen1602.lighthouse_pm",
-        version: "fake-version",
-        buildNumber: "-9",
-        buildSignature: "SIGN_HERE_PLEASE");
+      appName: "Lighthouse pm",
+      packageName: "com.jeroen1602.lighthouse_pm",
+      version: "fake-version",
+      buildNumber: "-9",
+      buildSignature: "SIGN_HERE_PLEASE",
+      installerStore: "UNIT_TESTS",
+    );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);

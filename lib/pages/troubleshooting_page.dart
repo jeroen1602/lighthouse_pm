@@ -74,7 +74,7 @@ class TroubleshootingContentWidget extends StatelessWidget
                   if (!snapshot.hasData) {
                     return Container();
                   } else {
-                    final sdkInt = snapshot.requireData.version.sdkInt ?? 0;
+                    final sdkInt = snapshot.requireData.version.sdkInt;
                     return Column(
                       children: [
                         if (sdkInt >= 31)

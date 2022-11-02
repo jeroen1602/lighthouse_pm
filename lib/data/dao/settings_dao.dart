@@ -29,6 +29,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   static const groupShowOfflineWarningId = 6;
   static const updateIntervalId = 7;
   static const appStyleId = 8;
+
   // endregion
 
   Stream<LighthousePowerState> getSleepStateAsStream(
@@ -206,7 +207,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (SharedPlatform.isAndroid) {
       final android = await deviceInfo.androidInfo;
-      if ((android.version.sdkInt ?? 0) >= 29 /* Android 10 */) {
+      if (android.version.sdkInt >= 29 /* Android 10 */) {
         return true;
       }
     } else if (SharedPlatform.isIOS) {
@@ -271,7 +272,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     if (SharedPlatform.isLinux ||
         SharedPlatform.isWindows ||
         SharedPlatform.isAndroid &&
-            ((await deviceInfo.androidInfo).version.sdkInt ?? 0) >=
+            (await deviceInfo.androidInfo).version.sdkInt >=
                 31 /* Android 12 */) {
       styles.add(AppStyle.materialDynamic);
     }
