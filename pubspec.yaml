@@ -50,6 +50,9 @@ dependencies:
   intl: ^0.17.0
   device_info_plus: ^8.0.0
   meta: ^1.8.0
+  flutter_markdown: ^0.6.12
+  characters: ^1.2.1
+  markdown: ^6.0.1
   # Android/ iOS
   flutter_blue_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end
@@ -118,6 +121,8 @@ flutter:
     - assets/images/f-droid-logo.svg
     - assets/images/paypal.svg
     - assets/images/github-sponsors.svg
+    - assets/pages/privacy_v1.1_en.md
+    - assets/pages/privacy_v1.0_en.md
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
