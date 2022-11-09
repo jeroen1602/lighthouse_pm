@@ -5,47 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/shared/shared_platform"
+  - package-ecosystem: "gradle"
+    directory: "/android"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/shared/shared_platform"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_back_end"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_logger"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_provider"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_test_helper"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_back_ends/bluez_back_end"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_back_ends/fake_back_end"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/lighthouse_provider/lighthouse_providers"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows/"
     schedule:
       interval: "weekly"
