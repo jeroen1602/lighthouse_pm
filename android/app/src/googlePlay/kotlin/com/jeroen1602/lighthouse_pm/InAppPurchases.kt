@@ -6,8 +6,10 @@ import com.android.billingclient.api.*
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.reflect.KSuspendFunction3
@@ -132,91 +134,101 @@ class InAppPurchases {
             }
             return
         }
-        val skus = querySkuDetails();
-        if (skus == null || skus.isEmpty()) {
+        val products = queryProductDetails()
+        if (products == null || products.isEmpty()) {
             withContext(Dispatchers.Main) {
                 result.success(emptyList<Unit>())
             }
             return
         }
-        // Convert skus
+        // Convert products
         withContext(Dispatchers.Main) {
-            result.success(skusToJson(skus))
+            result.success(productsToJson(products))
         }
     }
 
     /**
-     * Convert a [SkuDetails] to a [Map] with [String] keys and [Any] values for sending through
+     * Convert a [ProductDetails] to a [Map] with [String] keys and [Any] values for sending through
      * a Flutter [MethodChannel]
      *
-     * @param sku The [SkuDetails] to convert.
+     * @param product The [ProductDetails] to convert.
      * @return A [Map] with the needed keys and values.
-     * @see skusToJson
+     * @see productsToJson
      */
-    private fun skuToJson(sku: SkuDetails): Map<String, Any> {
+    private fun productToJson(product: ProductDetails): Map<String, Any> {
         return mapOf(
-            Pair("price", sku.price),
-            Pair("id", sku.sku),
-            Pair("title", sku.description),
-            Pair("originalPrice", sku.originalPrice),
-            // TODO: bought info?
+            Pair("price", product.oneTimePurchaseOfferDetails?.formattedPrice ?: "unknown"),
+            Pair("id", product.productId),
+            Pair("title", product.description),
+            Pair("priceMicros", product.oneTimePurchaseOfferDetails?.priceAmountMicros ?: 0),
         )
     }
 
     /**
-     * Convert a [List] of [SkuDetails] to a [List] of [Map] for sending over a Flutter
+     * Convert a [List] of [ProductDetails] to a [List] of [Map] for sending over a Flutter
      * [MethodChannel]
      *
-     * @param skus The [List] of [SkuDetails] to convert.
+     * @param products The [List] of [ProductDetails] to convert.
      * @return A [List] of [Map]s with the needed keys and values.
-     * @see skuToJson
+     * @see productToJson
      */
-    private fun skusToJson(skus: List<SkuDetails>): List<Map<String, Any>> {
-        return skus.map { skuToJson(it) }
+    private fun productsToJson(products: List<ProductDetails>): List<Map<String, Any>> {
+        return products.map { productToJson(it) }
     }
 
     /**
-     * Query a [List] of [SkuDetails] with all the skus available to this app.
+     * Query a [List] of [ProductDetails] with all the products available to this app.
      *
-     * @return A [List] of [SkuDetails] if nothing went wrong, else `null`.
+     * @return A [List] of [ProductDetails] if nothing went wrong, else `null`.
      */
-    private suspend fun querySkuDetails(): List<SkuDetails>? {
-        val skuDetailsResult = withContext(Dispatchers.IO) {
-            billingClient.querySkuDetails(SKU_DETAILS)
+    private suspend fun queryProductDetails(): List<ProductDetails>? {
+
+        val productDetailsResult = withContext(Dispatchers.IO) {
+            billingClient.queryProductDetails(PRODUCT_DETAILS)
         }
 
-        if (skuDetailsResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+        if (productDetailsResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
             Log.e(
                 TAG,
-                "Could not get SKU details because: ${skuDetailsResult.billingResult.debugMessage}"
+                "Could not get product details because: ${productDetailsResult.billingResult.debugMessage}"
             )
-            return null;
+            return null
         }
-        return skuDetailsResult.skuDetailsList
+        return productDetailsResult.productDetailsList
     }
 
     /**
-     * Query a single [SkuDetails] based on it's unique id.
+     * Query a single [ProductDetails] based on it's unique id.
      *
-     * @param skuId The id of the sku to query.
-     * @return The [SkuDetails] if found, else `null`.
+     * @param productId The id of the product to query.
+     * @return The [ProductDetails] if found, else `null`.
      */
-    private suspend fun querySingleSkuDetail(skuId: String): SkuDetails? {
-        val skuDetailsResult = withContext(Dispatchers.IO) {
-            billingClient.querySkuDetails(
-                SkuDetailsParams.newBuilder().setType(BillingClient.SkuType.INAPP)
-                    .setSkusList(listOf(skuId))
+    private suspend fun querySingleProductDetail(productId: String): ProductDetails? {
+
+        val productDetailsResult = withContext(Dispatchers.IO) {
+            billingClient.queryProductDetails(
+                QueryProductDetailsParams.newBuilder()
+                    .setProductList(
+                        listOf(
+                            QueryProductDetailsParams.Product.newBuilder()
+                                .setProductType(BillingClient.ProductType.INAPP)
+                                .setProductId(productId)
+                                .build()
+                        )
+                    )
                     .build()
             )
         }
-        if (skuDetailsResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+
+        if (productDetailsResult.billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
             Log.e(
                 TAG,
-                "Could not get SKU details because: ${skuDetailsResult.billingResult.debugMessage}"
+                "Could not get product details because: ${productDetailsResult.billingResult.debugMessage}"
             )
-            return null;
+            return null
         }
-        val results = skuDetailsResult.skuDetailsList;
+
+        val results = productDetailsResult.productDetailsList
         if (results == null || results.isEmpty()) {
             return null
         }
@@ -231,8 +243,8 @@ class InAppPurchases {
      * @param result the Flutter [MethodChannel.Result] that will be called for the result.
      */
     private suspend fun startBillingFlow(call: MethodCall, result: MethodChannel.Result) {
-        val skuId = call.argument<String?>("id")
-        if (skuId == null) {
+        val productId = call.argument<String?>("id")
+        if (productId == null) {
             withContext(Dispatchers.Main) {
                 result.error(
                     "${ErrorCodes.MISSING_ARGUMENT.ordinal}",
@@ -253,18 +265,25 @@ class InAppPurchases {
             }
             return
         }
-        val skuDetails = querySingleSkuDetail(skuId)
-        if (skuDetails == null) {
+        val productDetails = querySingleProductDetail(productId)
+        if (productDetails == null) {
             withContext(Dispatchers.Main) {
                 result.error(
-                    "${ErrorCodes.COULD_NOT_GET_SKU_DETAILS.ordinal}",
-                    "Could not get sku details",
+                    "${ErrorCodes.COULD_NOT_GET_PRODUCT_DETAILS.ordinal}",
+                    "Could not get product details",
                     null
                 )
             }
             return
         }
-        val flowParams = BillingFlowParams.newBuilder().setSkuDetails(skuDetails).build()
+        val flowParams = BillingFlowParams.newBuilder().setIsOfferPersonalized(false)
+            .setProductDetailsParamsList(
+                listOf(
+                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                        .setProductDetails(productDetails)
+                        .build()
+                )
+            ).build()
         val responseCode = billingClient.launchBillingFlow(activity, flowParams)
         if (responseCode.responseCode != BillingClient.BillingResponseCode.OK) {
             Log.w(TAG, "Flow unsuccessful ${responseCode.debugMessage}")
@@ -291,7 +310,11 @@ class InAppPurchases {
             }
             return
         }
-        val purchases = billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP)
+        val purchases = billingClient.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
         handlePurchases(purchases.billingResult, purchases.purchasesList)
         withContext(Dispatchers.Main) {
             result.success(null)
@@ -342,21 +365,30 @@ class InAppPurchases {
     companion object {
         private const val IAP_ID = "com.jeroen1602.lighthouse_pm/IAP"
 
-        private val SKU_LIST = listOf(
-            "com.jeroen1602.lighthouse_pm.donate2",
-            "com.jeroen1602.lighthouse_pm.donate5",
-            "com.jeroen1602.lighthouse_pm.donate10"
+        private val PRODUCT_LIST = listOf(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .setProductId("com.jeroen1602.lighthouse_pm.donate2")
+                .build(),
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .setProductId("com.jeroen1602.lighthouse_pm.donate5")
+                .build(),
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .setProductId("com.jeroen1602.lighthouse_pm.donate10")
+                .build(),
         )
-        private val SKU_DETAILS =
-            SkuDetailsParams.newBuilder().setType(BillingClient.SkuType.INAPP).setSkusList(SKU_LIST)
-                .build()
+
+        private val PRODUCT_DETAILS =
+            QueryProductDetailsParams.newBuilder().setProductList(PRODUCT_LIST).build()
 
         private val TAG = InAppPurchases::class.java.name
 
         enum class ErrorCodes {
             COULD_NOT_CONNECT,
             MISSING_ARGUMENT,
-            COULD_NOT_GET_SKU_DETAILS,
+            COULD_NOT_GET_PRODUCT_DETAILS,
             OTHER_ERROR
         }
 

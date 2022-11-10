@@ -49,19 +49,7 @@ class InAppPurchases {
   ///
   int _sortInAppPurchases(
       final InAppPurchaseItem a, final InAppPurchaseItem b) {
-    final aWithoutEuro = a.originalPrice
-        .replaceAll("€", "")
-        .replaceAll(".", "")
-        .replaceAll(",", ".")
-        .trim();
-    final bWithoutEuro = b.originalPrice
-        .replaceAll("€", "")
-        .replaceAll(".", "")
-        .replaceAll(",", ".")
-        .trim();
-    final aAsNumber = double.tryParse(aWithoutEuro);
-    final bASNumber = double.tryParse(bWithoutEuro);
-    return ((aAsNumber ?? 0.0) - (bASNumber ?? 0.0)).toInt();
+    return a.priceMicros.compareTo(b.priceMicros);
   }
 
   ///

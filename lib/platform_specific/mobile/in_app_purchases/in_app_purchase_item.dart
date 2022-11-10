@@ -2,15 +2,15 @@ class InAppPurchaseItem {
   final String id;
   final String price;
   final String title;
-  final String originalPrice;
+  final int priceMicros;
 
-  InAppPurchaseItem(this.id, this.price, this.title, this.originalPrice);
+  const InAppPurchaseItem(this.id, this.price, this.title, this.priceMicros);
 
   factory InAppPurchaseItem.fromMap(final Map<dynamic, dynamic> value) {
     final id = value["id"] as String;
     final price = value["price"] as String;
     final title = value["title"] as String;
-    final originalPrice = value["originalPrice"] as String;
-    return InAppPurchaseItem(id, price, title, originalPrice);
+    final priceMicros = value["priceMicros"] as int;
+    return InAppPurchaseItem(id, price, title, priceMicros);
   }
 }
