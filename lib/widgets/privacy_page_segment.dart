@@ -48,7 +48,7 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
   Future<String> _loadMarkdown(final BuildContext context, final String version,
       [final String language = "en"]) async {
     return await DefaultAssetBundle.of(context)
-        .loadString('assets/pages/privacy_v${version}_$language.md');
+        .loadString('assets/pages/privacy/v${version}_$language.md');
   }
 
   @override

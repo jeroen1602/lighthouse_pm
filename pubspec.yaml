@@ -120,7 +120,7 @@ flutter:
     - assets/images/f-droid-logo.svg
     - assets/images/paypal.svg
     - assets/images/github-sponsors.svg
-    - assets/pages/
+    - assets/pages/privacy/
     - assets/pages/help/
 
 
