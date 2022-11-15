@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
-import 'package:lighthouse_pm/theming.dart';
-import 'package:lighthouse_pm/widgets/markdown/super_script_syntax.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:lighthouse_pm/intl/ordinal.dart';
+import 'package:lighthouse_pm/theming.dart';
+import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
 
 class PrivacyPageSegment extends StatefulWidget {
   const PrivacyPageSegment(
@@ -80,13 +79,7 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
                   styleSheet: MarkdownStyleSheet.fromTheme(theme),
                   inlineSyntaxes: [SuperscriptSyntax()],
                   selectable: true,
-                  onTapLink: (final String text, final String? href,
-                      final String title) {
-                    if (href != null) {
-                      launchUrlString(href,
-                          mode: LaunchMode.externalApplication);
-                    }
-                  },
+                  onTapLink: markdownOpenLinkOnTap,
                 );
               },
             )),

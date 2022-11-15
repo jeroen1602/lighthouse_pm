@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lighthouse_pm/widgets/markdown/super_script_syntax.dart';
+import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
 
 void main() {
   test('Should generate correct super script', () {
