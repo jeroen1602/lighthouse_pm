@@ -1,5 +1,4 @@
-import 'package:characters/characters.dart';
-import 'package:markdown/markdown.dart' as md;
+part of lighthouse_markdown;
 
 ///
 /// Convert the markdown content inside the `<sup>` tag into actual super

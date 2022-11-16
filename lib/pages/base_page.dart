@@ -17,8 +17,7 @@ abstract class BasePage extends StatelessWidget {
   final bool replace;
 
   const BasePage(
-      {final Key? key, this.shortcutHandleArgument, this.replace = false})
-      : super(key: key);
+      {this.shortcutHandleArgument, this.replace = false, super.key});
 
   @override
   Widget build(final BuildContext context) {
