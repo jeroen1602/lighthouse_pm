@@ -1,7 +1,11 @@
 package com.jeroen1602.lighthouse_pm
 
+import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -51,11 +55,20 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun enableBluetooth(): Boolean {
-        val adapter = BluetoothAdapter.getDefaultAdapter()
-        if (!adapter.isEnabled) {
-            return adapter.enable()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Check to see if the activity is allowed. This check is only needed on Android 12 and above.
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                return false
+            }
         }
-        return false;
+        val intent = Intent()
+        intent.action = BluetoothAdapter.ACTION_REQUEST_ENABLE
+        startActivity(intent)
+        return true
     }
 
     private fun openLocationSettings() {
