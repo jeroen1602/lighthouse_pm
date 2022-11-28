@@ -42,7 +42,7 @@ dependencies:
   vibration: ^1.7.6
   toast: ^0.3.0
   drift: ^2.1.0
-  sqlite3_flutter_libs: ^0.5.11+1
+  sqlite3_flutter_libs: ^0.5.12
   path_provider: ^2.0.11
   path: ^1.8.2
   provider: ^6.0.4
