@@ -813,7 +813,7 @@ packages:
       name: sqlite3_flutter_libs
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.11+1"
+    version: "0.5.12"
   sqlparser:
     dependency: transitive
     description:
