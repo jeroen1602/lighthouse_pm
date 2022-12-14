@@ -37,7 +37,7 @@ dependencies:
   #    git:
   #      url: https://github.com/adarsh-technocrat/flutter-icons
   #      ref: null-safety-migration
-  mutex: ^3.0.0
+  mutex: ^3.0.1
   convert: ^3.1.1
   vibration: ^1.7.6
   toast: ^0.3.0
