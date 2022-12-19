@@ -45,7 +45,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.12
   path_provider: ^2.0.11
   path: ^1.8.2
-  provider: ^6.0.4
+  provider: ^6.0.5
   tuple: ^2.0.1
   intl: ^0.17.0
   device_info_plus: ^8.0.0
