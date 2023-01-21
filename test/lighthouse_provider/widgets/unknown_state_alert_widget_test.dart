@@ -21,7 +21,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -54,7 +55,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -84,7 +86,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -115,7 +118,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      future = UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -144,7 +148,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      future = UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -174,7 +179,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      future = UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -205,7 +211,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      future = UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -231,7 +238,8 @@ void main() {
     SharedPlatform.overridePlatform = null;
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -276,7 +284,8 @@ void main() {
     );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -312,7 +321,8 @@ void main() {
     );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));
@@ -352,7 +362,8 @@ void main() {
     );
 
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device, 0xFF);
+      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
+          currentState: 0xFF);
     }));
 
     await tester.tap(find.text('X'));

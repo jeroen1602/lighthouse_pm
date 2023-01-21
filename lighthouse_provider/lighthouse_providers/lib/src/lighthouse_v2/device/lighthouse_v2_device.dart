@@ -6,6 +6,7 @@ part of lighthouse_v2_device_provider;
 ///The characteristic that handles the power state of the device.
 
 class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
+    with StatefulLighthouseDevice
     implements DeviceWithExtensions {
   static const String powerCharacteristicUUID =
       '00001525-1212-efde-1523-785feabcd124';

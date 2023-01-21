@@ -79,7 +79,6 @@ ButtonStyle? getButtonStyleFromState(
     case LighthousePowerState.unknown:
       return ElevatedButton.styleFrom(shape: const CircleBorder());
   }
-  return null;
 }
 
 ButtonStyle? getButtonStyleFromDeviceExtension(
