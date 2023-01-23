@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
+import 'package:lighthouse_pm/data/helper_structures/lighthouse_providers.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
@@ -12,7 +12,7 @@ typedef MainPageSettingsWidgetBuilder = Widget Function(
 class MainPageSettings {
   const MainPageSettings._({
     required this.sleepState,
-    required this.viveBaseStationsEnabled,
+    required this.enabledDeviceProviders,
     required this.scanDuration,
     required this.updateInterval,
     required this.shortcutEnabled,
@@ -20,7 +20,7 @@ class MainPageSettings {
   });
 
   final LighthousePowerState sleepState;
-  final bool viveBaseStationsEnabled;
+  final List<LighthouseProviders> enabledDeviceProviders;
   final int scanDuration;
   final int updateInterval;
   final bool shortcutEnabled;
@@ -28,7 +28,7 @@ class MainPageSettings {
 
   static const defaultMainPageSettings = MainPageSettings._(
     sleepState: LighthousePowerState.sleep,
-    viveBaseStationsEnabled: false,
+    enabledDeviceProviders: SettingsDao.defaultDeviceProviders,
     scanDuration: 5,
     updateInterval: 1,
     shortcutEnabled: false,
@@ -38,67 +38,69 @@ class MainPageSettings {
   static Stream<MainPageSettings> mainPageSettingsStream(
       final LighthousePMBloc bloc) {
     LighthousePowerState sleepState = defaultMainPageSettings.sleepState;
-    bool viveBaseStationsEnabled =
-        defaultMainPageSettings.viveBaseStationsEnabled;
+    List<LighthouseProviders> enabledDeviceProviders =
+        defaultMainPageSettings.enabledDeviceProviders;
     int scanDuration = defaultMainPageSettings.scanDuration;
     int updateInterval = defaultMainPageSettings.updateInterval;
     bool shortcutEnabled = defaultMainPageSettings.shortcutEnabled;
     bool groupShowOfflineWarning =
         defaultMainPageSettings.groupShowOfflineWarning;
 
-    return MergeStream<Tuple2<int, dynamic>>([
+    return MergeStream<Tuple2<SettingsIds, dynamic>>([
       bloc.settings
           .getSleepStateAsStream()
-          .map((final state) => Tuple2(SettingsDao.defaultSleepStateId, state)),
-      bloc.settings.getViveBaseStationsEnabledStream().map(
-          (final state) => Tuple2(SettingsDao.viveBaseStationEnabledId, state)),
+          .map((final state) => Tuple2(SettingsIds.defaultSleepStateId, state)),
+      bloc.settings.getEnabledDeviceProvidersStream().map(
+          (final state) => Tuple2(SettingsIds.deviceProvidersEnabled, state)),
       bloc.settings
           .getScanDurationsAsStream(defaultValue: scanDuration)
-          .map((final state) => Tuple2(SettingsDao.scanDurationId, state)),
+          .map((final state) => Tuple2(SettingsIds.scanDurationId, state)),
       bloc.settings
           .getUpdateIntervalAsStream(defaultUpdateInterval: updateInterval)
-          .map((final state) => Tuple2(SettingsDao.updateIntervalId, state)),
+          .map((final state) => Tuple2(SettingsIds.updateIntervalId, state)),
       bloc.settings
           .getShortcutsEnabledStream()
-          .map((final state) => Tuple2(SettingsDao.shortcutEnabledId, state)),
+          .map((final state) => Tuple2(SettingsIds.shortcutEnabledId, state)),
       bloc.settings.getGroupOfflineWarningEnabledStream().map((final state) =>
-          Tuple2(SettingsDao.groupShowOfflineWarningId, state)),
+          Tuple2(SettingsIds.groupShowOfflineWarningId, state)),
     ]).map((final event) {
       switch (event.item1) {
-        case SettingsDao.defaultSleepStateId:
+        case SettingsIds.defaultSleepStateId:
           if (event.item2 != null) {
             sleepState = event.item2 as LighthousePowerState;
           }
           break;
-        case SettingsDao.viveBaseStationEnabledId:
+        case SettingsIds.deviceProvidersEnabled:
           if (event.item2 != null) {
-            viveBaseStationsEnabled = event.item2 as bool;
+            enabledDeviceProviders = event.item2 as List<LighthouseProviders>;
           }
           break;
-        case SettingsDao.scanDurationId:
+        case SettingsIds.scanDurationId:
           if (event.item2 != null) {
             scanDuration = event.item2 as int;
           }
           break;
-        case SettingsDao.updateIntervalId:
+        case SettingsIds.updateIntervalId:
           if (event.item2 != null) {
             updateInterval = event.item2 as int;
           }
           break;
-        case SettingsDao.shortcutEnabledId:
+        case SettingsIds.shortcutEnabledId:
           if (event.item2 != null) {
             shortcutEnabled = event.item2 as bool;
           }
           break;
-        case SettingsDao.groupShowOfflineWarningId:
+        case SettingsIds.groupShowOfflineWarningId:
           if (event.item2 != null) {
             groupShowOfflineWarning = event.item2 as bool;
           }
           break;
+        default:
+          assert(false, "Case not handled ${event.item1.name}");
       }
       return MainPageSettings._(
         sleepState: sleepState,
-        viveBaseStationsEnabled: viveBaseStationsEnabled,
+        enabledDeviceProviders: enabledDeviceProviders,
         scanDuration: scanDuration,
         updateInterval: updateInterval,
         shortcutEnabled: shortcutEnabled,
@@ -118,14 +120,6 @@ class MainPageSettings {
       initialData: MainPageSettings.defaultMainPageSettings,
       builder: (final BuildContext context,
           final AsyncSnapshot<MainPageSettings> settingsSnapshot) {
-        // Not sure if I want to keep this logic in here.
-        if (settingsSnapshot.data?.viveBaseStationsEnabled ?? false) {
-          LighthouseProvider.instance
-              .addProvider(ViveBaseStationDeviceProvider.instance);
-        } else {
-          LighthouseProvider.instance
-              .removeProvider(ViveBaseStationDeviceProvider.instance);
-        }
         return builder(context, settingsSnapshot.data);
       },
     );

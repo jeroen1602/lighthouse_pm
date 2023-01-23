@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/dao/settings_dao.dart';
 import 'package:lighthouse_pm/data/database.dart';
+import 'package:lighthouse_pm/data/helper_structures/lighthouse_providers.dart';
 import 'package:lighthouse_pm/data/local/app_style.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:lighthouse_pm/widgets/dao_data_create_alert_widget.dart';
@@ -17,27 +18,23 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 
   _SimpleSettingConverter(this.bloc);
 
+  SettingsIds? getSettingFromId(final int id) {
+    return SettingsIds.values
+        .cast<SettingsIds?>()
+        .firstWhere((final e) => e?.value == id, orElse: () => null);
+  }
+
   String convertSettingIdToString(final int id) {
-    switch (id) {
-      case SettingsDao.defaultSleepStateId:
-        return 'DefaultSleepStateId';
-      case SettingsDao.viveBaseStationEnabledId:
-        return 'ViveBaseStationEnabledId';
-      case SettingsDao.scanDurationId:
-        return 'ScanDurationId';
-      case SettingsDao.preferredThemeId:
-        return 'PreferredThemeId';
-      case SettingsDao.shortcutEnabledId:
-        return 'ShortcutsEnabledId';
-      case SettingsDao.groupShowOfflineWarningId:
-        return 'GroupShowOfflineWarningId';
-      case SettingsDao.updateIntervalId:
-        return 'UpdateIntervalId';
-      case SettingsDao.appStyleId:
-        return 'appStyleId';
-      default:
-        return 'Unknown';
+    final setting = getSettingFromId(id);
+    if (setting != null) {
+      var output = setting.name;
+      if (setting.deprecated) {
+        output += ' (Deprecated)';
+      }
+      return output;
     }
+
+    return 'Unknown';
   }
 
   String convertToBoolean(final String? data) {
@@ -53,8 +50,9 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
   }
 
   String convertDataToString(final int settingId, final String? data) {
-    switch (settingId) {
-      case SettingsDao.defaultSleepStateId:
+    final setting = getSettingFromId(settingId);
+    switch (setting) {
+      case SettingsIds.defaultSleepStateId:
         if (data == null) {
           return 'DEFAULT';
         }
@@ -67,9 +65,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         } on ArgumentError {
           return 'NOT-LEGAL-POWER-STATE';
         }
-      case SettingsDao.viveBaseStationEnabledId:
+      // ignore: deprecated_member_use_from_same_package
+      case SettingsIds.viveBaseStationEnabledId:
         return convertToBoolean(data);
-      case SettingsDao.scanDurationId:
+      case SettingsIds.scanDurationId:
         if (data == null) {
           return 'DEFAULT';
         }
@@ -78,7 +77,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
           return 'COULD-NOT-PARSE-VALUE';
         }
         return '$value seconds';
-      case SettingsDao.preferredThemeId:
+      case SettingsIds.preferredThemeId:
         if (data == null) {
           return 'DEFAULT';
         }
@@ -91,11 +90,11 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         }
         final themeMode = ThemeMode.values[value];
         return themeMode.toString();
-      case SettingsDao.shortcutEnabledId:
+      case SettingsIds.shortcutEnabledId:
         return convertToBoolean(data);
-      case SettingsDao.groupShowOfflineWarningId:
+      case SettingsIds.groupShowOfflineWarningId:
         return convertToBoolean(data);
-      case SettingsDao.updateIntervalId:
+      case SettingsIds.updateIntervalId:
         if (data == null) {
           return 'DEFAULT';
         }
@@ -104,7 +103,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
           return 'COULD-NOT-PARSE-VALUE';
         }
         return '$value seconds';
-      case SettingsDao.appStyleId:
+      case SettingsIds.appStyleId:
         if (data == null) {
           return 'DEFAULT';
         }
@@ -117,7 +116,20 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         }
         final appStyle = AppStyle.values[value];
         return appStyle.toString();
-      default:
+      case SettingsIds.deviceProvidersEnabled:
+        if (data == null) {
+          return 'DEFAULT';
+        }
+        final items = data
+            .split(",")
+            .map((final e) => int.tryParse(e, radix: 10))
+            .where((final e) =>
+                e != null && e >= 0 && e < LighthouseProviders.values.length)
+            .cast<int>()
+            .map((final e) => '${LighthouseProviders.values[e].name} ($e)')
+            .join(", ");
+        return items;
+      case null:
         return 'UNKNOWN CONVERSION';
     }
   }

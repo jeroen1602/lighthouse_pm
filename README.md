@@ -9,7 +9,7 @@ And if your computer doesn't have a bluetooth adapter then it is useless. Sadly 
 to the system and thus can't be used for that. Fortunately most phones do have bluetooth support, so I made this app to
 easily change the power state of a Lighthouse.
 
-The app now also supports Vive Base stations, this is in Beta though.
+The app also supports Vive Base stations.
 
 <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/lighthouse_pm_screenshot_dark.png" alt="lighthouse pm in action" width="300"/>
 

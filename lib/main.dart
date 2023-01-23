@@ -1,16 +1,10 @@
-import 'package:bluez_back_end/bluez_back_end.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue_back_end/flutter_blue_back_end.dart';
-import 'package:flutter_web_bluetooth_back_end/flutter_web_bluetooth_back_end.dart';
-import 'package:lighthouse_logger/lighthouse_logger.dart';
-import 'package:lighthouse_pm/bloc/lighthouse_v2_bloc.dart';
-import 'package:lighthouse_pm/bloc/vive_base_station_bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/data/local/app_style.dart';
 import 'package:lighthouse_pm/data/local/theme_data_and_app_style_stream.dart';
-import 'package:lighthouse_pm/lighthouse_provider/widgets/vive_base_station_extra_info_alert_widget.dart';
+import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider_start.dart';
 import 'package:lighthouse_pm/pages/base_page.dart';
 import 'package:lighthouse_pm/pages/database_test_page.dart';
 import 'package:lighthouse_pm/pages/help_page.dart';
@@ -23,9 +17,6 @@ import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
-import 'package:lighthouse_provider/lighthouse_provider.dart';
-import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
-import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_platform/shared_platform.dart';
 
@@ -56,60 +47,9 @@ class MainApp extends StatelessWidget {
     final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
 
-    if (SharedPlatform.isIOS || SharedPlatform.isAndroid) {
-      LighthouseProvider.instance
-          .addBackEnd(FlutterBlueLighthouseBackEnd.instance);
-    }
-    if (SharedPlatform.isWeb) {
-      LighthouseProvider.instance
-          .addBackEnd(FlutterWebBluetoothBackEnd.instance);
-    }
-    if (SharedPlatform.isLinux) {
-      LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
-    }
-    if (!kReleaseMode) {
-      lighthouseLogger.onRecord.listen((final record) {
-        debugPrint("${record.loggerName}|${record.time}: ${record.message}");
-        if (record.error != null) {
-          debugPrint("Error: ${record.error}");
-        }
-        if (record.stackTrace != null) {
-          debugPrint("Trace: ${record.stackTrace.toString()}");
-        }
-      });
-      // Add this back if you need to test for devices you don't own.
-      // you'll also need to
-      // import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
-
-      // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
-    }
-
-    LighthouseProvider.instance
-        .addProvider(LighthouseV2DeviceProvider.instance);
-
-    ViveBaseStationDeviceProvider.instance
-        .setPersistence(ViveBaseStationBloc(mainBloc));
-    ViveBaseStationDeviceProvider.instance
-        .setRequestPairIdCallback<BuildContext>(
-            (final BuildContext? context, final pairIdHint) async {
-      assert(context != null, "Context should not be null");
-      assert(context is BuildContext,
-          "context should be of the type BuildContext");
-      if (context == null) {
-        return null;
-      }
-      return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-          context, pairIdHint);
-    });
-    LighthouseV2DeviceProvider.instance
-        .setPersistence(LighthouseV2Bloc(mainBloc));
-    LighthouseV2DeviceProvider.instance
-        .setCreateShortcutCallback((final mac, final name) async {
-      if (SharedPlatform.isAndroid) {
-        await AndroidLauncherShortcut.instance
-            .requestShortcutLighthouse(mac, name);
-      }
-    });
+    LighthouseProviderStart.loadLibrary();
+    LighthouseProviderStart.setupPersistence(mainBloc);
+    LighthouseProviderStart.setupCallbacks();
 
     if (BuildOptions.includeGooglePlayInAppPurchases) {
       InAppPurchases.instance

@@ -351,7 +351,7 @@ class _SettingsContentState extends State<SettingsContent> {
     // region Vive Base station
     items.addAll([
       ListTile(
-        title: Text('Vive Base station | BETA', style: headTheme),
+        title: Text('Vive Base station', style: headTheme),
       ),
       const Divider(thickness: 1.5),
       ListTile(
@@ -369,30 +369,6 @@ class _SettingsContentState extends State<SettingsContent> {
             Toast.show('Cleared up all Base station ids',
                 duration: Toast.lengthShort, gravity: Toast.bottom);
           }
-        },
-      ),
-      const Divider(),
-      StreamBuilder<bool>(
-        stream: blocWithoutListen.settings.getViveBaseStationsEnabledStream(),
-        initialData: false,
-        builder:
-            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
-          return SwitchListTile(
-            title: const Text('BETA: enable support for Vive Base stations'),
-            value: snapshot.requireData,
-            onChanged: (enabled) async {
-              if (enabled) {
-                enabled = await ViveBaseStationBetaAlertWidget.showCustomDialog(
-                    context);
-              }
-              await blocWithoutListen.settings
-                  .setViveBaseStationEnabled(enabled);
-              if (enabled) {
-                Toast.show('Thanks for participating in the beta',
-                    duration: Toast.lengthShort, gravity: Toast.bottom);
-              }
-            },
-          );
         },
       ),
       const Divider(),
