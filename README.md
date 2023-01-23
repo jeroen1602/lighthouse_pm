@@ -84,11 +84,11 @@ follow the tutorial provided by the flutter_web_bluetooth library
 
 ### Linux Builds
 
-For linux builds you need to make sure that the sqlite3 dev library is installed on your system or else the app will 
-hang on booting.
+For linux builds you no longer need the sqlite3 dev library on your computer as it now comes with
+the `sqlite3_flutter_libs` library.
 
 The database for user settings is stored under `~/.local/share/lighthouse_pm/settings.sqlite` feel free to remove it if 
-you need to rest the settings.
+you need to reset the settings.
 
 ### Release build
 

@@ -3,7 +3,12 @@ import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:test/fake.dart';
+// Can't use the `tests` package because it depends on specific version of
+// `analyzer` and `drift_dev` requires a different version but upgrading the
+// `tests` version also upgrades `test_api` which then starts to conflict with
+// `flutter_tests`. So using `fake` from the `test_api` it is.
+// ignore: deprecated_member_use
+import 'package:test_api/fake.dart';
 
 @visibleForTesting
 class ViveBaseStationStorage {

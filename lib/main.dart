@@ -92,7 +92,9 @@ class MainApp extends StatelessWidget {
     ViveBaseStationDeviceProvider.instance
         .setRequestPairIdCallback<BuildContext>(
             (final BuildContext? context, final pairIdHint) async {
-      assert(context != null);
+      assert(context != null, "Context should not be null");
+      assert(context is BuildContext,
+          "context should be of the type BuildContext");
       if (context == null) {
         return null;
       }

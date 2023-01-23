@@ -49,7 +49,7 @@ class FakeMigrator extends Fake implements Migrator {
           "Could not find column '$oldName' in table: '${testTable.tableName}'");
     }
 
-    testColumn.columnName = column.escapedName;
+    testColumn.columnName = column.name;
   }
 
   @override
