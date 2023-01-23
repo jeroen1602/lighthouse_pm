@@ -22,7 +22,7 @@ dependencies:
 
 dev_dependencies:
   lints: ^2.0.1
-  test: ^1.21.5
+  test: ^1.21.4
   fake_back_end:
     path: ../lighthouse_back_ends/fake_back_end
   lighthouse_test_helper:
