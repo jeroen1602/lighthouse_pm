@@ -1,6 +1,6 @@
 Power management app to control the Valve Index® lighthouses from your phone.
 
-When exiting Steam-VR it sometimes happens that the lighthouses won't power down correctly. This app helps adres this problem, it allows you to find and connect to your lighthouses and change the power state manualy.
+When exiting Steam-VR it sometimes happens that the lighthouses won't power down correctly. This app helps address this problem, it allows you to find and connect to your lighthouses and change the power state manually.
 
-There is now also beta support for the Vive Base stations, don't forget to enable it in settings if needed.
+The app also supports Vive Base stations devices.
 

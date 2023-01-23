@@ -1,7 +1,6 @@
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/dialogs/enable_bluetooth_dialog_flow.dart';
 import 'package:lighthouse_pm/dialogs/location_permission_dialog_flow.dart';
@@ -162,25 +161,6 @@ class TroubleshootingContentWidget extends StatelessWidget
         leading: Icon(Icons.power, color: Colors.blue),
       ),
       const Divider(),
-      StreamBuilder<bool>(
-        initialData: false,
-        stream: WithBlocStateless.blocStatic(context, listen: false)
-            .settings
-            .getViveBaseStationsEnabledStream(),
-        builder:
-            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
-          final baseStationEnabled = snapshot.data ?? false;
-          return ListTile(
-              title: Text(baseStationEnabled
-                  ? 'Vive Base station support is still in beta'
-                  : 'Make sure that your lighthouses are V2 lighthouses and not V1/Vive'),
-              subtitle: Text(baseStationEnabled
-                  ? 'The Vive Base station support is still in beta so it might not work correctly.'
-                  : 'The Vive Base station support is still in beta and needs to be enabled.'),
-              leading: SvgPicture.asset("assets/images/app-icon.svg"));
-        },
-      ),
-      const Divider(),
       const ListTile(
           title: Text('You might be out of range'),
           subtitle: Text('Try moving closer to the lighthouses.'),
@@ -265,7 +245,8 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final theming = Theming.of(context);
+    final theme = Theme.of(context);
+    final theming = Theming.fromTheme(theme);
 
     return Row(
       children: [
@@ -284,7 +265,7 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
             shape: const CircleBorder(),
             child: Icon(
               actionIcon,
-              color: Colors.black,
+              color: theme.colorScheme.onPrimary,
               size: 24.0,
             )),
       ],
