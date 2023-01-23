@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/data/database.dart';
@@ -29,7 +31,10 @@ class LighthouseGroupWidget extends StatefulWidget with WithBlocStateless {
       required this.selectedDevices,
       required this.selectedGroup,
       this.sleepState = LighthousePowerState.sleep,
-      super.key});
+      super.key})
+      : hasStatelessDevices = devices.any((final element) =>
+            element is! StatefulLighthouseDevice &&
+            group.deviceIds.contains(element.deviceIdentifier.toString()));
 
   final GroupWithEntries group;
   final List<LighthouseDevice> devices;
@@ -40,6 +45,7 @@ class LighthouseGroupWidget extends StatefulWidget with WithBlocStateless {
   final VoidCallback onGroupSelected;
   final Set<LHDeviceIdentifier> selectedDevices;
   final Group? selectedGroup;
+  final bool hasStatelessDevices;
 
   bool isSelected() {
     final selected = isGroupSelected(group.deviceIds,
@@ -90,27 +96,43 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
         final powerStates = powerStatesSnapshot.data ?? {};
         final combinedPowerStateTuple = _getCombinedPowerState(powerStates);
         final averagePowerState = combinedPowerStateTuple.item2;
+        final stateButtonDisabled = onlineAndOfflineDevices.item2.isEmpty;
         return Column(
           children: [
             _LighthouseGroupWidgetHeader(
-              powerState: averagePowerState,
-              onSelected: widget.onGroupSelected,
-              selected: widget.isSelected(),
-              selecting: widget.selectedDevices.isNotEmpty ||
-                  widget.selectedGroup != null,
-              onPowerButtonPress: () async {
-                await _handleGroupPowerButton(
-                  combinedState: averagePowerState,
-                  isStateUniversal: combinedPowerStateTuple.item1,
-                  onlineDevices: onlineAndOfflineDevices.item2,
-                  hasOfflineDevices: onlineAndOfflineDevices.item1.isNotEmpty,
-                  states: powerStates.map(
-                      (final key, final value) => MapEntry(key, value.item2)),
-                );
-              },
-              group: widget.group.group,
-              stateButtonDisabled: onlineAndOfflineDevices.item2.isEmpty,
-            ),
+                onSelected: widget.onGroupSelected,
+                selected: widget.isSelected(),
+                selecting: widget.selectedDevices.isNotEmpty ||
+                    widget.selectedGroup != null,
+                group: widget.group.group,
+                action: widget.hasStatelessDevices
+                    ? _StatelessGroupPowerButton(
+                        stateButtonDisabled: stateButtonDisabled,
+                        onPress: (final LighthousePowerState newState) {
+                          return _handleStatelessGroupPowerButton(
+                              newState: newState == LighthousePowerState.sleep
+                                  ? widget.sleepState
+                                  : newState,
+                              onlineDevices: onlineAndOfflineDevices.item2,
+                              hasOfflineDevices:
+                                  onlineAndOfflineDevices.item1.isNotEmpty);
+                        },
+                      )
+                    : _StatefulGroupPowerButton(
+                        powerState: averagePowerState,
+                        onPowerButtonPress: () async {
+                          await _handleStatefulGroupPowerButton(
+                            combinedState: averagePowerState,
+                            isStateUniversal: combinedPowerStateTuple.item1,
+                            onlineDevices: onlineAndOfflineDevices.item2,
+                            hasOfflineDevices:
+                                onlineAndOfflineDevices.item1.isNotEmpty,
+                            states: powerStates.map((final key, final value) =>
+                                MapEntry(key, value.item2)),
+                          );
+                        },
+                        stateButtonDisabled: stateButtonDisabled,
+                      )),
             const Divider(thickness: 0.7),
             Container(
               margin: groupItemPadding,
@@ -158,14 +180,19 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
       final List<LighthouseDevice> devices) {
     final devicePowerStates = devices.map((final device) {
       final String deviceId = device.deviceIdentifier.toString();
-      return MergeStream([
-        Stream.value(MapEntry(
-            deviceId, const Tuple2(0xFF, LighthousePowerState.unknown))),
-        device.powerState.map((final event) {
-          return MapEntry(
-              deviceId, Tuple2(event, device.powerStateFromByte(event)));
-        })
-      ]);
+      if (device is StatefulLighthouseDevice) {
+        return MergeStream([
+          Stream.value(MapEntry(
+              deviceId, const Tuple2(0xFF, LighthousePowerState.unknown))),
+          device.powerState.map((final event) {
+            return MapEntry(
+                deviceId, Tuple2(event, device.powerStateFromByte(event)));
+          })
+        ]);
+      } else {
+        return Stream.value(MapEntry(
+            deviceId, const Tuple2(0xFF, LighthousePowerState.unknown)));
+      }
     });
     return Rx.combineLatestList(devicePowerStates).map((final items) {
       return Map.fromEntries(items);
@@ -195,10 +222,10 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
     final onlineDevices = onlineAndOfflineDevices.item2;
     for (final device in onlineDevices.asMap().entries) {
       final deviceId = device.value.deviceIdentifier.toString();
-      final powerState = powerStates[deviceId]?.item1 ?? 0xFF;
+      final powerState = powerStates[deviceId]?.item1;
       children.add(LighthouseWidgetContent(
         device.value,
-        powerState,
+        powerStateData: powerState,
         onSelected: () {
           widget.onSelectedDevice(device.value.deviceIdentifier);
         },
@@ -271,7 +298,7 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
 
   /// Handle the power button for a group. This will check the current state
   /// and switch over to the opposite one.
-  Future<void> _handleGroupPowerButton({
+  Future<void> _handleStatefulGroupPowerButton({
     required final LighthousePowerState combinedState,
     required final bool isStateUniversal,
     required final List<LighthouseDevice> onlineDevices,
@@ -323,14 +350,40 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
     await _switchStateAll(onlineDevices, newState, states);
   }
 
+  /// Handle the power button for a group. This will check the current state
+  /// and switch over to the opposite one.
+  Future<void> _handleStatelessGroupPowerButton({
+    required final LighthousePowerState newState,
+    required final List<LighthouseDevice> onlineDevices,
+    required final bool hasOfflineDevices,
+  }) async {
+    if (hasOfflineDevices && widget.showOfflineWarning) {
+      final returnValue =
+          await OfflineGroupItemAlertWidget.showCustomDialog(context);
+      if (returnValue.dialogCanceled) {
+        return; // The dialog was canceled so do nothing.
+      }
+      if (returnValue.disableWarning) {
+        // Disable the dialog in the future.
+        if (mounted) {
+          await widget
+              .blocWithoutListen(context)
+              .settings
+              .setGroupOfflineWarningEnabled(false);
+        }
+      }
+    }
+    await _switchStateAll(onlineDevices, newState);
+  }
+
   /// Switch the state of all the online devices.
   /// This will also check if the [LighthousePowerState.standby] is supported
   /// for the current device.
   Future<void> _switchStateAll(
     final List<LighthouseDevice> onlineDevices,
-    final LighthousePowerState newState,
-    final Map<String, LighthousePowerState> states,
-  ) async {
+    final LighthousePowerState newState, [
+    final Map<String, LighthousePowerState> states = const {},
+  ]) async {
     final List<Future<void>> futures = [];
     for (final device in onlineDevices) {
       final currentState = states[device.deviceIdentifier.toString()];
@@ -345,7 +398,7 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
         debugPrint(
             'The device doesn\'t support STANDBY so SLEEP will always be used.');
       }
-      futures.add(device.changeState(state));
+      futures.add(device.changeState(state, context));
     }
     await Future.wait(futures);
   }
@@ -358,22 +411,18 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
 class _LighthouseGroupWidgetHeader extends StatelessWidget {
   const _LighthouseGroupWidgetHeader({
     final Key? key,
-    required this.powerState,
-    required this.onPowerButtonPress,
     required this.onSelected,
     required this.selected,
     required this.selecting,
     required this.group,
-    required this.stateButtonDisabled,
+    required this.action,
   }) : super(key: key);
 
-  final LighthousePowerState powerState;
-  final VoidCallback onPowerButtonPress;
   final VoidCallback onSelected;
   final bool selected;
   final bool selecting;
   final Group group;
-  final bool stateButtonDisabled;
+  final Widget action;
 
   @override
   Widget build(final BuildContext context) {
@@ -396,14 +445,78 @@ class _LighthouseGroupWidgetHeader extends StatelessWidget {
                     style: theming.headline4,
                   ),
                 )),
-                LighthousePowerButtonWidget(
-                  powerState: powerState,
-                  onPress: onPowerButtonPress,
-                  disabled: stateButtonDisabled,
-                )
+                action,
               ],
             ),
           )),
+    );
+  }
+}
+
+class _StatefulGroupPowerButton extends StatefulWidget {
+  const _StatefulGroupPowerButton(
+      {required this.powerState,
+      required this.onPowerButtonPress,
+      required this.stateButtonDisabled});
+
+  final LighthousePowerState powerState;
+  final VoidCallback onPowerButtonPress; // maybe not
+  final bool stateButtonDisabled;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _StatefulGroupPowerButtonState();
+  }
+}
+
+class _StatefulGroupPowerButtonState extends State<_StatefulGroupPowerButton> {
+  @override
+  Widget build(final BuildContext context) {
+    return LighthousePowerButtonWidget(
+      powerState: widget.powerState,
+      onPress: widget.onPowerButtonPress,
+      disabled: widget.stateButtonDisabled,
+    );
+  }
+}
+
+typedef _GroupChangeStateMethod = FutureOr<void> Function(
+    LighthousePowerState toState);
+
+class _StatelessGroupPowerButton extends StatefulWidget {
+  const _StatelessGroupPowerButton(
+      {required this.stateButtonDisabled, required this.onPress});
+
+  final bool stateButtonDisabled;
+  final _GroupChangeStateMethod onPress;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _StatelessGroupPowerButtonState();
+  }
+}
+
+class _StatelessGroupPowerButtonState
+    extends State<_StatelessGroupPowerButton> {
+  @override
+  Widget build(final BuildContext context) {
+    return Row(
+      children: [
+        LighthousePowerButtonWidget(
+          powerState: LighthousePowerState.sleep,
+          onPress: () async {
+            return widget.onPress(LighthousePowerState.sleep);
+          },
+          disabled: widget.stateButtonDisabled,
+        ),
+        LighthousePowerButtonWidget(
+          powerState: LighthousePowerState.on,
+          onPress: () async {
+            return widget.onPress(LighthousePowerState.on);
+          },
+          disabled: widget.stateButtonDisabled,
+        ),
+      ],
     );
   }
 }

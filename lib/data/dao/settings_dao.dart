@@ -60,7 +60,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         'The new sleep state cannot be ${sleepState.text.toUpperCase()}');
     return into(simpleSettings).insert(
         SimpleSetting(
-            settingsId: defaultSleepStateId, data: sleepState.id.toString()),
+            settingsId: defaultSleepStateId, data: sleepState.index.toString()),
         mode: InsertMode.insertOrReplace);
   }
 

@@ -62,27 +62,6 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   @override
-  Future<int?> getCurrentState() async {
-    final characteristic = _characteristic;
-    if (characteristic == null) {
-      return null;
-    }
-    if ((await device.state.first) != LHBluetoothDeviceState.connected) {
-      await disconnect();
-      return null;
-    }
-    final byteArray = await characteristic.readByteData();
-
-    if (byteArray.lengthInBytes >= 2) {
-      return byteArray.getUint8(1);
-    } else if (byteArray.lengthInBytes >= 1) {
-      return byteArray.getUint8(0);
-    } else {
-      return null;
-    }
-  }
-
-  @override
   bool get hasOpenConnection {
     return _characteristic != null;
   }
@@ -115,20 +94,6 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     command.setUint32(4, id!, Endian.little);
 
     await characteristic.writeByteData(command, withoutResponse: true);
-  }
-
-  @override
-  LighthousePowerState powerStateFromByte(final int byte) {
-    // revert back to unknown, still needs some research.
-    return LighthousePowerState.unknown;
-    // switch (byte) {
-    //   case 0x15:
-    //     return LighthousePowerState.ON;
-    //   case 0x12:
-    //     return LighthousePowerState.SLEEP;
-    //   default:
-    //     return LighthousePowerState.UNKNOWN;
-    // }
   }
 
   @override
@@ -216,17 +181,9 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   }
 
   Stream<LighthousePowerState> _getPowerStateStreamForExtensions() {
-    LighthousePowerState lastState = LighthousePowerState.unknown;
-    bool hasId = false;
-    return MergeStream<dynamic>([powerStateEnum, _hasDeviceIdSubject.stream])
-        .map((final event) {
-      if (event is LighthousePowerState) {
-        lastState = event;
-      } else if (event is bool) {
-        hasId = event;
-      }
+    return _hasDeviceIdSubject.stream.map((final hasId) {
       if (hasId) {
-        return lastState;
+        return LighthousePowerState.unknown;
       } else {
         return LighthousePowerState.booting;
       }

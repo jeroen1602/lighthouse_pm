@@ -22,7 +22,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
             downStreamBuilders: downStreamBuilders);
 
   Stream<WithTimeout<LighthousePowerState>> getDeviceState(
-      final LighthouseDevice device, final Duration timeout) {
+      final StatefulLighthouseDevice device, final Duration timeout) {
     final timeoutStream = Stream.fromFutures([
       Future.value(false),
       Future.delayed(timeout).then(((final val) => true))
@@ -69,7 +69,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
             'Illegal state, the settingsIndex isn\'t an instance of MainPageSettings. upStream[$settingsIndex]');
       }
     }
-    final device = upStream.last as LighthouseDevice;
+    final device = upStream.last as StatefulLighthouseDevice;
     final settings = upStream[settingsIndex] as MainPageSettings;
     return StreamBuilder<WithTimeout<LighthousePowerState>>(
         stream: getDeviceState(

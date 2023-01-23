@@ -21,6 +21,7 @@ part 'src/ble/device_identifier.dart';
 part 'src/ble/guid.dart';
 
 part 'src/devices/lighthouse_device.dart';
+part 'src/devices/stateful_lighthouse_device.dart';
 
 part 'src/devices/lighthouse_power_state.dart';
 

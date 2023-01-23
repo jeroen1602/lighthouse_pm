@@ -44,8 +44,8 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
   Future<LighthouseDevice?> getDevice(final LHBluetoothDevice device,
       {final Duration? updateInterval}) async {
     final BLEDevice bleDevice = await internalGetDevice(device);
-    if (updateInterval != null) {
-      bleDevice.setUpdateInterval(updateInterval);
+    if (updateInterval != null && bleDevice is StatefulLighthouseDevice) {
+      (bleDevice as StatefulLighthouseDevice).setUpdateInterval(updateInterval);
     }
     bleDevicesDiscovering.add(bleDevice);
     try {

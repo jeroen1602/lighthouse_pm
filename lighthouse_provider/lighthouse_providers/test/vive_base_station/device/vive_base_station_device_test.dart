@@ -374,28 +374,15 @@ void main() {
         FakeViveBaseStationDevice(0, 0), persistence, null);
     persistence.insertId(device.deviceIdentifier, 0x12345678);
 
-    device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
-    device.setUpdateInterval(Duration(milliseconds: 10));
-
     final valid = await device.isValid();
     expect(valid, true);
 
     //First turn off the device
     await device.changeState(LighthousePowerState.sleep);
-    final currentState = await device.powerStateEnum
-        .firstWhere((final element) => element == LighthousePowerState.unknown)
-        .timeout(Duration(seconds: 3));
-
-    expect(currentState, LighthousePowerState.unknown);
 
     //Now turn it on
     await device.changeState(LighthousePowerState.on);
 
-    final nextState = await device.powerStateEnum
-        .firstWhere((final element) => element == LighthousePowerState.unknown)
-        .timeout(Duration(seconds: 3));
-
-    expect(nextState, LighthousePowerState.unknown);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
   });
@@ -408,28 +395,15 @@ void main() {
         FakeViveBaseStationDevice(0, 0), persistence, null);
     persistence.insertId(device.deviceIdentifier, 0x12345678);
 
-    device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
-    device.setUpdateInterval(Duration(milliseconds: 10));
-
     final valid = await device.isValid();
     expect(valid, true);
 
     //First turn on the device
     await device.changeState(LighthousePowerState.on);
-    final currentState = await device.powerStateEnum
-        .firstWhere((final element) => element == LighthousePowerState.unknown)
-        .timeout(Duration(seconds: 3));
-
-    expect(currentState, LighthousePowerState.unknown);
 
     //Now set it to sleep
     await device.changeState(LighthousePowerState.sleep);
 
-    final nextState = await device.powerStateEnum
-        .firstWhere((final element) => element == LighthousePowerState.unknown)
-        .timeout(Duration(seconds: 3));
-
-    expect(nextState, LighthousePowerState.unknown);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
   });
@@ -441,9 +415,6 @@ void main() {
     final device = ViveBaseStationDevice(
         FakeViveBaseStationDevice(0, 0), persistence, null);
     persistence.insertId(device.deviceIdentifier, 0x12345678);
-
-    device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
-    device.setUpdateInterval(Duration(milliseconds: 10));
 
     final valid = await device.isValid();
     expect(valid, true);
@@ -472,20 +443,11 @@ void main() {
       return null;
     });
 
-    device.testingOverwriteMinUpdateInterval = Duration(milliseconds: 10);
-    device.setUpdateInterval(Duration(milliseconds: 10));
-
     final valid = await device.isValid();
     expect(valid, true);
 
-    final start = await device.powerState
-        .firstWhere((final element) => element != 0xFF)
-        .timeout(Duration(seconds: 2));
-
     await device.changeState(LighthousePowerState.on);
 
-    final next = await device.powerState.first;
-    expect(next, start);
     expect(device.transactionMutex.isLocked, false,
         reason: "Transaction mutex should have been released");
   });

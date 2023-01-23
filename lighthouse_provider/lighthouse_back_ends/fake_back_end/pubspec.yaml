@@ -7,7 +7,7 @@ environment:
   sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
-  flutter_web_bluetooth: ^0.0.9
+  flutter_web_bluetooth: ^0.1.0
   meta: ^1.8.0
   mutex: ^3.0.0
   rxdart: ^0.27.5

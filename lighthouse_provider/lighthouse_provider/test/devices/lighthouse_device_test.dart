@@ -24,7 +24,7 @@ void main() {
   });
 
   test('Update interval should not be less than the minimum', () {
-    final device = FakeHighLevelDevice(FakeLighthouseV2Device(0, 0));
+    final device = FakeHighLevelStatefulDevice(FakeLighthouseV2Device(0, 0));
 
     device.setUpdateInterval(Duration(milliseconds: 1000));
     expect(device.getUpdateInterval(), Duration(milliseconds: 1000));
@@ -77,7 +77,7 @@ void main() {
   });
 
   test('Should disconnect if could not get current state', () async {
-    final device = FakeHighLevelDevice(FakeLighthouseV2Device(0, 0));
+    final device = FakeHighLevelStatefulDevice(FakeLighthouseV2Device(0, 0));
     device.openConnection = true;
 
     try {
@@ -96,7 +96,7 @@ void main() {
   });
 
   test('Should clean up if there is no open connection', () async {
-    final device = FakeHighLevelDevice(FakeLighthouseV2Device(0, 0));
+    final device = FakeHighLevelStatefulDevice(FakeLighthouseV2Device(0, 0));
     device.openConnection = false;
 
     try {

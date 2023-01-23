@@ -6,6 +6,23 @@ import 'package:lighthouse_provider/device_extensions/device_extension.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:meta/meta.dart';
 
+class FakeHighLevelStatefulDevice extends FakeHighLevelDevice
+    with StatefulLighthouseDevice {
+  FakeHighLevelStatefulDevice(final LHBluetoothDevice device) : super(device);
+
+  FakeHighLevelStatefulDevice.simple() : this(FakeLighthouseV2Device(1, 1));
+
+  @override
+  Future<int?> getCurrentState() {
+    throw UnimplementedError();
+  }
+
+  @override
+  LighthousePowerState powerStateFromByte(final int byte) {
+    throw UnimplementedError();
+  }
+}
+
 @visibleForTesting
 class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   FakeHighLevelDevice(final LHBluetoothDevice device) : super(device, null);
@@ -20,11 +37,6 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   String get firmwareVersion => "WOW firmware";
-
-  @override
-  Future<int?> getCurrentState() {
-    throw UnimplementedError();
-  }
 
   bool openConnection = false;
 
@@ -56,11 +68,6 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
 
   @override
   Map<String, String?> get otherMetadata => throw UnimplementedError();
-
-  @override
-  LighthousePowerState powerStateFromByte(final int byte) {
-    throw UnimplementedError();
-  }
 
   @override
   Future<bool> isValid() async {
