@@ -93,10 +93,18 @@ android {
     }
     lint {
         //TODO: check to see if this can be removed in future versions, since a lint for release builds is useful
-        checkReleaseBuilds false
+        checkReleaseBuilds true
         disable 'InvalidPackage'
     }
     namespace 'com.jeroen1602.lighthouse_pm'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 flutter {
@@ -108,8 +116,6 @@ dependencies {
 
     // For now only needed for googlePlayImplementation
     googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-
-
 
     def billing_version = "5.1.0"
 
