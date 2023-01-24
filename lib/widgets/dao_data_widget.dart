@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lighthouse_pm/theming.dart';
 import 'package:toast/toast.dart';
 
 import 'dao_delete_alert_widget.dart';
@@ -29,6 +30,8 @@ class DaoTableDataWidget<T> extends StatelessWidget {
     return StreamBuilder<List<T>>(
       stream: entriesStream,
       builder: (final context, final snapshot) {
+        final theme = Theme.of(context);
+        final theming = Theming.fromTheme(theme);
         final data = snapshot.data;
 
         final children = <Widget>[
@@ -43,16 +46,19 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                     debugPrint('$e');
                     debugPrint('$s');
                     Toast.show('Error: $e',
-                        backgroundColor: Colors.red, duration: 8);
+                        textStyle: theming.bodyMedium
+                            ?.copyWith(color: theme.colorScheme.onError),
+                        backgroundColor: theme.colorScheme.error,
+                        duration: 8);
                   }
                 },
                 elevation: 2.0,
-                fillColor: Colors.orange,
+                fillColor: theming.customColors.booting,
                 padding: const EdgeInsets.all(8.0),
                 shape: const CircleBorder(),
-                child: const Icon(
+                child: Icon(
                   Icons.add,
-                  color: Colors.black,
+                  color: theming.customColors.onBooting,
                   size: 24.0,
                 )),
           ),
@@ -61,10 +67,16 @@ class DaoTableDataWidget<T> extends StatelessWidget {
           ),
           if (snapshot.hasError)
             Container(
-              color: Colors.red,
+              color: theme.colorScheme.error,
               child: ListTile(
-                title: const Text('Error!'),
-                subtitle: Text(snapshot.error.toString()),
+                title: Text(
+                  'Error!',
+                  style: theming.bodyMedium
+                      ?.copyWith(color: theme.colorScheme.onError),
+                ),
+                subtitle: Text(snapshot.error.toString(),
+                    style: theming.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onError.withOpacity(0.75))),
               ),
             )
           else if (data != null)
@@ -79,7 +91,10 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                       debugPrint('$e');
                       debugPrint('$s');
                       Toast.show('Error: $e',
-                          backgroundColor: Colors.red, duration: 8);
+                          textStyle: theming.bodyMedium
+                              ?.copyWith(color: theme.colorScheme.onError),
+                          backgroundColor: theme.colorScheme.error,
+                          duration: 8);
                     }
                   },
                   trailing: RawMaterialButton(
@@ -96,17 +111,20 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                             debugPrint('$e');
                             debugPrint('$s');
                             Toast.show('Error: $e',
-                                backgroundColor: Colors.red, duration: 8);
+                                textStyle: theming.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onError),
+                                backgroundColor: theme.colorScheme.error,
+                                duration: 8);
                           }
                         }
                       },
                       elevation: 2.0,
-                      fillColor: Colors.red,
+                      fillColor: theme.colorScheme.error,
                       padding: const EdgeInsets.all(8.0),
                       shape: const CircleBorder(),
-                      child: const Icon(
+                      child: Icon(
                         Icons.delete_forever,
-                        color: Colors.black,
+                        color: theme.colorScheme.onError,
                         size: 24.0,
                       ))),
               Divider(
