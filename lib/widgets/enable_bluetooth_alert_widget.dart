@@ -26,11 +26,12 @@ class EnableBluetoothAlertWidget extends StatelessWidget {
         ]);
   }
 
-  static Future<bool?> showCustomDialog(final BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return const EnableBluetoothAlertWidget();
-        });
+  static Future<bool> showCustomDialog(final BuildContext context) async {
+    return await showDialog<bool?>(
+            context: context,
+            builder: (final BuildContext context) {
+              return const EnableBluetoothAlertWidget();
+            }) ??
+        false;
   }
 }

@@ -238,7 +238,7 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
           node: FocusScopeNode(canRequestFocus: false),
           canRequestFocus: false,
           child: TextFormField(
-            style: theming.subtitle,
+            style: theming.titleSmall,
             decoration: InputDecoration(
                 labelText: widget.item.name, hintText: 'Auto increment is on'),
           )));

@@ -88,7 +88,7 @@ class MaterialTestPage extends BasePage with WithBlocStateless {
     return [
       Text(
         name,
-        style: theming.headline4,
+        style: theming.headlineMedium,
       ),
       Expanded(
         child: GridView.count(
@@ -104,13 +104,13 @@ class MaterialTestPage extends BasePage with WithBlocStateless {
   List<Widget> _createMaterialColorScheme(
       final String name, final ColorScheme colorScheme, final Theming theming) {
     return _createGridView(
-        name, _createBlocks(theming.bodyText!, colorScheme), theming);
+        name, _createBlocks(theming.bodyMedium!, colorScheme), theming);
   }
 
   List<Widget> _createCustomColorScheme(final String name,
       final CustomColors customColors, final Theming theming) {
     return _createGridView(
-        name, _createCustomBlocks(theming.bodyText!, customColors), theming);
+        name, _createCustomBlocks(theming.bodyMedium!, customColors), theming);
   }
 
   @override

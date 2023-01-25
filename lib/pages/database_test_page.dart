@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/bloc.dart';
 import 'package:lighthouse_pm/pages/database/group_dao_page.dart';
+import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'package:toast/toast.dart';
 
@@ -30,7 +30,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
         ),
         title: Text(
           'WARNING!',
-          style: theming.headline4,
+          style: theming.headlineMedium,
         ),
         subtitle: const Text(
             'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!'),
@@ -96,7 +96,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
                       title: Text(
                           'WARNING installed tables do not match known tables!'
                           '\nYou should create a migration!',
-                          style: theming.headline5),
+                          style: theming.headlineSmall),
                       leading: const Icon(
                         Icons.warning,
                         color: Colors.orange,
@@ -113,7 +113,7 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
       const Divider(),
       ListTile(
         title: Text('Daos',
-            style: theming.headline6?.copyWith(fontWeight: FontWeight.bold)),
+            style: theming.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
       ),
       const Divider(thickness: 1.5),
     ];

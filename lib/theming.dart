@@ -3,7 +3,7 @@ import 'package:lighthouse_pm/color_schemes.dart';
 
 class Theming {
   const Theming(
-    this.bodyText,
+    this.bodyMedium,
     this.disabledBodyText,
     this.bodyTextBold,
     this.linkTheme,
@@ -15,18 +15,18 @@ class Theming {
     this.selectedAppBarColor,
     this.selectedAppBarTextColor,
     this.buttonColor,
-    this.headline1,
-    this.headline2,
-    this.headline3,
-    this.headline4,
-    this.headline5,
-    this.headline6,
-    this.subtitle,
+    this.displayLarge,
+    this.displayMedium,
+    this.displaySmall,
+    this.headlineMedium,
+    this.headlineSmall,
+    this.titleLarge,
+    this.titleSmall,
     this.customColors,
     this.brightness,
   );
 
-  final TextStyle? bodyText;
+  final TextStyle? bodyMedium;
   final TextStyle? disabledBodyText;
   final TextStyle? bodyTextBold;
   final TextStyle? linkTheme;
@@ -44,14 +44,14 @@ class Theming {
 
   final Color buttonColor;
 
-  final TextStyle? headline1;
-  final TextStyle? headline2;
-  final TextStyle? headline3;
-  final TextStyle? headline4;
-  final TextStyle? headline5;
-  final TextStyle? headline6;
+  final TextStyle? displayLarge;
+  final TextStyle? displayMedium;
+  final TextStyle? displaySmall;
+  final TextStyle? headlineMedium;
+  final TextStyle? headlineSmall;
+  final TextStyle? titleLarge;
 
-  final TextStyle? subtitle;
+  final TextStyle? titleSmall;
 
   final CustomColors customColors;
   final Brightness brightness;
@@ -63,15 +63,15 @@ class Theming {
   factory Theming.fromTheme(final ThemeData theme) {
     final disabledColor = theme.disabledColor;
 
-    final bodyText = theme.textTheme.bodyText2;
+    final bodyMedium = theme.textTheme.bodyMedium;
 
-    final disabledBodyText = bodyText?.copyWith(color: disabledColor);
+    final disabledBodyText = bodyMedium?.copyWith(color: disabledColor);
 
-    final bodyTextBold = bodyText?.copyWith(fontWeight: FontWeight.bold);
+    final bodyTextBold = bodyMedium?.copyWith(fontWeight: FontWeight.bold);
 
-    final linkTheme = createLinkTheme(bodyText, theme);
+    final linkTheme = createLinkTheme(bodyMedium, theme);
 
-    final bodyTextIconSize = (bodyText?.fontSize ?? 14) + 4;
+    final bodyTextIconSize = (bodyMedium?.fontSize ?? 14) + 4;
     const iconSizeLarge = 24.0;
 
     final iconColor = getIconColor(theme.iconTheme);
@@ -81,25 +81,25 @@ class Theming {
     final selectedAppBarColor = theme.colorScheme.primary;
     final buttonColor = theme.colorScheme.primary;
 
-    final headline1 = theme.textTheme.headline1;
-    final headline2 = theme.textTheme.headline2;
-    final headline3 = theme.textTheme.headline3;
-    final headline4 =
-        theme.textTheme.headline4?.copyWith(color: bodyText?.color);
-    final headline5 = theme.textTheme.headline5
-        ?.copyWith(color: bodyText?.color, fontWeight: FontWeight.bold);
-    final headline6 =
-        theme.textTheme.headline6?.copyWith(color: bodyText?.color);
+    final displayLarge = theme.textTheme.displayLarge;
+    final displayMedium = theme.textTheme.displayMedium;
+    final displaySmall = theme.textTheme.displaySmall;
+    final headlineMedium =
+        theme.textTheme.headlineMedium?.copyWith(color: bodyMedium?.color);
+    final headlineSmall = theme.textTheme.headlineSmall
+        ?.copyWith(color: bodyMedium?.color, fontWeight: FontWeight.bold);
+    final titleLarge =
+        theme.textTheme.titleLarge?.copyWith(color: bodyMedium?.color);
 
-    final subtitle =
-        theme.textTheme.subtitle2?.copyWith(color: theme.disabledColor);
+    final titleSmall =
+        theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor);
 
     final customColors = theme.brightness == Brightness.dark
         ? darkCustomColors
         : lightCustomColors;
 
     return Theming(
-      bodyText,
+      bodyMedium,
       disabledBodyText,
       bodyTextBold,
       linkTheme,
@@ -111,20 +111,20 @@ class Theming {
       selectedAppBarColor,
       selectedAppBarTextColor,
       buttonColor,
-      headline1,
-      headline2,
-      headline3,
-      headline4,
-      headline5,
-      headline6,
-      subtitle,
+      displayLarge,
+      displayMedium,
+      displaySmall,
+      headlineMedium,
+      headlineSmall,
+      titleLarge,
+      titleSmall,
       customColors,
       theme.brightness,
     );
   }
 
   static TextStyle? createDefaultLinkTheme(final ThemeData theme) {
-    return createLinkTheme(theme.textTheme.bodyText2, theme);
+    return createLinkTheme(theme.textTheme.bodyMedium, theme);
   }
 
   static TextStyle? createLinkTheme(

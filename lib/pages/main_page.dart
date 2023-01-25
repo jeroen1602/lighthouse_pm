@@ -168,8 +168,12 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                                 'Please pair a device first, before scanning for devices.')));
                         return;
                       }
-                      if (await LocationPermissionDialogFlow
-                          .showLocationPermissionDialogFlow(context)) {
+                      if (!context.mounted) {
+                        return;
+                      }
+                      final locationPermission = LocationPermissionDialogFlow
+                          .showLocationPermissionDialogFlow(context);
+                      if (await locationPermission) {
                         await startScan(
                           Duration(seconds: settings.scanDuration),
                           updateInterval:
@@ -327,7 +331,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               padding: const EdgeInsets.all(12),
                               child: Text(
                                 'Unable to find lighthouses, try some troubleshooting.',
-                                style: theming.headline4,
+                                style: theming.headlineMedium,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -637,8 +641,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
             color: theming.iconColor),
         onPressed: () async {
-          if (await DeleteGroupAlertWidget.showCustomDialog(context,
-              group: group)) {
+          final deleteGroupWidget =
+              DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+          if (await deleteGroupWidget) {
             await blocWithoutListen.groups.deleteGroup(group.id);
             setState(() {
               clearSelected();
@@ -653,15 +658,20 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       final List<LighthouseDevice> devicesToBeInAGroup) async {
     // check channel.
     if (!_checkDevicesHaveUniqueChannel(devicesToBeInAGroup)) {
-      if (!await DifferentGroupItemChannelAlertWidget.showCustomDialog(
-          context)) {
+      final differentGroupItemChannel =
+          DifferentGroupItemChannelAlertWidget.showCustomDialog(context);
+      if (!await differentGroupItemChannel) {
         return false;
       }
     }
     // Check device type
     if (!_allSameDeviceType(devicesToBeInAGroup)) {
-      if (mounted &&
-          !await DifferentGroupItemTypesAlertWidget.showCustomDialog(context)) {
+      if (!mounted) {
+        return false;
+      }
+      final differentGroupItemType =
+          DifferentGroupItemTypesAlertWidget.showCustomDialog(context);
+      if (!await differentGroupItemType) {
         return false;
       }
     }
@@ -786,7 +796,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
           },
           child: Text(
             'Enable Bluetooth.',
-            style: theming.bodyText?.copyWith(color: Colors.black),
+            style: theming.bodyMedium?.copyWith(color: Colors.black),
           ));
     }
     return Container();
@@ -864,12 +874,12 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
             ),
             Text(
               'Bluetooth is $stateName.',
-              style: theming.headline6?.copyWith(color: Colors.white),
+              style: theming.titleLarge?.copyWith(color: Colors.white),
             ),
             RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: theming.subtitle?.copyWith(color: Colors.white),
+                  style: theming.titleSmall?.copyWith(color: Colors.white),
                   children: subText,
                 )),
             _toSettingsButton(context, theming)

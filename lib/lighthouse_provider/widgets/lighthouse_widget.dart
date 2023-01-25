@@ -73,7 +73,7 @@ class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
                                 child: Text(
                                     widget.nickname ??
                                         widget.lighthouseDevice.name,
-                                    style: theming.headline4)),
+                                    style: theming.headlineMedium)),
                             Container(
                                 alignment: Alignment.topLeft,
                                 child: Row(
@@ -146,11 +146,15 @@ class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
 
   Future<void> _stateSwitch(final LighthousePowerState fromState,
       {final int? fromStateData}) async {
-    if (!await widget.lighthouseDevice.requestExtraInfo(context)) {
+    final requestExtraInfo = widget.lighthouseDevice.requestExtraInfo(context);
+    if (!await requestExtraInfo) {
       return;
     }
     switch (fromState) {
       case LighthousePowerState.booting:
+        if (!mounted) {
+          return;
+        }
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
             content: const Text('Lighthouse is already booting!'),
             action: SnackBarAction(
@@ -165,10 +169,16 @@ class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
         break;
       case LighthousePowerState.standby:
       case LighthousePowerState.sleep:
+        if (!mounted) {
+          return;
+        }
         await widget.lighthouseDevice
             .changeState(LighthousePowerState.on, context);
         break;
       case LighthousePowerState.unknown:
+        if (!mounted) {
+          return;
+        }
         final newState = await UnknownStateAlertWidget.showCustomDialog(
             context, widget.lighthouseDevice,
             currentState: fromStateData);

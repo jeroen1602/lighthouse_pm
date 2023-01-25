@@ -30,7 +30,7 @@ class PrivacyPage extends BasePage {
         ListTile(
           title: Text(
             "Older versions",
-            style: theming.headline4,
+            style: theming.headlineMedium,
           ),
         ),
         const Divider(

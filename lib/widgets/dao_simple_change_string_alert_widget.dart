@@ -51,7 +51,7 @@ class _DaoSimpleChangeStringAlertWidget
     return AlertDialog(
       title: RichText(
           text: TextSpan(
-        style: theming.bodyText,
+        style: theming.bodyMedium,
         children: <InlineSpan>[
           const TextSpan(text: "Set a new value for "),
           TextSpan(style: theming.bodyTextBold, text: widget.primaryKey),

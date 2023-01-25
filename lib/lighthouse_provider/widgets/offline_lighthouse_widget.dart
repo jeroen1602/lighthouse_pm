@@ -33,7 +33,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
                     Container(
                         alignment: Alignment.topLeft,
                         child: Text(nickname ?? deviceId,
-                            style: theming.headline4
+                            style: theming.headlineMedium
                                 ?.copyWith(color: theming.disabledColor))),
                     Row(
                       children: [

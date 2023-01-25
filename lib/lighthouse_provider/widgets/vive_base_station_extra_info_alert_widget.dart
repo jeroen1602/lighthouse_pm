@@ -72,7 +72,7 @@ class _ViveBaseStationExtraInfoAlertState
 
     return AlertDialog(
       title: RichText(
-        text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+        text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
           const TextSpan(text: 'Base station id required.\n'),
           if (endHint != null) ...[
             const TextSpan(
@@ -108,9 +108,11 @@ class _ViveBaseStationExtraInfoAlertState
               if (endHint != null) {
                 final intValue = int.parse(text, radix: 16);
                 if (text.length == 8 && intValue & 0xFFFF != endHint) {
-                  if (!(await ViveBaseStationExtraInfoIdWarningAlertWidget
-                      .showCustomDialog(context,
-                          setId: text, existingIdEnd: endHint))) {
+                  final viveBaseStationExtraInfo =
+                      ViveBaseStationExtraInfoIdWarningAlertWidget
+                          .showCustomDialog(context,
+                              setId: text, existingIdEnd: endHint);
+                  if (!(await viveBaseStationExtraInfo)) {
                     // The user doesn't want to close yet.
                     return;
                   }
@@ -148,7 +150,7 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
     return AlertDialog(
       title: const Text("The end of the id doesn't match"),
       content: RichText(
-        text: TextSpan(style: theming.bodyText, children: [
+        text: TextSpan(style: theming.bodyMedium, children: [
           const TextSpan(text: "The id you have provided ("),
           TextSpan(text: setId, style: theming.bodyTextBold),
           const TextSpan(

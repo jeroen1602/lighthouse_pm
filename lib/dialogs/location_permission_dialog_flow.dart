@@ -23,7 +23,9 @@ class LocationPermissionDialogFlow {
     switch (await BLEPermissionsHelper.hasBLEPermissions()) {
       case PermissionStatus.denied:
       case PermissionStatus.restricted:
-        if (!(await PermissionsAlertWidget.showCustomDialog(context))) {
+        final permissionAlertWidget =
+            PermissionsAlertWidget.showCustomDialog(context);
+        if (!(await permissionAlertWidget)) {
           return false;
         }
         switch (await BLEPermissionsHelper.requestBLEPermissions()) {
@@ -40,10 +42,9 @@ class LocationPermissionDialogFlow {
         return true;
       permanentlyDenied:
       case PermissionStatus.permanentlyDenied:
-        // expression can be `null`
-        if (await PermanentPermissionDeniedAlertWidget.showCustomDialog(
-                context) ==
-            true) {
+        final permanentPermissionDenied =
+            PermanentPermissionDeniedAlertWidget.showCustomDialog(context);
+        if (await permanentPermissionDenied) {
           openAppSettings();
         }
         return false;
