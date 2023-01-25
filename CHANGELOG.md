@@ -1,5 +1,6 @@
 # Version 1.3.0+9 R.C
 
+- (Android + iOS) Changed back end to flutter reactive ble which still gets updates.
 - Enabled Vive base stations by default.
 - Removed wording for Vive base station beta.
 - Updated to material 3 (not all widgets have been updated yet).
