@@ -5,18 +5,7 @@ import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 abstract class ScanningMixin {
-  // Future<bool> _hasConnectedDevices() async =>
-  //     ((await LighthouseProvider.instance.lighthouseDevices.first).isNotEmpty);
-
   Future<bool> _onWillPop() async {
-    // A little workaround for issue https://github.com/pauldemarco/flutter_blue/issues/649
-    // if (SharedPlatform.isAndroid) {
-    //   if (await LighthouseProvider.instance.isScanning.first ||
-    //       await _hasConnectedDevices()) {
-    //     await LighthouseProvider.instance.cleanUp();
-    //     await Future.delayed(const Duration(milliseconds: 100));
-    //   }
-    // }
     return true;
   }
 
