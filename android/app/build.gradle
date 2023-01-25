@@ -52,7 +52,7 @@ android {
 
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -113,6 +113,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "com.polidea.rxandroidble2:rxandroidble:1.16.0"
 
     // For now only needed for googlePlayImplementation
     googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"

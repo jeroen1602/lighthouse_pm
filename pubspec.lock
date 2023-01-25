@@ -324,22 +324,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_blue:
-    dependency: transitive
-    description:
-      path: "."
-      ref: "0.13.0"
-      resolved-ref: a7fa5410b66cabdc3f12e7d74375db3477a70c85
-      url: "https://github.com/boskokg/flutter_blue"
-    source: git
-    version: "0.13.0"
-  flutter_blue_back_end:
-    dependency: "direct main"
-    description:
-      path: "lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end"
-      relative: true
-    source: path
-    version: "1.0.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -356,6 +340,21 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.13"
+  flutter_reactive_ble:
+    dependency: transitive
+    description:
+      name: flutter_reactive_ble
+      sha256: "9eea5244d1958608f22e96dcb2ee459f7f37434b28e43c0a829276b6dc7d1aaa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
+  flutter_reactive_ble_back_end:
+    dependency: "direct main"
+    description:
+      path: "lighthouse_provider/lighthouse_back_ends/flutter_reactive_ble_back_end"
+      relative: true
+    source: path
+    version: "1.0.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -397,6 +396,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  functional_data:
+    dependency: transitive
+    description:
+      name: functional_data
+      sha256: "950f886463a7531a3b77904e0eb89e8e06dda78c4e3f5a84686445a2290cce18"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   glob:
     dependency: transitive
     description:
@@ -800,6 +807,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  reactive_ble_mobile:
+    dependency: transitive
+    description:
+      name: reactive_ble_mobile
+      sha256: "616a5ad9bc96fe051414a41b133e13f75ef35e6d8db77c84f0527a43afbf614e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
+  reactive_ble_platform_interface:
+    dependency: transitive
+    description:
+      name: reactive_ble_platform_interface
+      sha256: f9a446150076f1601c397b6bbf554eda2c37b066bb7397a226e72f04c13dbd9b
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
   recase:
     dependency: transitive
     description:
