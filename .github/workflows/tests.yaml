@@ -50,10 +50,10 @@ jobs:
         run: flutter packages pub run build_runner build
 
       - name: Analyze
-        run: flutter analyze
+        run: dart analyze
 
       - name: Formatted
-        run: flutter format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
 
       - name: Run tests
         run: flutter test --coverage

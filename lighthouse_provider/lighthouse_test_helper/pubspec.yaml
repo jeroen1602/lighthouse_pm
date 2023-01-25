@@ -20,7 +20,7 @@ dependencies:
     path: ../lighthouse_provider
   lighthouse_providers:
     path: ../lighthouse_providers
-  test_api: 0.4.12
+  test: ^1.22.0
 
 dev_dependencies:
   lints: ^2.0.0
