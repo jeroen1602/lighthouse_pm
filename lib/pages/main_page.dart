@@ -805,9 +805,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   @override
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
-    final stateName = state != null
-        ? BluetoothAdapterStateFunctions.stateToString(state!)
-        : 'not available';
+    final stateName = state?.name ?? 'not available';
 
     var subText = const [
       TextSpan(

@@ -53,8 +53,8 @@ dependencies:
   flutter_markdown: ^0.6.13
   markdown: ^6.0.1
   # Android/ iOS
-  flutter_blue_back_end:
-    path: lighthouse_provider/lighthouse_back_ends/flutter_blue_back_end
+  flutter_reactive_ble_back_end:
+    path: lighthouse_provider/lighthouse_back_ends/flutter_reactive_ble_back_end
   # Web:
   flutter_web_bluetooth: ^0.1.0
   web_browser_detect: ^2.0.3

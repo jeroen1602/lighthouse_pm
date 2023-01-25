@@ -15,8 +15,7 @@ void main() {
     };
 
     for (final item in lut.entries) {
-      expect(
-          BluetoothAdapterStateFunctions.stateToString(item.key), item.value);
+      expect(item.key.name, item.value);
     }
   });
 }

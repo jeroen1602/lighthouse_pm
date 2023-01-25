@@ -1,0 +1,32 @@
+name: flutter_reactive_ble_back_end
+description: A lighthouse back end to use flutter reactive ble
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+  flutter: ">=3.3.1"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_reactive_ble: ^5.0.3
+  mutex: ^3.0.0
+  rxdart: ^0.27.7
+  lighthouse_back_end:
+    path: ../../lighthouse_back_end
+  lighthouse_provider:
+    path: ../../lighthouse_provider
+  shared_platform:
+    path: ../../../shared/shared_platform
+  lighthouse_logger:
+    path: ../../lighthouse_logger
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+platforms:
+  android:
+  ios:
