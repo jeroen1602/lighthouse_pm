@@ -19,7 +19,8 @@ class SettingsSupportPage extends BasePage {
 
   @override
   Widget buildPage(final BuildContext context) {
-    final theming = Theming.of(context);
+    final theme = Theme.of(context);
+    final theming = Theming.fromTheme(theme);
 
     final items = <Widget>[
       if (BuildOptions.includeGithubSponsor) ...[
@@ -71,20 +72,37 @@ class SettingsSupportPage extends BasePage {
                     error.details is String &&
                     (error.details as String).contains("less than 3")) {
                   return Container(
-                    color: Colors.red,
-                    child: const ListTile(
-                      title: Text("Could not get support items"),
-                      subtitle:
-                          Text("Maybe you're not logged into Google Play"),
+                    color: theme.colorScheme.errorContainer,
+                    child: ListTile(
+                      title: Text(
+                        "Could not get support items",
+                        style: theming.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onErrorContainer),
+                      ),
+                      subtitle: Text(
+                        "Maybe you're not logged into Google Play",
+                        style: theming.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onErrorContainer
+                                .withOpacity(0.75)),
+                      ),
                     ),
                   );
                 }
               }
               return Container(
-                color: Colors.red,
+                color: theme.colorScheme.errorContainer,
                 child: ListTile(
-                  title: const Text('Something went wrong'),
-                  subtitle: Text('${pricesSnapshot.error}'),
+                  title: Text(
+                    'Something went wrong',
+                    style: theming.bodyMedium
+                        ?.copyWith(color: theme.colorScheme.onErrorContainer),
+                  ),
+                  subtitle: Text(
+                    '${pricesSnapshot.error}',
+                    style: theming.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onErrorContainer
+                            .withOpacity(0.75)),
+                  ),
                 ),
               );
             }
@@ -96,11 +114,19 @@ class SettingsSupportPage extends BasePage {
             }
             if (prices.isEmpty) {
               return Container(
-                color: Colors.red,
-                child: const ListTile(
-                  title: Text("Could not get support items"),
-                  subtitle:
-                      Text("Check to see if you have an internet connection"),
+                color: theme.colorScheme.errorContainer,
+                child: ListTile(
+                  title: Text(
+                    "Could not get support items",
+                    style: theming.bodyMedium
+                        ?.copyWith(color: theme.colorScheme.onErrorContainer),
+                  ),
+                  subtitle: Text(
+                    "Check to see if you have an internet connection",
+                    style: theming.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onErrorContainer
+                            .withOpacity(0.75)),
+                  ),
                 ),
               );
             }
