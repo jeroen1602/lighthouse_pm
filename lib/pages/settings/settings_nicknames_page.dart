@@ -270,7 +270,7 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
           blockIcon,
           Text(
             'No nicknames given (yet).',
-            style: theming.headline6,
+            style: theming.titleLarge,
           )
         ],
       ),

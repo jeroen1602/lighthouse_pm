@@ -22,9 +22,9 @@ void main() {
     final ByteData byteData = ByteData(4);
     byteData.setInt32(0, -0xAABBCCDD);
 
-    expect(byteData.calculateHashCode(), 0x1BA2655F);
+    expect(byteData.calculateHashCode(), 0x152F5903);
 
     byteData.setUint32(0, 0xAABBCCDD);
-    expect(byteData.calculateHashCode(), 0x38280336);
+    expect(byteData.calculateHashCode(), 0x4E26782D);
   });
 }

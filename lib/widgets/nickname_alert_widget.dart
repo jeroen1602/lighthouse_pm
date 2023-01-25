@@ -57,7 +57,7 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
     return AlertDialog(
       title: RichText(
           text: TextSpan(
-        style: theming.bodyText,
+        style: theming.bodyMedium,
         children: <InlineSpan>[
           const TextSpan(text: "Set a nickname for "),
           TextSpan(

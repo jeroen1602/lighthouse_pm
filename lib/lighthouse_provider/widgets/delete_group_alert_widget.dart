@@ -15,7 +15,7 @@ class DeleteGroupAlertWidget extends StatelessWidget {
     return AlertDialog(
       title: const Text('Delete group'),
       content: RichText(
-        text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+        text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
           const TextSpan(text: "Are you sure you want to delete the group "),
           TextSpan(style: theming.bodyTextBold, text: group.name),
           const TextSpan(text: '?')

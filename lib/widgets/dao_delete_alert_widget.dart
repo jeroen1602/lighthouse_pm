@@ -16,7 +16,7 @@ class DaoDeleteAlertWidget extends StatelessWidget {
     final theming = Theming.of(context);
     return AlertDialog(
       title: RichText(
-          text: TextSpan(style: theming.bodyText, children: [
+          text: TextSpan(style: theming.bodyMedium, children: [
         const TextSpan(text: 'Do you want to delete: '),
         TextSpan(text: title, style: theming.bodyTextBold),
         const TextSpan(text: '?'),

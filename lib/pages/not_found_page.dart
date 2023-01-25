@@ -20,7 +20,7 @@ class NotFoundPage extends BasePage {
           ListTile(
             title: Text(
               '404 Not Found',
-              style: theming.headline1,
+              style: theming.displayLarge,
               textAlign: TextAlign.center,
             ),
           ),

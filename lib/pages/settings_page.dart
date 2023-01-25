@@ -92,7 +92,7 @@ class _SettingsContentState extends State<SettingsContent> {
   Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
-    final headTheme = theming.headline6?.copyWith(fontWeight: FontWeight.bold);
+    final headTheme = theming.titleLarge?.copyWith(fontWeight: FontWeight.bold);
 
     // region header
     final items = <Widget>[
@@ -123,9 +123,9 @@ class _SettingsContentState extends State<SettingsContent> {
           title: const Text('Clear all last seen devices'),
           trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () async {
-            // result can be `null`
-            if (await ClearLastSeenAlertWidget.showCustomDialog(context) ??
-                false) {
+            final clearLastSeen =
+                ClearLastSeenAlertWidget.showCustomDialog(context);
+            if (await clearLastSeen) {
               await blocWithoutListen.nicknames.deleteAllLastSeen();
               Toast.show('Cleared up all last seen items',
                   duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -364,7 +364,9 @@ class _SettingsContentState extends State<SettingsContent> {
         title: const Text('Clear all Vive Base station ids'),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () async {
-          if (await ViveBaseStationClearIds.showCustomDialog(context)) {
+          final viveBaseStationClear =
+              ViveBaseStationClearIds.showCustomDialog(context);
+          if (await viveBaseStationClear) {
             await blocWithoutListen.viveBaseStation.deleteIds();
             Toast.show('Cleared up all Base station ids',
                 duration: Toast.lengthShort, gravity: Toast.bottom);

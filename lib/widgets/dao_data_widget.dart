@@ -84,9 +84,11 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                   },
                   trailing: RawMaterialButton(
                       onPressed: () async {
-                        if (await DaoDeleteAlertWidget.showCustomDialog(context,
-                            title: converter.getDataTitle(data[i]),
-                            subTitle: converter.getDataSubtitle(data[i]))) {
+                        final daoDeleteAlert =
+                            DaoDeleteAlertWidget.showCustomDialog(context,
+                                title: converter.getDataTitle(data[i]),
+                                subTitle: converter.getDataSubtitle(data[i]));
+                        if (await daoDeleteAlert) {
                           try {
                             await converter.deleteItem(data[i]);
                             Toast.show('Deleted!');

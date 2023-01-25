@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lighthouse_pm/data/database.dart';
-import 'package:lighthouse_provider/device_extensions/device_extension.dart';
-import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/nickname_alert_widget.dart';
+import 'package:lighthouse_provider/device_extensions/device_extension.dart';
+import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -86,7 +86,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
               title: const Text('Nickname'),
               subtitle: Text(
                 'Not set',
-                style: theming.bodyText?.copyWith(
+                style: theming.bodyMedium?.copyWith(
                     fontStyle: FontStyle.italic, color: theming.disabledColor),
               ),
               onTap: () {
@@ -143,7 +143,7 @@ class _MetadataInkWell extends StatelessWidget {
           value ?? 'Not set',
           style: value != null
               ? null
-              : theming.bodyText?.copyWith(
+              : theming.bodyMedium?.copyWith(
                   fontStyle: FontStyle.italic, color: theming.disabledColor),
         ),
       ),
@@ -171,7 +171,7 @@ class _ExtraActionsWidget extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   'Extra actions',
-                  style: theming.headline5,
+                  style: theming.headlineSmall,
                 ),
               ),
             ),

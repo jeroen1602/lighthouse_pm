@@ -31,7 +31,7 @@ class PermissionsAlertWidget extends StatelessWidget {
     return AlertDialog(
         title: Text(_getTitle()),
         content: RichText(
-            text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+            text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
           TextSpan(text: "${_getExplanation()}\n"),
           TextSpan(
             text: "More info.",

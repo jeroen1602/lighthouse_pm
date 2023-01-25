@@ -56,7 +56,7 @@ class UnknownStateAlertWidget extends StatelessWidget {
     return AlertDialog(
         title: const Text('Unknown state'),
         content: RichText(
-          text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+          text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
             const TextSpan(
               text: 'The state of this device is unknown. What do you want '
                   'to do?\n',
@@ -136,7 +136,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
               ? createRecognizer(context, version.version)
               : null;
           return RichText(
-              text: TextSpan(style: theming.bodyText, children: <InlineSpan>[
+              text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
             const TextSpan(
                 text: 'Help out by leaving a comment with the following '
                     'information on the github issue.\n\n'),

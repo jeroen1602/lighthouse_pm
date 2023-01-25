@@ -226,7 +226,7 @@ class _EmptyState extends State<_EmptyPage> {
           blockIcon,
           Text(
             'No ids set (yet).',
-            style: theming.headline6,
+            style: theming.titleLarge,
           )
         ],
       ),
