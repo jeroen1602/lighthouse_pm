@@ -317,7 +317,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final listLength = groups.length + notGroupedDevices.length;
               final theming = Theming.of(context);
 
-              final Widget body = (devices.isEmpty && updates > 2)
+              final Widget body = (groups.isEmpty &&
+                      devices.isEmpty &&
+                      updates > 2)
                   ? StreamBuilder<bool>(
                       stream: LighthouseProvider.instance.isScanning,
                       initialData: true,
