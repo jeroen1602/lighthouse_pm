@@ -16,7 +16,7 @@ class FlutterReactiveBleBluetoothDevice extends LHBluetoothDevice {
   final LHDeviceIdentifier id;
 
   @override
-  Future<void> connect({final Duration? timeout}) async {
+  Future<void> connect({Duration? timeout}) async {
     final connection = _connectionSubscription;
     _connectionSubscription = null;
     await connection?.cancel();
@@ -38,6 +38,9 @@ class FlutterReactiveBleBluetoothDevice extends LHBluetoothDevice {
         return;
       });
     } else {
+      if (timeout < FlutterReactiveBleBackEnd._minimumConnectDuration) {
+        timeout = FlutterReactiveBleBackEnd._minimumConnectDuration;
+      }
       return _connectionSubject.stream
           .firstWhere((element) =>
               element.connectionState == DeviceConnectionState.connected)

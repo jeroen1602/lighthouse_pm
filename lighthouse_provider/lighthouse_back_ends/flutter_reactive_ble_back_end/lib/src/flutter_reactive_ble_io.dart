@@ -23,6 +23,8 @@ class FlutterReactiveBleBackEnd extends BLELighthouseBackEnd {
     return _instance ??= FlutterReactiveBleBackEnd._();
   }
 
+  static const Duration _minimumConnectDuration = Duration(seconds: 15);
+
   // Some state variables.
   final Mutex _devicesMutex = Mutex();
   final Set<LHDeviceIdentifier> _connectingDevices = {};
