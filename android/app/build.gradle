@@ -113,7 +113,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "com.polidea.rxandroidble2:rxandroidble:1.16.0"
+    implementation "com.polidea.rxandroidble2:rxandroidble:1.17.2"
 
     // For now only needed for googlePlayImplementation
     googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
