@@ -59,7 +59,7 @@ Tuple2<bool, Widget> _createIconWithColor(
     return Tuple2(
         true,
         SvgPicture(
-          oldIcon.pictureProvider,
+          oldIcon.bytesLoader,
           key: oldIcon.key,
           width: oldIcon.width,
           height: oldIcon.height,
@@ -72,8 +72,6 @@ Tuple2<bool, Widget> _createIconWithColor(
               ColorFilter.mode(selectedAppBarTextColor, BlendMode.srcIn),
           semanticsLabel: oldIcon.semanticsLabel,
           excludeFromSemantics: oldIcon.excludeFromSemantics,
-          clipBehavior: oldIcon.clipBehavior,
-          cacheColorFilter: oldIcon.cacheColorFilter,
           theme: oldIcon.theme,
         ));
   }

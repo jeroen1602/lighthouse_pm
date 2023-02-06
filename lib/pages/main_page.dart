@@ -513,8 +513,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   ) {
     return IconButton(
       tooltip: 'Change nickname',
-      icon: SvgPicture.asset('assets/images/nickname-icon.svg',
-          color: theming.iconColor),
+      icon: SvgPicture.asset(
+        'assets/images/nickname-icon.svg',
+        colorFilter: theming.iconColor != null
+            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+            : null,
+      ),
       onPressed: () async {
         if (selected.length == 1) {
           final item = selected.first;
@@ -555,8 +559,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       final List<LighthouseDevice> devices, final Theming theming) {
     return IconButton(
         tooltip: 'Change group',
-        icon: SvgPicture.asset('assets/images/group-add-icon.svg',
-            color: theming.iconColor),
+        icon: SvgPicture.asset(
+          'assets/images/group-add-icon.svg',
+          colorFilter: theming.iconColor != null
+              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+              : null,
+        ),
         onPressed: () async {
           final Group? commonGroup = _getGroupFromSelected(groups);
           final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
@@ -619,8 +627,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Rename group',
-        icon: SvgPicture.asset('assets/images/group-edit-icon.svg',
-            color: theming.iconColor),
+        icon: SvgPicture.asset(
+          'assets/images/group-edit-icon.svg',
+          colorFilter: theming.iconColor != null
+              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+              : null,
+        ),
         onPressed: () async {
           final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
               context,
@@ -640,8 +652,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       final Group group, final Theming theming) {
     return IconButton(
         tooltip: 'Delete group',
-        icon: SvgPicture.asset('assets/images/group-delete-icon.svg',
-            color: theming.iconColor),
+        icon: SvgPicture.asset(
+          'assets/images/group-delete-icon.svg',
+          colorFilter: theming.iconColor != null
+              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+              : null,
+        ),
         onPressed: () async {
           final deleteGroupWidget =
               DeleteGroupAlertWidget.showCustomDialog(context, group: group);

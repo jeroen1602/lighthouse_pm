@@ -27,7 +27,9 @@ class IconBuilder extends MarkdownElementBuilder {
       'assets/images/$name.svg',
       height: preferredStyle?.fontSize ?? 17,
       width: preferredStyle?.fontSize ?? 17,
-      color: preferredStyle?.color,
+      colorFilter: preferredStyle?.color != null
+          ? ColorFilter.mode(preferredStyle!.color!, BlendMode.srcIn)
+          : null,
     );
   }
 
