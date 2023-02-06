@@ -101,7 +101,9 @@ class _SettingsContentState extends State<SettingsContent> {
           "assets/images/app-icon.svg",
           width: theming.iconSizeLarge,
           height: theming.iconSizeLarge,
-          color: theming.iconColor,
+          colorFilter: theming.iconColor != null
+              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+              : null,
         ),
         title: Text('Lighthouse Power management', style: headTheme),
       ),
@@ -503,7 +505,9 @@ class _SettingsContentState extends State<SettingsContent> {
             "assets/images/f-droid-logo.svg",
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
-            color: theming.iconColor,
+            colorFilter: theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
           ),
           onTap: () async {
             await launchUrl(Links.fDroidUrl,

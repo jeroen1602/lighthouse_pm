@@ -60,10 +60,10 @@ void main() {
 
         final svg = ((children[1] as TextSpan).children![0] as WidgetSpan).child
             as SvgPicture;
-        final provider = svg.pictureProvider;
-        expect(provider, isA<ExactAssetPicture>());
-        expect((provider as ExactAssetPicture).assetName,
-            contains('group-edit-icon'));
+        final loader = svg.bytesLoader;
+        expect(loader, isA<SvgAssetLoader>());
+        expect(
+            (loader as SvgAssetLoader).assetName, contains('group-edit-icon'));
       });
 
       testWidgets('Should convert material icons',

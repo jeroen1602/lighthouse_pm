@@ -29,7 +29,8 @@ class SettingsSupportPage extends BasePage {
           trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             'assets/images/github-sponsors.svg',
-            color: _githubSponsorsColor,
+            colorFilter:
+                const ColorFilter.mode(_githubSponsorsColor, BlendMode.srcIn),
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
           ),
@@ -46,7 +47,9 @@ class SettingsSupportPage extends BasePage {
           trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             'assets/images/paypal.svg',
-            color: theming.iconColor,
+            colorFilter: theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
           ),
