@@ -41,7 +41,8 @@ class FakeAndroidDeviceInfo extends BaseDeviceInfo {
             'heightPx': 0.0,
             'xDpi': 0.0,
             'yDpi': 0.0
-          }
+          },
+          'serialNumber': 'SERIAL_NUMBER',
         });
 
   void setSdkInt(final int sdkInt) {
