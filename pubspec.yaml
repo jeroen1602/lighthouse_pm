@@ -89,7 +89,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.5.1
+  drift_dev: ^2.5.2
   build_runner: 2.3.3
   flutter_lints: ^2.0.1
   lighthouse_test_helper:
