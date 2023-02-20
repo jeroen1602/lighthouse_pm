@@ -29,7 +29,7 @@ dependencies:
   #  package_info: ^2.0.0
   package_info_plus: ^3.0.2
   permission_handler: ^10.2.0
-  flutter_svg: ^2.0.0+1
+  flutter_svg: ^2.0.1
   url_launcher: ^6.1.8
   community_material_icon: 5.9.55
   dynamic_color: ^1.6.2
