@@ -21,22 +21,16 @@ version: 1.2.0+8
 environment:
   sdk: ">=2.19.0 <3.0.0"
 
-# TODO: update dependencies from git links to actual releases once they are online.
 dependencies:
   flutter:
     sdk: flutter
   rxdart: ^0.27.7
-  #  package_info: ^2.0.0
   package_info_plus: ^3.0.2
   permission_handler: ^10.2.0
   flutter_svg: ^2.0.1
   url_launcher: ^6.1.8
   community_material_icon: 5.9.55
   dynamic_color: ^1.6.2
-  #  flutter_icons:
-  #    git:
-  #      url: https://github.com/adarsh-technocrat/flutter-icons
-  #      ref: null-safety-migration
   mutex: ^3.0.1
   convert: ^3.1.1
   vibration: ^1.7.6
@@ -50,8 +44,8 @@ dependencies:
   intl: ^0.18.0
   device_info_plus: ^8.1.0
   meta: ^1.8.0
-  flutter_markdown: ^0.6.13
-  markdown: ^6.0.1
+  flutter_markdown: ^0.6.14
+  markdown: ^7.0.1
   # Android/ iOS
   flutter_reactive_ble_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_reactive_ble_back_end
