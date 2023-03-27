@@ -35,7 +35,7 @@ dependencies:
   convert: ^3.1.1
   vibration: ^1.7.6
   toast: ^0.3.0
-  drift: ^2.5.0
+  drift: ^2.6.0
   sqlite3_flutter_libs: ^0.5.13
   path_provider: ^2.0.13
   path: ^1.8.2
@@ -83,7 +83,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.5.1
+  drift_dev: ^2.6.0
   build_runner: 2.3.3
   flutter_lints: ^2.0.1
   lighthouse_test_helper:
