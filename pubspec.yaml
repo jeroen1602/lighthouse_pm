@@ -50,7 +50,7 @@ dependencies:
   flutter_reactive_ble_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_reactive_ble_back_end
   # Web:
-  flutter_web_bluetooth: ^0.1.0
+  flutter_web_bluetooth: ^0.2.0
   web_browser_detect: ^2.0.3
   flutter_web_bluetooth_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_web_bluetooth_back_end
