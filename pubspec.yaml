@@ -41,7 +41,7 @@ dependencies:
   path: ^1.8.2
   provider: ^6.0.5
   tuple: ^2.0.1
-  intl: ^0.18.0
+  intl: ^0.18.1
   device_info_plus: ^8.1.0
   meta: ^1.8.0
   flutter_markdown: ^0.6.14
