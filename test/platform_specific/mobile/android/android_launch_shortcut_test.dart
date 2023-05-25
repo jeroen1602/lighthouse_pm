@@ -108,34 +108,41 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     final instance = AndroidLauncherShortcut.instance;
 
-    AndroidLauncherShortcut.channel
-        .setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
+            (final call) async {
       if (call.method == 'supportShortcut') {
         return true;
       }
+      return null;
     });
 
     expect(await instance.shortcutSupported(), isTrue);
 
-    AndroidLauncherShortcut.channel
-        .setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
+            (final call) async {
       if (call.method == 'supportShortcut') {
         return false;
       }
+      return null;
     });
 
     expect(await instance.shortcutSupported(), isFalse);
 
-    AndroidLauncherShortcut.channel
-        .setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
+            (final call) async {
       if (call.method == 'supportShortcut') {
         return "something";
       }
+      return null;
     });
 
     expect(await instance.shortcutSupported(), isFalse);
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, null);
   });
 
   test('Should handle ready for data', () async {
@@ -144,19 +151,22 @@ void main() {
 
     int readyForDataCalled = 0;
 
-    AndroidLauncherShortcut.channel
-        .setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
+            (final call) async {
       if (call.method == 'readyForData') {
         readyForDataCalled++;
         return;
       }
+      return null;
     });
 
     await instance.readyForData();
 
     expect(readyForDataCalled, 1);
 
-    AndroidLauncherShortcut.channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, null);
   });
 
   test('Should handle mac shortcuts', () async {

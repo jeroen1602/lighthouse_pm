@@ -84,9 +84,9 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
       list.add(DropdownMenuItem(
           value: localSelected, child: Text(localSelected.name)));
     }
-    list.add(DropdownMenuItem(
+    list.add(const DropdownMenuItem(
         child: Row(
-      children: const [
+      children: [
         Icon(Icons.add),
         VerticalDivider(
           color: Colors.transparent,
@@ -99,8 +99,8 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
         0,
         DropdownMenuItem(
             value: _removeGroup,
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(Icons.clear),
                 VerticalDivider(
                   color: Colors.transparent,

@@ -311,26 +311,35 @@ void main() {
 
   test('Should open BLE settings on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openBLESettings") {
         return true;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.openBLESettings(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openBLESettings") {
         return false;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openBLESettings") {
         return 'other';
       }
+      return null;
     });
 
     try {
@@ -340,31 +349,41 @@ void main() {
       expect(e, isA<TypeError>());
     }
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, null);
   });
 
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "enableBluetooth") {
         return true;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.enableBLE(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "enableBluetooth") {
         return false;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.enableBLE(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "enableBluetooth") {
         return 'other';
       }
+      return null;
     });
 
     try {
@@ -374,31 +393,41 @@ void main() {
       expect(e, isA<TypeError>());
     }
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, null);
   });
 
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openLocationSettings") {
         return true;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isTrue);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openLocationSettings") {
         return false;
       }
+      return null;
     });
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler((final call) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
+            (final call) async {
       if (call.method == "openLocationSettings") {
         return 'other';
       }
+      return null;
     });
 
     try {
@@ -408,7 +437,8 @@ void main() {
       expect(e, isA<TypeError>());
     }
 
-    BLEPermissionsHelper.channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, null);
   });
 }
 

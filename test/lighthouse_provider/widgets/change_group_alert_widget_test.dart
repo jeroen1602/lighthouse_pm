@@ -56,11 +56,11 @@ void main() {
         matching: find.byType(typeOf<DropdownButton<Group>>())));
     await tester.pumpAndSettle();
 
-    expect(find.text("Test group 1"), findsNWidgets(2));
-    expect(find.text("Test group 2"), findsNWidgets(2));
-    expect(find.text("Test group 3"), findsNWidgets(2));
-    expect(find.text("Test group 4"), findsNWidgets(2));
-    expect(find.text("Add item"), findsNWidgets(2));
+    expect(find.text("Test group 1"), findsNWidgets(1));
+    expect(find.text("Test group 2"), findsNWidgets(1));
+    expect(find.text("Test group 3"), findsNWidgets(1));
+    expect(find.text("Test group 4"), findsNWidgets(1));
+    expect(find.text("Add item"), findsNWidgets(1));
     expect(find.text("No Group"), findsNWidgets(2));
 
     await tester.scrollUntilVisible(find.text("No Group").last, 1.0);
