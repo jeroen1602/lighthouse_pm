@@ -247,7 +247,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       }
     } else if (SharedPlatform.isIOS) {
       final ios = await deviceInfo.iosInfo;
-      final iosVersion = double.tryParse(ios.systemVersion ?? "0.0");
+      final iosVersion = double.tryParse(ios.systemVersion);
       if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
         return true;
       }
