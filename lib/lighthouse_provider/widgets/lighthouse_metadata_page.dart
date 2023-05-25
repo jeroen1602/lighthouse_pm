@@ -129,7 +129,9 @@ class _MetadataInkWell extends StatelessWidget {
     final theming = Theming.of(context);
     return InkWell(
       onLongPress: () async {
-        Clipboard.setData(ClipboardData(text: value));
+        if (value != null) {
+          Clipboard.setData(ClipboardData(text: value!));
+        }
         if (await Vibration.hasVibrator() ?? false) {
           Vibration.vibrate(duration: 200);
         }
