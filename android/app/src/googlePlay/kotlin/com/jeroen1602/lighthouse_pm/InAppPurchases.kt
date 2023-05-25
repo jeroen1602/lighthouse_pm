@@ -135,7 +135,7 @@ class InAppPurchases {
             return
         }
         val products = queryProductDetails()
-        if (products == null || products.isEmpty()) {
+        if (products.isNullOrEmpty()) {
             withContext(Dispatchers.Main) {
                 result.success(emptyList<Unit>())
             }
@@ -229,7 +229,7 @@ class InAppPurchases {
         }
 
         val results = productDetailsResult.productDetailsList
-        if (results == null || results.isEmpty()) {
+        if (results.isNullOrEmpty()) {
             return null
         }
         return results[0]
