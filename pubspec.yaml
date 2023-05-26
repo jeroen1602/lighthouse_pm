@@ -27,16 +27,16 @@ dependencies:
   rxdart: ^0.27.7
   package_info_plus: ^4.0.1
   permission_handler: ^10.2.0
-  flutter_svg: ^2.0.4
-  url_launcher: ^6.1.10
+  flutter_svg: ^2.0.6
+  url_launcher: ^6.1.11
   community_material_icon: 5.9.55
-  dynamic_color: ^1.6.3
+  dynamic_color: ^1.6.5
   mutex: ^3.0.1
   convert: ^3.1.1
   vibration: ^1.7.7
   toast: ^0.3.0
-  drift: ^2.6.0
-  sqlite3_flutter_libs: ^0.5.13
+  drift: ^2.8.0
+  sqlite3_flutter_libs: ^0.5.15
   path_provider: ^2.0.15
   path: ^1.8.2
   provider: ^6.0.5
@@ -83,8 +83,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.6.0
-  build_runner: 2.3.3
+  drift_dev: ^2.8.0
+  build_runner: 2.4.4
   flutter_lints: ^2.0.1
   lighthouse_test_helper:
     path: lighthouse_provider/lighthouse_test_helper
