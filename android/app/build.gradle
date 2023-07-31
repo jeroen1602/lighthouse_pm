@@ -116,7 +116,7 @@ dependencies {
     implementation "com.polidea.rxandroidble2:rxandroidble:1.17.2"
 
     // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
     def billing_version = "6.0.1"
 
