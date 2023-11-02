@@ -6,7 +6,7 @@ import 'package:lighthouse_pm/widgets/privacy_page_segment.dart';
 import '../base_page.dart';
 
 class PrivacyPage extends BasePage {
-  const PrivacyPage({final Key? key}) : super(key: key);
+  const PrivacyPage({super.key});
 
   static const version1_1Date = "January 1st 2022";
 

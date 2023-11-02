@@ -15,7 +15,7 @@ import '../base_page.dart';
 const _githubSponsorsColor = Color(0xffdb61a2);
 
 class SettingsSupportPage extends BasePage {
-  const SettingsSupportPage({final Key? key}) : super(key: key);
+  const SettingsSupportPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

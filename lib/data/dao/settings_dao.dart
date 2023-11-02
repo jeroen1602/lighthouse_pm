@@ -37,8 +37,7 @@ enum SettingsIds {
 @DriftAccessor(tables: [SimpleSettings])
 class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
     with _$SettingsDaoMixin {
-  SettingsDao(final LighthouseDatabase attachedDatabase)
-      : super(attachedDatabase);
+  SettingsDao(super.attachedDatabase);
 
   static const scanDurationValues = [5, 10, 15, 20];
   static const updateIntervalValues = [1, 2, 3, 4, 5, 10, 20, 30];

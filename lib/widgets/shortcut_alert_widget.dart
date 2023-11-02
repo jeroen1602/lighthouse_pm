@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Show a warning to the user about support still being in beta.
 class ShortcutBetaAlertWidget extends StatelessWidget {
-  const ShortcutBetaAlertWidget({final Key? key}) : super(key: key);
+  const ShortcutBetaAlertWidget({super.key});
 
   @override
   Widget build(final BuildContext context) {
@@ -46,7 +46,7 @@ class ShortcutBetaAlertWidget extends StatelessWidget {
 /// device.
 ///
 class ShortcutNotSupportedWidget extends StatelessWidget {
-  const ShortcutNotSupportedWidget({final Key? key}) : super(key: key);
+  const ShortcutNotSupportedWidget({super.key});
 
   @override
   Widget build(final BuildContext context) {

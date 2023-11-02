@@ -3,8 +3,7 @@ import 'package:lighthouse_pm/theming.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   const ViveBaseStationExtraInfoAlertWidget(
-      {final Key? key, required this.pairIdHint})
-      : super(key: key);
+      {super.key, required this.pairIdHint});
 
   final int? pairIdHint;
 
@@ -137,8 +136,7 @@ class _ViveBaseStationExtraInfoAlertState
 
 class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
   const ViveBaseStationExtraInfoIdWarningAlertWidget(
-      {required this.setId, required this.existingIdEnd, final Key? key})
-      : super(key: key);
+      {required this.setId, required this.existingIdEnd, super.key});
 
   final String setId;
   final int existingIdEnd;

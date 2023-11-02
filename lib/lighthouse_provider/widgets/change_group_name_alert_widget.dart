@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 /// A dialog for changing the name of a group.
 /// Can also be used for creating a new group.
 class ChangeGroupNameAlertWidget extends StatefulWidget {
-  const ChangeGroupNameAlertWidget({this.initialGroupName, final Key? key})
-      : super(key: key);
+  const ChangeGroupNameAlertWidget({this.initialGroupName, super.key});
 
   final String? initialGroupName;
 

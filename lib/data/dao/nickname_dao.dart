@@ -9,8 +9,7 @@ part 'nickname_dao.g.dart';
 @DriftAccessor(tables: [Nicknames, LastSeenDevices])
 class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
     with _$NicknameDaoMixin {
-  NicknameDao(final LighthouseDatabase attachedDatabase)
-      : super(attachedDatabase);
+  NicknameDao(super.attachedDatabase);
 
   Stream<List<Nickname>> get watchSavedNicknames => select(nicknames).watch();
 

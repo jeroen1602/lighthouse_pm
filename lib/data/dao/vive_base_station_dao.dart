@@ -9,8 +9,7 @@ part 'vive_base_station_dao.g.dart';
 @DriftAccessor(tables: [ViveBaseStationIds])
 class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
     with _$ViveBaseStationDaoMixin {
-  ViveBaseStationDao(final LighthouseDatabase attachedDatabase)
-      : super(attachedDatabase);
+  ViveBaseStationDao(super.attachedDatabase);
 
   Future<int?> getId(final String deviceId) {
     return (select(viveBaseStationIds)

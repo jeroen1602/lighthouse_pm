@@ -9,7 +9,7 @@ part 'group_dao.g.dart';
 @DriftAccessor(tables: [Groups, GroupEntries])
 class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     with _$GroupDaoMixin {
-  GroupDao(final LighthouseDatabase attachedDatabase) : super(attachedDatabase);
+  GroupDao(super.attachedDatabase);
 
   Stream<List<GroupWithEntries>> watchGroups() {
     final groupsStream = select(groups).watch();

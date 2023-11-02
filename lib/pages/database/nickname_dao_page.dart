@@ -153,7 +153,7 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
 }
 
 class NicknameDaoPage extends BasePage with WithBlocStateless {
-  const NicknameDaoPage({final Key? key}) : super(key: key);
+  const NicknameDaoPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

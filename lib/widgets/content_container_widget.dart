@@ -14,8 +14,7 @@ class ContentContainerWidget extends StatelessWidget {
       this.maxSize = ContentContainerWidget.defaultMaxSize,
       this.contentSize = ContentContainerWidget.defaultContentSize,
       this.addMaterial = true,
-      final Key? key})
-      : super(key: key);
+      super.key});
 
   /// At what size should the content become smaller?
   final double maxSize;
@@ -70,8 +69,8 @@ class ContentContainerListView extends StatelessWidget {
     required this.children,
     this.maxSize = ContentContainerWidget.defaultMaxSize,
     this.contentSize = ContentContainerWidget.defaultContentSize,
-    final Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// At what size should the content become smaller?
   final double maxSize;
@@ -157,12 +156,11 @@ typedef ScrollbarChildBuilder = Widget Function(
 
 class ContentScrollbar extends StatelessWidget {
   ContentScrollbar({
-    final Key? key,
+    super.key,
     final ScrollController? controller,
     required this.scrollbarChildBuilder,
     this.maxSize = ContentContainerWidget.defaultMaxSize,
-  })  : controller = controller ?? ScrollController(),
-        super(key: key);
+  })  : controller = controller ?? ScrollController();
 
   final ScrollbarChildBuilder scrollbarChildBuilder;
 

@@ -410,13 +410,12 @@ class _LighthouseGroupWidgetState extends State<LighthouseGroupWidget> {
 /// of the devices in the group.
 class _LighthouseGroupWidgetHeader extends StatelessWidget {
   const _LighthouseGroupWidgetHeader({
-    final Key? key,
     required this.onSelected,
     required this.selected,
     required this.selecting,
     required this.group,
     required this.action,
-  }) : super(key: key);
+  });
 
   final VoidCallback onSelected;
   final bool selected;

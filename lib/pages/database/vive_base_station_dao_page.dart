@@ -90,7 +90,7 @@ class _ViveBaseStationIdConverter
 }
 
 class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
-  const ViveBaseStationDaoPage({final Key? key}) : super(key: key);
+  const ViveBaseStationDaoPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

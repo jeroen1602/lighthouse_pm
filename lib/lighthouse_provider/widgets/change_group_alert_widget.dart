@@ -7,8 +7,7 @@ import 'change_group_name_alert_widget.dart';
 /// Change the group for the items selected.
 class ChangeGroupAlertWidget extends StatefulWidget {
   const ChangeGroupAlertWidget(
-      {required this.groups, required this.selectedGroup, final Key? key})
-      : super(key: key);
+      {required this.groups, required this.selectedGroup, super.key});
 
   static const int removeGroupId = -1;
   static const int newGroupId = -2;

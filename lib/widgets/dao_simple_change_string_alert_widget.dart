@@ -4,10 +4,10 @@ import 'package:lighthouse_pm/theming.dart';
 /// A dialog for changing the nickname of a lighthouse
 class DaoSimpleChangeStringAlertWidget extends StatefulWidget {
   const DaoSimpleChangeStringAlertWidget({
-    final Key? key,
+    super.key,
     required this.primaryKey,
     this.startValue,
-  }) : super(key: key);
+  });
   final String primaryKey;
   final String? startValue;
 

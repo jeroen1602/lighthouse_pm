@@ -11,8 +11,7 @@ import 'package:lighthouse_pm/theming.dart';
 /// [DaoDataCreateAlertDecorator.getNewValue] call. These can be `null`.
 ///
 class DaoDataCreateAlertWidget extends StatefulWidget {
-  const DaoDataCreateAlertWidget(this.decorators, {final Key? key})
-      : super(key: key);
+  const DaoDataCreateAlertWidget(this.decorators, {super.key});
 
   final List<DaoDataCreateAlertDecorator<dynamic>> decorators;
 
@@ -98,9 +97,8 @@ abstract class DaoDataCreateAlertDecorator<T> {
 class DaoDataCreateAlertStringDecorator
     extends DaoDataCreateAlertDecorator<String> {
   DaoDataCreateAlertStringDecorator(
-      final String name, final String? originalValue,
-      {this.validator})
-      : super(name, originalValue);
+      super.name, super.originalValue,
+      {this.validator});
 
   final FormFieldValidator<String>? validator;
 
@@ -121,8 +119,7 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
   final FormFieldValidator<String>? validator;
 
   const _DaoDataCreateAlertStringDecoratorWidget(this.item, this.onChange,
-      {final Key? key, this.validator})
-      : super(key: key);
+      {this.validator});
 
   @override
   Widget build(final BuildContext context) {
@@ -148,9 +145,8 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
 /// Use [autoIncrement] if the int can also be null and thus set via autoincrement.
 ///
 class DaoDataCreateAlertIntDecorator extends DaoDataCreateAlertDecorator<int> {
-  DaoDataCreateAlertIntDecorator(final String name, final int? originalValue,
-      {this.autoIncrement = false, this.negative = false})
-      : super(name, originalValue);
+  DaoDataCreateAlertIntDecorator(super.name, super.originalValue,
+      {this.autoIncrement = false, this.negative = false});
 
   final bool autoIncrement;
   final bool negative;
@@ -166,9 +162,7 @@ class _DaoDataCreateAlertIntDecoratorWidget extends StatefulWidget {
   final DaoDataCreateAlertIntDecorator item;
   final ValueChanged<int?> onChange;
 
-  const _DaoDataCreateAlertIntDecoratorWidget(this.item, this.onChange,
-      {final Key? key})
-      : super(key: key);
+  const _DaoDataCreateAlertIntDecoratorWidget(this.item, this.onChange);
 
   String? _validateId(final String? value) {
     if (value == null) {

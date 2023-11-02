@@ -8,8 +8,7 @@ class OfflineLighthouseWidget extends StatelessWidget {
       required this.selected,
       required this.selecting,
       this.nickname,
-      final Key? key})
-      : super(key: key);
+      super.key});
 
   final String deviceId;
   final VoidCallback onSelected;

@@ -144,8 +144,7 @@ class CountingFakeLighthouseV2Device extends FakeLighthouseV2Device {
 
 @visibleForTesting
 class OfflineAbleLighthouseDevice extends FakeLighthouseV2Device {
-  OfflineAbleLighthouseDevice(final int deviceName, final int deviceId)
-      : super(deviceName, deviceId);
+  OfflineAbleLighthouseDevice(super.deviceName, super.deviceId);
 
   LHBluetoothDeviceState currentState = LHBluetoothDeviceState.connected;
 

@@ -19,7 +19,7 @@ const double _troubleshootingScrollPadding = 20;
 /// A widget showing the a material scaffold with the troubleshooting widget.
 ///
 class TroubleshootingPage extends BasePage {
-  const TroubleshootingPage({final Key? key}) : super(key: key);
+  const TroubleshootingPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -40,7 +40,7 @@ class TroubleshootingPage extends BasePage {
 ///
 class TroubleshootingContentWidget extends StatelessWidget
     with WithBlocStateless {
-  const TroubleshootingContentWidget({final Key? key}) : super(key: key);
+  const TroubleshootingContentWidget({super.key});
 
   static List<Widget> getContent(final BuildContext context) {
     return [
@@ -227,14 +227,12 @@ class TroubleshootingContentWidget extends StatelessWidget
 ///
 class _TroubleshootingItemWithAction extends StatelessWidget {
   const _TroubleshootingItemWithAction(
-      {final Key? key,
-      required this.leadingIcon,
+      {required this.leadingIcon,
       required this.leadingColor,
       required this.actionIcon,
       required this.onTap,
       required this.title,
-      this.subtitle})
-      : super(key: key);
+      this.subtitle});
 
   final IconData leadingIcon;
   final Color leadingColor;

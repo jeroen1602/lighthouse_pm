@@ -3,8 +3,7 @@ import 'package:lighthouse_pm/data/database.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class DeleteGroupAlertWidget extends StatelessWidget {
-  const DeleteGroupAlertWidget({required this.group, final Key? key})
-      : super(key: key);
+  const DeleteGroupAlertWidget({required this.group, super.key});
 
   final Group group;
 

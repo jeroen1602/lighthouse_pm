@@ -52,7 +52,7 @@ Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
 }
 
 class MainPage extends BasePage with WithBlocStateless {
-  MainPage({final Key? key}) : super(key: key, replace: true);
+  MainPage({super.key}) : super(replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -79,8 +79,7 @@ class MainPage extends BasePage with WithBlocStateless {
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
-  const _ScanFloatingButtonWidget({final Key? key, required this.settings})
-      : super(key: key);
+  const _ScanFloatingButtonWidget({required this.settings});
 
   final MainPageSettings settings;
 
@@ -197,8 +196,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 }
 
 class ScanDevicesPage extends StatefulWidget {
-  const ScanDevicesPage({final Key? key, required this.settings})
-      : super(key: key);
+  const ScanDevicesPage({super.key, required this.settings});
 
   final MainPageSettings settings;
 
@@ -799,8 +797,7 @@ class ScanDevicesIntent extends Intent {
 
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
-      {final Key? key, required this.state, required this.settings})
-      : super(key: key);
+      {super.key, required this.state, required this.settings});
 
   final BluetoothAdapterState? state;
   final MainPageSettings settings;

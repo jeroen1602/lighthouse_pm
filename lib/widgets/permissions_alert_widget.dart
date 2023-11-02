@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
-  const PermissionsAlertWidget(this.sdkInt, {final Key? key}) : super(key: key);
+  const PermissionsAlertWidget(this.sdkInt, {super.key});
 
   final int sdkInt;
 

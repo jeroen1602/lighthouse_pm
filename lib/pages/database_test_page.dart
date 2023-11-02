@@ -13,7 +13,7 @@ import 'database/settings_dao_page.dart';
 import 'database/vive_base_station_dao_page.dart';
 
 class DatabaseTestPage extends BasePage with WithBlocStateless {
-  DatabaseTestPage({final Key? key}) : super(key: key, replace: true);
+  DatabaseTestPage({super.key}) : super(replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {

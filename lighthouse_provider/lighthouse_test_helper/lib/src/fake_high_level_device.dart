@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 class FakeHighLevelStatefulDevice extends FakeHighLevelDevice
     with StatefulLighthouseDevice {
-  FakeHighLevelStatefulDevice(final LHBluetoothDevice device) : super(device);
+  FakeHighLevelStatefulDevice(super.device);
 
   FakeHighLevelStatefulDevice.simple() : this(FakeLighthouseV2Device(1, 1));
 

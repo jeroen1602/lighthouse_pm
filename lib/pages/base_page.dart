@@ -35,9 +35,7 @@ class _ShortcutLaunchHandleWidget extends StatefulWidget {
   final ShortcutHandle? handle;
   final bool replace;
 
-  const _ShortcutLaunchHandleWidget(this.body, this.handle, this.replace,
-      {final Key? key})
-      : super(key: key);
+  const _ShortcutLaunchHandleWidget(this.body, this.handle, this.replace);
 
   @override
   State<StatefulWidget> createState() {

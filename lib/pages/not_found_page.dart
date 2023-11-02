@@ -5,7 +5,7 @@ import 'package:lighthouse_pm/widgets/content_container_widget.dart';
 import 'base_page.dart';
 
 class NotFoundPage extends BasePage {
-  const NotFoundPage({final Key? key}) : super(key: key);
+  const NotFoundPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

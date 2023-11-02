@@ -145,7 +145,7 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
 }
 
 class GroupDaoPage extends BasePage with WithBlocStateless {
-  const GroupDaoPage({final Key? key}) : super(key: key);
+  const GroupDaoPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

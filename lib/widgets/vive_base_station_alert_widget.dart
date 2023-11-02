@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Show a warning about clearing all set ids.
 class ViveBaseStationClearIds extends StatelessWidget {
-  const ViveBaseStationClearIds({final Key? key}) : super(key: key);
+  const ViveBaseStationClearIds({super.key});
 
   @override
   Widget build(final BuildContext context) {

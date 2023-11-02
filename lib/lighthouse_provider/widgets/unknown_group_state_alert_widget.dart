@@ -5,8 +5,7 @@ import 'package:lighthouse_provider/lighthouse_provider.dart';
 class UnknownGroupStateAlertWidget extends StatelessWidget {
   const UnknownGroupStateAlertWidget(
       this.supportsStandby, this.isStateUniversal,
-      {final Key? key})
-      : super(key: key);
+      {super.key});
 
   final bool supportsStandby;
   final bool isStateUniversal;

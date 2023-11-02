@@ -16,7 +16,7 @@ class OfflineGroupItemAlertWidgetReturn {
 /// A dialog that displays a warning to the user if one of the devices in a
 /// group is offline.
 class OfflineGroupItemAlertWidget extends StatefulWidget {
-  const OfflineGroupItemAlertWidget({final Key? key}) : super(key: key);
+  const OfflineGroupItemAlertWidget({super.key});
 
   @override
   State<StatefulWidget> createState() {

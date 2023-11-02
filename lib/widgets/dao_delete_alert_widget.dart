@@ -4,10 +4,10 @@ import 'package:lighthouse_pm/theming.dart';
 /// A dialog for changing the nickname of a lighthouse
 class DaoDeleteAlertWidget extends StatelessWidget {
   const DaoDeleteAlertWidget({
-    final Key? key,
+    super.key,
     required this.title,
     required this.subTitle,
-  }) : super(key: key);
+  });
   final String title;
   final String subTitle;
 
