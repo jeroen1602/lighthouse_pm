@@ -116,8 +116,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 }
 
 class _MetadataInkWell extends StatelessWidget {
-  const _MetadataInkWell(
-      {required this.name, this.value, this.onTap});
+  const _MetadataInkWell({required this.name, this.value, this.onTap});
 
   final String name;
   final String? value;

@@ -287,7 +287,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   Widget build(final BuildContext context) {
     final selecting = selected.isNotEmpty || selectedGroup != null;
     return buildScanPopScope(
-        beforeWillPop: () async {
+        beforeWillPop: () {
           if (selecting) {
             setState(() {
               clearSelected();
@@ -770,6 +770,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   @override
   void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch (state) {
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         setState(() {
           updates = 0;

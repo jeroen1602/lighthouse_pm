@@ -1,4 +1,4 @@
-part of flutter_web_bluetooth_back_end;
+part of '../../flutter_web_bluetooth_back_end.dart';
 
 class FlutterWebBluetoothCharacteristic extends LHBluetoothCharacteristic {
   FlutterWebBluetoothCharacteristic(this.characteristic);

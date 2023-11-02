@@ -4,8 +4,10 @@ import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'multiple_callback_pop_scope.dart';
+
 abstract class ScanningMixin {
-  Future<bool> _onWillPop() async {
+  bool _onWillPop() {
     return true;
   }
 
@@ -38,25 +40,19 @@ abstract class ScanningMixin {
 
   Widget buildScanPopScope(
       {required final Widget child,
-      final WillPopCallback? beforeWillPop,
-      final WillPopCallback? afterWillPop}) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (beforeWillPop != null) {
-          if (!await beforeWillPop()) {
-            return false;
-          }
-        }
-        if (!await _onWillPop()) {
-          return false;
-        }
-        if (afterWillPop != null) {
-          if (!await afterWillPop()) {
-            return false;
-          }
-        }
-        return true;
-      },
+      final CanPop? beforeWillPop,
+      final CanPop? afterWillPop}) {
+    final canPopList = <CanPop>[];
+    if (beforeWillPop != null) {
+      canPopList.add(beforeWillPop);
+    }
+    canPopList.add(_onWillPop);
+    if (afterWillPop != null) {
+      canPopList.add(afterWillPop);
+    }
+
+    return MultipleCallbackPopScope(
+      canPop: canPopList,
       child: child,
     );
   }

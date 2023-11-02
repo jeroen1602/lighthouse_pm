@@ -1,13 +1,10 @@
-part of vive_base_station_device_provider;
+part of '../../../vive_base_station_device_provider.dart';
 
 class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
     implements DeviceWithExtensions {
-  ViveBaseStationDevice(
-      final LHBluetoothDevice device,
-      final ViveBaseStationPersistence? persistence,
+  ViveBaseStationDevice(super.device, super.persistence,
       final RequestPairId<dynamic>? requestCallback)
-      : _requestCallback = requestCallback,
-        super(device, persistence);
+      : _requestCallback = requestCallback;
 
   static const String powerServiceUUID = '0000cb00-0000-1000-8000-00805f9b34fb';
   static const String powerCharacteristicUUID =

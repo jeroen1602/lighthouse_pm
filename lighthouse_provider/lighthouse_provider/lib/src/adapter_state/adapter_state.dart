@@ -1,4 +1,4 @@
-part of lighthouse_provider;
+part of '../../lighthouse_provider.dart';
 
 enum BluetoothAdapterState {
   unknown("unknown"),

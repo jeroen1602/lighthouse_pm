@@ -13,9 +13,7 @@ class GetDeviceStateStream extends WaterfallStreamWidget<LighthousePowerState>
   final int settingsIndex;
 
   GetDeviceStateStream(this.settingsIndex,
-      {super.key,
-      required super.upStream,
-      super.downStreamBuilders});
+      {super.key, required super.upStream, super.downStreamBuilders});
 
   Stream<WithTimeout<LighthousePowerState>> getDeviceState(
       final StatefulLighthouseDevice device, final Duration timeout) {

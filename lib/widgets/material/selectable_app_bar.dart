@@ -137,10 +137,11 @@ Text _createTextWithStyle(final Text old, final Color selectedAppBarTextColor,
     locale: old.locale,
     softWrap: old.softWrap,
     overflow: old.overflow,
-    textScaleFactor: old.textScaleFactor,
+    textScaler: old.textScaler,
     maxLines: old.maxLines,
     semanticsLabel: old.semanticsLabel,
     textWidthBasis: old.textWidthBasis,
     textHeightBehavior: old.textHeightBehavior,
+    selectionColor: old.selectionColor,
   );
 }

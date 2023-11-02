@@ -1,17 +1,12 @@
-part of lighthouse_v2_device_provider;
+part of '../../../lighthouse_v2_device_provider.dart';
 
 ///
 /// An extension to allow a device to go into standby mode
 ///
 class StandbyExtension extends StateExtension {
   StandbyExtension(
-      {required final ChangeStateFunction changeState,
-      required final GetPowerStateStream powerStateStream})
-      : super(
-            toolTip: "Standby",
-            changeState: changeState,
-            powerStateStream: powerStateStream,
-            toState: LighthousePowerState.standby);
+      {required super.changeState, required super.powerStateStream})
+      : super(toolTip: "Standby", toState: LighthousePowerState.standby);
 }
 
 extension StandbyExtensionExtensions on LighthouseDevice {

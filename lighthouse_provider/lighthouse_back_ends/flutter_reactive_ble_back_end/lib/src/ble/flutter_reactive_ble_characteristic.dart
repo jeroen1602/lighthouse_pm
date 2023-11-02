@@ -1,15 +1,14 @@
-part of flutter_reactive_ble_back_end;
+part of '../flutter_reactive_ble_io.dart';
 
 class FlutterReactiveBleCharacteristic extends LHBluetoothCharacteristic {
   FlutterReactiveBleCharacteristic(
     final String deviceId,
-    final DiscoveredCharacteristic characteristic,
+    final Characteristic characteristic,
   )   : _qualifiedCharacteristic = QualifiedCharacteristic(
-            characteristicId: characteristic.characteristicId,
-            serviceId: characteristic.serviceId,
+            characteristicId: characteristic.id,
+            serviceId: characteristic.service.id,
             deviceId: deviceId),
-        uuid = LighthouseGuid.fromString(
-            characteristic.characteristicId.toString());
+        uuid = LighthouseGuid.fromString(characteristic.id.toString());
 
   final QualifiedCharacteristic _qualifiedCharacteristic;
   final _flutterReactiveBle = FlutterReactiveBle();

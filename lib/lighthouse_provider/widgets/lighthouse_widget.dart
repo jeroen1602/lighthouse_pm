@@ -266,8 +266,7 @@ class LighthouseWidgetState extends State<LighthouseWidget> {
 /// Display the state of the device together with the state as a number in hex.
 class _LHItemPowerStateWidget extends StatelessWidget {
   const _LHItemPowerStateWidget(
-      {required this.powerStateByte,
-      required this.toPowerState});
+      {required this.powerStateByte, required this.toPowerState});
 
   final int? powerStateByte;
   final _ToPowerState toPowerState;

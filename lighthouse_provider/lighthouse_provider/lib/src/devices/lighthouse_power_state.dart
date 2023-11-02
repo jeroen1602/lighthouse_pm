@@ -1,4 +1,4 @@
-part of lighthouse_provider;
+part of '../../lighthouse_provider.dart';
 
 /// An enum that describes the current power state of a lighthouse beacon.
 ///

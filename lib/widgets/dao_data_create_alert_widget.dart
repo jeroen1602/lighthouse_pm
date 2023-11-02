@@ -96,8 +96,7 @@ abstract class DaoDataCreateAlertDecorator<T> {
 ///
 class DaoDataCreateAlertStringDecorator
     extends DaoDataCreateAlertDecorator<String> {
-  DaoDataCreateAlertStringDecorator(
-      super.name, super.originalValue,
+  DaoDataCreateAlertStringDecorator(super.name, super.originalValue,
       {this.validator});
 
   final FormFieldValidator<String>? validator;

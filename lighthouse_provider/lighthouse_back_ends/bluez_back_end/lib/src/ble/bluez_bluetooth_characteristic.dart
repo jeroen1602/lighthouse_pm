@@ -1,4 +1,4 @@
-part of bluez_back_end;
+part of '../bluez_back_end_io.dart';
 
 class BlueZBluetoothCharacteristic extends LHBluetoothCharacteristic {
   BlueZBluetoothCharacteristic(this.characteristic);

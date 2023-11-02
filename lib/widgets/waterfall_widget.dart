@@ -9,9 +9,7 @@ abstract class WaterfallStreamWidget<T> extends StatelessWidget {
   final List<DownStreamBuilder> downStreamBuilders;
 
   const WaterfallStreamWidget(
-      {super.key,
-      required this.upStream,
-      this.downStreamBuilders = const []});
+      {super.key, required this.upStream, this.downStreamBuilders = const []});
 
   WaterfallStreamWidget getNextStreamDown(
       final BuildContext context, final T? upstreamData) {

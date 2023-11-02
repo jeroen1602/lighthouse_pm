@@ -160,7 +160,7 @@ class ContentScrollbar extends StatelessWidget {
     final ScrollController? controller,
     required this.scrollbarChildBuilder,
     this.maxSize = ContentContainerWidget.defaultMaxSize,
-  })  : controller = controller ?? ScrollController();
+  }) : controller = controller ?? ScrollController();
 
   final ScrollbarChildBuilder scrollbarChildBuilder;
 

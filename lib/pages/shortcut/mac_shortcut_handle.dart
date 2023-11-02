@@ -39,6 +39,7 @@ class ShortcutHandleMacState extends State<ShortcutHandlerWidget>
   @override
   void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch (state) {
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         cleanUp();
         break;

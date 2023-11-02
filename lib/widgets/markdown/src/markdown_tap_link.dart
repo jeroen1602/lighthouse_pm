@@ -1,4 +1,4 @@
-part of lighthouse_markdown;
+part of '../markdown.dart';
 
 markdownOpenLinkOnTap(
     final String text, final String? href, final String title) {

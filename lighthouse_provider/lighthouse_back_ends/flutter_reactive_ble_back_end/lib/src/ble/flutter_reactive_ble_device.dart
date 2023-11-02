@@ -1,4 +1,4 @@
-part of flutter_reactive_ble_back_end;
+part of '../flutter_reactive_ble_io.dart';
 
 /// An abstraction for the [FlutterReactiveBle] bluetooth device.
 class FlutterReactiveBleBluetoothDevice extends LHBluetoothDevice {
@@ -62,7 +62,8 @@ class FlutterReactiveBleBluetoothDevice extends LHBluetoothDevice {
 
   @override
   Future<List<LHBluetoothService>> discoverServices() async {
-    final services = await _flutterReactiveBle.discoverServices(device.id);
+    await _flutterReactiveBle.discoverAllServices(device.id);
+    final services = await _flutterReactiveBle.getDiscoveredServices(device.id);
 
     return services.map((final service) {
       return FlutterReactiveBleService(device.id, service);

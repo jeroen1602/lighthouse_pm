@@ -1,5 +1,4 @@
 import 'package:bluez_back_end/bluez_back_end.dart';
-import 'package:fake_back_end/fake_back_end.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_reactive_ble_back_end/flutter_reactive_ble_end.dart';
 import 'package:flutter_web_bluetooth_back_end/flutter_web_bluetooth_back_end.dart';
@@ -44,7 +43,7 @@ class LighthouseProviderStart {
       // you'll also need to
       // import 'package:lighthouse_pm/lighthouse_back_ends/fake/fake_back_end.dart';
 
-      LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
+      // LighthouseProvider.instance.addBackEnd(FakeBLEBackEnd.instance);
       return true;
     }());
 

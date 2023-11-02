@@ -1,4 +1,4 @@
-part of lighthouse_provider;
+part of '../../lighthouse_provider.dart';
 
 ///A provider for getting all [LighthouseDevice]s in the area.
 ///

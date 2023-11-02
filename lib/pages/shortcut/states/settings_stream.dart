@@ -6,9 +6,7 @@ import 'package:lighthouse_pm/widgets/waterfall_widget.dart';
 class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     with WithBlocStateless {
   SettingsStream(
-      {super.key,
-      required super.upStream,
-      super.downStreamBuilders});
+      {super.key, required super.upStream, super.downStreamBuilders});
 
   @override
   Widget build(final BuildContext context) {

@@ -1,4 +1,4 @@
-part of lighthouse_provider;
+part of '../../lighthouse_provider.dart';
 
 class TimeoutContainer<T> {
   TimeoutContainer(this.data, {final DateTime? lastSeen})

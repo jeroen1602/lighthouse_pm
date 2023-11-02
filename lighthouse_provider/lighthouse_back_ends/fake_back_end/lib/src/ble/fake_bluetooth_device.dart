@@ -1,4 +1,4 @@
-part of fake_back_end;
+part of '../../fake_back_end.dart';
 
 class FakeBluetoothDevice extends LHBluetoothDevice {
   final LHDeviceIdentifier deviceIdentifier;

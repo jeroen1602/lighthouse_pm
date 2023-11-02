@@ -1,4 +1,4 @@
-part of vive_base_station_device_provider;
+part of '../../../vive_base_station_device_provider.dart';
 
 typedef ClearIdCallback = Function();
 

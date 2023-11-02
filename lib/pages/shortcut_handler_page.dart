@@ -10,9 +10,7 @@ class ShortcutHandlerPage extends BasePage {
   final Object? handle;
 
   const ShortcutHandlerPage(this.handle, {super.key})
-      : super(
-            shortcutHandleArgument: handle as ShortcutHandle?,
-            replace: true);
+      : super(shortcutHandleArgument: handle as ShortcutHandle?, replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {

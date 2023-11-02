@@ -10,8 +10,7 @@ import 'base_page.dart';
 class SimpleBasePage extends BasePage {
   final Widget _body;
 
-  const SimpleBasePage(this._body,
-      {super.key, super.shortcutHandleArgument});
+  const SimpleBasePage(this._body, {super.key, super.shortcutHandleArgument});
 
   @override
   Widget buildPage(final BuildContext context) {

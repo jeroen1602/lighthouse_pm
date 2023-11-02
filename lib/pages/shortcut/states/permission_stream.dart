@@ -8,9 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
     with ScanningMixin, CloseCurrentRouteMixin {
   PermissionsStream(
-      {super.key,
-      required super.upStream,
-      super.downStreamBuilders});
+      {super.key, required super.upStream, super.downStreamBuilders});
 
   @override
   Widget build(final BuildContext context) {

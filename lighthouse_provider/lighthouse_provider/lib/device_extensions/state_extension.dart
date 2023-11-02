@@ -1,4 +1,4 @@
-part of device_extension;
+part of 'device_extension.dart';
 
 typedef ChangeStateFunction = Future<void> Function(
     LighthousePowerState newState);
@@ -10,11 +10,11 @@ typedef GetPowerStateStream = Stream<LighthousePowerState> Function();
 ///
 abstract class StateExtension extends DeviceExtension {
   StateExtension(
-      {required final String toolTip,
+      {required super.toolTip,
       required final ChangeStateFunction changeState,
       required this.powerStateStream,
       required this.toState})
-      : super(toolTip: toolTip, onTap: () => changeState(toState)) {
+      : super(onTap: () => changeState(toState)) {
     super.streamEnabledFunction = _enabledStream;
     assert(
         toState != LighthousePowerState.unknown &&

@@ -1,4 +1,4 @@
-part of lighthouse_back_end;
+part of '../../lighthouse_back_end.dart';
 
 ///
 /// Extension functions for [ByteData]
