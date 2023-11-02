@@ -48,6 +48,8 @@ class LocationPermissionDialogFlow {
           openAppSettings();
         }
         return false;
+      case PermissionStatus.provisional:
+        return false;
     }
   }
 }

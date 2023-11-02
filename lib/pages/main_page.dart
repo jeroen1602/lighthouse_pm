@@ -853,7 +853,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                     "Of course it doesn't support it!")
           else if (browser?.browserAgent == BrowserAgent.Edge)
             const TextSpan(
-                text: "\nTry switching to the new Chrome based Edge browser.")
+                text: "\nTry switching to the new Chrome based browser.")
         ];
       } else {
         subText = const [

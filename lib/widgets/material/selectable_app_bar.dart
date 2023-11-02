@@ -72,7 +72,6 @@ Tuple2<bool, Widget> _createIconWithColor(
               ColorFilter.mode(selectedAppBarTextColor, BlendMode.srcIn),
           semanticsLabel: oldIcon.semanticsLabel,
           excludeFromSemantics: oldIcon.excludeFromSemantics,
-          theme: oldIcon.theme,
         ));
   }
   return Tuple2(false, oldIcon);
