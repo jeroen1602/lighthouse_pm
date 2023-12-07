@@ -14,13 +14,7 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
   final int settingsIndex;
 
   GetDeviceStream(this.deviceId, this.settingsIndex,
-      {required final List<Object?> upStream,
-      required final List<DownStreamBuilder> downStreamBuilders,
-      final Key? key})
-      : super(
-            key: key,
-            upStream: upStream,
-            downStreamBuilders: downStreamBuilders);
+      {required super.upStream, required super.downStreamBuilders, super.key});
 
   Stream<WithTimeout<LighthouseDevice?>> listenForDevice(
       final Duration timeout) {

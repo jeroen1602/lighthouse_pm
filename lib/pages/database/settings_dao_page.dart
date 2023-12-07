@@ -187,7 +187,7 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 }
 
 class SettingsDaoPage extends BasePage with WithBlocStateless {
-  const SettingsDaoPage({final Key? key}) : super(key: key);
+  const SettingsDaoPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

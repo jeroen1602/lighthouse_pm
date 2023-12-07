@@ -1,4 +1,4 @@
-part of lighthouse_back_end;
+part of '../../lighthouse_back_end.dart';
 
 ///
 /// A device for all other devices.

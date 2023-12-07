@@ -1,4 +1,4 @@
-part of lighthouse_markdown;
+part of '../markdown.dart';
 
 ///
 /// Convert an <icon>{the icon}</icon> tag into an element that can be used in

@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_reactive_ble: ^5.0.3
-  mutex: ^3.0.0
+  flutter_reactive_ble: ^5.2.0
+  mutex: ^3.1.0
   rxdart: ^0.27.7
   lighthouse_back_end:
     path: ../../lighthouse_back_end
@@ -25,7 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 platforms:
   android:

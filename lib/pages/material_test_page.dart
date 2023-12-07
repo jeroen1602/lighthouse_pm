@@ -9,7 +9,7 @@ import 'base_page.dart';
 /// A page showing all the colors the material colors that the app uses.
 ///
 class MaterialTestPage extends BasePage with WithBlocStateless {
-  const MaterialTestPage({final Key? key}) : super(key: key);
+  const MaterialTestPage({super.key});
 
   Widget createBlock(final Color background, final Color text,
       final String name, final TextStyle baseTheme) {

@@ -12,7 +12,7 @@ import 'package:toast/toast.dart';
 import '../base_page.dart';
 
 class SettingsViveBaseStationIdsPage extends BasePage {
-  const SettingsViveBaseStationIdsPage({final Key? key}) : super(key: key);
+  const SettingsViveBaseStationIdsPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -119,14 +119,12 @@ typedef _DeleteItem = Future Function(String deviceId);
 
 class _DataPage extends StatelessWidget {
   const _DataPage(
-      {final Key? key,
-      required this.selecting,
+      {required this.selecting,
       required this.ids,
       required this.selectItem,
       required this.isSelected,
       required this.deselectItem,
-      required this.deleteItem})
-      : super(key: key);
+      required this.deleteItem});
 
   final bool selecting;
   final List<ViveBaseStationId> ids;
@@ -169,7 +167,7 @@ class _DataPage extends StatelessWidget {
 }
 
 class _EmptyPage extends StatefulWidget {
-  const _EmptyPage({final Key? key}) : super(key: key);
+  const _EmptyPage();
 
   @override
   State<StatefulWidget> createState() {

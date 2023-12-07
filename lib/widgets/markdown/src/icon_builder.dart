@@ -1,4 +1,4 @@
-part of lighthouse_markdown;
+part of '../markdown.dart';
 
 ///
 /// Convert an [md.Element] to the actual [Widget] for rendering. Use [IconSyntax]

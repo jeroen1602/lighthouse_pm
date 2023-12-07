@@ -1,4 +1,4 @@
-part of lighthouse_back_end;
+part of '../../lighthouse_back_end.dart';
 
 /// What a back end device should at least have for the providers to work with it.
 abstract class LowLevelDevice {

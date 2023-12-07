@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 /// A warning dialog for when the user wants to add 2 devices that have the
 /// same channel
 class DifferentGroupItemChannelAlertWidget extends StatefulWidget {
-  const DifferentGroupItemChannelAlertWidget({final Key? key})
-      : super(key: key);
+  const DifferentGroupItemChannelAlertWidget({super.key});
 
   @override
   State<StatefulWidget> createState() {

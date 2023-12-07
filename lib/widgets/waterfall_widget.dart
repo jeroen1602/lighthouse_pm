@@ -9,10 +9,7 @@ abstract class WaterfallStreamWidget<T> extends StatelessWidget {
   final List<DownStreamBuilder> downStreamBuilders;
 
   const WaterfallStreamWidget(
-      {final Key? key,
-      required this.upStream,
-      this.downStreamBuilders = const []})
-      : super(key: key);
+      {super.key, required this.upStream, this.downStreamBuilders = const []});
 
   WaterfallStreamWidget getNextStreamDown(
       final BuildContext context, final T? upstreamData) {
@@ -32,8 +29,7 @@ abstract class WaterfallStreamWidget<T> extends StatelessWidget {
 class WaterfallWidgetContainer extends StatelessWidget {
   final List<DownStreamBuilder> stream;
 
-  WaterfallWidgetContainer({final Key? key, required this.stream})
-      : super(key: key) {
+  WaterfallWidgetContainer({super.key, required this.stream}) {
     if (stream.isEmpty) {
       throw Exception("Stream cannot be empty!");
     }

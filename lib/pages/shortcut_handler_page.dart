@@ -9,11 +9,8 @@ import 'shortcut/mac_shortcut_handle.dart';
 class ShortcutHandlerPage extends BasePage {
   final Object? handle;
 
-  const ShortcutHandlerPage(this.handle, {final Key? key})
-      : super(
-            key: key,
-            shortcutHandleArgument: handle as ShortcutHandle?,
-            replace: true);
+  const ShortcutHandlerPage(this.handle, {super.key})
+      : super(shortcutHandleArgument: handle as ShortcutHandle?, replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -36,7 +33,7 @@ class ShortcutHandlerWidget extends StatefulWidget with CloseCurrentRouteMixin {
 
   ShortcutHandle get shortcutHandle => handle as ShortcutHandle;
 
-  const ShortcutHandlerWidget(this.handle, {final Key? key}) : super(key: key);
+  const ShortcutHandlerWidget(this.handle, {super.key});
 
   @override
   State<StatefulWidget> createState() {

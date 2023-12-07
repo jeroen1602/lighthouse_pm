@@ -52,7 +52,7 @@ Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
 }
 
 class MainPage extends BasePage with WithBlocStateless {
-  MainPage({final Key? key}) : super(key: key, replace: true);
+  MainPage({super.key}) : super(replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -79,8 +79,7 @@ class MainPage extends BasePage with WithBlocStateless {
 }
 
 class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
-  const _ScanFloatingButtonWidget({final Key? key, required this.settings})
-      : super(key: key);
+  const _ScanFloatingButtonWidget({required this.settings});
 
   final MainPageSettings settings;
 
@@ -197,8 +196,7 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 }
 
 class ScanDevicesPage extends StatefulWidget {
-  const ScanDevicesPage({final Key? key, required this.settings})
-      : super(key: key);
+  const ScanDevicesPage({super.key, required this.settings});
 
   final MainPageSettings settings;
 
@@ -289,7 +287,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   Widget build(final BuildContext context) {
     final selecting = selected.isNotEmpty || selectedGroup != null;
     return buildScanPopScope(
-        beforeWillPop: () async {
+        beforeWillPop: () {
           if (selecting) {
             setState(() {
               clearSelected();
@@ -772,6 +770,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   @override
   void didChangeAppLifecycleState(final AppLifecycleState state) {
     switch (state) {
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
         setState(() {
           updates = 0;
@@ -799,8 +798,7 @@ class ScanDevicesIntent extends Intent {
 
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   const BluetoothOffScreen(
-      {final Key? key, required this.state, required this.settings})
-      : super(key: key);
+      {super.key, required this.state, required this.settings});
 
   final BluetoothAdapterState? state;
   final MainPageSettings settings;
@@ -853,7 +851,7 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
                     "Of course it doesn't support it!")
           else if (browser?.browserAgent == BrowserAgent.Edge)
             const TextSpan(
-                text: "\nTry switching to the new Chrome based Edge browser.")
+                text: "\nTry switching to the new Chrome based browser.")
         ];
       } else {
         subText = const [

@@ -22,8 +22,7 @@ class DaoTableDataWidget<T> extends StatelessWidget {
   final DaoTableDataConverter<T> converter;
 
   const DaoTableDataWidget(this.tableName, this.entriesStream, this.converter,
-      {final Key? key})
-      : super(key: key);
+      {super.key});
 
   @override
   Widget build(final BuildContext context) {

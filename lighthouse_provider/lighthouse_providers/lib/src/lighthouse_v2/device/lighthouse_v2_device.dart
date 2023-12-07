@@ -1,4 +1,4 @@
-part of lighthouse_v2_device_provider;
+part of '../../../lighthouse_v2_device_provider.dart';
 
 ///The bluetooth service that handles the power state of the device.
 // final String _poserService = '00001523-1212-efde-1523-785feabcd124';
@@ -20,11 +20,9 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   static const String controlServiceUUID =
       "00001523-1212-efde-1523-785feabcd124";
 
-  LighthouseV2Device(final LHBluetoothDevice device,
-      final LighthouseV2Persistence? persistence,
+  LighthouseV2Device(super.device, super.persistence,
       [final CreateShortcutCallback? createShortcut])
-      : _createShortcut = createShortcut,
-        super(device, persistence) {
+      : _createShortcut = createShortcut {
     // Add a part of the [DeviceExtension]s the rest are added after [afterIsValid].
     deviceExtensions.add(IdentifyDeviceExtension(onTap: identify));
   }

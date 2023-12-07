@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// A warning dialog for when the user wants to add 2 different device types
 /// to the same group.
 class DifferentGroupItemTypesAlertWidget extends StatefulWidget {
-  const DifferentGroupItemTypesAlertWidget({final Key? key}) : super(key: key);
+  const DifferentGroupItemTypesAlertWidget({super.key});
 
   @override
   State<StatefulWidget> createState() {

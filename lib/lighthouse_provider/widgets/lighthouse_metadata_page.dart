@@ -13,7 +13,7 @@ import '../../bloc.dart';
 import 'widget_for_extension.dart';
 
 class LighthouseMetadataPage extends StatefulWidget {
-  LighthouseMetadataPage(this.device, {final Key? key}) : super(key: key);
+  LighthouseMetadataPage(this.device, {super.key});
 
   final LighthouseDevice device;
   final BehaviorSubject<int> _updateSubject = BehaviorSubject.seeded(0);
@@ -116,9 +116,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 }
 
 class _MetadataInkWell extends StatelessWidget {
-  const _MetadataInkWell(
-      {final Key? key, required this.name, this.value, this.onTap})
-      : super(key: key);
+  const _MetadataInkWell({required this.name, this.value, this.onTap});
 
   final String name;
   final String? value;
@@ -154,8 +152,7 @@ class _MetadataInkWell extends StatelessWidget {
 }
 
 class _ExtraActionsWidget extends StatelessWidget {
-  const _ExtraActionsWidget(this.device, {final Key? key, this.updateList})
-      : super(key: key);
+  const _ExtraActionsWidget(this.device, {this.updateList});
 
   final DeviceWithExtensions device;
   final VoidCallback? updateList;

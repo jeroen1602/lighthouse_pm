@@ -32,7 +32,7 @@ void main() {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({final Key? key}) : super(key: key);
+  const MainApp({super.key});
 
   @override
   Widget build(final BuildContext context) {
@@ -64,7 +64,7 @@ class MainApp extends StatelessWidget {
 }
 
 class LighthousePMApp extends StatelessWidget with WithBlocStateless {
-  const LighthousePMApp({final Key? key}) : super(key: key);
+  const LighthousePMApp({super.key});
 
   @override
   Widget build(final BuildContext context) {

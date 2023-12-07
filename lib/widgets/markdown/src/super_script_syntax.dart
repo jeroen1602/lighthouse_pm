@@ -1,4 +1,4 @@
-part of lighthouse_markdown;
+part of '../markdown.dart';
 
 ///
 /// Convert the markdown content inside the `<sup>` tag into actual super

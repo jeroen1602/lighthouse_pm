@@ -9,9 +9,8 @@ import 'package:flutter/gestures.dart';
 ///
 class CustomLongPressGestureRecognizer extends TapGestureRecognizer {
   CustomLongPressGestureRecognizer(
-      {final Object? debugOwner, final Duration duration = kLongPressTimeout})
-      : _duration = duration,
-        super(debugOwner: debugOwner) {
+      {super.debugOwner, final Duration duration = kLongPressTimeout})
+      : _duration = duration {
     super.onTapDown = _onTapDownHandler;
     super.onTapUp = _onTapUpHandler;
     super.onTap = _onTapHandler;

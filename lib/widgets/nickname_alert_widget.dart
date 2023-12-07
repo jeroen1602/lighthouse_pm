@@ -6,11 +6,11 @@ import 'package:lighthouse_pm/theming.dart';
 /// A dialog for changing the nickname of a lighthouse
 class NicknameAlertWidget extends StatefulWidget {
   const NicknameAlertWidget({
-    final Key? key,
+    super.key,
     required this.deviceId,
     this.deviceName,
     this.nickname,
-  }) : super(key: key);
+  });
   final String deviceId;
   final String? deviceName;
   final String? nickname;

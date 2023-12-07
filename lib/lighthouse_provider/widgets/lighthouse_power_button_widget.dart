@@ -6,12 +6,12 @@ import 'package:lighthouse_pm/theming.dart';
 /// A toggle button for the power state of a [LighthouseDevice].
 class LighthousePowerButtonWidget extends StatelessWidget {
   const LighthousePowerButtonWidget({
-    final Key? key,
+    super.key,
     required this.powerState,
     required this.onPress,
     this.onLongPress,
     this.disabled = false,
-  }) : super(key: key);
+  });
   final LighthousePowerState powerState;
   final VoidCallback onPress;
   final VoidCallback? onLongPress;

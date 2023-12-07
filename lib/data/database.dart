@@ -32,7 +32,7 @@ part 'database.g.dart';
   GroupDao,
 ])
 class LighthouseDatabase extends _$LighthouseDatabase {
-  LighthouseDatabase(final QueryExecutor e) : super(e);
+  LighthouseDatabase(super.e);
 
   @override
   int get schemaVersion => 4;

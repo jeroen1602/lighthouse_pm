@@ -11,7 +11,7 @@ import 'base_page.dart';
 /// A widget showing the a material scaffold with some help items the user may need.
 ///
 class HelpPage extends BasePage with WithBlocStateless {
-  const HelpPage({final Key? key}) : super(key: key);
+  const HelpPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {

@@ -1,9 +1,8 @@
-part of lighthouse_v2_device_provider;
+part of '../../../lighthouse_v2_device_provider.dart';
 
 /// A device extension that allow the device to be identified.
 class IdentifyDeviceExtension extends DeviceExtension {
-  IdentifyDeviceExtension({required final FutureCallback onTap})
-      : super(onTap: onTap, toolTip: 'Identify') {
+  IdentifyDeviceExtension({required super.onTap}) : super(toolTip: 'Identify') {
     super.streamEnabledFunction = _enabledStream;
   }
 

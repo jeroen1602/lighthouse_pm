@@ -1,4 +1,4 @@
-part of fake_back_end;
+part of '../../fake_back_end.dart';
 
 abstract class FakeDeviceIdentifier {
   static LHDeviceIdentifier generateDeviceIdentifier(final int seed) {

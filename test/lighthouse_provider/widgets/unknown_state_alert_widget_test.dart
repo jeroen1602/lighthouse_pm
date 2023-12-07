@@ -6,6 +6,7 @@ import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_platform/shared_platform_io.dart';
+import 'package:toast/toast.dart';
 
 import '../../helpers/widget_helpers.dart';
 
@@ -360,8 +361,8 @@ void main() {
       buildSignature: "SIGN_HERE_PLEASE",
       installerStore: "UNIT_TESTS",
     );
-
     await tester.pumpWidget(buildTestAppForWidgets((final context) {
+      ToastContext().init(context);
       UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
           currentState: 0xFF);
     }));
@@ -380,7 +381,7 @@ void main() {
     expect(held, isTrue);
 
     await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: Toast.lengthLong));
     expect(find.byType(Dialog), findsNothing);
   });
 }

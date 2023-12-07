@@ -1,4 +1,4 @@
-part of lighthouse_back_end;
+part of '../../lighthouse_back_end.dart';
 
 ///
 /// An abstract super class of what all device provider should be able to do.

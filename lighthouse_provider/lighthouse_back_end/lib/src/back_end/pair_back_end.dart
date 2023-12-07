@@ -1,4 +1,4 @@
-part of lighthouse_back_end;
+part of '../../lighthouse_back_end.dart';
 
 ///
 /// A back end that requires the user to pair a device before it's able to be

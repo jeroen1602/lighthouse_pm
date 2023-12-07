@@ -16,7 +16,7 @@ import 'package:toast/toast.dart';
 import '../base_page.dart';
 
 class SettingsNicknamesPage extends BasePage {
-  const SettingsNicknamesPage({final Key? key}) : super(key: key);
+  const SettingsNicknamesPage({super.key});
 
   @override
   Widget buildPage(final BuildContext context) {
@@ -140,15 +140,13 @@ typedef _UpdateItem = Future Function(Nickname nickname);
 
 class _DataNicknamePage extends StatelessWidget {
   const _DataNicknamePage(
-      {final Key? key,
-      required this.selecting,
+      {required this.selecting,
       required this.nicknames,
       required this.selectItem,
       required this.isSelected,
       required this.deselectItem,
       required this.deleteItem,
-      required this.updateItem})
-      : super(key: key);
+      required this.updateItem});
 
   final bool selecting;
   final List<NicknamesLastSeenJoin> nicknames;
@@ -208,7 +206,7 @@ class _DataNicknamePage extends StatelessWidget {
 }
 
 class _EmptyNicknamePage extends StatefulWidget {
-  const _EmptyNicknamePage({final Key? key}) : super(key: key);
+  const _EmptyNicknamePage();
 
   @override
   State<StatefulWidget> createState() {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// An alert dialog to ask the user if they really want to enable the bluetooth
 /// adapter.
 class EnableBluetoothAlertWidget extends StatelessWidget {
-  const EnableBluetoothAlertWidget({final Key? key}) : super(key: key);
+  const EnableBluetoothAlertWidget({super.key});
 
   @override
   Widget build(final BuildContext context) {
