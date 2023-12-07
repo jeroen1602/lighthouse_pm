@@ -25,26 +25,26 @@ dependencies:
   flutter:
     sdk: flutter
   rxdart: ^0.27.7
-  package_info_plus: ^4.2.0
-  permission_handler: ^11.0.1
+  package_info_plus: ^5.0.1
+  permission_handler: ^11.1.0
   flutter_svg: ^2.0.9
   url_launcher: ^6.2.1
   community_material_icon: 5.9.55
   dynamic_color: ^1.6.8
   mutex: ^3.1.0
   convert: ^3.1.1
-  vibration: ^1.8.3
+  vibration: ^1.8.4
   toast: ^0.3.0
-  drift: ^2.13.0
+  drift: ^2.14.0
   sqlite3_flutter_libs: ^0.5.18
   path_provider: ^2.1.1
-  path: ^1.8.2
-  provider: ^6.0.5
+  path: ^1.8.3
+  provider: ^6.1.1
   tuple: ^2.0.2
-  intl: ^0.18.1
-  device_info_plus: ^9.1.0
-  meta: ^1.9.1
-  flutter_markdown: ^0.6.18
+  intl: ^0.19.0
+  device_info_plus: ^9.1.1
+  meta: ^1.10.0
+  flutter_markdown: ^0.6.18+2
   markdown: ^7.1.1
   # Android/ iOS
   flutter_reactive_ble_back_end:
@@ -83,9 +83,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.13.0
-  build_runner: 2.4.6
-  flutter_lints: ^3.0.0
+  drift_dev: ^2.14.0
+  build_runner: ^2.4.7
+  flutter_lints: ^3.0.1
   lighthouse_test_helper:
     path: lighthouse_provider/lighthouse_test_helper
 
