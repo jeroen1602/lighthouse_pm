@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class MultipleCallbackPopScope extends StatefulWidget {
@@ -22,12 +23,18 @@ class _MultipleCallbackPopScopeState extends State<MultipleCallbackPopScope> {
     return PopScope(
       canPop: false,
       onPopInvoked: (final bool didPop) {
+        if (didPop) {
+          return;
+        }
         for (final canPop in widget.canPop) {
           if (!canPop()) {
             return;
           }
         }
         Navigator.pop(context);
+        if (!Navigator.canPop(context)) {
+          SystemNavigator.pop(animated: true);
+        }
       },
       child: widget.child,
     );
