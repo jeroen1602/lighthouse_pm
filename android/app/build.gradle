@@ -36,8 +36,8 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 }
 
 android {
-    compileSdkVersion 33
-    ndkVersion "21.3.6528147"
+    compileSdkVersion 34
+    ndkVersion "26.1.10909125"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -53,7 +53,7 @@ android {
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -72,11 +72,15 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
             ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64", "x86"
             }
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -113,12 +117,11 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "com.polidea.rxandroidble2:rxandroidble:1.17.2"
 
     // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
-    def billing_version = "6.0.1"
+    def billing_version = "6.1.0"
 
     googlePlayImplementation "com.android.billingclient:billing:$billing_version"
     googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"

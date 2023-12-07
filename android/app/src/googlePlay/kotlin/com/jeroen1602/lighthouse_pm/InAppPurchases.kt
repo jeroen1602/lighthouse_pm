@@ -52,7 +52,7 @@ class InAppPurchases {
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, IAP_ID)
         methodChannel.setMethodCallHandler { call, result ->
             var found = false
-            for (handler in InMethods.values()) {
+            for (handler in InMethods.entries) {
                 if (handler.functionName == call.method) {
                     found = true
                     CoroutineScope(Dispatchers.IO).launch {
