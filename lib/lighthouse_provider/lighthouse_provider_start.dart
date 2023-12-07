@@ -1,6 +1,6 @@
 import 'package:bluez_back_end/bluez_back_end.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_reactive_ble_back_end/flutter_reactive_ble_end.dart';
+import 'package:flutter_blue_plus_back_end/flutter_blue_plus_back_end.dart';
 import 'package:flutter_web_bluetooth_back_end/flutter_web_bluetooth_back_end.dart';
 import 'package:lighthouse_logger/lighthouse_logger.dart';
 import 'package:lighthouse_pm/bloc.dart';
@@ -19,7 +19,7 @@ class LighthouseProviderStart {
   static void loadLibrary() {
     if (SharedPlatform.isIOS || SharedPlatform.isAndroid) {
       LighthouseProvider.instance
-          .addBackEnd(FlutterReactiveBleBackEnd.instance);
+          .addBackEnd(FlutterBluePlusLighthouseBackEnd.instance);
     }
     if (SharedPlatform.isWeb) {
       LighthouseProvider.instance
