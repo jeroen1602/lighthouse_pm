@@ -2,10 +2,10 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square70x70logo src="/lighthouse_pm/icons/mstile-70.png"/>
-            <square150x150logo src="/lighthouse_pm/icons/mstile-150.png"/>
-            <square310x310logo src="/lighthouse_pm/icons/mstile-310x310.png"/>
-            <wide310x150logo src="/lighthouse_pm/icons/mstile-310x150.png"/>
+            <square70x70logo src="/icons/mstile-70.png"/>
+            <square150x150logo src="/icons/mstile-150.png"/>
+            <square310x310logo src="/icons/mstile-310x310.png"/>
+            <wide310x150logo src="/icons/mstile-310x150.png"/>
             <TileColor>#c722c3</TileColor>
         </tile>
     </msapplication>
