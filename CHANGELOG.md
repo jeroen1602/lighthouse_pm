@@ -1,5 +1,6 @@
-# Version 1.3.0+9 R.C
+# Version 1.3.0+10 08-12-2023
 
+- (Android) Update to support new features from 12, 13, and 14.
 - (Android + iOS) Changed back end to flutter blue plus which still gets updates.
 - Enabled Vive base stations by default.
 - Removed wording for Vive base station beta.
@@ -19,7 +20,7 @@
 - (Web) Added support for web.
 - (Web) Added Flutter web Bluetooth back end for the web.
 - (Web) Change pages based on the screen size.
-- (Web) Changed wording in troubleshooting page if viewed from teh web.
+- (Web) Changed wording in troubleshooting page if viewed from the web.
 - Fixed bug where devices could show up twice, mostly web and development will notice this change.
 - Added pair button if the back end requires it, this change is only web for now.
 - (iOS) Added Bluetooth request key.

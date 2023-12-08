@@ -1,0 +1,12 @@
+It was about time to support Android 14
+
+Changes:
+<ul>
+<li>Update to support new features from 12, 13, and 14.</li>
+<li>Updated dependencies.</li>
+<li>Enabled Vive base stations by default..</li>
+<li>Updated to material 3 (not all widgets have been updated yet).</li>
+<li>Vive base station ids are now bound to the device id instead to the device name.
+This way everyone can store whatever id without restrictions, fixing the bug for some people.
+This has the effect that all stored ids are now gone (sorry about that).</li>
+</ul>
