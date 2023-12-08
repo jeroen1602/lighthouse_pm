@@ -31,9 +31,6 @@
 .pub/
 /build/
 
-# Web related
-lib/generated_plugin_registrant.dart
-
 # Symbolication related
 app.*.symbols
 
@@ -50,8 +47,12 @@ app.*.map.json
 # Ingore generated dart files
 *.g.dart
 
-#sql-wasm
-web/sql-*
+#drif for the web
+web/drift_worker.js
+web/sqlite3.wasm
 
 #test coverage
 coverage
+
+#build output
+output

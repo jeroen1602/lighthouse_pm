@@ -47,6 +47,7 @@ class MainApp extends StatelessWidget {
     final db = constructDb();
     final mainBloc = LighthousePMBloc(db);
 
+    initDatabaseLogger();
     LighthouseProviderStart.loadLibrary();
     LighthouseProviderStart.setupPersistence(mainBloc);
     LighthouseProviderStart.setupCallbacks();

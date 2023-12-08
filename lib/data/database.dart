@@ -9,6 +9,7 @@ import 'tables/last_seen_devices_table.dart';
 import 'tables/nickname_table.dart';
 import 'tables/simple_settings_table.dart';
 import 'tables/vive_base_station_id_table.dart';
+import 'package:logging/logging.dart';
 
 export 'shared/shared.dart';
 
@@ -72,4 +73,25 @@ class LighthouseDatabase extends _$LighthouseDatabase {
       }, beforeOpen: (final details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       });
+}
+
+final databaseLogger = Logger('database_logger');
+
+void initDatabaseLogger() {
+  assert(() {
+    databaseLogger.onRecord.listen((final record) {
+      // ignore: avoid_print
+      print("${record.loggerName}|${record.time}: ${record.message}");
+      if (record.error != null) {
+        // ignore: avoid_print
+        print("Error: ${record.error}");
+      }
+      if (record.stackTrace != null) {
+        // ignore: avoid_print
+        print("Trace: ${record.stackTrace.toString()}");
+      }
+    });
+
+    return true;
+  }());
 }
