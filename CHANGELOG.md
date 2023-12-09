@@ -1,4 +1,4 @@
-# Version 1.3.1+11
+# Version 1.3.1+12 09-12-2023
 
 - (Android) Fixed multiple devices not showing up.
 - (Android) Fixed device state not reporting correctly in the ui (only for the second device somehow).
