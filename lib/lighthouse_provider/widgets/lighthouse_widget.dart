@@ -201,8 +201,7 @@ class LighthouseWidget extends StatefulWidget {
       required this.selecting,
       this.nickname,
       this.sleepState = LighthousePowerState.sleep,
-      super.key})
-      : statefulDevice = lighthouseDevice is StatefulLighthouseDevice;
+      super.key});
 
   final LighthouseDevice lighthouseDevice;
   final VoidCallback onSelected;
@@ -210,7 +209,6 @@ class LighthouseWidget extends StatefulWidget {
   final String? nickname;
   final LighthousePowerState sleepState;
   final bool selecting;
-  final bool statefulDevice;
 
   @override
   State<StatefulWidget> createState() {
@@ -219,22 +217,17 @@ class LighthouseWidget extends StatefulWidget {
 }
 
 class LighthouseWidgetState extends State<LighthouseWidget> {
-  Stream<int>? _powerStateStream;
-
   @override
   void initState() {
     super.initState();
-    if (widget.statefulDevice) {
-      _powerStateStream =
-          (widget.lighthouseDevice as StatefulLighthouseDevice).powerState;
-    }
   }
 
   @override
   Widget build(final BuildContext context) {
-    if (widget.statefulDevice) {
+    if (widget.lighthouseDevice is StatefulLighthouseDevice) {
       return StreamBuilder<int>(
-        stream: _powerStateStream,
+        stream:
+            (widget.lighthouseDevice as StatefulLighthouseDevice).powerState,
         builder: (final BuildContext context,
             final AsyncSnapshot<int> powerStateSnapshot) {
           final powerStateData = powerStateSnapshot.data ?? 0xFF;

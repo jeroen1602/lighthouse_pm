@@ -56,8 +56,9 @@ class FlutterBluePlusLighthouseBackEnd extends BLELighthouseBackEnd {
       await blue_plus.FlutterBluePlus.startScan(
         androidScanMode: blue_plus.AndroidScanMode.lowLatency,
         timeout: timeout,
-        oneByOne: true,
-        //TODO: use the extra features
+        oneByOne: false,
+        withKeywords:
+            providers.map((final e) => e.namePrefix).toList(growable: false),
       );
     } on PlatformException catch (e, s) {
       if (e.code == "bluetooth_unavailable") {

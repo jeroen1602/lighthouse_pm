@@ -29,7 +29,7 @@ set -e
 
 mkdir -p "$SCRIPT_DIR/../output"
 
-VERSION=$(grep -oP 'version: \K\d+\.\d+\.\d+\+\d+' "${SCRIPT_DIR}/../pubspec.yaml")
+VERSION=$(grep -oP 'version: \K\d+\.\d+\.\d+(-.+)?\+\d+' "${SCRIPT_DIR}/../pubspec.yaml")
 
 function copy_result() {
   VERSION=$1
