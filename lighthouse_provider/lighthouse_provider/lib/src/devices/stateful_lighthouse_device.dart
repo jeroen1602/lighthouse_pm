@@ -128,7 +128,7 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
             }
           } catch (e, s) {
             lighthouseLogger.severe(
-                "Could not get state, maybe the device is already disconnected",
+                "Could not get state from $name, maybe the device is already disconnected",
                 e,
                 s);
             await disconnect();
@@ -138,18 +138,19 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
           }
         } else {
           if (retryCount++ > 5) {
-            lighthouseLogger.shout("Unable to get power state because the "
-                "mutex has been locked for a while ($retryCount)."
-                "\nLocked by: ${transactionMutex.lockTrace?.toString()}");
+            lighthouseLogger
+                .shout("Unable to get power state from $name because the "
+                    "mutex has been locked for a while ($retryCount)."
+                    "\nLocked by: ${transactionMutex.lockTrace?.toString()}");
           }
         }
       } else {
-        lighthouseLogger.info("Cleaning-up old subscription!");
+        lighthouseLogger.info("Cleaning-up old subscription! For $name");
         disconnect();
       }
     });
     powerStateSubscription.onDone(() {
-      lighthouseLogger.info("Cleaning-up power state subscription!");
+      lighthouseLogger.info("Cleaning-up power state subscription! For $name");
       _powerStateSubscription = null;
     });
     _powerStateSubscription = powerStateSubscription;
