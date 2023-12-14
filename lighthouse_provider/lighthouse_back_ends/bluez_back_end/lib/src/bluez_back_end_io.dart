@@ -154,7 +154,8 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
             await _devicesMutex.acquire();
             if (lighthouseDevice == null) {
               lighthouseLogger.warning(
-                  "Found a not valid device! Device id: ${device.address}");
+                "${device.name} (${device.address}): "
+                  "Found a not valid device!");
             } else {
               _foundDeviceSubject.add(lighthouseDevice);
             }

@@ -86,10 +86,10 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
       assert(() {
-        throw StateError('No device providers added for $backendName.'
+        throw StateError(' $backendName: No device providers added.'
             ' It\'s still in debug mode so FIX it!');
       }());
-      lighthouseLogger.warning("No device providers added for $backendName, "
+      lighthouseLogger.warning("$backendName: No device providers added, "
           "no scan will be run!");
     }
     this.updateInterval = updateInterval;
@@ -123,7 +123,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   @protected
   Future<LighthouseDevice?> getLighthouseDevice(final D device) async {
     lighthouseLogger
-        .info("Trying to connect to device with name: ${device.name}");
+        .info("${device.name}: Trying to connect");
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {
         continue;

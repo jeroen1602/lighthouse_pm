@@ -52,7 +52,8 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
     var min = getMinUpdateInterval();
     assert(() {
       if (testingOverwriteMinUpdateInterval != null) {
-        lighthouseLogger.config("Overwritten min update interval, "
+        lighthouseLogger.config("$name ($deviceIdentifier): "
+            "Overwritten min update interval, "
             "stuttering devices may be in your future");
         min = testingOverwriteMinUpdateInterval!;
       }
@@ -100,14 +101,20 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
   /// If this method is called while there is already an active stream then it
   /// will do nothing.
   void _startPowerStateStream() {
+    lighthouseLogger
+        .info("$name ($deviceIdentifier): Started reading power state");
     final stack = StackTrace.current;
     int retryCount = 0;
     var powerStateSubscription = _powerStateSubscription;
     if (powerStateSubscription != null) {
       if (powerStateSubscription.isPaused) {
+        lighthouseLogger
+            .info("$name ($deviceIdentifier): Reusing power state stream");
         powerStateSubscription.resume();
         return;
       }
+      lighthouseLogger.info(
+          "$name ($deviceIdentifier): power state stream was already started");
       return;
     }
     powerStateSubscription =
@@ -128,7 +135,8 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
             }
           } catch (e, s) {
             lighthouseLogger.severe(
-                "Could not get state from $name, maybe the device is already disconnected",
+                "$name ($deviceIdentifier): "
+                "Could not get state, maybe the device is already disconnected",
                 e,
                 s);
             await disconnect();
@@ -138,19 +146,21 @@ mixin StatefulLighthouseDevice on LighthouseDevice {
           }
         } else {
           if (retryCount++ > 5) {
-            lighthouseLogger
-                .shout("Unable to get power state from $name because the "
-                    "mutex has been locked for a while ($retryCount)."
-                    "\nLocked by: ${transactionMutex.lockTrace?.toString()}");
+            lighthouseLogger.shout("$name ($deviceIdentifier): "
+                "Unable to get power state because the "
+                "mutex has been locked for a while ($retryCount)."
+                "\nLocked by: ${transactionMutex.lockTrace?.toString()}");
           }
         }
       } else {
-        lighthouseLogger.info("Cleaning-up old subscription! For $name");
+        lighthouseLogger
+            .info("$name ($deviceIdentifier): Cleaning-up old subscription!");
         disconnect();
       }
     });
     powerStateSubscription.onDone(() {
-      lighthouseLogger.info("Cleaning-up power state subscription! For $name");
+      lighthouseLogger.info(
+          "$name ($deviceIdentifier): Cleaning-up power state subscription!");
       _powerStateSubscription = null;
     });
     _powerStateSubscription = powerStateSubscription;

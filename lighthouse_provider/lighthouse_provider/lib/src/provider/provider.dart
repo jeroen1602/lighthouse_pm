@@ -354,6 +354,13 @@ class LighthouseProvider {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
             _lightHouseDevices.valueOrNull ?? [];
+
+        // TODO: only return one lighthouse for testing. Remove this later
+        if (list.isNotEmpty) {
+          newDevice.disconnect();
+          return;
+        }
+
         // Check if this device is already in the list, which should never happen.
         if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
                 (final element) {
@@ -363,8 +370,9 @@ class LighthouseProvider {
               return false;
             }, orElse: () => null) !=
             null) {
-          lighthouseLogger.info("Found a device that has already been found! "
-              "Device id: ${newDevice.deviceIdentifier}, name: ${newDevice.name}");
+          lighthouseLogger
+              .info("${newDevice.name} (${newDevice.deviceIdentifier}): "
+                  "Found a device that has already been found!");
           return;
         }
 

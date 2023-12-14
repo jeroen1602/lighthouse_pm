@@ -82,7 +82,19 @@ class MainPageDrawer extends StatelessWidget with ScanningMixin {
                 failMessage:
                     "Could not start scan because permission has not been granted. On navigator pop");
           },
-        )
+        ),
+        ListTile(
+            leading: const Icon(CommunityMaterialIcons.pulse),
+            title: const Text('Activity log'),
+            onTap: () async {
+              Navigator.pop(context);
+              cleanUp();
+              await Navigator.pushNamed(context, '/log');
+              startScanWithCheck(scanDuration,
+                  updateInterval: updateInterval,
+                  failMessage:
+                      "Could not start scan because permission has not been granted. On navigator pop");
+            })
       ]
     ];
 

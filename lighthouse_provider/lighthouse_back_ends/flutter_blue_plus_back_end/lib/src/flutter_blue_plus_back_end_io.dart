@@ -163,8 +163,8 @@ class FlutterBluePlusLighthouseBackEnd extends BLELighthouseBackEnd {
                 await _devicesMutex.acquire();
                 if (lighthouseDevice == null) {
                   lighthouseLogger.warning(
-                      "Found a non valid device! Device id: "
-                      "${scanResult.device.remoteId.toString()}",
+                    "${scanResult.device.platformName} ($deviceIdentifier): "
+                      "Found a non valid device!",
                       null,
                       StackTrace.current);
                   _rejectedDevices.add(deviceIdentifier);

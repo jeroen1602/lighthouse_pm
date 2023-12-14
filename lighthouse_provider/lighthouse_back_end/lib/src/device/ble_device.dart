@@ -69,8 +69,8 @@ abstract class BLEDevice<T> extends LighthouseDevice {
               response = await characteristic.readString();
               break;
             default:
-              lighthouseLogger
-                  .warning("Unsupported type ${defaultCharacteristic.type}");
+              lighthouseLogger.warning(
+                  "${device.name} ($deviceIdentifier): Unsupported type ${defaultCharacteristic.type}");
               break;
           }
           if (response != null) {
@@ -78,6 +78,7 @@ abstract class BLEDevice<T> extends LighthouseDevice {
           }
         } catch (e, s) {
           lighthouseLogger.severe(
+              "${device.name} ($deviceIdentifier): "
               "Unable to get metadata characteristic "
               "\"${defaultCharacteristic.name}\"",
               e,

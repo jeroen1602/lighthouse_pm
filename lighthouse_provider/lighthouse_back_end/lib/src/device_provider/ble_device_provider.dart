@@ -58,12 +58,14 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
       }
       return valid ? bleDevice : null;
     } catch (e, s) {
-      lighthouseLogger.severe("Error with is valid handled: $e\n$s");
+      lighthouseLogger.severe("${device.name} (${device.id}): "
+          "Error with isValid handled: $e\n$s");
       try {
         await bleDevice.disconnect();
       } catch (e, s) {
         lighthouseLogger
-            .severe("Failed to disconnect, maybe already disconnected: $e\n$s");
+            .severe("${device.name} (${device.id}): Failed to disconnect, "
+                "maybe already disconnected: $e\n$s");
       }
       return null;
     }
@@ -87,9 +89,9 @@ abstract class BLEDeviceProvider<T> extends DeviceProvider<LHBluetoothDevice> {
         await device.disconnect();
       } catch (e, s) {
         lighthouseLogger.severe(
-            "Could not disconnect device (${device.name}, "
-            "${device.deviceIdentifier.toString()}), maybe the device is "
-            "already disconnected?",
+            "${device.name} (${device.deviceIdentifier}): "
+            "Could not disconnect device, "
+            "maybe the device is already disconnected?",
             e,
             s);
       }

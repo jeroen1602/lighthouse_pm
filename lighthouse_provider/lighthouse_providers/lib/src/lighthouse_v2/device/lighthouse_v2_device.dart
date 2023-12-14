@@ -20,6 +20,8 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   static const String controlServiceUUID =
       "00001523-1212-efde-1523-785feabcd124";
 
+  StreamSubscription<dynamic>? _stateListener;
+
   LighthouseV2Device(super.device, super.persistence,
       [final CreateShortcutCallback? createShortcut])
       : _createShortcut = createShortcut {
@@ -95,16 +97,18 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
 
   @override
   Future<bool> isValid() async {
-    lighthouseLogger.info("Connecting to device: $deviceIdentifier");
+    lighthouseLogger
+        .info("${device.name} ($deviceIdentifier): Connecting to device");
     try {
       await device.connect(timeout: Duration(seconds: 10));
     } on TimeoutException catch (e, s) {
       lighthouseLogger.warning(
-          "Connection timed-out for device: $deviceIdentifier", e, s);
+          "${device.name} ($deviceIdentifier): Connection timed-out", e, s);
       return false;
     } catch (e, s) {
       // other connection error
-      lighthouseLogger.severe("Other connection error", e, s);
+      lighthouseLogger.severe(
+          "${device.name} ($deviceIdentifier): Other connection error", e, s);
       return false;
     }
     _identifyDeviceExtension.setEnabled(false);
@@ -116,7 +120,8 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
     final identifyCharacteristic =
         LighthouseGuid.fromString(identifyCharacteristicUUID);
 
-    lighthouseLogger.info("Finding services for device: $deviceIdentifier");
+    lighthouseLogger
+        .info("${device.name} ($deviceIdentifier): Finding services");
     final List<LHBluetoothService> services = await device.discoverServices();
     for (final service in services) {
       // Find the correct characteristic.
@@ -137,7 +142,10 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
             final channel = await characteristic.readUint32();
             _otherMetadata['Channel'] = channel.toString();
           } catch (e, s) {
-            lighthouseLogger.severe("Unable to get channel", e, s);
+            lighthouseLogger.severe(
+                "${device.name} ($deviceIdentifier): Unable to get channel",
+                e,
+                s);
           }
           continue;
         }
@@ -149,7 +157,10 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
             _firmwareVersion =
                 firmware.replaceAll('\r', '').replaceAll('\n', ' ');
           } catch (e, s) {
-            lighthouseLogger.severe("Unable to get firmware version", e, s);
+            lighthouseLogger.severe(
+                "${device.name} ($deviceIdentifier): Unable to get firmware version",
+                e,
+                s);
           }
           continue;
         }
@@ -185,6 +196,14 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
         }
       });
     }
+    assert(() {
+      _stateListener = powerStateEnum.distinct().listen((final event) {
+        lighthouseLogger
+            .info("${device.name} ($deviceIdentifier): got a new state $event");
+      });
+      return true;
+    }());
+
   }
 
   @override
@@ -198,6 +217,8 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
     await _identifyDeviceExtension.close();
     _characteristic = null;
     _identifyCharacteristic = null;
+    await _stateListener?.cancel();
+    _stateListener = null;
   }
 
   @override
@@ -216,8 +237,10 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
           break;
         case LighthousePowerState.booting:
         case LighthousePowerState.unknown:
-          lighthouseLogger.warning("Cannot set power state to ${newState.text}",
-              null, StackTrace.current);
+          lighthouseLogger.warning(
+              "${device.name} ($deviceIdentifier): Cannot set power state to ${newState.text}",
+              null,
+              StackTrace.current);
           return;
       }
     }
@@ -228,7 +251,9 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
     final identifyCharacteristic = _identifyCharacteristic;
     if (identifyCharacteristic == null) {
       lighthouseLogger.warning(
-          "No identify characteristic set!", null, StackTrace.current);
+          "${device.name} ($deviceIdentifier): No identify characteristic set!",
+          null,
+          StackTrace.current);
       return;
     }
     final stack = StackTrace.current;

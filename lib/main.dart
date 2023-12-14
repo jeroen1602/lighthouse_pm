@@ -8,6 +8,7 @@ import 'package:lighthouse_pm/lighthouse_provider/lighthouse_provider_start.dart
 import 'package:lighthouse_pm/pages/base_page.dart';
 import 'package:lighthouse_pm/pages/database_test_page.dart';
 import 'package:lighthouse_pm/pages/help_page.dart';
+import 'package:lighthouse_pm/pages/log_page.dart';
 import 'package:lighthouse_pm/pages/main_page.dart';
 import 'package:lighthouse_pm/pages/not_found_page.dart';
 import 'package:lighthouse_pm/pages/settings_page.dart';
@@ -129,6 +130,7 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
                 routes['/material'] =
                     (final context) => const MaterialTestPage();
                 routes['/404'] = (final context) => const NotFoundPage();
+                routes['/log'] = (final context) => const LogPage();
               }
 
               if (SharedPlatform.isWeb || !kReleaseMode) {
