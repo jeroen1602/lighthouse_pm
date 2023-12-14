@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue_plus: ^1.30.3
+  flutter_blue_plus: ^1.30.5
   mutex: ^3.0.0
   rxdart: ^0.27.7
   lighthouse_back_end:
