@@ -43,7 +43,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 
   List<Widget> _generateBody() {
     final Map<String, String?> map = {};
-    map["Device type"] = "${widget.device.runtimeType}";
+    map["Device type"] = widget.device.deviceType;
     map["Name"] = widget.device.name;
     map["Firmware version"] = widget.device.firmwareVersion;
     map.addAll(widget.device.otherMetadata);

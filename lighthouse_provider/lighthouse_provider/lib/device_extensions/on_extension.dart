@@ -6,4 +6,7 @@ part of 'device_extension.dart';
 class OnExtension extends StateExtension {
   OnExtension({required super.changeState, required super.powerStateStream})
       : super(toolTip: "On", toState: LighthousePowerState.on);
+
+  @override
+  String get extensionName => "OnExtension";
 }

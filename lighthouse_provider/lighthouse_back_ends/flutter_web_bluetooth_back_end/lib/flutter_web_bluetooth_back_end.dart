@@ -64,7 +64,7 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
   }
 
   @override
-  Future<void> cleanUp() async {
+  Future<void> cleanUp({final bool onlyDisconnected = false}) async {
     _foundDeviceSubject.add(null);
   }
 
@@ -176,4 +176,7 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
 
   @override
   Stream<int> numberOfPairedDevices() => _numberOfPairedDevicesSubject.stream;
+
+  @override
+  String get backendName => "FlutterWebBluetoothBackEnd";
 }

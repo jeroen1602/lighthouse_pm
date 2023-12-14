@@ -46,6 +46,9 @@ class ViveBaseStationDevice extends BLEDevice<ViveBaseStationPersistence>
   String get name => device.name;
 
   @override
+  String get deviceType => "Vive base station";
+
+  @override
   Map<String, String?> get otherMetadata => _otherMetadata;
 
   @override

@@ -299,7 +299,7 @@ void main() {
         .toPlainText();
 
     expect(text, contains("fake-version"));
-    expect(text, contains("FakeHighLevelDevice"));
+    expect(text, contains("Fake high level device"));
 
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
@@ -336,7 +336,7 @@ void main() {
         .toPlainText();
 
     expect(text, contains("fake-version"));
-    expect(text, contains("FakeHighLevelDevice"));
+    expect(text, contains("Fake high level device"));
 
     await tester.tap(find.text('Open issue'));
     await tester.pumpAndSettle();
@@ -375,7 +375,7 @@ void main() {
     final text = textWidget.text.toPlainText();
 
     expect(text, contains("fake-version"));
-    expect(text, contains("FakeHighLevelDevice"));
+    expect(text, contains("Fake high level device"));
 
     final held = holdTextSpan(textWidget, "App version: ");
     expect(held, isTrue);

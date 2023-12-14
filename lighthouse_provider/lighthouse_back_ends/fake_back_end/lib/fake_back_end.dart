@@ -75,4 +75,7 @@ class FakeBLEBackEnd extends BLELighthouseBackEnd {
   @override
   Stream<BluetoothAdapterState> get state =>
       Stream.value(BluetoothAdapterState.on);
+
+  @override
+  String get backendName => "FakeBackEnd";
 }

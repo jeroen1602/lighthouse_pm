@@ -100,7 +100,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
 
   String _getClipboardString(final String version) {
     var output = 'App version: $version\n'
-        'Device type: ${device.runtimeType}\n'
+        'Device type: ${device.deviceType}\n'
         'Firmware version: ${device.firmwareVersion}\n';
     if (currentState != null) {
       output +=
@@ -155,7 +155,7 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
             ),
             TextSpan(
               style: theming.bodyTextBold,
-              text: '${device.runtimeType}\n',
+              text: '${device.deviceType}\n',
               recognizer: recognizer,
             ),
             TextSpan(

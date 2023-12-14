@@ -700,7 +700,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     for (final device in devicesToBeInAGroup) {
       String? channel = device.otherMetadata['Channel'];
       if (channel != null) {
-        channel = '${device.runtimeType.toString()}+$channel';
+        channel = '${device.deviceType}+$channel';
         if (!knownChannels.contains(channel)) {
           knownChannels.add(channel);
         } else {
@@ -716,7 +716,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   bool _allSameDeviceType(final List<LighthouseDevice> devicesToBeInAGroup) {
     final foundTypes = <String>{};
     for (final device in devicesToBeInAGroup) {
-      foundTypes.add(device.runtimeType.toString());
+      foundTypes.add(device.deviceType);
       if (foundTypes.length > 1) {
         return false;
       }
@@ -782,7 +782,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
             updateInterval: Duration(seconds: widget.settings.updateInterval),
             failMessage:
-                "Could not start scan because the permission has not been granted on resume.");
+                "Could not start scan because the permission has not been granted on resume.",
+            clean: false);
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:

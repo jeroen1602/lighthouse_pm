@@ -27,4 +27,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   Future<void> stopScan() {
     throw UnsupportedError("BlueZ not supported for this platform");
   }
+
+  @override
+  String get backendName => "BluezBackEndUnsupported";
 }

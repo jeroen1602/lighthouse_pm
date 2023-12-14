@@ -7,6 +7,11 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// The type of the device.
+  ///
+  String get deviceType;
+
+  ///
   /// The nickname of the device. This should be updated anytime the user
   /// changes it.
   ///

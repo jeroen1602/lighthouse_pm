@@ -67,6 +67,9 @@ class FakeHighLevelDevice extends BLEDevice implements DeviceWithExtensions {
   String get name => device.name;
 
   @override
+  String get deviceType => "Fake high level device";
+
+  @override
   Map<String, String?> get otherMetadata => throw UnimplementedError();
 
   @override

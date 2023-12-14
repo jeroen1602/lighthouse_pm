@@ -152,7 +152,7 @@ class LighthouseProvider {
     final backEndList = _getBackEndForDeviceProvider(provider);
     if (backEndList.isEmpty) {
       throw UnsupportedError(
-          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
+          'No back end found for device provider: "${provider.providerName}". Did you forget to add the back end first?');
     }
     for (final backEnd in backEndList) {
       backEnd.addProvider(provider);
@@ -181,9 +181,11 @@ class LighthouseProvider {
   ///
   /// Will call the [cleanUp] function before starting the scan.
   Future startScan(
-      {required final Duration timeout, final Duration? updateInterval}) async {
+      {required final Duration timeout,
+      final Duration? updateInterval,
+      final bool clean = true}) async {
     await _startIsScanningSubscription();
-    await cleanUp();
+    await cleanUp(onlyDisconnected: !clean);
     await _startListeningScanResults();
     if (backEndSet.isEmpty) {
       assert(() {
@@ -204,13 +206,20 @@ class LighthouseProvider {
   /// Clean up any open connections that may still be left.
   /// Will also clear out the current devices list.
   ///
-  Future cleanUp() async {
+  Future cleanUp({final bool onlyDisconnected = false}) async {
     await stopScan();
-    await _disconnectOpenDevices();
-    for (final backEnd in backEndSet) {
-      await backEnd.cleanUp();
+    if (onlyDisconnected) {
+      await _removeClosedDevices();
+      for (final backend in backEndSet) {
+        await backend.cleanUp(onlyDisconnected: onlyDisconnected);
+      }
+    } else {
+      await _disconnectOpenDevices();
+      for (final backEnd in backEndSet) {
+        await backEnd.cleanUp();
+      }
+      _lightHouseDevices.add([]);
     }
-    _lightHouseDevices.add([]);
     if (_lighthouseDeviceMutex.isLocked) {
       _lighthouseDeviceMutex.release();
     }
@@ -292,6 +301,27 @@ class LighthouseProvider {
     final list = _lightHouseDevices.valueOrNull;
     for (final device in list ?? []) {
       await device.data.disconnect();
+    }
+  }
+
+  Future _removeClosedDevices() async {
+    for (final backEnd in backEndSet) {
+      await backEnd.disconnectOpenDevices();
+    }
+    try {
+      await _lighthouseDeviceMutex.acquire();
+      final open = <TimeoutContainer<LighthouseDevice>>[];
+      final list = _lightHouseDevices.valueOrNull;
+      for (final device in list ?? <TimeoutContainer<LighthouseDevice>>[]) {
+        if (device.data.hasOpenConnection) {
+          open.add(device);
+        } else {
+          await device.data.disconnect();
+        }
+      }
+      _lightHouseDevices.add(open);
+    } finally {
+      _lighthouseDeviceMutex.release();
     }
   }
 

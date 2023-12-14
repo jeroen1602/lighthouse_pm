@@ -12,6 +12,9 @@ import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 class DefaultEnabledDeviceExtension extends DeviceExtension {
   DefaultEnabledDeviceExtension()
       : super(toolTip: 'Default enabled', onTap: () async {});
+
+  @override
+  String get extensionName => "DefaultEnabledExtension";
 }
 
 void main() {

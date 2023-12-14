@@ -97,7 +97,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> cleanUp() async {
+  Future<void> cleanUp({final bool onlyDisconnected = false}) async {
     _foundDeviceSubject.add(null);
     if (_devicesMutex.isLocked) {
       _devicesMutex.release();
@@ -174,4 +174,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   Future<void> _ensureConnected() async {
     await blueZClient.connect();
   }
+
+  @override
+  String get backendName => "BluezBackEnd";
 }

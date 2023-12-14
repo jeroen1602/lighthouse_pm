@@ -191,6 +191,9 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
   String get name => device.name;
 
   @override
+  String get deviceType => "Lighthouse v2";
+
+  @override
   Future cleanupConnection() async {
     await _identifyDeviceExtension.close();
     _characteristic = null;

@@ -82,4 +82,7 @@ class LighthouseV2DeviceProvider
 
   @override
   String get namePrefix => "LHB-";
+
+  @override
+  String get providerName => "LighthouseV2DeviceProvider";
 }

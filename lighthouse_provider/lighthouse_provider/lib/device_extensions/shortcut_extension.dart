@@ -20,4 +20,7 @@ class ShortcutExtension extends DeviceExtension {
             onTap: () async {
               await createShortcut(macAddress, getDeviceNickname());
             });
+
+  @override
+  String get extensionName => "ShortcutExtension";
 }

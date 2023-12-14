@@ -86,10 +86,10 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
         'updateLastSeen should have been set by the LighthouseProvider!');
     if (providers.isEmpty) {
       assert(() {
-        throw StateError('No device providers added for $runtimeType.'
+        throw StateError('No device providers added for $backendName.'
             ' It\'s still in debug mode so FIX it!');
       }());
-      lighthouseLogger.warning("No device providers added for $runtimeType, "
+      lighthouseLogger.warning("No device providers added for $backendName, "
           "no scan will be run!");
     }
     this.updateInterval = updateInterval;
@@ -99,7 +99,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   Future<void> stopScan();
 
   /// Cleanup the any connection artifacts.
-  Future<void> cleanUp() async {}
+  Future<void> cleanUp({final bool onlyDisconnected = false}) async {}
 
   /// Disconnect form any open devices.
   /// If needed a subclass may override this, but be sure to call the super method!
@@ -140,4 +140,6 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// A stream that updates if the current back end is scanning.
   /// Will return `null` if the back end doesn't support it.
   Stream<bool>? get isScanning => null;
+
+  String get backendName;
 }

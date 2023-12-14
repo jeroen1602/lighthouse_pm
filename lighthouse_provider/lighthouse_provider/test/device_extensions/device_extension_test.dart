@@ -9,6 +9,9 @@ import 'package:test/test.dart';
 class DefaultEnabledDeviceExtension extends DeviceExtension {
   DefaultEnabledDeviceExtension()
       : super(toolTip: 'Default enabled', onTap: () async {});
+
+  @override
+  String get extensionName => "DefaultEnabledTestExtension";
 }
 
 void main() {

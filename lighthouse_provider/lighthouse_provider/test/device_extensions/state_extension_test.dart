@@ -18,6 +18,9 @@ class TestBootingStateExtension extends StateExtension {
             changeState: (final newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.booting);
+
+  @override
+  String get extensionName => "TestBootingStateExtension";
 }
 
 ///
@@ -30,6 +33,9 @@ class TestUnknownStateExtension extends StateExtension {
             changeState: (final newState) async {},
             powerStateStream: () => Stream.value(LighthousePowerState.on),
             toState: LighthousePowerState.unknown);
+
+  @override
+  String get extensionName => "TestUnknownStateExtension";
 }
 
 void main() {

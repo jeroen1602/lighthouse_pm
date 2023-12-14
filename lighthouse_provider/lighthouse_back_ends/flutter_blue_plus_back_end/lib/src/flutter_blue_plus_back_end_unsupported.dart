@@ -29,4 +29,7 @@ class FlutterBluePlusLighthouseBackEnd extends BLELighthouseBackEnd {
     throw UnsupportedError(
         "Flutter blue plus is not supported for this platform");
   }
+
+  @override
+  String get backendName => "FlutterBlueBackEndUnsupported";
 }

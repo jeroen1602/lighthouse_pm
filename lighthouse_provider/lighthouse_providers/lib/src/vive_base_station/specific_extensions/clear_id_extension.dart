@@ -18,4 +18,7 @@ class ClearIdExtension extends DeviceExtension {
       return persistence.hasIdStored(deviceId);
     };
   }
+
+  @override
+  String get extensionName => "ClearIdExtension";
 }

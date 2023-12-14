@@ -95,7 +95,7 @@ class FlutterBluePlusLighthouseBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> cleanUp() async {
+  Future<void> cleanUp({final bool onlyDisconnected = false}) async {
     _foundDeviceSubject.add(null);
     _connectingDevices.clear();
     _rejectedDevices.clear();
@@ -210,4 +210,7 @@ class FlutterBluePlusLighthouseBackEnd extends BLELighthouseBackEnd {
             return BluetoothAdapterState.off;
         }
       });
+
+  @override
+  String get backendName => "FlutterBluePlusBackEnd";
 }
