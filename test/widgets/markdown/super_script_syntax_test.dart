@@ -40,7 +40,7 @@ void main() {
         expect(richTexts, hasLength(2),
             reason: 'Should contain two rich text blocks');
 
-        final text = (richTexts[1] as RichText).text.toString();
+        final text = (richTexts[1] as RichText).text.toPlainText();
         expect(text, contains('¹²³'), reason: 'Should contain super script');
         expect(text, isNot(contains('<sup>')),
             reason: 'Should not contain the original <sup> html tag');

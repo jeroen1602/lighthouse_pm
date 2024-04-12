@@ -45,20 +45,20 @@ void main() {
 
         final children = ((richTexts[1] as RichText).text as TextSpan).children;
         expect(children, isNotNull);
-        expect(children, hasLength(2), reason: 'Should have nested children');
-        expect(children![0].toPlainText(), contains('svg'));
+        expect(children, hasLength(1), reason: 'Should have nested TextSpan');
+        expect(children![0], isA<TextSpan>());
+        expect(children[0].toPlainText(), contains('svg'));
         expect(children[0].toPlainText(), isNot(contains('<icon>')));
         expect(children[0].toPlainText(), isNot(contains('</icon>')));
         expect(children[0].toPlainText(), isNot(contains('<icn>')));
         expect(children[0].toPlainText(), isNot(contains('</icn>')));
 
-        expect(children[1], isA<TextSpan>());
-        expect((children[1] as TextSpan).children, isNotNull);
-        expect((children[1] as TextSpan).children![0], isA<WidgetSpan>());
-        expect(((children[1] as TextSpan).children![0] as WidgetSpan).child,
+        expect((children[0] as TextSpan).children, isNotNull);
+        expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
+        expect(((children[0] as TextSpan).children![1] as WidgetSpan).child,
             isA<SvgPicture>());
 
-        final svg = ((children[1] as TextSpan).children![0] as WidgetSpan).child
+        final svg = ((children[0] as TextSpan).children![1] as WidgetSpan).child
             as SvgPicture;
         final loader = svg.bytesLoader;
         expect(loader, isA<SvgAssetLoader>());
@@ -91,20 +91,20 @@ void main() {
 
         final children = ((richTexts[1] as RichText).text as TextSpan).children;
         expect(children, isNotNull);
-        expect(children, hasLength(2), reason: 'Should have nested children');
-        expect(children![0].toPlainText(), contains('mat'));
+        expect(children, hasLength(1), reason: 'Should have nested TextSpan');
+        expect(children![0], isA<TextSpan>());
+        expect(children[0].toPlainText(), contains('mat'));
         expect(children[0].toPlainText(), isNot(contains('<icon>')));
         expect(children[0].toPlainText(), isNot(contains('</icon>')));
         expect(children[0].toPlainText(), isNot(contains('<icn>')));
         expect(children[0].toPlainText(), isNot(contains('</icn>')));
 
-        expect(children[1], isA<TextSpan>());
-        expect((children[1] as TextSpan).children, isNotNull);
-        expect((children[1] as TextSpan).children![0], isA<WidgetSpan>());
-        expect(((children[1] as TextSpan).children![0] as WidgetSpan).child,
+        expect((children[0] as TextSpan).children, isNotNull);
+        expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
+        expect(((children[0] as TextSpan).children![1] as WidgetSpan).child,
             isA<Icon>());
 
-        final icon = ((children[1] as TextSpan).children![0] as WidgetSpan)
+        final icon = ((children[0] as TextSpan).children![1] as WidgetSpan)
             .child as Icon;
         expect(icon.icon, Icons.power_settings_new);
       });
@@ -171,15 +171,15 @@ void main() {
           final children =
               ((richTexts[1] as RichText).text as TextSpan).children;
           expect(children, isNotNull);
-          expect(children, hasLength(2), reason: 'Should have nested children');
+          expect(children, hasLength(1), reason: 'Should have nested children');
 
-          expect(children![1], isA<TextSpan>());
-          expect((children[1] as TextSpan).children, isNotNull);
-          expect((children[1] as TextSpan).children![0], isA<WidgetSpan>());
-          expect(((children[1] as TextSpan).children![0] as WidgetSpan).child,
+          expect(children![0], isA<TextSpan>());
+          expect((children[0] as TextSpan).children, isNotNull);
+          expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
+          expect(((children[0] as TextSpan).children![1] as WidgetSpan).child,
               isA<Icon>());
 
-          final icon = ((children[1] as TextSpan).children![0] as WidgetSpan)
+          final icon = ((children[0] as TextSpan).children![1] as WidgetSpan)
               .child as Icon;
           expect(icon.icon, entry.value);
         });

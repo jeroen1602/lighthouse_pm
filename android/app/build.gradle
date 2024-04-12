@@ -1,14 +1,15 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-}
-
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -21,10 +22,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
 def home = System.getProperty('user.home')
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = new File(home + '/android-keys/key.properties')
@@ -36,8 +33,18 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 }
 
 android {
-    compileSdkVersion 34
+    namespace 'com.jeroen1602.lighthouse_pm'
+    compileSdkVersion Math.max(34, flutter.compileSdkVersion)
     ndkVersion "26.1.10909125"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -49,11 +56,10 @@ android {
         }
     }
 
-
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion Math.max(21, flutter.minSdkVersion)
+        targetSdkVersion Math.max(34, flutter.compileSdkVersion)
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -100,15 +106,6 @@ android {
         checkReleaseBuilds true
         disable 'InvalidPackage'
     }
-    namespace 'com.jeroen1602.lighthouse_pm'
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 flutter {
@@ -116,12 +113,12 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
 
     // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
 
-    def billing_version = "6.1.0"
+    def billing_version = "6.2.0"
 
     googlePlayImplementation "com.android.billingclient:billing:$billing_version"
     googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"

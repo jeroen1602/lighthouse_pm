@@ -19,7 +19,7 @@ class LHLicensePage extends SimpleBasePage {
                     applicationIcon:
                         SvgPicture.asset('assets/images/app-icon.svg'),
                     applicationVersion: data?.version,
-                    applicationLegalese: "Copyright© 2020-2022 Jeroen1602",
+                    applicationLegalese: "Copyright© 2020-2024 Jeroen1602",
                   );
                 }),
             key: key);
