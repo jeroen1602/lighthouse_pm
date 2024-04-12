@@ -75,6 +75,9 @@ Future<List<ThemeMode>> _getSupportedThemeModes() async {
 }
 
 class _SettingsContentState extends State<SettingsContent> {
+  int _aboutTapCounter = 0;
+  static const _aboutTapTop = 10;
+
   String _themeModeToString(final ThemeMode themeMode) {
     switch (themeMode) {
       case ThemeMode.system:
@@ -85,6 +88,36 @@ class _SettingsContentState extends State<SettingsContent> {
         return "Light";
       default:
         return "UNKNOWN";
+    }
+  }
+
+  Future<void> _tapAbout() async {
+    final enabled =
+        await blocWithoutListen.settings.getDebugModeEnabledStream().first;
+    if (enabled) {
+      Toast.show('Developer mode is already enabled');
+      return;
+    }
+
+    var currentCount = _aboutTapCounter;
+
+    if (currentCount < _aboutTapTop) {
+      currentCount++;
+    }
+
+    if (currentCount < _aboutTapTop && currentCount > _aboutTapTop - 3) {
+      Toast.show('Just ${_aboutTapTop - currentCount} left for developer mode');
+    }
+
+    setState(() {
+      if (_aboutTapCounter != currentCount) {
+        _aboutTapCounter = currentCount;
+      }
+    });
+
+    if (currentCount == _aboutTapTop) {
+      Toast.show('Enabled developer mode');
+      await blocWithoutListen.settings.setDebugEnabled(true);
     }
   }
 
@@ -537,6 +570,7 @@ class _SettingsContentState extends State<SettingsContent> {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
             return ListTile(
+              onTap: _tapAbout,
               title: const Text('Version'),
               subtitle: Text('${snapshot.error}'),
             );
@@ -546,6 +580,7 @@ class _SettingsContentState extends State<SettingsContent> {
             return const CircularProgressIndicator();
           }
           return ListTile(
+            onTap: _tapAbout,
             title: const Text('Version'),
             subtitle: Text(packageInfo.version),
             onLongPress: () async {
@@ -558,6 +593,64 @@ class _SettingsContentState extends State<SettingsContent> {
       ),
       const Divider(),
     ]);
+    // endregion
+
+    // region development
+
+    items.add(StreamBuilder<bool>(
+        stream: blocWithoutListen.settings.getDebugModeEnabledStream(),
+        builder: (final BuildContext c, final AsyncSnapshot<bool> snapshot) {
+          if (snapshot.data != true) {
+            return Container();
+          }
+          return Column(children: [
+            ListTile(
+              title: Text('Development', style: headTheme),
+            ),
+            const Divider(
+              thickness: 1.5,
+            ),
+            SwitchListTile(
+                title: const Text('Enable development mode'),
+                value: snapshot.requireData,
+                onChanged: (final value) async {
+                  if (!value) {
+                    setState(() {
+                      _aboutTapCounter = 0;
+                    });
+                  }
+                  await blocWithoutListen.settings.setDebugEnabled(value);
+                }),
+            const Divider(),
+            StreamBuilder<bool>(
+                stream: blocWithoutListen.settings.getUseFakeBackEndStream(),
+                builder:
+                    (final BuildContext c, final AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.hasError) {
+                    debugPrint(snapshot.error.toString());
+                    return Container(
+                      color: Colors.red,
+                      child: ListTile(
+                        title: const Text('Error'),
+                        subtitle: Text(snapshot.error.toString()),
+                      ),
+                    );
+                  }
+                  final enabled = snapshot.data ?? false;
+                  return SwitchListTile(
+                    title: const Text('Use a fake back end'),
+                    subtitle: const Text(
+                        'A fake back end shows devices used for testing.'),
+                    value: enabled,
+                    onChanged: (final value) {
+                      blocWithoutListen.settings.setUseFakeBackEnd(value);
+                    },
+                  );
+                }),
+            const Divider(),
+          ]);
+        }));
+
     // endregion
 
     return ContentContainerListView(

@@ -44,6 +44,8 @@ class LighthouseProvider {
   StreamSubscription? _backEndResultSubscription;
   @visibleForTesting
   final Set<LighthouseBackEnd> backEndSet = {};
+  @visibleForTesting
+  final Set<DeviceProvider> providerSet = {};
 
   final BehaviorSubject<bool> _isScanningBehavior =
       BehaviorSubject.seeded(false);
@@ -69,19 +71,32 @@ class LighthouseProvider {
         });
       });
 
-  /// Add a back end for providing data.
+  /// Add a [LighthouseBackEnd] for providing data.
   void addBackEnd(final LighthouseBackEnd backEnd) {
-    backEnd.updateLastSeen = _updateLastSeen;
-    backEndSet.add(backEnd);
-    _addStateSubscription(backEnd);
+    if (backEndSet.add(backEnd)) {
+      backEnd.updateLastSeen = _updateLastSeen;
+      _addStateSubscription(backEnd);
+
+      for (final provider in providerSet) {
+        if (backEnd.isMyProviderType(provider)) {
+          backEnd.addProvider(provider);
+        }
+      }
+    }
   }
 
-  /// Remove a back end for providing data.
+  /// Remove a [LighthouseBackEnd] for providing data.
   void removeBackEnd(final LighthouseBackEnd backEnd) {
     if (backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
+      _removeStateSubscription(backEnd);
+
+      for (final provider in providerSet) {
+        if (backEnd.isMyProviderType(provider)) {
+          backEnd.removeProvider(provider);
+        }
+      }
     }
-    _removeStateSubscription(backEnd);
   }
 
   ///
@@ -145,32 +160,22 @@ class LighthouseProvider {
   }
 
   /// Add a [DeviceProvider] to every [LighthouseBackEnd] that supports it.
-  ///
-  /// Will throw a [UnsupportedError] if no valid back end could be found for the
-  /// [DeviceProvider].
   void addProvider(final DeviceProvider provider) {
-    final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList.isEmpty) {
-      throw UnsupportedError(
-          'No back end found for device provider: "${provider.providerName}". Did you forget to add the back end first?');
-    }
-    for (final backEnd in backEndList) {
-      backEnd.addProvider(provider);
+    if (providerSet.add(provider)) {
+      final backEndList = _getBackEndForDeviceProvider(provider);
+      for (final backEnd in backEndList) {
+        backEnd.addProvider(provider);
+      }
     }
   }
 
   /// Remove a [DeviceProvider] from every [LighthouseBackEnd] that supports it.
-  ///
-  /// Will throw a [UnsupportedError] if no valid back end could be found for the
-  /// [DeviceProvider].
   void removeProvider(final DeviceProvider provider) {
-    final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList.isEmpty) {
-      throw UnsupportedError(
-          'No back ends installed. Did you forget to add the back end first?');
-    }
-    for (final backEnd in backEndList) {
-      backEnd.removeProvider(provider);
+    if (providerSet.remove(provider)) {
+      final backEndList = _getBackEndForDeviceProvider(provider);
+      for (final backEnd in backEndList) {
+        backEnd.removeProvider(provider);
+      }
     }
   }
 
@@ -354,12 +359,6 @@ class LighthouseProvider {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
             _lightHouseDevices.valueOrNull ?? [];
-
-        // TODO: only return one lighthouse for testing. Remove this later
-        if (list.isNotEmpty) {
-          newDevice.disconnect();
-          return;
-        }
 
         // Check if this device is already in the list, which should never happen.
         if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(

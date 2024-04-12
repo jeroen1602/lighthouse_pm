@@ -117,7 +117,7 @@ class _ViveBaseStationExtraInfoAlertState
                   }
                 }
               }
-              if (mounted) {
+              if (context.mounted) {
                 Navigator.pop(context, text);
               }
             }

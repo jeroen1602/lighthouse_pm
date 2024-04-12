@@ -122,8 +122,7 @@ abstract class LighthouseBackEnd<T extends DeviceProvider<D>,
   /// Will return `null` if no device provider could validate the device.
   @protected
   Future<LighthouseDevice?> getLighthouseDevice(final D device) async {
-    lighthouseLogger
-        .info("${device.name}: Trying to connect");
+    lighthouseLogger.info("${device.name}: Trying to connect");
     for (final provider in providers) {
       if (!provider.nameCheck(device.name)) {
         continue;

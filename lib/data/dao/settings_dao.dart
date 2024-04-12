@@ -22,7 +22,9 @@ enum SettingsIds {
   groupShowOfflineWarningId(6, "groupShowOfflineWarningId"),
   updateIntervalId(7, "updateIntervalId"),
   appStyleId(8, "appStyleId"),
-  deviceProvidersEnabled(9, "deviceProvidersEnabled");
+  deviceProvidersEnabled(9, "deviceProvidersEnabled"),
+  debugMode(10, "debugMode"),
+  useFakeBackEnd(11, "useFakeBackEnd");
 
   final int value;
 
@@ -321,6 +323,67 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       return AppStyle.materialDynamic;
     }
     return supportedStyles.cast<AppStyle?>()[0] ?? AppStyle.material;
+  }
+
+  Future<void> setDebugEnabled(final bool enabled) {
+    return into(simpleSettings).insert(
+        SimpleSetting(
+            settingsId: SettingsIds.debugMode.value, data: enabled ? '1' : '0'),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  Stream<bool> getDebugModeEnabledStream() {
+    return (select(simpleSettings)
+          ..where((final tbl) =>
+              tbl.settingsId.equals(SettingsIds.debugMode.value)))
+        .watchSingleOrNull()
+        .map((final event) {
+      if (event == null || event.data == '0' || event.data == null) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  Future<void> setUseFakeBackEnd(final bool use) {
+    return into(simpleSettings).insert(
+        SimpleSetting(
+            settingsId: SettingsIds.useFakeBackEnd.value,
+            data: use ? '1' : '0'),
+        mode: InsertMode.insertOrReplace);
+  }
+
+  Stream<bool> getUseFakeBackEndStream() {
+    return (select(simpleSettings)
+          ..where((final tbl) =>
+              tbl.settingsId.equals(SettingsIds.useFakeBackEnd.value) |
+              tbl.settingsId.equals(SettingsIds.debugMode.value)))
+        .watch()
+        .map((final results) {
+      if (results.length != 2) {
+        return false;
+      }
+      final debugMode = results.cast<SimpleSetting?>().firstWhere(
+          (final x) => x?.settingsId == SettingsIds.debugMode.value,
+          orElse: () => null);
+
+      if (debugMode == null ||
+          debugMode.data == '0' ||
+          debugMode.data == null) {
+        return false;
+      }
+
+      final fakeBackEnd = results.cast<SimpleSetting?>().firstWhere(
+          (final x) => x?.settingsId == SettingsIds.useFakeBackEnd.value,
+          orElse: () => null);
+
+      if (fakeBackEnd == null ||
+          fakeBackEnd.data == '0' ||
+          fakeBackEnd.data == null) {
+        return false;
+      }
+      return true;
+    });
   }
 
   Stream<List<SimpleSetting>> get watchSimpleSettings {

@@ -203,7 +203,6 @@ class LighthouseV2Device extends BLEDevice<LighthouseV2Persistence>
       });
       return true;
     }());
-
   }
 
   @override

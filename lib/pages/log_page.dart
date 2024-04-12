@@ -33,13 +33,13 @@ class _LogPageContentState extends State<_LogPageContent> {
             IconButton(
                 onPressed: () {
                   setState(() {
-                    LighthouseProviderStart.logs!.add([]);
+                    LighthouseProviderStart.logs.add([]);
                   });
                 },
                 icon: const Icon(Icons.delete_forever)),
             IconButton(
                 onPressed: () {
-                  final clipboard = LighthouseProviderStart.logs!.value.fold("",
+                  final clipboard = LighthouseProviderStart.logs.value.fold("",
                       (final previousValue, final element) {
                     return "$previousValue\n${element.time}: ${element.level.name}: ${element.message}";
                   });
@@ -53,7 +53,7 @@ class _LogPageContentState extends State<_LogPageContent> {
         ),
         body: StreamBuilder<List<LogRecord>>(
           initialData: const [],
-          stream: LighthouseProviderStart.logs!,
+          stream: LighthouseProviderStart.logs,
           builder: (final context, final snapshot) {
             final logs = snapshot.requireData;
 
