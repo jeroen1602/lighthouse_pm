@@ -44,6 +44,8 @@ class LighthouseProvider {
   StreamSubscription? _backEndResultSubscription;
   @visibleForTesting
   final Set<LighthouseBackEnd> backEndSet = {};
+  @visibleForTesting
+  final Set<DeviceProvider> providerSet = {};
 
   final BehaviorSubject<bool> _isScanningBehavior =
       BehaviorSubject.seeded(false);
@@ -69,19 +71,32 @@ class LighthouseProvider {
         });
       });
 
-  /// Add a back end for providing data.
+  /// Add a [LighthouseBackEnd] for providing data.
   void addBackEnd(final LighthouseBackEnd backEnd) {
-    backEnd.updateLastSeen = _updateLastSeen;
-    backEndSet.add(backEnd);
-    _addStateSubscription(backEnd);
+    if (backEndSet.add(backEnd)) {
+      backEnd.updateLastSeen = _updateLastSeen;
+      _addStateSubscription(backEnd);
+
+      for (final provider in providerSet) {
+        if (backEnd.isMyProviderType(provider)) {
+          backEnd.addProvider(provider);
+        }
+      }
+    }
   }
 
-  /// Remove a back end for providing data.
+  /// Remove a [LighthouseBackEnd] for providing data.
   void removeBackEnd(final LighthouseBackEnd backEnd) {
     if (backEndSet.remove(backEnd)) {
       backEnd.updateLastSeen = null;
+      _removeStateSubscription(backEnd);
+
+      for (final provider in providerSet) {
+        if (backEnd.isMyProviderType(provider)) {
+          backEnd.removeProvider(provider);
+        }
+      }
     }
-    _removeStateSubscription(backEnd);
   }
 
   ///
@@ -145,32 +160,22 @@ class LighthouseProvider {
   }
 
   /// Add a [DeviceProvider] to every [LighthouseBackEnd] that supports it.
-  ///
-  /// Will throw a [UnsupportedError] if no valid back end could be found for the
-  /// [DeviceProvider].
   void addProvider(final DeviceProvider provider) {
-    final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList.isEmpty) {
-      throw UnsupportedError(
-          'No back end found for device provider: "${provider.runtimeType}". Did you forget to add the back end first?');
-    }
-    for (final backEnd in backEndList) {
-      backEnd.addProvider(provider);
+    if (providerSet.add(provider)) {
+      final backEndList = _getBackEndForDeviceProvider(provider);
+      for (final backEnd in backEndList) {
+        backEnd.addProvider(provider);
+      }
     }
   }
 
   /// Remove a [DeviceProvider] from every [LighthouseBackEnd] that supports it.
-  ///
-  /// Will throw a [UnsupportedError] if no valid back end could be found for the
-  /// [DeviceProvider].
   void removeProvider(final DeviceProvider provider) {
-    final backEndList = _getBackEndForDeviceProvider(provider);
-    if (backEndList.isEmpty) {
-      throw UnsupportedError(
-          'No back ends installed. Did you forget to add the back end first?');
-    }
-    for (final backEnd in backEndList) {
-      backEnd.removeProvider(provider);
+    if (providerSet.remove(provider)) {
+      final backEndList = _getBackEndForDeviceProvider(provider);
+      for (final backEnd in backEndList) {
+        backEnd.removeProvider(provider);
+      }
     }
   }
 
@@ -181,9 +186,11 @@ class LighthouseProvider {
   ///
   /// Will call the [cleanUp] function before starting the scan.
   Future startScan(
-      {required final Duration timeout, final Duration? updateInterval}) async {
+      {required final Duration timeout,
+      final Duration? updateInterval,
+      final bool clean = true}) async {
     await _startIsScanningSubscription();
-    await cleanUp();
+    await cleanUp(onlyDisconnected: !clean);
     await _startListeningScanResults();
     if (backEndSet.isEmpty) {
       assert(() {
@@ -204,13 +211,20 @@ class LighthouseProvider {
   /// Clean up any open connections that may still be left.
   /// Will also clear out the current devices list.
   ///
-  Future cleanUp() async {
+  Future cleanUp({final bool onlyDisconnected = false}) async {
     await stopScan();
-    await _disconnectOpenDevices();
-    for (final backEnd in backEndSet) {
-      await backEnd.cleanUp();
+    if (onlyDisconnected) {
+      await _removeClosedDevices();
+      for (final backend in backEndSet) {
+        await backend.cleanUp(onlyDisconnected: onlyDisconnected);
+      }
+    } else {
+      await _disconnectOpenDevices();
+      for (final backEnd in backEndSet) {
+        await backEnd.cleanUp();
+      }
+      _lightHouseDevices.add([]);
     }
-    _lightHouseDevices.add([]);
     if (_lighthouseDeviceMutex.isLocked) {
       _lighthouseDeviceMutex.release();
     }
@@ -295,6 +309,27 @@ class LighthouseProvider {
     }
   }
 
+  Future _removeClosedDevices() async {
+    for (final backEnd in backEndSet) {
+      await backEnd.disconnectOpenDevices();
+    }
+    try {
+      await _lighthouseDeviceMutex.acquire();
+      final open = <TimeoutContainer<LighthouseDevice>>[];
+      final list = _lightHouseDevices.valueOrNull;
+      for (final device in list ?? <TimeoutContainer<LighthouseDevice>>[]) {
+        if (device.data.hasOpenConnection) {
+          open.add(device);
+        } else {
+          await device.data.disconnect();
+        }
+      }
+      _lightHouseDevices.add(open);
+    } finally {
+      _lighthouseDeviceMutex.release();
+    }
+  }
+
   /// Combine the output streams from all the back-ends and add combine all their
   /// returned [LighthouseDevice]s.
   Future _startListeningScanResults() async {
@@ -324,6 +359,7 @@ class LighthouseProvider {
         await _lighthouseDeviceMutex.acquire();
         final List<TimeoutContainer<LighthouseDevice>> list =
             _lightHouseDevices.valueOrNull ?? [];
+
         // Check if this device is already in the list, which should never happen.
         if (list.cast<TimeoutContainer<LighthouseDevice>?>().firstWhere(
                 (final element) {
@@ -333,8 +369,9 @@ class LighthouseProvider {
               return false;
             }, orElse: () => null) !=
             null) {
-          lighthouseLogger.info("Found a device that has already been found! "
-              "Device id: ${newDevice.deviceIdentifier}, name: ${newDevice.name}");
+          lighthouseLogger
+              .info("${newDevice.name} (${newDevice.deviceIdentifier}): "
+                  "Found a device that has already been found!");
           return;
         }
 

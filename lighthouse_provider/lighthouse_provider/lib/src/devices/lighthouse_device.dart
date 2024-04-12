@@ -7,6 +7,11 @@ abstract class LighthouseDevice {
   String get name;
 
   ///
+  /// The type of the device.
+  ///
+  String get deviceType;
+
+  ///
   /// The nickname of the device. This should be updated anytime the user
   /// changes it.
   ///
@@ -95,11 +100,13 @@ abstract class LighthouseDevice {
   Future<void> changeState<C>(final LighthousePowerState newState,
       [final C? context]) async {
     if (newState == LighthousePowerState.unknown) {
-      lighthouseLogger.warning("Cannot set power state to unknown");
+      lighthouseLogger.warning("$name ($deviceIdentifier): "
+          "Cannot set power state to unknown");
       return;
     }
     if (newState == LighthousePowerState.booting) {
-      lighthouseLogger.warning("Cannot set power state to booting");
+      lighthouseLogger.warning("$name ($deviceIdentifier): "
+          "Cannot set power state to booting");
       return;
     }
     final request = await requestExtraInfo(context);
@@ -108,7 +115,8 @@ abstract class LighthouseDevice {
       await transactionMutex.protect(
           () => internalChangeState(newState), stack);
     } else {
-      lighthouseLogger.warning("Could not change state because the needed "
+      lighthouseLogger.warning("$name ($deviceIdentifier): "
+          "Could not change state because the needed "
           "extra info hasn't been provided");
     }
   }

@@ -90,9 +90,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         }
         final themeMode = ThemeMode.values[value];
         return themeMode.toString();
+      case SettingsIds.debugMode:
       case SettingsIds.shortcutEnabledId:
-        return convertToBoolean(data);
       case SettingsIds.groupShowOfflineWarningId:
+      case SettingsIds.useFakeBackEnd:
         return convertToBoolean(data);
       case SettingsIds.updateIntervalId:
         if (data == null) {

@@ -47,11 +47,19 @@ abstract class DeviceProvider<D extends LowLevelDevice> {
   ///
   String get namePrefix;
 
+  ///
+  /// The name of this device provider. This name should be unique
+  ///
+  String get providerName;
+
   @override
   bool operator ==(final Object other) {
-    return runtimeType == other.runtimeType;
+    if (other is DeviceProvider) {
+      return providerName == other.providerName;
+    }
+    return false;
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => providerName.hashCode;
 }

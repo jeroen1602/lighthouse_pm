@@ -57,4 +57,7 @@ class FakePairBackEnd extends BLELighthouseBackEnd with PairBackEnd {
     // TODO: implement pairNewDevice
     throw UnimplementedError();
   }
+
+  @override
+  String get backendName => 'Test beck end';
 }

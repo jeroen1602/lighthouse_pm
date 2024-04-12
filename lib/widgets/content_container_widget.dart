@@ -83,7 +83,7 @@ class ContentContainerListView extends StatelessWidget {
     final int? itemCount,
     final double maxSize = ContentContainerWidget.defaultMaxSize,
     final double contentSize = ContentContainerWidget.defaultContentSize,
-    required final IndexedWidgetBuilder itemBuilder,
+    required final NullableIndexedWidgetBuilder itemBuilder,
   }) {
     return Stack(
       children: [
@@ -99,9 +99,12 @@ class ContentContainerListView extends StatelessWidget {
           return ListView.builder(
             controller: controller,
             itemBuilder: (final BuildContext context, final int index) {
-              final Widget content = itemBuilder(context, index);
+              final Widget? content = itemBuilder(context, index);
               return ContentContainerWidget(
                 builder: (final BuildContext context) {
+                  if (content == null) {
+                    return Container();
+                  }
                   return content;
                 },
                 addMaterial: false,

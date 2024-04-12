@@ -97,7 +97,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   }
 
   @override
-  Future<void> cleanUp() async {
+  Future<void> cleanUp({final bool onlyDisconnected = false}) async {
     _foundDeviceSubject.add(null);
     if (_devicesMutex.isLocked) {
       _devicesMutex.release();
@@ -153,8 +153,8 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
           try {
             await _devicesMutex.acquire();
             if (lighthouseDevice == null) {
-              lighthouseLogger.warning(
-                  "Found a not valid device! Device id: ${device.address}");
+              lighthouseLogger.warning("${device.name} (${device.address}): "
+                  "Found a not valid device!");
             } else {
               _foundDeviceSubject.add(lighthouseDevice);
             }
@@ -174,4 +174,7 @@ class BlueZBackEnd extends BLELighthouseBackEnd {
   Future<void> _ensureConnected() async {
     await blueZClient.connect();
   }
+
+  @override
+  String get backendName => "BluezBackEnd";
 }

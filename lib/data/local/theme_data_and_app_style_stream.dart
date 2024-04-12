@@ -12,6 +12,8 @@ class ThemeDataAndAppStyleStream {
         style = style ?? AppStyle.material,
         alwaysShowScrollbar = alwaysShowScrollbar ?? false;
 
+  const ThemeDataAndAppStyleStream.withDefaults() : this(null, null, null);
+
   final ThemeMode themeMode;
   final AppStyle style;
   final bool alwaysShowScrollbar;

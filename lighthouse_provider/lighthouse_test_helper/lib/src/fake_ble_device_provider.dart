@@ -14,6 +14,9 @@ class FakeBLEDeviceProvider extends BLEDeviceProvider {
   @override
   String get namePrefix => "LHB-";
 
+  @override
+  String get providerName => '';
+
   /// Not needed
   @override
   List<LighthouseGuid> get characteristics => throw UnimplementedError();

@@ -42,6 +42,9 @@ class ExampleBackEnd extends LighthouseBackEnd {
     await super.startScan(timeout: timeout, updateInterval: updateInterval);
     throw UnsupportedError("Do some start scanning");
   }
+
+  @override
+  String get backendName => 'Example back end';
 }
 
 void main() {

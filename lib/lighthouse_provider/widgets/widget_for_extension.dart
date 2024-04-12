@@ -24,7 +24,7 @@ Widget getWidgetFromDeviceExtension(
     return const Text('ID');
   }
 
-  return Text(extension.runtimeType.toString());
+  return Text(extension.extensionName);
 }
 
 Color getButtonColorFromDeviceExtension(

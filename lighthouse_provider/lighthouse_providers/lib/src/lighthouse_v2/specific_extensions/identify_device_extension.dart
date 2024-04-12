@@ -27,4 +27,7 @@ class IdentifyDeviceExtension extends DeviceExtension {
       _enabledSubject = null;
     }
   }
+
+  @override
+  String get extensionName => "IdentifyExtension";
 }

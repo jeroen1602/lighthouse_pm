@@ -16,10 +16,10 @@ abstract class ScanningMixin {
   }
 
   Future startScan(final Duration scanDuration,
-      {final Duration? updateInterval}) async {
+      {final Duration? updateInterval, final bool clean = true}) async {
     try {
-      await LighthouseProvider.instance
-          .startScan(timeout: scanDuration, updateInterval: updateInterval);
+      await LighthouseProvider.instance.startScan(
+          timeout: scanDuration, updateInterval: updateInterval, clean: clean);
     } catch (e, s) {
       debugPrint(
           "Error trying to start scan! ${e.toString()}\n${s.toString()}");
@@ -27,10 +27,13 @@ abstract class ScanningMixin {
   }
 
   Future startScanWithCheck(final Duration scanDuration,
-      {final Duration? updateInterval, final String failMessage = ""}) async {
+      {final Duration? updateInterval,
+      final String failMessage = "",
+      final bool clean = true}) async {
     if (await BLEPermissionsHelper.hasBLEPermissions() ==
         PermissionStatus.granted) {
-      await startScan(scanDuration, updateInterval: updateInterval);
+      await startScan(scanDuration,
+          updateInterval: updateInterval, clean: clean);
     } else if (failMessage.isNotEmpty && !kReleaseMode) {
       debugPrint(failMessage);
     }

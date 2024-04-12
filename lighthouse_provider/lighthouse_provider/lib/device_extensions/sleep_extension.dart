@@ -6,4 +6,7 @@ part of 'device_extension.dart';
 class SleepExtension extends StateExtension {
   SleepExtension({required super.changeState, required super.powerStateStream})
       : super(toolTip: "Sleep", toState: LighthousePowerState.sleep);
+
+  @override
+  String get extensionName => "SleepExtension";
 }

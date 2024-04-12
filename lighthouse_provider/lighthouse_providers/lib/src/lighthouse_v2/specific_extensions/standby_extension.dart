@@ -7,6 +7,9 @@ class StandbyExtension extends StateExtension {
   StandbyExtension(
       {required super.changeState, required super.powerStateStream})
       : super(toolTip: "Standby", toState: LighthousePowerState.standby);
+
+  @override
+  String get extensionName => "StandbyExtension";
 }
 
 extension StandbyExtensionExtensions on LighthouseDevice {

@@ -94,4 +94,7 @@ class ViveBaseStationDeviceProvider
 
   @override
   String get namePrefix => "HTC BS";
+
+  @override
+  String get providerName => "ViveBaseStationDeviceProvider";
 }

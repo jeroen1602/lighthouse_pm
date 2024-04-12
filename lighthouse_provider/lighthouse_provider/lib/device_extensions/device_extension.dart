@@ -28,6 +28,8 @@ abstract class DeviceExtension {
   @protected
   StreamEnabledFunction? streamEnabledFunction;
 
+  String get extensionName;
+
   Stream<bool> get enabledStream {
     final enabledFunction = streamEnabledFunction;
     if (enabledFunction != null) {
@@ -39,9 +41,12 @@ abstract class DeviceExtension {
 
   @override
   bool operator ==(final Object other) {
-    return other.runtimeType == runtimeType;
+    if (other is DeviceExtension) {
+      return extensionName == other.extensionName;
+    }
+    return false;
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => extensionName.hashCode;
 }
