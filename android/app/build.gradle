@@ -118,7 +118,7 @@ dependencies {
     // For now only needed for googlePlayImplementation
     googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
 
-    def billing_version = "6.2.1"
+    def billing_version = "7.0.0"
 
     googlePlayImplementation "com.android.billingclient:billing:$billing_version"
     googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"
