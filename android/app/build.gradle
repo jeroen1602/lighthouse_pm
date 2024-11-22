@@ -104,7 +104,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21"
 
     // For now only needed for googlePlayImplementation
     googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
