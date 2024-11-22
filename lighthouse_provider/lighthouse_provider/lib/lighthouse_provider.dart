@@ -1,4 +1,4 @@
-library lighthouse_provider;
+library;
 
 import 'dart:async';
 import 'dart:typed_data';

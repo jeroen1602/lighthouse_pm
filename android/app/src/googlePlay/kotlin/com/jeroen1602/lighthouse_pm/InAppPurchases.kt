@@ -35,7 +35,9 @@ class InAppPurchases {
         this.activity = activity
 
         billingClient = BillingClient.newBuilder(activity)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
+            )
             .setListener { billingResult, purchases ->
                 CoroutineScope(Dispatchers.IO).launch {
                     val results = handlePurchases(billingResult, purchases)
@@ -46,7 +48,6 @@ class InAppPurchases {
                     }
                 }
             }
-            .enablePendingPurchases()
             .build()
 
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, IAP_ID)

@@ -3,7 +3,7 @@ import 'package:shared_platform/shared_platform.dart';
 
 const _exitWaitTime = 5;
 
-abstract class CloseCurrentRouteMixin {
+mixin class CloseCurrentRouteMixin {
   Future<void> closeCurrentRouteWithWait(final BuildContext context) async {
     await Future.delayed(const Duration(seconds: _exitWaitTime));
     // ignore: use_build_context_synchronously

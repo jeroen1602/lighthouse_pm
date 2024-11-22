@@ -22,7 +22,7 @@ class _MultipleCallbackPopScopeState extends State<MultipleCallbackPopScope> {
   Widget build(final BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (final bool didPop) {
+      onPopInvokedWithResult: (final bool didPop, final _) {
         if (didPop) {
           return;
         }

@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library lighthouse_logger;
+library;
 
 import 'package:logging/logging.dart';
 

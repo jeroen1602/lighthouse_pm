@@ -1,4 +1,4 @@
-part of flutter_blue_plus_back_end;
+part of "../flutter_blue_plus_back_end_io.dart";
 
 /// An abstraction for the [blue_plus.FlutterBluePlus]  [BluetoothCharacteristic].
 class FlutterBluePlusBluetoothCharacteristic extends LHBluetoothCharacteristic {

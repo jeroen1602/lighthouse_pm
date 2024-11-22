@@ -5,7 +5,7 @@ part of '../../lighthouse_back_end.dart';
 /// used.
 ///
 /// If there is a back end with this then there should be a pair button visible.
-abstract class PairBackEnd {
+abstract mixin class PairBackEnd {
   Future<void> pairNewDevice(
       {required final Duration timeout,
       required final Duration? updateInterval});

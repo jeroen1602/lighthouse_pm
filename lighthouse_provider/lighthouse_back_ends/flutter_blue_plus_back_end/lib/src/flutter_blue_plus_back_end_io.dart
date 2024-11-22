@@ -1,4 +1,4 @@
-library flutter_blue_plus_back_end;
+library;
 
 import 'dart:async';
 

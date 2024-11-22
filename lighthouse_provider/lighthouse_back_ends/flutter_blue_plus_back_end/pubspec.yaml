@@ -4,15 +4,15 @@ version: 1.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
-  flutter: ">=3.3.1"
+  sdk: ">=3.5.4 <4.0.0"
+  flutter: ">=3.24.5"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue_plus: ^1.32.2
-  mutex: ^3.0.0
-  rxdart: ^0.27.7
+  flutter_blue_plus: ^1.34.5
+  mutex: ^3.1.0
+  rxdart: ^0.28.0
   lighthouse_back_end:
     path: ../../lighthouse_back_end
   lighthouse_provider:
@@ -26,7 +26,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -42,7 +42,7 @@ class LighthousePMBloc {
   }
 }
 
-abstract class WithBlocStateless {
+mixin class WithBlocStateless {
   LighthousePMBloc bloc(final BuildContext context,
           {final bool listen = true}) =>
       Provider.of<LighthousePMBloc>(context, listen: listen);

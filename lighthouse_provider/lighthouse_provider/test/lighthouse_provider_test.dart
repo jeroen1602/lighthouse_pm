@@ -10,6 +10,17 @@ import 'package:test/test.dart';
 import 'lighthouse_back_ends/fake/fake_pair_back_end.dart';
 
 void main() {
+  tearDown(() {
+    final instance = LighthouseProvider.instance;
+
+    while (instance.providerSet.isNotEmpty) {
+      instance.removeProvider(instance.providerSet.first);
+    }
+    while (instance.backEndSet.isNotEmpty) {
+      instance.removeBackEnd(instance.backEndSet.first);
+    }
+  });
+
   test("Should always get the same provider instance", () {
     final instance1 = LighthouseProvider.instance;
     final instance2 = LighthouseProvider.instance;
@@ -34,34 +45,21 @@ void main() {
     }
   });
 
-  test("Should not add provider if no back end is installed", () async {
+  test("Should add back end after provider", () async {
     final instance = LighthouseProvider.instance;
+    final backEnd = FakePairBackEnd([]);
 
-    try {
-      instance.addProvider(LighthouseV2DeviceProvider.instance);
-      fail("Add provider should have thrown");
-    } catch (err) {
-      expect(err, isA<UnsupportedError>());
-      expect(
-          (err as UnsupportedError).message,
-          equals(
-              "No back end found for device provider: \"LighthouseV2DeviceProvider\". Did you forget to add the back end first?"));
-    }
+    instance.addProvider(LighthouseV2DeviceProvider.instance);
+    instance.addBackEnd(backEnd);
   });
 
-  test("Should not remove provider if no back end is installed", () async {
+  test("Should remove provider after backend", () async {
     final instance = LighthouseProvider.instance;
+    final backEnd = FakePairBackEnd([]);
 
-    try {
-      instance.removeProvider(LighthouseV2DeviceProvider.instance);
-      fail("Remove provider should have thrown");
-    } catch (err) {
-      expect(err, isA<UnsupportedError>());
-      expect(
-          (err as UnsupportedError).message,
-          equals(
-              "No back ends installed. Did you forget to add the back end first?"));
-    }
+    instance.addProvider(LighthouseV2DeviceProvider.instance);
+    instance.addBackEnd(backEnd);
+    instance.removeProvider(LighthouseV2DeviceProvider.instance);
   });
 
   test("Should be able to add and remove a back end", () async {

@@ -81,7 +81,9 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
             final AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot) {
           if (snapshot.requireData.timeoutExpired) {
             stopScan().then((final _) {
-              closeCurrentRouteWithWait(context);
+              if (context.mounted) {
+                closeCurrentRouteWithWait(context);
+              }
             });
             return const Text('Scan timeout reached!');
           }

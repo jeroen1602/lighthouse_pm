@@ -1,4 +1,4 @@
-library lighthouse_v2_device_provider;
+library;
 
 import 'dart:async';
 

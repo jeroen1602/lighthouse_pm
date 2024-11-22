@@ -1,3 +1,5 @@
+# Version 1.3.2+13
+
 # Version 1.3.1+12 09-12-2023
 
 - (Android) Fixed multiple devices not showing up.

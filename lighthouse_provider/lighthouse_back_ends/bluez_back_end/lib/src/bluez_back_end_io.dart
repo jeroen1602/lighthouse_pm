@@ -1,4 +1,4 @@
-library bluez_back_end;
+library;
 
 import 'dart:async';
 import 'dart:typed_data';
