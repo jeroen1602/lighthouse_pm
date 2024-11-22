@@ -1,7 +1,7 @@
 ///
 /// A library with some helper functions to help with testing
 ///
-library lighthouse_test_helper;
+library;
 
 export 'src/device_helpers.dart';
 export 'src/failing_ble_device.dart';

@@ -4,14 +4,14 @@ version: 1.0.0
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: ">=3.5.4 <4.0.0"
 
 dependencies:
-  flutter_web_bluetooth: ^0.2.3
+  flutter_web_bluetooth: ^1.0.0
   meta: ">=1.3.0 <2.0.0"
   mutex: ^3.1.0
-  rxdart: ^0.27.7
-  convert: ^3.1.1
+  rxdart: ^0.28.0
+  convert: ^3.1.2
   lighthouse_back_end:
     path: ../../lighthouse_back_end
   lighthouse_provider:
@@ -24,7 +24,7 @@ dependencies:
     path: ../../lighthouse_logger
 
 dev_dependencies:
-  lints: ^3.0.0
-  test: ^1.25.3
+  lints: ^5.0.0
+  test: ^1.25.8
   lighthouse_test_helper:
     path: ../../lighthouse_test_helper

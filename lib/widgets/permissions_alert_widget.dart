@@ -61,6 +61,9 @@ class PermissionsAlertWidget extends StatelessWidget {
 
   static Future<bool> showCustomDialog(final BuildContext context) {
     return DeviceInfoPlugin().androidInfo.then((final deviceInto) {
+      if (!context.mounted) {
+        return false;
+      }
       return showDialog(
           context: context,
           builder: (final BuildContext context) {

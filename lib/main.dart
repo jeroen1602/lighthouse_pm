@@ -94,7 +94,7 @@ class LighthousePMApp extends StatelessWidget with WithBlocStateless {
           final debugModeEnabled = data?.item1.debugEnabled ?? false;
 
           final scrollbarTheme = ScrollbarThemeData(
-            thumbVisibility: MaterialStateProperty.all(scrollbarDesktop),
+            thumbVisibility: WidgetStateProperty.all(scrollbarDesktop),
             radius: scrollbarDesktop ? Radius.zero : null,
           );
 

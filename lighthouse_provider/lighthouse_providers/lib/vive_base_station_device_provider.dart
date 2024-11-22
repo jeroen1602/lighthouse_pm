@@ -1,4 +1,4 @@
-library vive_base_station_device_provider;
+library;
 
 import 'dart:async';
 import 'dart:typed_data';

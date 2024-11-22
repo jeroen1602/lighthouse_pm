@@ -1,4 +1,4 @@
-part of flutter_blue_plus_back_end;
+part of "../flutter_blue_plus_back_end_io.dart";
 
 ///
 /// Extensions for the flutter blue plus classes.

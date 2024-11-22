@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'multiple_callback_pop_scope.dart';
 
-abstract class ScanningMixin {
+mixin class ScanningMixin {
   bool _onWillPop() {
     return true;
   }

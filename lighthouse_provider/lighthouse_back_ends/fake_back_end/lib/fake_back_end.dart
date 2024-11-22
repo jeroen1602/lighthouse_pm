@@ -1,4 +1,4 @@
-library fake_back_end;
+library;
 
 import 'dart:convert';
 import 'dart:math';

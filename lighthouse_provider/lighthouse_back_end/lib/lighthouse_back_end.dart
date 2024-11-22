@@ -1,4 +1,4 @@
-library lighthouse_back_end;
+library;
 
 import 'dart:async';
 import 'dart:convert';

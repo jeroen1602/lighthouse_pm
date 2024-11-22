@@ -72,12 +72,13 @@ class MaterialTestPage extends BasePage with WithBlocStateless {
           colorScheme.error, colorScheme.onError, "error", baseTheme),
       ..._createOnBlock(colorScheme.errorContainer,
           colorScheme.onErrorContainer, "errorContainer", baseTheme),
-      ..._createOnBlock(colorScheme.background, colorScheme.onBackground,
-          "background", baseTheme),
       ..._createOnBlock(
           colorScheme.surface, colorScheme.onSurface, "surface", baseTheme),
-      ..._createOnBlock(colorScheme.surfaceVariant,
-          colorScheme.onSurfaceVariant, "surfaceVariant", baseTheme),
+      ..._createOnBlock(
+          colorScheme.surfaceContainerHigh,
+          colorScheme.onSurfaceVariant,
+          "surfaceVariant/container high",
+          baseTheme),
       ..._createOnBlock(colorScheme.inverseSurface,
           colorScheme.onInverseSurface, "inverseSurface", baseTheme),
     ];

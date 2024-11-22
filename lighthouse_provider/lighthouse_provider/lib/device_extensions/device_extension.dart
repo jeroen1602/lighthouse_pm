@@ -1,4 +1,4 @@
-library device_extension;
+library;
 
 import 'package:meta/meta.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';

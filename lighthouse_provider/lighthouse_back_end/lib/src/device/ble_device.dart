@@ -60,18 +60,14 @@ abstract class BLEDevice<T> extends LighthouseDevice {
       if (defaultCharacteristic.isEqualToGuid(uuid)) {
         try {
           String? response;
-          switch (defaultCharacteristic.type) {
-            case int:
-              final responseInt = await characteristic.readUint32();
-              response = "$responseInt";
-              break;
-            case String:
-              response = await characteristic.readString();
-              break;
-            default:
-              lighthouseLogger.warning(
-                  "${device.name} ($deviceIdentifier): Unsupported type ${defaultCharacteristic.type}");
-              break;
+          if (defaultCharacteristic.type == int) {
+            final responseInt = await characteristic.readUint32();
+            response = "$responseInt";
+          } else if (defaultCharacteristic.type == String) {
+            response = await characteristic.readString();
+          } else {
+            lighthouseLogger.warning(
+                "${device.name} ($deviceIdentifier): Unsupported type ${defaultCharacteristic.type}");
           }
           if (response != null) {
             metadataMap[defaultCharacteristic.name] = response;

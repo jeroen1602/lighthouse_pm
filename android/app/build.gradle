@@ -1,6 +1,7 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -10,16 +11,6 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
 }
 
 def home = System.getProperty('user.home')
@@ -34,8 +25,8 @@ if (keystoreProperties['storeFile'] && keystoreProperties['storeFile'].contains(
 
 android {
     namespace 'com.jeroen1602.lighthouse_pm'
-    compileSdkVersion Math.max(34, flutter.compileSdkVersion)
-    ndkVersion "26.1.10909125"
+    compileSdkVersion Math.max(35, flutter.compileSdkVersion)
+    ndkVersion "27.2.12479018" // TODO use this: flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -43,7 +34,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -59,9 +50,9 @@ android {
     defaultConfig {
         applicationId "com.jeroen1602.lighthouse_pm"
         minSdkVersion Math.max(21, flutter.minSdkVersion)
-        targetSdkVersion Math.max(34, flutter.compileSdkVersion)
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        targetSdkVersion Math.max(35, flutter.compileSdkVersion)
+        versionCode flutter.versionCode
+        versionName flutter.versionName
     }
     signingConfigs {
         release {
@@ -113,12 +104,12 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
 
     // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
+    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
 
-    def billing_version = "6.2.1"
+    def billing_version = "7.1.1"
 
     googlePlayImplementation "com.android.billingclient:billing:$billing_version"
     googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"
