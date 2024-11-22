@@ -1,4 +1,5 @@
 import 'package:community_material_icon/community_material_icon.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,6 +19,8 @@ import 'package:lighthouse_pm/widgets/shortcut_alert_widget.dart';
 import 'package:lighthouse_pm/widgets/vive_base_station_alert_widget.dart';
 import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_platform/shared_platform.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -77,6 +80,7 @@ Future<List<ThemeMode>> _getSupportedThemeModes() async {
 class _SettingsContentState extends State<SettingsContent> {
   int _aboutTapCounter = 0;
   static const _aboutTapTop = 10;
+  final _deviceInfo = DeviceInfoPlugin();
 
   String _themeModeToString(final ThemeMode themeMode) {
     switch (themeMode) {
@@ -118,6 +122,29 @@ class _SettingsContentState extends State<SettingsContent> {
     if (currentCount == _aboutTapTop) {
       Toast.show('Enabled developer mode');
       await blocWithoutListen.settings.setDebugEnabled(true);
+    }
+  }
+
+  final _androidUpdateExtraPermissionInfo = BehaviorSubject.seeded(0);
+  Stream<PermissionStatus?>? _androidExtraPermissionInfo;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (SharedPlatform.isAndroid) {
+      _androidExtraPermissionInfo =
+          _deviceInfo.androidInfo.asStream().switchMap((final info) {
+        final version = info.version.sdkInt;
+        if (version < 31) {
+          return Stream.value(null);
+        }
+        return _androidUpdateExtraPermissionInfo.asyncMap((final _) async {
+          return await Permission.locationWhenInUse.status;
+        });
+      });
+    } else {
+      _androidExtraPermissionInfo = Stream.value(null);
     }
   }
 
@@ -380,6 +407,36 @@ class _SettingsContentState extends State<SettingsContent> {
         },
       ),
       const Divider(),
+      StreamBuilder(
+          stream: _androidExtraPermissionInfo,
+          builder: (final context, final snapshot) {
+            final data = snapshot.data;
+            if (data == null) {
+              return const Column();
+            }
+            return Column(children: [
+              ListTile(
+                title: Text(data.isGranted
+                    ? 'Extra location permission granted'
+                    : 'Request location permission'),
+                subtitle: const Text(
+                    'The location permission is no longer required, but you can still request it as a debug step'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  if (data.isPermanentlyDenied || data.isGranted) {
+                    openAppSettings().then((final _) {
+                      _androidUpdateExtraPermissionInfo.add(0);
+                    });
+                  } else {
+                    Permission.locationWhenInUse.request().then((final _) {
+                      _androidUpdateExtraPermissionInfo.add(0);
+                    });
+                  }
+                },
+              ),
+              const Divider(),
+            ]);
+          }),
     ]);
     // endregion
 
