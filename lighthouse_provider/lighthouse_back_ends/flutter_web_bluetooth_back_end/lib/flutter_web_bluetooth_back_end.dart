@@ -167,6 +167,11 @@ class FlutterWebBluetoothBackEnd extends BLELighthouseBackEnd with PairBackEnd {
       } else {
         lighthouseLogger.warning("user selected a non valid device. "
             "Maybe the settings should be restricted more.");
+        if (device.hasForget) {
+          lighthouseLogger
+              .info("The device supports forget, so it will be forgotten.");
+          device.forget();
+        }
       }
     } on DeviceNotFoundError {
       // well what now?

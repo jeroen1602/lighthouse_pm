@@ -197,14 +197,14 @@ class LighthouseProvider {
         throw StateError("No back ends added, please add back ends first!");
       }());
     }
-    for (final backEnd in backEndSet) {
+    await Future.wait(backEndSet.where((final backEnd) {
       /// Only start the scan if the back-end acknowledges that it's bluetooth
       /// adapter state is on.
-      if (_savedStates[backEnd] == BluetoothAdapterState.on) {
-        // may need to add await back again depending on how the providers react to being multi-threaded.
-        backEnd.startScan(timeout: timeout, updateInterval: updateInterval);
-      }
-    }
+      return _savedStates[backEnd] == BluetoothAdapterState.on;
+    }).map((final backEnd) {
+      return backEnd.startScan(
+          timeout: timeout, updateInterval: updateInterval);
+    }));
   }
 
   ///
