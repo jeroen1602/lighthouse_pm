@@ -13,9 +13,5 @@ class BuildOptions {
 
   static const bool includeGithubSponsor =
       bool.fromEnvironment('includeGithubSponsor', defaultValue: true);
-
-  static const bool includeGooglePlayInAppPurchases = bool.fromEnvironment(
-      'includeGooglePlayInAppPurchases',
-      defaultValue: false);
 // endregion
 }
