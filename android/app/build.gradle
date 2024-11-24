@@ -39,12 +39,6 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        googlePlay {
-            java.srcDirs += 'src/googlePlay/kotlin'
-        }
-        defaultVersion {
-            java.srcDirs += 'src/defaultVersion/kotlin'
-        }
     }
 
     defaultConfig {
@@ -83,15 +77,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions 'productFlavors'
-    productFlavors {
-        googlePlay {
-            dimension 'productFlavors'
-        }
-        defaultVersion {
-            dimension 'productFlavors'
-        }
-    }
     lint {
         //TODO: check to see if this can be removed in future versions, since a lint for release builds is useful
         checkReleaseBuilds true
@@ -105,13 +90,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21"
-
-    // For now only needed for googlePlayImplementation
-    googlePlayImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
-
-    def billing_version = "7.1.1"
-
-    googlePlayImplementation "com.android.billingclient:billing:$billing_version"
-    googlePlayImplementation "com.android.billingclient:billing-ktx:$billing_version"
 
 }

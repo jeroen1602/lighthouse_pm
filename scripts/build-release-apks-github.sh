@@ -9,8 +9,6 @@ patch -p1 -d "${SCRIPT_DIR}/../" <"${SCRIPT_DIR}/split-per-abi-build.gradle.patc
 BUILD_FLAVOR="release"
 
 flutter build apk --"$BUILD_FLAVOR" --no-obfuscate \
-  --flavor=defaultVersion \
-  --dart-define=includeGooglePlayInAppPurchases=false \
   --dart-define=includeSupportButtons=true \
   --dart-define=includeSupportPage=true \
   --dart-define=includePaypal=true \

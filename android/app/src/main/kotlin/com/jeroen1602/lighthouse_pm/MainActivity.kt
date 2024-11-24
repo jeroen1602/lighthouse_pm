@@ -13,9 +13,6 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
 
     private val shortcut: Shortcut by lazy { Shortcut() }
-    private val iAP: InAppPurchases
-        get() = InAppPurchases.instance
-
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -45,7 +42,6 @@ class MainActivity : FlutterActivity() {
             }
         }
         shortcut.init(flutterEngine, this, intent)
-        iAP.init(flutterEngine, this)
     }
 
     private fun openBLESettings() {

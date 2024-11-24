@@ -5,10 +5,8 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$SCRIPT_DIR/../" || exit
 
 flutter build appbundle --release --no-obfuscate \
-  --flavor=googlePlay \
-  --dart-define=includeGooglePlayInAppPurchases=true \
-  --dart-define=includeSupportButtons=true \
-  --dart-define=includeSupportPage=true \
+  --dart-define=includeSupportButtons=false \
+  --dart-define=includeSupportPage=false \
   --dart-define=includePaypal=false \
   --dart-define=includeGithubSponsor=false \
   --target-platform=android-arm,android-arm64,android-x64

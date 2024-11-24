@@ -1,9 +1,21 @@
-# Version 1.3.2+13
+# Version 1.3.2+14
+
+- (Android) added the option to request location permissions. This may fix issues for people where
+  the characteristics can't be read.
+- (Android) removed google play billing. Didn't feel right to ask for money if I can't afford to
+  always allocate time to this project.
+  - Also updated the privacy statement for this.
+- Updated dependencies
+    - (Android) target Android 15
+    - (Web) use new(er) bootstrap script
+- Created debug options in the release to help create debug information about what is happening on
+  people's devices.
 
 # Version 1.3.1+12 09-12-2023
 
 - (Android) Fixed multiple devices not showing up.
-- (Android) Fixed device state not reporting correctly in the ui (only for the second device somehow).
+- (Android) Fixed device state not reporting correctly in the ui (only for the second device
+  somehow).
 
 # Version 1.3.0+10 08-12-2023
 

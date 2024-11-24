@@ -8,8 +8,6 @@ import '../base_page.dart';
 class PrivacyPage extends BasePage {
   const PrivacyPage({super.key});
 
-  static const version1_1Date = "January 1st 2022";
-
   @override
   Widget buildPage(final BuildContext context) {
     final theming = Theming.of(context);
@@ -20,9 +18,9 @@ class PrivacyPage extends BasePage {
       ),
       body: ContentContainerListView(children: [
         PrivacyPageSegment(
-          version: "1.1",
+          version: "1.2",
           language: "en",
-          startDate: DateTime(2022, 1, 1),
+          startDate: DateTime(2024, 11, 24),
         ),
         const Divider(
           thickness: 1.5,
@@ -32,6 +30,15 @@ class PrivacyPage extends BasePage {
             "Older versions",
             style: theming.headlineMedium,
           ),
+        ),
+        const Divider(
+          thickness: 1.5,
+        ),
+        PrivacyPageSegment(
+          version: "1.1",
+          language: "en",
+          startDate: DateTime(2022, 1, 1),
+          endDate: DateTime(2024, 11, 24),
         ),
         const Divider(
           thickness: 1.5,

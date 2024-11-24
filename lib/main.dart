@@ -17,7 +17,6 @@ import 'package:lighthouse_pm/pages/shortcut_handler_page.dart';
 import 'package:lighthouse_pm/pages/simple_base_page.dart';
 import 'package:lighthouse_pm/pages/troubleshooting_page.dart';
 import 'package:lighthouse_pm/platform_specific/mobile/android/android_launcher_shortcut/android_launcher_shortcut.dart';
-import 'package:lighthouse_pm/platform_specific/mobile/in_app_purchases.dart';
 import 'package:lighthouse_pm/platform_specific/shared/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -25,7 +24,6 @@ import 'package:shared_platform/shared_platform.dart';
 import 'package:tuple/tuple.dart';
 
 import 'bloc.dart';
-import 'build_options.dart';
 import 'color_schemes.dart';
 import 'pages/material_test_page.dart';
 
@@ -56,14 +54,6 @@ class MainApp extends StatelessWidget {
     LighthouseProviderStart.setupPersistence(mainBloc);
     LighthouseProviderStart.setupCallbacks();
     LighthouseProviderStart.startBlocListening(mainBloc);
-
-    if (BuildOptions.includeGooglePlayInAppPurchases) {
-      InAppPurchases.instance
-          .handlePendingPurchases()
-          .catchError((final error) {
-        debugPrint(error.toString());
-      });
-    }
 
     return mainBloc;
   }

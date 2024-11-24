@@ -5,7 +5,6 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd "$SCRIPT_DIR/../" || exit
 
 flutter build web --release \
-  --dart-define=includeGooglePlayInAppPurchases=false \
   --dart-define=includeSupportButtons=true \
   --dart-define=includeSupportPage=true \
   --dart-define=includePaypal=true \
