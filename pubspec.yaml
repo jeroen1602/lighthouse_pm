@@ -35,8 +35,8 @@ dependencies:
   convert: ^3.1.2
   vibration: ^2.0.1
   toast: ^0.3.0
-  drift: ^2.16.0
-  sqlite3_flutter_libs: ^0.5.20
+  drift: ^2.20.1
+  drift_flutter: ^0.1.0
   path_provider: ^2.1.5
   path: ^1.9.0
   logging: ^1.3.0
@@ -72,20 +72,15 @@ dependencies:
   lighthouse_logger:
     path: lighthouse_provider/lighthouse_logger
 
-  # This may need to be enabled again if the build runner doesn't like it.
-  #dependency_overrides:
-  #  analyzer: 0.39.14
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  #cupertino_icons: ^0.1.3
+# Disable this again in the future once intl supports web 1.0.0 or higher
+dependency_overrides:
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.16.0
-  build_runner: ^2.4.9
+  drift_dev: ^2.21.2
+  build_runner: ^2.4.13
   flutter_lints: ^5.0.0
   lighthouse_test_helper:
     path: lighthouse_provider/lighthouse_test_helper
