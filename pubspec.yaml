@@ -79,7 +79,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.21.2
+  drift_dev: ^2.22.0
   build_runner: ^2.4.13
   flutter_lints: ^5.0.0
   lighthouse_test_helper:
