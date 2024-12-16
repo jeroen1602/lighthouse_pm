@@ -75,7 +75,8 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                 ),
                 subtitle: Text(snapshot.error.toString(),
                     style: theming.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onError.withOpacity(0.75))),
+                        color:
+                            theme.colorScheme.onError.withValues(alpha: 0.75))),
               ),
             )
           else if (data != null)

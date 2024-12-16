@@ -90,8 +90,6 @@ class _SettingsContentState extends State<SettingsContent> {
         return "Dark";
       case ThemeMode.light:
         return "Light";
-      default:
-        return "UNKNOWN";
     }
   }
 

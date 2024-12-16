@@ -52,9 +52,11 @@ class FakeIOSDeviceInfo extends BaseDeviceInfo {
           'systemName': 'Darwin?',
           'systemVersion': systemVersion ?? '0.0',
           'model': 'phone with an i somewhere',
+          'modelName': 'phone with an i somewhere',
           'localizedModel': 'phone with an i somewhere',
           'identifierForVendor': null,
           'isPhysicalDevice': false,
+          'isiOSAppOnMac': false,
           'utsname': {
             'sysname': 'THIS_PC',
             'nodename': 'localhost',
