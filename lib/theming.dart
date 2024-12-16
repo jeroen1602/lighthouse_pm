@@ -138,7 +138,7 @@ class Theming {
     final double iconOpacity = iconTheme.opacity ?? 1.0;
     Color iconColor = iconTheme.color!;
     if (iconOpacity != 1.0) {
-      iconColor = iconColor.withOpacity(iconColor.opacity * iconOpacity);
+      iconColor = iconColor.withValues(alpha: iconColor.a * iconOpacity);
     }
     return iconColor;
   }

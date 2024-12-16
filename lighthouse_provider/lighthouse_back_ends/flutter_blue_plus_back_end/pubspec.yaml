@@ -4,15 +4,15 @@ version: 1.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.5.4 <4.0.0"
-  flutter: ">=3.24.5"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_blue_plus: ^1.34.5
-  mutex: ^3.1.0
-  rxdart: ^0.28.0
+  mutex: ">=3.1.0 <4.0.0"
+  rxdart: ">=0.28.0 <1.0.0"
   lighthouse_back_end:
     path: ../../lighthouse_back_end
   lighthouse_provider:

@@ -1,7 +1,7 @@
 ///
 /// A simple data class for streams that have a timeout.
 /// A normal usage would be.
-/// StreamBuilder<WithTimeout<String?>>(
+/// StreamBuilder&lt;WithTimeout&lt;String?&gt;&gt;(
 ///     stream: someStream,
 ///     initialData: WithTimeout.empty(),
 ///     builder: (context, snapshot) {
