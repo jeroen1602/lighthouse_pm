@@ -47,7 +47,7 @@ dependencies:
   device_info_plus: ^11.2.0
   meta: ^1.15.0
   flutter_markdown: ^0.7.5
-  markdown: ^7.2.2
+  markdown: ^7.3.0
   # Android/ iOS
   flutter_blue_plus_back_end:
     path: lighthouse_provider/lighthouse_back_ends/flutter_blue_plus_back_end
