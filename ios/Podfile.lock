@@ -1,104 +1,88 @@
 PODS:
-  - device_info (0.0.1):
+  - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_blue (0.0.1):
+  - flutter_blue_plus_darwin (0.0.2):
     - Flutter
-    - flutter_blue/Protos (= 0.0.1)
-  - flutter_blue/Protos (0.0.1):
+    - FlutterMacOS
+  - package_info_plus (0.4.5):
     - Flutter
-    - Protobuf (~> 3.11.4)
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
-  - package_info (0.0.1):
+  - path_provider_foundation (0.0.1):
     - Flutter
-  - path_provider (0.0.1):
+    - FlutterMacOS
+  - permission_handler_apple (9.3.0):
     - Flutter
-  - "permission_handler (5.0.1+1)":
-    - Flutter
-  - Protobuf (3.11.4)
-  - sqflite (0.0.2):
-    - Flutter
-    - FMDB (>= 2.7.5)
-  - sqlite3 (3.32.3):
-    - sqlite3/common (= 3.32.3)
-  - sqlite3/common (3.32.3)
-  - sqlite3/fts5 (3.32.3):
+  - sqlite3 (3.48.0):
+    - sqlite3/common (= 3.48.0)
+  - sqlite3/common (3.48.0)
+  - sqlite3/dbstatvtab (3.48.0):
     - sqlite3/common
-  - sqlite3/json1 (3.32.3):
+  - sqlite3/fts5 (3.48.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.32.3):
+  - sqlite3/perf-threadsafe (3.48.0):
     - sqlite3/common
-  - sqlite3/rtree (3.32.3):
+  - sqlite3/rtree (3.48.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.32.3)
+    - FlutterMacOS
+    - sqlite3 (~> 3.48.0)
+    - sqlite3/dbstatvtab
     - sqlite3/fts5
-    - sqlite3/json1
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
-  - url_launcher (0.0.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
-  - vibration (1.7.1):
+  - vibration (3.0.0):
     - Flutter
 
 DEPENDENCIES:
-  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
-  - package_info (from `.symlinks/plugins/package_info/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - flutter_blue_plus_darwin (from `.symlinks/plugins/flutter_blue_plus_darwin/darwin`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
 
 SPEC REPOS:
   trunk:
-    - FMDB
-    - Protobuf
     - sqlite3
 
 EXTERNAL SOURCES:
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  flutter_blue:
-    :path: ".symlinks/plugins/flutter_blue/ios"
-  package_info:
-    :path: ".symlinks/plugins/package_info/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
+  flutter_blue_plus_darwin:
+    :path: ".symlinks/plugins/flutter_blue_plus_darwin/darwin"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   sqlite3_flutter_libs:
-    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
+    :path: ".symlinks/plugins/sqlite3_flutter_libs/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   vibration:
     :path: ".symlinks/plugins/vibration/ios"
 
 SPEC CHECKSUMS:
-  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_blue: eeb381dc4727a0954dede73515f683865494b370
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
-  Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
-  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  vibration: 4f4ded27b9d0e21e4110ca43978f057412d28c44
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_blue_plus_darwin: 09444a26fb6bdef523e55b68fc1c59af5a877ea6
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  sqlite3: 3da10a59910c809fb584a93aa46a3f05b785e12e
+  sqlite3_flutter_libs: c26d86af4ad88f1465dc4e07e6dc6931eef228e4
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  vibration: 69774ad57825b11c951ee4c46155f455d7a592ce
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.16.2

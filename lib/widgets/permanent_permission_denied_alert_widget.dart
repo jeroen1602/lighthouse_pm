@@ -64,15 +64,21 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
   }
 
   static Future<bool> showCustomDialog(final BuildContext context) {
-    return DeviceInfoPlugin().androidInfo.then((final deviceInto) {
+    return DeviceInfoPlugin().deviceInfo.then((final deviceInfo) {
       if (!context.mounted) {
         return false;
       }
       return showDialog(
           context: context,
           builder: (final BuildContext context) {
-            return PermanentPermissionDeniedAlertWidget(
-                deviceInto.version.sdkInt);
+            if (deviceInfo is AndroidDeviceInfo) {
+              return PermanentPermissionDeniedAlertWidget(
+                  deviceInfo.version.sdkInt);
+            } else if (deviceInfo is IosDeviceInfo) {
+              return PermanentPermissionDeniedAlertWidget(
+                  31); // iOS always uses new permission model
+            }
+            return PermanentPermissionDeniedAlertWidget(31);
           }).then((final value) {
         if (value is bool) {
           return value;

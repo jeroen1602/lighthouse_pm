@@ -109,10 +109,6 @@ class TroubleshootingContentWidget extends StatelessWidget
                 });
           },
         ),
-        // FlutterBlue doesn't like it when you have two of the same streams
-        // open at once, so for now convert it into a future.
-        //StreamBuilder<BluetoothState>(
-        //  stream: FlutterBlue.instance.state,
         FutureBuilder<BluetoothAdapterState>(
           future: LighthouseProvider.instance.state.first,
           initialData: BluetoothAdapterState.unknown,
@@ -147,6 +143,67 @@ class TroubleshootingContentWidget extends StatelessWidget
           },
         ),
       ],
+      if (SharedPlatform.isIOS) ...[
+        FutureBuilder<PermissionStatus>(
+          future: BLEPermissionsHelper.hasBLEPermissions(),
+          builder: (final context, final snapshot) {
+            final permissionState = snapshot.data;
+            if (permissionState == PermissionStatus.granted) {
+              return Container();
+            }
+            return Column(
+              children: [
+                _TroubleshootingItemWithAction(
+                  leadingIcon: Icons.lock,
+                  leadingColor: Colors.red,
+                  title: const Text('Allow Bluetooth permission'),
+                  subtitle: const Text(
+                      'Bluetooth permission is required to scan for devices'),
+                  actionIcon: Icons.bluetooth,
+                  onTap: () async {
+                    await LocationPermissionDialogFlow
+                        .showLocationPermissionDialogFlow(context);
+                  },
+                ),
+                const Divider(),
+              ],
+            );
+          },
+        ),
+        FutureBuilder<BluetoothAdapterState>(
+          future: LighthouseProvider.instance.state.first,
+          initialData: BluetoothAdapterState.unknown,
+          builder: (final context, final snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            final data = snapshot.data;
+            switch (data) {
+              case BluetoothAdapterState.on:
+              case BluetoothAdapterState.turningOn:
+              case BluetoothAdapterState.unknown:
+                return Container();
+              default:
+                return Column(
+                  children: [
+                    _TroubleshootingItemWithAction(
+                        leadingIcon: Icons.bluetooth_disabled,
+                        leadingColor: Colors.blue,
+                        title: const Text('Enable Bluetooth'),
+                        subtitle: const Text(
+                            'Bluetooth needs to be enabled to scan for devices'),
+                        actionIcon: Icons.settings_bluetooth,
+                        onTap: () async {
+                          await EnableBluetoothDialogFlow
+                              .showEnableBluetoothDialogFlow(context);
+                        }),
+                    const Divider(),
+                  ],
+                );
+            }
+          },
+        ),
+      ],      
       if (LighthouseProvider.instance.getPairBackEnds().isNotEmpty) ...const [
         ListTile(
             title: Text("Make sure you have paired with the lighthouse"),

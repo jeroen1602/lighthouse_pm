@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/permissions_helper/ble_permissions_helper.dart';
 import 'package:lighthouse_pm/widgets/permanent_permission_denied_alert_widget.dart';
@@ -26,6 +28,7 @@ class LocationPermissionDialogFlow {
         final permissionAlertWidget =
             PermissionsAlertWidget.showCustomDialog(context);
         if (!(await permissionAlertWidget)) {
+          log("Permission denied, but the user accepted the dialog");
           return false;
         }
         switch (await BLEPermissionsHelper.requestBLEPermissions()) {

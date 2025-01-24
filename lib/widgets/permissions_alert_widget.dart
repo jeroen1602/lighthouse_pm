@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -60,20 +62,39 @@ class PermissionsAlertWidget extends StatelessWidget {
   }
 
   static Future<bool> showCustomDialog(final BuildContext context) {
-    return DeviceInfoPlugin().androidInfo.then((final deviceInto) {
-      if (!context.mounted) {
-        return false;
-      }
-      return showDialog(
-          context: context,
-          builder: (final BuildContext context) {
-            return PermissionsAlertWidget(deviceInto.version.sdkInt);
-          }).then((final value) {
-        if (value is bool) {
-          return value;
+    if (Platform.isAndroid) {
+      return DeviceInfoPlugin().androidInfo.then((final deviceInfo) {
+        if (!context.mounted) {
+          return false;
         }
-        return false;
+        return showDialog(
+            context: context,
+            builder: (final BuildContext context) {
+              return PermissionsAlertWidget(deviceInfo.version.sdkInt);
+            }).then((final value) {
+          if (value is bool) {
+            return value;
+          }
+          return false;
+        });
       });
-    });
+    } else if (Platform.isIOS) {
+      return DeviceInfoPlugin().iosInfo.then((final deviceInfo) {
+        if (!context.mounted) {
+          return false;
+        }
+        return showDialog(
+            context: context,
+            builder: (final BuildContext context) {
+              return PermissionsAlertWidget(-1);
+            }).then((final value) {
+          if (value is bool) {
+            return value;
+          }
+          return false;
+        });
+      });
+    }
+    return Future.value(false);
   }
 }

@@ -28,7 +28,10 @@ class LighthousePowerButtonWidget extends StatelessWidget {
         onPressed: disabled ? null : onPress,
         onLongPress: onLongPress,
         style: style,
-        child: const Icon(Icons.power_settings_new),
+        child: const Icon(
+          Icons.power_settings_new,
+          color: Color.fromARGB(255, 255, 255, 255),
+        ),
       ),
     );
   }
