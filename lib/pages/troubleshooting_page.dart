@@ -109,6 +109,10 @@ class TroubleshootingContentWidget extends StatelessWidget
                 });
           },
         ),
+        // FlutterBlue doesn't like it when you have two of the same streams
+        // open at once, so for now convert it into a future.
+        //StreamBuilder<BluetoothState>(
+        //  stream: FlutterBlue.instance.state,
         FutureBuilder<BluetoothAdapterState>(
           future: LighthouseProvider.instance.state.first,
           initialData: BluetoothAdapterState.unknown,
@@ -203,7 +207,7 @@ class TroubleshootingContentWidget extends StatelessWidget
             }
           },
         ),
-      ],      
+      ],
       if (LighthouseProvider.instance.getPairBackEnds().isNotEmpty) ...const [
         ListTile(
             title: Text("Make sure you have paired with the lighthouse"),
