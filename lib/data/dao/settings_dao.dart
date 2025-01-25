@@ -240,25 +240,36 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   /// Check if the currently running device supports system mode theme.
   static Future<bool> get supportsThemeModeSystem async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final deviceInfoPlugin = DeviceInfoPlugin();
+
     if (SharedPlatform.isAndroid) {
-      final android = await deviceInfo.androidInfo;
-      if (android.version.sdkInt >= 29 /* Android 10 */) {
-        return true;
-      }
-    } else if (SharedPlatform.isIOS) {
-      final ios = await deviceInfo.iosInfo;
-      final iosVersion = double.tryParse(ios.systemVersion);
-      if (iosVersion != null && iosVersion >= 13.0 /* iOS 13.0 */) {
-        return true;
-      }
-    } else if (SharedPlatform.isLinux) {
+      final androidInfo = await deviceInfoPlugin.androidInfo;
+      return androidInfo.version.sdkInt >= 29;
+    }
+
+    if (SharedPlatform.isIOS) {
+      final iosInfo = await deviceInfoPlugin.iosInfo;
+
+      /** 
+       * With the new iOS version formats, it's possible to have versions with several dots (e.g. 18.1.1). 
+       * To do this, I only recover the major version and the one after the dot.
+      */
+      final iosVersion =
+          double.tryParse(iosInfo.systemVersion.split('.').take(2).join('.'));
+
+      return iosVersion != null && iosVersion >= 13.0;
+    }
+
+    if (SharedPlatform.isLinux) {
       // TODO: check if the current platform supports it
       return true;
-    } else if (SharedPlatform.isWeb) {
+    }
+
+    if (SharedPlatform.isWeb) {
       // TODO: check if the current browser actually supports it.
       return true;
     }
+
     return false;
   }
 
