@@ -34,7 +34,7 @@ dependencies:
   dynamic_color: ^1.7.0
   mutex: ^3.1.0
   convert: ^3.1.2
-  vibration: ^2.0.1
+  vibration: ^3.1.1
   toast: ^0.3.0
   drift: ^2.23.1
   drift_flutter: ^0.2.3

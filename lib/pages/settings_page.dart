@@ -97,7 +97,10 @@ class _SettingsContentState extends State<SettingsContent> {
     final enabled =
         await blocWithoutListen.settings.getDebugModeEnabledStream().first;
     if (enabled) {
-      Toast.show('Developer mode is already enabled');
+      if (mounted) {
+        ToastContext().init(context);
+        Toast.show('Developer mode is already enabled');
+      }
       return;
     }
 
@@ -108,7 +111,11 @@ class _SettingsContentState extends State<SettingsContent> {
     }
 
     if (currentCount < _aboutTapTop && currentCount > _aboutTapTop - 3) {
-      Toast.show('Just ${_aboutTapTop - currentCount} left for developer mode');
+      if (mounted) {
+        ToastContext().init(context);
+        Toast.show(
+            'Just ${_aboutTapTop - currentCount} left for developer mode');
+      }
     }
 
     setState(() {
@@ -118,7 +125,10 @@ class _SettingsContentState extends State<SettingsContent> {
     });
 
     if (currentCount == _aboutTapTop) {
-      Toast.show('Enabled developer mode');
+      if (mounted) {
+        ToastContext().init(context);
+        Toast.show('Enabled developer mode');
+      }
       await blocWithoutListen.settings.setDebugEnabled(true);
     }
   }
@@ -187,8 +197,11 @@ class _SettingsContentState extends State<SettingsContent> {
                 ClearLastSeenAlertWidget.showCustomDialog(context);
             if (await clearLastSeen) {
               await blocWithoutListen.nicknames.deleteAllLastSeen();
-              Toast.show('Cleared up all last seen items',
-                  duration: Toast.lengthShort, gravity: Toast.bottom);
+              if (context.mounted) {
+                ToastContext().init(context);
+                Toast.show('Cleared up all last seen items',
+                    duration: Toast.lengthShort, gravity: Toast.bottom);
+              }
             }
           }),
       const Divider(),
@@ -458,8 +471,11 @@ class _SettingsContentState extends State<SettingsContent> {
               ViveBaseStationClearIds.showCustomDialog(context);
           if (await viveBaseStationClear) {
             await blocWithoutListen.viveBaseStation.deleteIds();
-            Toast.show('Cleared up all Base station ids',
-                duration: Toast.lengthShort, gravity: Toast.bottom);
+            if (context.mounted) {
+              ToastContext().init(context);
+              Toast.show('Cleared up all Base station ids',
+                  duration: Toast.lengthShort, gravity: Toast.bottom);
+            }
           }
         },
       ),
@@ -507,9 +523,12 @@ class _SettingsContentState extends State<SettingsContent> {
                         await blocWithoutListen.settings
                             .setShortcutsEnabledStream(enabled);
                         if (enabled) {
-                          Toast.show('Thanks for participating in the beta',
-                              duration: Toast.lengthShort,
-                              gravity: Toast.bottom);
+                          if (context.mounted) {
+                            ToastContext().init(context);
+                            Toast.show('Thanks for participating in the beta',
+                                duration: Toast.lengthShort,
+                                gravity: Toast.bottom);
+                          }
                         }
                       }
                     },
@@ -640,8 +659,11 @@ class _SettingsContentState extends State<SettingsContent> {
             subtitle: Text(packageInfo.version),
             onLongPress: () async {
               await Clipboard.setData(ClipboardData(text: packageInfo.version));
-              Toast.show('Copied to clipboard',
-                  duration: Toast.lengthShort, gravity: Toast.bottom);
+              if (context.mounted) {
+                ToastContext().init(context);
+                Toast.show('Copied to clipboard',
+                    duration: Toast.lengthShort, gravity: Toast.bottom);
+              }
             },
           );
         },

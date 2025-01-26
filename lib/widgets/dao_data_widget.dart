@@ -44,11 +44,14 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                   } catch (e, s) {
                     debugPrint('$e');
                     debugPrint('$s');
-                    Toast.show('Error: $e',
-                        textStyle: theming.bodyMedium
-                            ?.copyWith(color: theme.colorScheme.onError),
-                        backgroundColor: theme.colorScheme.error,
-                        duration: 8);
+                    if (context.mounted) {
+                      ToastContext().init(context);
+                      Toast.show('Error: $e',
+                          textStyle: theming.bodyMedium
+                              ?.copyWith(color: theme.colorScheme.onError),
+                          backgroundColor: theme.colorScheme.error,
+                          duration: 8);
+                    }
                   }
                 },
                 elevation: 2.0,
@@ -90,11 +93,14 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                     } catch (e, s) {
                       debugPrint('$e');
                       debugPrint('$s');
-                      Toast.show('Error: $e',
-                          textStyle: theming.bodyMedium
-                              ?.copyWith(color: theme.colorScheme.onError),
-                          backgroundColor: theme.colorScheme.error,
-                          duration: 8);
+                      if (context.mounted) {
+                        ToastContext().init(context);
+                        Toast.show('Error: $e',
+                            textStyle: theming.bodyMedium
+                                ?.copyWith(color: theme.colorScheme.onError),
+                            backgroundColor: theme.colorScheme.error,
+                            duration: 8);
+                      }
                     }
                   },
                   trailing: RawMaterialButton(
@@ -106,15 +112,21 @@ class DaoTableDataWidget<T> extends StatelessWidget {
                         if (await daoDeleteAlert) {
                           try {
                             await converter.deleteItem(data[i]);
-                            Toast.show('Deleted!');
+                            if (context.mounted) {
+                              ToastContext().init(context);
+                              Toast.show('Deleted!');
+                            }
                           } catch (e, s) {
                             debugPrint('$e');
                             debugPrint('$s');
-                            Toast.show('Error: $e',
-                                textStyle: theming.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.onError),
-                                backgroundColor: theme.colorScheme.error,
-                                duration: 8);
+                            if (context.mounted) {
+                              ToastContext().init(context);
+                              Toast.show('Error: $e',
+                                  textStyle: theming.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onError),
+                                  backgroundColor: theme.colorScheme.error,
+                                  duration: 8);
+                            }
                           }
                         }
                       },
