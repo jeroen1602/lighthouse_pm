@@ -1,7 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_platform/shared_platform.dart';
 
@@ -26,8 +25,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
     if (SharedPlatform.isIOS) {
-      final status = await FlutterBluePlus.isSupported;
-      return status ? PermissionStatus.granted : PermissionStatus.denied;
+      return await Permission.bluetooth.request();
     }
     if (SharedPlatform.isAndroid) {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;

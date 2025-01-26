@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
+import 'package:shared_platform/shared_platform_io.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
   const PermissionsAlertWidget(this.sdkInt, {super.key});
@@ -11,19 +10,19 @@ class PermissionsAlertWidget extends StatelessWidget {
   final int sdkInt;
 
   String _getTitle() {
-    if (sdkInt >= 31) {
-      return "Bluetooth permission required";
-    } else {
-      return "Location permissions required";
+    if (SharedPlatform.isAndroid && sdkInt < 31) {
+      return 'Location permissions required';
     }
+
+    return "Bluetooth permission required";
   }
 
   String _getExplanation() {
-    if (sdkInt >= 31) {
-      return "Bluetooth permission is required to communicate with the Bluetooth devices.";
-    } else {
+    if (SharedPlatform.isAndroid && sdkInt < 31) {
       return "Location permissions are required on Android to use Bluetooth Low Energy.";
     }
+
+    return "Bluetooth permission is required to communicate with the Bluetooth devices.";
   }
 
   @override
@@ -62,39 +61,24 @@ class PermissionsAlertWidget extends StatelessWidget {
   }
 
   static Future<bool> showCustomDialog(final BuildContext context) {
-    if (Platform.isAndroid) {
-      return DeviceInfoPlugin().androidInfo.then((final deviceInfo) {
-        if (!context.mounted) {
-          return false;
-        }
-        return showDialog(
-            context: context,
-            builder: (final BuildContext context) {
+    return DeviceInfoPlugin().deviceInfo.then((final deviceInfo) {
+      if (!context.mounted) {
+        return false;
+      }
+      return showDialog(
+          context: context,
+          builder: (final BuildContext context) {
+            if (deviceInfo is AndroidDeviceInfo) {
               return PermissionsAlertWidget(deviceInfo.version.sdkInt);
-            }).then((final value) {
-          if (value is bool) {
-            return value;
-          }
-          return false;
-        });
-      });
-    } else if (Platform.isIOS) {
-      return DeviceInfoPlugin().iosInfo.then((final deviceInfo) {
-        if (!context.mounted) {
-          return false;
+            }
+
+            return PermissionsAlertWidget(-1);
+          }).then((final value) {
+        if (value is bool) {
+          return value;
         }
-        return showDialog(
-            context: context,
-            builder: (final BuildContext context) {
-              return PermissionsAlertWidget(-1);
-            }).then((final value) {
-          if (value is bool) {
-            return value;
-          }
-          return false;
-        });
+        return false;
       });
-    }
-    return Future.value(false);
+    });
   }
 }
