@@ -47,7 +47,10 @@ class _ViveBaseStationIdConverter
       final numberValue = int.parse(newValue, radix: 16);
       await bloc.viveBaseStation.insertIdNoValidate(data.deviceId, numberValue);
     } on FormatException {
-      Toast.show('Could not convert "$newValue" to a hex number');
+      if (context.mounted) {
+        ToastContext().init(context);
+        Toast.show('Could not convert "$newValue" to a hex number');
+      }
     }
   }
 
@@ -73,18 +76,27 @@ class _ViveBaseStationIdConverter
     final String? newValueString =
         (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
     if (deviceId == null) {
-      Toast.show('No device id set!');
+      if (context.mounted) {
+        ToastContext().init(context);
+        Toast.show('No device id set!');
+      }
       return;
     }
     if (newValueString == null) {
-      Toast.show('No base station id set!');
+      if (context.mounted) {
+        ToastContext().init(context);
+        Toast.show('No base station id set!');
+      }
       return;
     }
     try {
       final numberValue = int.parse(newValueString, radix: 16);
       await bloc.viveBaseStation.insertIdNoValidate(deviceId, numberValue);
     } on FormatException {
-      Toast.show('Could not convert "$newValueString" to a hex number');
+      if (context.mounted) {
+        ToastContext().init(context);
+        Toast.show('Could not convert "$newValueString" to a hex number');
+      }
     }
   }
 }

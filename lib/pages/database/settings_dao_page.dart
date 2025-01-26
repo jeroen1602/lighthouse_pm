@@ -178,7 +178,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
       final String? value =
           (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
       if (id == null) {
-        Toast.show('No id set!');
+        if (context.mounted) {
+          ToastContext().init(context);
+          Toast.show('No id set!');
+        }
         return;
       }
       await bloc.settings

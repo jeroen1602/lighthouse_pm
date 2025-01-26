@@ -130,9 +130,8 @@ class _MetadataInkWell extends StatelessWidget {
         if (value != null) {
           Clipboard.setData(ClipboardData(text: value!));
         }
-        if (await Vibration.hasVibrator() ?? false) {
-          Vibration.vibrate(duration: 200);
-        }
+        Vibration.vibrate(duration: 200);
+        ToastContext().init(context);
         Toast.show('Copied to clipboard',
             duration: Toast.lengthShort, gravity: Toast.bottom);
       },

@@ -45,7 +45,10 @@ class _LogPageContentState extends State<_LogPageContent> {
                   });
                   Clipboard.setData(ClipboardData(text: clipboard))
                       .then((final _) {
-                    Toast.show("Copied to clipboard");
+                    if (context.mounted) {
+                      ToastContext().init(context);
+                      Toast.show("Copied to clipboard");
+                    }
                   });
                 },
                 icon: const Icon(Icons.copy)),

@@ -114,9 +114,8 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
     return CustomLongPressGestureRecognizer()
       ..onLongPress = () async {
         Clipboard.setData(ClipboardData(text: _getClipboardString(version)));
-        if (await Vibration.hasVibrator() ?? false) {
-          Vibration.vibrate(duration: 200);
-        }
+        Vibration.vibrate(duration: 200);
+        ToastContext().init(context);
         Toast.show('Copied to clipboard',
             duration: Toast.lengthShort, gravity: Toast.bottom);
       };
