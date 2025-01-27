@@ -283,6 +283,57 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     return output;
   }
 
+  Widget _buildLoadingComponent(final ThemeData theme, final Theming theming) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(
+            bottom: (MediaQuery.of(context).padding.top + kToolbarHeight)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.bluetooth_searching_outlined,
+                  size: 64,
+                  color: theme.iconTheme.color,
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Scanning for lighthouses...',
+              style: theming.headlineSmall?.copyWith(
+                color: theming.iconColor,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Please ensure your lighthouses are powered on',
+              style: theming.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(final BuildContext context) {
     final selecting = selected.isNotEmpty || selectedGroup != null;
@@ -314,6 +365,7 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
               final notGroupedDevices = _devicesNotInAGroup(devices, groups);
               final listLength = groups.length + notGroupedDevices.length;
               final theming = Theming.of(context);
+              final theme = Theme.of(context);
 
               final Widget body = (groups.isEmpty &&
                       devices.isEmpty &&
@@ -324,28 +376,28 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                       builder: (final context, final scanningSnapshot) {
                         final scanning = scanningSnapshot.data;
                         if (scanning ?? false) {
-                          return Container();
-                        } else {
-                          return ContentContainerListView(children: [
-                            Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Text(
-                                'Unable to find lighthouses, try some troubleshooting.',
-                                style: theming.headlineMedium,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            const Divider(
-                              thickness: 1.5,
-                            ),
-                            ...TroubleshootingContentWidget.getContent(context),
-                            // Add an extra container at the bottom to stop the floating
-                            // button from obstructing the last item.
-                            Container(
-                              height: _deviceListScrollPadding,
-                            ),
-                          ]);
+                          return _buildLoadingComponent(theme, theming);
                         }
+
+                        return ContentContainerListView(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              'Unable to find lighthouses, try some troubleshooting.',
+                              style: theming.headlineMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const Divider(
+                            thickness: 1.5,
+                          ),
+                          ...TroubleshootingContentWidget.getContent(context),
+                          // Add an extra container at the bottom to stop the floating
+                          // button from obstructing the last item.
+                          Container(
+                            height: _deviceListScrollPadding,
+                          ),
+                        ]);
                       },
                     )
                   : ContentScrollbar(
