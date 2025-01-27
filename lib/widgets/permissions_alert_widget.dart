@@ -2,7 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
-import 'package:shared_platform/shared_platform_io.dart';
+import 'package:shared_platform/shared_platform.dart';
 
 class PermissionsAlertWidget extends StatelessWidget {
   const PermissionsAlertWidget(this.sdkInt, {super.key});
