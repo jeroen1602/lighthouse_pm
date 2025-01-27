@@ -25,7 +25,7 @@ abstract class BLEPermissionsHelper {
   /// May throw [UnsupportedError] if the platform is not supported.
   static Future<PermissionStatus> hasBLEPermissions() async {
     if (SharedPlatform.isIOS) {
-      return await Permission.bluetooth.status;
+      return await Permission.bluetooth.request();
     }
     if (SharedPlatform.isAndroid) {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;

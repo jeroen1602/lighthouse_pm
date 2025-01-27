@@ -13,14 +13,26 @@ Widget getWidgetFromDeviceExtension(
   if (extension is OnExtension ||
       extension is SleepExtension ||
       extension is StandbyExtension) {
-    return const Icon(Icons.power_settings_new);
-  } else if (extension is ShortcutExtension) {
-    return const Icon(Icons.add);
-  } else if (extension is IdentifyDeviceExtension) {
+    return const Icon(
+      Icons.power_settings_new,
+      color: Color.fromARGB(255, 255, 255, 255),
+    );
+  }
+
+  if (extension is ShortcutExtension) {
+    return const Icon(
+      Icons.add,
+      color: Color.fromARGB(255, 255, 255, 255),
+    );
+  }
+
+  if (extension is IdentifyDeviceExtension) {
     return SvgPicture.asset(
       "assets/images/identify-icon.svg",
     );
-  } else if (extension is ClearIdExtension) {
+  }
+
+  if (extension is ClearIdExtension) {
     return const Text('ID');
   }
 

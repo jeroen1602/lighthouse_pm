@@ -87,8 +87,12 @@ class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
                                       ),
                                       const VerticalDivider(),
                                     ],
-                                    Text(
-                                        '${widget.lighthouseDevice.deviceIdentifier}')
+                                    Expanded(
+                                      child: Text(
+                                        '${widget.lighthouseDevice.deviceIdentifier}',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )
                                   ],
                                 )),
                           ]))),
