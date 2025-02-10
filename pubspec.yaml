@@ -36,7 +36,7 @@ dependencies:
   convert: ^3.1.2
   vibration: ^3.1.2
   toast: ^0.3.0
-  drift: ^2.23.1
+  drift: ^2.25.0
   drift_flutter: ^0.2.3
   path_provider: ^2.1.5
   path: ^1.9.0
