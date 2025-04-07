@@ -46,7 +46,7 @@ dependencies:
   intl: ^0.20.1
   device_info_plus: ^11.3.3
   meta: ^1.16.0
-  flutter_markdown: ^0.7.6
+  flutter_markdown: ^0.7.7
   markdown: ^7.3.0
   # Android/ iOS
   flutter_blue_plus_back_end:

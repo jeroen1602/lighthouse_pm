@@ -391,10 +391,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: e7bbc718adc9476aa14cfddc1ef048d2e21e4e8f18311aaac723266db9f9e7b5
+      sha256: "634622a3a826d67cb05c0e3e576d1812c430fa98404e95b60b131775c73d76ec"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.6+2"
+    version: "0.7.7"
   flutter_svg:
     dependency: "direct main"
     description:
