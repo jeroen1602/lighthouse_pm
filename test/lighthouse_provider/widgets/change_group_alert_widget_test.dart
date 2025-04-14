@@ -7,12 +7,18 @@ import 'package:lighthouse_pm/lighthouse_provider/widgets/change_group_alert_wid
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  testWidgets("Should create a group alert widget",
-      (final WidgetTester tester) async {
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: [], selectedGroup: null);
-    }));
+  testWidgets("Should create a group alert widget", (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: [],
+          selectedGroup: null,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -26,8 +32,9 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should show groups in group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should show groups in group alert widget", (
+    final WidgetTester tester,
+  ) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
@@ -35,10 +42,15 @@ void main() {
       GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: groups, selectedGroup: null);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: null,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -46,14 +58,19 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Set the group"), findsOneWidget);
     expect(
-        find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(typeOf<DropdownButton<Group>>())),
-        findsOneWidget);
-
-    await tester.tap(find.descendant(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text("Test group 1"), findsNWidgets(1));
@@ -64,11 +81,14 @@ void main() {
     expect(find.text("No Group"), findsNWidgets(2));
 
     await tester.scrollUntilVisible(find.text("No Group").last, 1.0);
-    await tester.tap(find
-        .ancestor(
+    await tester.tap(
+      find
+          .ancestor(
             of: find.text("No Group"),
-            matching: find.byType(typeOf<DropdownMenuItem<Group>>()))
-        .last);
+            matching: find.byType(typeOf<DropdownMenuItem<Group>>()),
+          )
+          .last,
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Cancel'));
@@ -77,8 +97,9 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should show selected group in group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should show selected group in group alert widget", (
+    final WidgetTester tester,
+  ) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
@@ -86,10 +107,15 @@ void main() {
       GroupWithEntries(const Group(id: 4, name: "Test group 4"), []),
     ];
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: groups, selectedGroup: groups[1].group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: groups[1].group,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -97,14 +123,19 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Set the group"), findsOneWidget);
     expect(
-        find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(typeOf<DropdownButton<Group>>())),
-        findsOneWidget);
-
-    final dropDown = tester.widget<DropdownButton<Group>>(find.descendant(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+      findsOneWidget,
+    );
+
+    final dropDown = tester.widget<DropdownButton<Group>>(
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
 
     expect(dropDown.value, groups[1].group);
 
@@ -114,8 +145,9 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should create a new group in group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should create a new group in group alert widget", (
+    final WidgetTester tester,
+  ) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
@@ -124,10 +156,15 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: groups, selectedGroup: groups[1].group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: groups[1].group,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -136,10 +173,12 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Set the group"), findsOneWidget);
     expect(
-        find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(typeOf<DropdownButton<Group>>())),
-        findsOneWidget);
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+      findsOneWidget,
+    );
 
     await scrollIntoViewAndTap(tester, "Add item", openSelector: true);
 
@@ -152,9 +191,12 @@ void main() {
     await tester.tap(find.text("Set"));
     await tester.pumpAndSettle();
 
-    final dropDown = tester.widget<DropdownButton<Group>>(find.descendant(
+    final dropDown = tester.widget<DropdownButton<Group>>(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
 
     expect(dropDown.value, isNotNull);
     expect(dropDown.value!.id, ChangeGroupAlertWidget.newGroupId);
@@ -170,8 +212,9 @@ void main() {
     expect(value.name, "New group");
   });
 
-  testWidgets("Should select no group in group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should select no group in group alert widget", (
+    final WidgetTester tester,
+  ) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
@@ -180,10 +223,15 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: groups, selectedGroup: groups[1].group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: groups[1].group,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -192,16 +240,21 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Set the group"), findsOneWidget);
     expect(
-        find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(typeOf<DropdownButton<Group>>())),
-        findsOneWidget);
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+      findsOneWidget,
+    );
 
     await scrollIntoViewAndTap(tester, "No Group", openSelector: true);
 
-    final dropDown = tester.widget<DropdownButton<Group>>(find.descendant(
+    final dropDown = tester.widget<DropdownButton<Group>>(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
 
     expect(dropDown.value, isNotNull);
     expect(dropDown.value!.id, ChangeGroupAlertWidget.removeGroupId);
@@ -217,8 +270,9 @@ void main() {
     expect(value.name, "");
   });
 
-  testWidgets("Should select a group in group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should select a group in group alert widget", (
+    final WidgetTester tester,
+  ) async {
     final groups = <GroupWithEntries>[
       GroupWithEntries(const Group(id: 1, name: "Test group 1"), []),
       GroupWithEntries(const Group(id: 2, name: "Test group 2"), []),
@@ -227,10 +281,15 @@ void main() {
     ];
 
     Future<Group?>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = ChangeGroupAlertWidget.showCustomDialog(context,
-          groups: groups, selectedGroup: null);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: null,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -239,16 +298,21 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Set the group"), findsOneWidget);
     expect(
-        find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(typeOf<DropdownButton<Group>>())),
-        findsOneWidget);
+      find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+      findsOneWidget,
+    );
 
     await scrollIntoViewAndTap(tester, "Test group 3", openSelector: true);
 
-    final dropDown = tester.widget<DropdownButton<Group>>(find.descendant(
+    final dropDown = tester.widget<DropdownButton<Group>>(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
 
     expect(dropDown.value, isNotNull);
     expect(dropDown.value!.id, 3);
@@ -265,20 +329,29 @@ void main() {
   });
 }
 
-Future<void> scrollIntoViewAndTap(final WidgetTester tester, final String item,
-    {final bool openSelector = true}) async {
+Future<void> scrollIntoViewAndTap(
+  final WidgetTester tester,
+  final String item, {
+  final bool openSelector = true,
+}) async {
   if (openSelector) {
-    await tester.tap(find.descendant(
+    await tester.tap(
+      find.descendant(
         of: find.byType(Dialog),
-        matching: find.byType(typeOf<DropdownButton<Group>>())));
+        matching: find.byType(typeOf<DropdownButton<Group>>()),
+      ),
+    );
     await tester.pumpAndSettle();
   }
 
   await tester.scrollUntilVisible(find.text(item).last, 1.0);
-  await tester.tap(find
-      .ancestor(
+  await tester.tap(
+    find
+        .ancestor(
           of: find.text(item),
-          matching: find.byType(typeOf<DropdownMenuItem<Group>>()))
-      .last);
+          matching: find.byType(typeOf<DropdownMenuItem<Group>>()),
+        )
+        .last,
+  );
   await tester.pumpAndSettle();
 }

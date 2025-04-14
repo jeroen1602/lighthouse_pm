@@ -14,8 +14,11 @@ import '../helpers/custom_long_press_gesture_recognizer.dart';
 
 /// An alert dialog to ask the user what to do since the state is unknown.
 class UnknownStateAlertWidget extends StatelessWidget {
-  const UnknownStateAlertWidget(this.device,
-      {required this.currentState, super.key});
+  const UnknownStateAlertWidget(
+    this.device, {
+    required this.currentState,
+    super.key,
+  });
 
   final LighthouseDevice device;
   final int currentState;
@@ -54,52 +57,67 @@ class UnknownStateAlertWidget extends StatelessWidget {
     ];
 
     return AlertDialog(
-        title: const Text('Unknown state'),
-        content: RichText(
-          text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
+      title: const Text('Unknown state'),
+      content: RichText(
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
             const TextSpan(
-              text: 'The state of this device is unknown. What do you want '
+              text:
+                  'The state of this device is unknown. What do you want '
                   'to do?\n',
             ),
             TextSpan(
               text: "Help out.",
               style: theming.linkTheme,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () async {
-                  await UnknownStateHelpOutAlertWidget.showCustomDialog(
-                      context, device,
-                      currentState: currentState);
-                },
-            )
-          ]),
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () async {
+                      await UnknownStateHelpOutAlertWidget.showCustomDialog(
+                        context,
+                        device,
+                        currentState: currentState,
+                      );
+                    },
+            ),
+          ],
         ),
-        actions: actions);
+      ),
+      actions: actions,
+    );
   }
 
   static Future<LighthousePowerState?> showCustomDialog(
-      final BuildContext context, final LighthouseDevice device,
-      {final int? currentState}) async {
+    final BuildContext context,
+    final LighthouseDevice device, {
+    final int? currentState,
+  }) async {
     if (currentState == null) {
       return null;
     }
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return UnknownStateAlertWidget(device, currentState: currentState);
-        });
+      context: context,
+      builder: (final BuildContext context) {
+        return UnknownStateAlertWidget(device, currentState: currentState);
+      },
+    );
   }
 }
 
 /// A dialog to ask the user to help out with unknown states
 class UnknownStateHelpOutAlertWidget extends StatelessWidget {
-  const UnknownStateHelpOutAlertWidget(this.device,
-      {this.currentState, super.key});
+  const UnknownStateHelpOutAlertWidget(
+    this.device, {
+    this.currentState,
+    super.key,
+  });
 
   final LighthouseDevice device;
   final int? currentState;
 
   String _getClipboardString(final String version) {
-    var output = 'App version: $version\n'
+    var output =
+        'App version: $version\n'
         'Device type: ${device.deviceType}\n'
         'Firmware version: ${device.firmwareVersion}\n';
     if (currentState != null) {
@@ -110,14 +128,19 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
   }
 
   GestureRecognizer createRecognizer(
-      final BuildContext context, final String version) {
+    final BuildContext context,
+    final String version,
+  ) {
     return CustomLongPressGestureRecognizer()
       ..onLongPress = () async {
         Clipboard.setData(ClipboardData(text: _getClipboardString(version)));
         Vibration.vibrate(duration: 200);
         ToastContext().init(context);
-        Toast.show('Copied to clipboard',
-            duration: Toast.lengthShort, gravity: Toast.bottom);
+        Toast.show(
+          'Copied to clipboard',
+          duration: Toast.lengthShort,
+          gravity: Toast.bottom,
+        );
       };
   }
 
@@ -131,61 +154,62 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         future: PackageInfo.fromPlatform(),
         builder: (final context, final snapshot) {
           final version = snapshot.data;
-          final recognizer = version != null
-              ? createRecognizer(context, version.version)
-              : null;
+          final recognizer =
+              version != null
+                  ? createRecognizer(context, version.version)
+                  : null;
           return RichText(
-              text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
-            const TextSpan(
-                text: 'Help out by leaving a comment with the following '
-                    'information on the github issue.\n\n'),
-            TextSpan(
-              text: 'App version: ',
-              recognizer: recognizer,
+            text: TextSpan(
+              style: theming.bodyMedium,
+              children: <InlineSpan>[
+                const TextSpan(
+                  text:
+                      'Help out by leaving a comment with the following '
+                      'information on the github issue.\n\n',
+                ),
+                TextSpan(text: 'App version: ', recognizer: recognizer),
+                TextSpan(
+                  style: theming.bodyTextBold,
+                  text: '${version?.version ?? "Loading"}\n',
+                  recognizer: recognizer,
+                ),
+                TextSpan(text: 'Device type: ', recognizer: recognizer),
+                TextSpan(
+                  style: theming.bodyTextBold,
+                  text: '${device.deviceType}\n',
+                  recognizer: recognizer,
+                ),
+                TextSpan(text: 'Firmware version: ', recognizer: recognizer),
+                TextSpan(
+                  style: theming.bodyTextBold,
+                  text: '${device.firmwareVersion}\n',
+                  recognizer: recognizer,
+                ),
+                if (currentState != null) ...[
+                  TextSpan(
+                    text: 'Current reported state: ',
+                    recognizer: recognizer,
+                  ),
+                  TextSpan(
+                    style: theming.bodyTextBold,
+                    text:
+                        '0x${currentState!.toRadixString(16).padLeft(2, '0')}\n',
+                    recognizer: recognizer,
+                  ),
+                ],
+              ],
             ),
-            TextSpan(
-              style: theming.bodyTextBold,
-              text: '${version?.version ?? "Loading"}\n',
-              recognizer: recognizer,
-            ),
-            TextSpan(
-              text: 'Device type: ',
-              recognizer: recognizer,
-            ),
-            TextSpan(
-              style: theming.bodyTextBold,
-              text: '${device.deviceType}\n',
-              recognizer: recognizer,
-            ),
-            TextSpan(
-              text: 'Firmware version: ',
-              recognizer: recognizer,
-            ),
-            TextSpan(
-              style: theming.bodyTextBold,
-              text: '${device.firmwareVersion}\n',
-              recognizer: recognizer,
-            ),
-            if (currentState != null) ...[
-              TextSpan(
-                text: 'Current reported state: ',
-                recognizer: recognizer,
-              ),
-              TextSpan(
-                style: theming.bodyTextBold,
-                text: '0x${currentState!.toRadixString(16).padLeft(2, '0')}\n',
-                recognizer: recognizer,
-              ),
-            ],
-          ]));
+          );
         },
       ),
       actions: <Widget>[
         SimpleDialogOption(
           child: const Text("Open issue"),
           onPressed: () async {
-            await launchUrl(Links.stateIssueUrl,
-                mode: LaunchMode.externalApplication);
+            await launchUrl(
+              Links.stateIssueUrl,
+              mode: LaunchMode.externalApplication,
+            );
           },
         ),
         SimpleDialogOption(
@@ -193,19 +217,24 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context, null);
           },
-        )
+        ),
       ],
     );
   }
 
   static Future<void> showCustomDialog(
-      final BuildContext context, final LighthouseDevice device,
-      {final int? currentState}) {
+    final BuildContext context,
+    final LighthouseDevice device, {
+    final int? currentState,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return UnknownStateHelpOutAlertWidget(device,
-              currentState: currentState);
-        });
+      context: context,
+      builder: (final BuildContext context) {
+        return UnknownStateHelpOutAlertWidget(
+          device,
+          currentState: currentState,
+        );
+      },
+    );
   }
 }

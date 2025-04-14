@@ -9,8 +9,15 @@ class Ordinal {
   /// itself is also needed then use [ordinalWithNumber].
   ///
   static String ordinal(final int number) {
-    return Intl.plural(number,
-        zero: 'th', one: 'st', two: 'nd', few: 'rd', many: 'th', other: 'th');
+    return Intl.plural(
+      number,
+      zero: 'th',
+      one: 'st',
+      two: 'nd',
+      few: 'rd',
+      many: 'th',
+      other: 'th',
+    );
   }
 
   ///

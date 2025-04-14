@@ -22,12 +22,14 @@ class ShortcutHandleMacState extends State<ShortcutHandlerWidget>
     with WidgetsBindingObserver, ScanningMixin {
   @override
   Widget build(final BuildContext context) {
-    return WaterfallWidgetContainer(stream: [
-      SettingsStream.createBuilder(),
-      PermissionsStream.createBuilder(),
-      GetDeviceStream.createBuilder(widget.shortcutHandle.data, 0),
-      GetDeviceStateStream.createBuilder(0),
-    ]);
+    return WaterfallWidgetContainer(
+      stream: [
+        SettingsStream.createBuilder(),
+        PermissionsStream.createBuilder(),
+        GetDeviceStream.createBuilder(widget.shortcutHandle.data, 0),
+        GetDeviceStateStream.createBuilder(0),
+      ],
+    );
   }
 
   @override

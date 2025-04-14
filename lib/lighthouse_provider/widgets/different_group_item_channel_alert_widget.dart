@@ -16,10 +16,11 @@ class DifferentGroupItemChannelAlertWidget extends StatefulWidget {
   /// Will be `false` if the user cancels the dialog.
   static Future<bool> showCustomDialog(final BuildContext context) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return const DifferentGroupItemChannelAlertWidget();
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return const DifferentGroupItemChannelAlertWidget();
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }
@@ -35,10 +36,11 @@ class _DifferentGroupItemChannelAlertWidgetContent
     return AlertDialog(
       title: const Text('Some devices have the same channel'),
       content: const Text(
-          'Some of the devices you have selected use the same channel.'
-          ' This will cause problems with Steam VR, you should switch the '
-          'channel from some of the devices.'
-          '\nAre you sure you want to do this?'),
+        'Some of the devices you have selected use the same channel.'
+        ' This will cause problems with Steam VR, you should switch the '
+        'channel from some of the devices.'
+        '\nAre you sure you want to do this?',
+      ),
       actions: [
         SimpleDialogOption(
           child: const Text('Cancel'),

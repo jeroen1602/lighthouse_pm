@@ -19,12 +19,14 @@ class LocationPermissionDialogFlow {
   ///
   /// This flow works only on Android!
   static Future<bool> showLocationPermissionDialogFlow(
-      final BuildContext context) async {
+    final BuildContext context,
+  ) async {
     switch (await BLEPermissionsHelper.hasBLEPermissions()) {
       case PermissionStatus.denied:
       case PermissionStatus.restricted:
-        final permissionAlertWidget =
-            PermissionsAlertWidget.showCustomDialog(context);
+        final permissionAlertWidget = PermissionsAlertWidget.showCustomDialog(
+          context,
+        );
         if (!(await permissionAlertWidget)) {
           return false;
         }

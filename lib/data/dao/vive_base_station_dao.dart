@@ -12,10 +12,9 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
   ViveBaseStationDao(super.attachedDatabase);
 
   Future<int?> getId(final String deviceId) {
-    return (select(viveBaseStationIds)
-          ..where((final tbl) => tbl.deviceId.equals(deviceId)))
-        .getSingleOrNull()
-        .then((final value) => value?.baseStationId);
+    return (select(viveBaseStationIds)..where(
+      (final tbl) => tbl.deviceId.equals(deviceId),
+    )).getSingleOrNull().then((final value) => value?.baseStationId);
   }
 
   Stream<List<ViveBaseStationId>> getViveBaseStationIdsAsStream() {
@@ -23,18 +22,20 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> insertId(final String deviceId, final int id) {
-    assert((id & 0xFFFFFFFF) == id,
-        'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16).padLeft(8, '0').toUpperCase()}');
+    assert(
+      (id & 0xFFFFFFFF) == id,
+      'Id should be at most 4 bytes, Id was: 0x${id.toRadixString(16).padLeft(8, '0').toUpperCase()}',
+    );
 
     return into(viveBaseStationIds).insert(
-        ViveBaseStationId(deviceId: deviceId, baseStationId: id),
-        mode: InsertMode.insertOrReplace);
+      ViveBaseStationId(deviceId: deviceId, baseStationId: id),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Future<void> deleteId(final String deviceId) {
     return (delete(viveBaseStationIds)
-          ..where((final tbl) => tbl.deviceId.equals(deviceId)))
-        .go();
+      ..where((final tbl) => tbl.deviceId.equals(deviceId))).go();
   }
 
   Future<void> deleteIds() {
@@ -43,9 +44,11 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> insertIdNoValidate(final String deviceId, final int id) {
     debugPrint(
-        'WARNING using insertIdNoValidate, this should not happen in release mode!');
+      'WARNING using insertIdNoValidate, this should not happen in release mode!',
+    );
     return into(viveBaseStationIds).insert(
-        ViveBaseStationId(deviceId: deviceId, baseStationId: id),
-        mode: InsertMode.insertOrReplace);
+      ViveBaseStationId(deviceId: deviceId, baseStationId: id),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 }

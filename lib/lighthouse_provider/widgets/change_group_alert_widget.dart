@@ -6,8 +6,11 @@ import 'change_group_name_alert_widget.dart';
 
 /// Change the group for the items selected.
 class ChangeGroupAlertWidget extends StatefulWidget {
-  const ChangeGroupAlertWidget(
-      {required this.groups, required this.selectedGroup, super.key});
+  const ChangeGroupAlertWidget({
+    required this.groups,
+    required this.selectedGroup,
+    super.key,
+  });
 
   static const int removeGroupId = -1;
   static const int newGroupId = -2;
@@ -33,15 +36,20 @@ class ChangeGroupAlertWidget extends StatefulWidget {
   ///
   /// The [groups] should contain the known groups.
   /// The [selectedGroup] can be the group that is already selected, may be `null`.
-  static Future<Group?> showCustomDialog(final BuildContext context,
-      {required final List<GroupWithEntries> groups,
-      required final Group? selectedGroup}) {
+  static Future<Group?> showCustomDialog(
+    final BuildContext context, {
+    required final List<GroupWithEntries> groups,
+    required final Group? selectedGroup,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return ChangeGroupAlertWidget(
-              groups: groups, selectedGroup: selectedGroup);
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return ChangeGroupAlertWidget(
+          groups: groups,
+          selectedGroup: selectedGroup,
+        );
+      },
+    ).then((final value) {
       if (value is Group) {
         return value;
       }
@@ -52,8 +60,10 @@ class ChangeGroupAlertWidget extends StatefulWidget {
 
 /// The content for the
 class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
-  final Group _removeGroup =
-      const Group(id: ChangeGroupAlertWidget.removeGroupId, name: '');
+  final Group _removeGroup = const Group(
+    id: ChangeGroupAlertWidget.removeGroupId,
+    name: '',
+  );
   Group? selected;
 
   @override
@@ -67,46 +77,50 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
   }
 
   List<DropdownMenuItem<Group>> _getGroupMenuItems() {
-    final list = widget.groups
-        .map((final e) => DropdownMenuItem(
-              value: e.group,
-              child: Text(e.group.name),
-            ))
-        .toList();
+    final list =
+        widget.groups
+            .map(
+              (final e) =>
+                  DropdownMenuItem(value: e.group, child: Text(e.group.name)),
+            )
+            .toList();
 
     final localSelected = selected;
     if (localSelected != null &&
         localSelected.id != _removeGroup.id &&
         widget.groups.indexWhere(
-                (final element) => element.group.id == localSelected.id) <
+              (final element) => element.group.id == localSelected.id,
+            ) <
             0) {
-      list.add(DropdownMenuItem(
-          value: localSelected, child: Text(localSelected.name)));
+      list.add(
+        DropdownMenuItem(value: localSelected, child: Text(localSelected.name)),
+      );
     }
-    list.add(const DropdownMenuItem(
+    list.add(
+      const DropdownMenuItem(
         child: Row(
-      children: [
-        Icon(Icons.add),
-        VerticalDivider(
-          color: Colors.transparent,
+          children: [
+            Icon(Icons.add),
+            VerticalDivider(color: Colors.transparent),
+            Text('Add item'),
+          ],
         ),
-        Text('Add item')
-      ],
-    )));
+      ),
+    );
 
     list.insert(
-        0,
-        DropdownMenuItem(
-            value: _removeGroup,
-            child: const Row(
-              children: [
-                Icon(Icons.clear),
-                VerticalDivider(
-                  color: Colors.transparent,
-                ),
-                Text('No Group')
-              ],
-            )));
+      0,
+      DropdownMenuItem(
+        value: _removeGroup,
+        child: const Row(
+          children: [
+            Icon(Icons.clear),
+            VerticalDivider(color: Colors.transparent),
+            Text('No Group'),
+          ],
+        ),
+      ),
+    );
 
     return list;
   }
@@ -125,11 +139,14 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
                 if (newValue == null) {
                   final name =
                       await ChangeGroupNameAlertWidget.showCustomDialog(
-                          context);
+                        context,
+                      );
                   if (name != null) {
                     setState(() {
                       selected = Group(
-                          id: ChangeGroupAlertWidget.newGroupId, name: name);
+                        id: ChangeGroupAlertWidget.newGroupId,
+                        name: name,
+                      );
                     });
                   }
                   return;
@@ -138,7 +155,7 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
                   selected = newValue;
                 });
               },
-            )
+            ),
           ],
         ),
       ),
@@ -154,7 +171,7 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
           onPressed: () {
             Navigator.pop(context, selected);
           },
-        )
+        ),
       ],
     );
   }

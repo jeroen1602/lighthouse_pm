@@ -27,55 +27,61 @@ class _LogPageContentState extends State<_LogPageContent> {
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Activity log'),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    LighthouseProviderStart.logs.add([]);
-                  });
-                },
-                icon: const Icon(Icons.delete_forever)),
-            IconButton(
-                onPressed: () {
-                  final clipboard = LighthouseProviderStart.logs.value.fold("",
-                      (final previousValue, final element) {
-                    return "$previousValue\n${element.time}: ${element.level.name}: ${element.message}";
-                  });
-                  Clipboard.setData(ClipboardData(text: clipboard))
-                      .then((final _) {
-                    if (context.mounted) {
-                      ToastContext().init(context);
-                      Toast.show("Copied to clipboard");
-                    }
-                  });
-                },
-                icon: const Icon(Icons.copy)),
-          ],
-        ),
-        body: StreamBuilder<List<LogRecord>>(
-          initialData: const [],
-          stream: LighthouseProviderStart.logs,
-          builder: (final context, final snapshot) {
-            final logs = snapshot.requireData;
+      appBar: AppBar(
+        title: const Text('Activity log'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                LighthouseProviderStart.logs.add([]);
+              });
+            },
+            icon: const Icon(Icons.delete_forever),
+          ),
+          IconButton(
+            onPressed: () {
+              final clipboard = LighthouseProviderStart.logs.value.fold("", (
+                final previousValue,
+                final element,
+              ) {
+                return "$previousValue\n${element.time}: ${element.level.name}: ${element.message}";
+              });
+              Clipboard.setData(ClipboardData(text: clipboard)).then((final _) {
+                if (context.mounted) {
+                  ToastContext().init(context);
+                  Toast.show("Copied to clipboard");
+                }
+              });
+            },
+            icon: const Icon(Icons.copy),
+          ),
+        ],
+      ),
+      body: StreamBuilder<List<LogRecord>>(
+        initialData: const [],
+        stream: LighthouseProviderStart.logs,
+        builder: (final context, final snapshot) {
+          final logs = snapshot.requireData;
 
-            return ContentContainerListView.builder(
-                itemCount: logs.length,
-                itemBuilder: (final BuildContext context, final int index) {
-                  if (index >= logs.length) {
-                    return null;
-                  } else if (index < 0) {
-                    return null;
-                  }
-                  final item = logs[index];
+          return ContentContainerListView.builder(
+            itemCount: logs.length,
+            itemBuilder: (final BuildContext context, final int index) {
+              if (index >= logs.length) {
+                return null;
+              } else if (index < 0) {
+                return null;
+              }
+              final item = logs[index];
 
-                  return ListTile(
-                    title: Text(
-                        "${item.time}: ${item.level.name}: ${item.message}"),
-                  );
-                });
-          },
-        ));
+              return ListTile(
+                title: Text(
+                  "${item.time}: ${item.level.name}: ${item.message}",
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

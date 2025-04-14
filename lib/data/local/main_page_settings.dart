@@ -6,8 +6,8 @@ import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
-typedef MainPageSettingsWidgetBuilder = Widget Function(
-    BuildContext context, MainPageSettings? settings);
+typedef MainPageSettingsWidgetBuilder =
+    Widget Function(BuildContext context, MainPageSettings? settings);
 
 class MainPageSettings {
   const MainPageSettings._({
@@ -36,7 +36,8 @@ class MainPageSettings {
   );
 
   static Stream<MainPageSettings> mainPageSettingsStream(
-      final LighthousePMBloc bloc) {
+    final LighthousePMBloc bloc,
+  ) {
     LighthousePowerState sleepState = defaultMainPageSettings.sleepState;
     List<LighthouseProviders> enabledDeviceProviders =
         defaultMainPageSettings.enabledDeviceProviders;
@@ -47,22 +48,24 @@ class MainPageSettings {
         defaultMainPageSettings.groupShowOfflineWarning;
 
     return MergeStream<Tuple2<SettingsIds, dynamic>>([
-      bloc.settings
-          .getSleepStateAsStream()
-          .map((final state) => Tuple2(SettingsIds.defaultSleepStateId, state)),
+      bloc.settings.getSleepStateAsStream().map(
+        (final state) => Tuple2(SettingsIds.defaultSleepStateId, state),
+      ),
       bloc.settings.getEnabledDeviceProvidersStream().map(
-          (final state) => Tuple2(SettingsIds.deviceProvidersEnabled, state)),
+        (final state) => Tuple2(SettingsIds.deviceProvidersEnabled, state),
+      ),
       bloc.settings
           .getScanDurationsAsStream(defaultValue: scanDuration)
           .map((final state) => Tuple2(SettingsIds.scanDurationId, state)),
       bloc.settings
           .getUpdateIntervalAsStream(defaultUpdateInterval: updateInterval)
           .map((final state) => Tuple2(SettingsIds.updateIntervalId, state)),
-      bloc.settings
-          .getShortcutsEnabledStream()
-          .map((final state) => Tuple2(SettingsIds.shortcutEnabledId, state)),
-      bloc.settings.getGroupOfflineWarningEnabledStream().map((final state) =>
-          Tuple2(SettingsIds.groupShowOfflineWarningId, state)),
+      bloc.settings.getShortcutsEnabledStream().map(
+        (final state) => Tuple2(SettingsIds.shortcutEnabledId, state),
+      ),
+      bloc.settings.getGroupOfflineWarningEnabledStream().map(
+        (final state) => Tuple2(SettingsIds.groupShowOfflineWarningId, state),
+      ),
     ]).map((final event) {
       switch (event.item1) {
         case SettingsIds.defaultSleepStateId:
@@ -112,14 +115,17 @@ class MainPageSettings {
   ///
   /// A little helper function for creating a [StreamBuilder] for getting the
   /// [MainPageSettings].
-  static Widget mainPageSettingsStreamBuilder(
-      {required final LighthousePMBloc bloc,
-      required final MainPageSettingsWidgetBuilder builder}) {
+  static Widget mainPageSettingsStreamBuilder({
+    required final LighthousePMBloc bloc,
+    required final MainPageSettingsWidgetBuilder builder,
+  }) {
     return StreamBuilder<MainPageSettings>(
       stream: mainPageSettingsStream(bloc),
       initialData: MainPageSettings.defaultMainPageSettings,
-      builder: (final BuildContext context,
-          final AsyncSnapshot<MainPageSettings> settingsSnapshot) {
+      builder: (
+        final BuildContext context,
+        final AsyncSnapshot<MainPageSettings> settingsSnapshot,
+      ) {
         return builder(context, settingsSnapshot.data);
       },
     );

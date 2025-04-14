@@ -19,33 +19,51 @@ void main() {
         expect(script3, equals("⁻⁴⁰"));
       });
 
-      testWidgets('Should convert into superscript',
-          (final WidgetTester tester) async {
-        const exampleText = '# wow a test\n\n'
+      testWidgets('Should convert into superscript', (
+        final WidgetTester tester,
+      ) async {
+        const exampleText =
+            '# wow a test\n\n'
             'Now with super script!<sup>123</sup>\n';
 
-        await tester.pumpWidget(buildTestApp((final context) {
-          return Markdown(data: exampleText, inlineSyntaxes: [
-            SuperscriptSyntax(),
-          ]);
-        }));
+        await tester.pumpWidget(
+          buildTestApp((final context) {
+            return Markdown(
+              data: exampleText,
+              inlineSyntaxes: [SuperscriptSyntax()],
+            );
+          }),
+        );
 
         await tester.pumpAndSettle();
 
         final richTexts = tester
-            .widgetList(find.descendant(
-                of: find.byType(Markdown), matching: find.byType(RichText)))
+            .widgetList(
+              find.descendant(
+                of: find.byType(Markdown),
+                matching: find.byType(RichText),
+              ),
+            )
             .toList(growable: false);
 
-        expect(richTexts, hasLength(2),
-            reason: 'Should contain two rich text blocks');
+        expect(
+          richTexts,
+          hasLength(2),
+          reason: 'Should contain two rich text blocks',
+        );
 
         final text = (richTexts[1] as RichText).text.toPlainText();
         expect(text, contains('¹²³'), reason: 'Should contain super script');
-        expect(text, isNot(contains('<sup>')),
-            reason: 'Should not contain the original <sup> html tag');
-        expect(text, isNot(contains('</sup>')),
-            reason: 'Should not contain the original <sup> html tag');
+        expect(
+          text,
+          isNot(contains('<sup>')),
+          reason: 'Should not contain the original <sup> html tag',
+        );
+        expect(
+          text,
+          isNot(contains('</sup>')),
+          reason: 'Should not contain the original <sup> html tag',
+        );
       });
     });
   });

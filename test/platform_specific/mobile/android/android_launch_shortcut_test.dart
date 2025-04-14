@@ -26,8 +26,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?',
+      );
     }
 
     SharedPlatform.overridePlatform = PlatformOverride.ios;
@@ -36,8 +38,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?',
+      );
     }
 
     SharedPlatform.overridePlatform = PlatformOverride.web;
@@ -46,8 +50,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?',
+      );
     }
 
     SharedPlatform.overridePlatform = PlatformOverride.linux;
@@ -56,8 +62,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?',
+      );
     }
   });
 
@@ -67,22 +75,29 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!\nHow come the class is still initialized?',
+      );
     }
 
     final instance = unsupported.AndroidLauncherShortcut.testing();
 
-    expect(await instance.shortcutSupported(), isFalse,
-        reason: 'Should not support shortcuts');
+    expect(
+      await instance.shortcutSupported(),
+      isFalse,
+      reason: 'Should not support shortcuts',
+    );
 
     try {
       await instance.readyForData();
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!',
+      );
     }
 
     try {
@@ -90,8 +105,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!',
+      );
     }
 
     try {
@@ -99,8 +116,10 @@ void main() {
       fail('Should fail');
     } catch (e) {
       expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message,
-          'Hey developer this platform doesn\'t support shortcuts!');
+      expect(
+        (e as UnsupportedError).message,
+        'Hey developer this platform doesn\'t support shortcuts!',
+      );
     }
   });
 
@@ -109,35 +128,38 @@ void main() {
     final instance = AndroidLauncherShortcut.instance;
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
-            (final call) async {
-      if (call.method == 'supportShortcut') {
-        return true;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, (
+          final call,
+        ) async {
+          if (call.method == 'supportShortcut') {
+            return true;
+          }
+          return null;
+        });
 
     expect(await instance.shortcutSupported(), isTrue);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
-            (final call) async {
-      if (call.method == 'supportShortcut') {
-        return false;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, (
+          final call,
+        ) async {
+          if (call.method == 'supportShortcut') {
+            return false;
+          }
+          return null;
+        });
 
     expect(await instance.shortcutSupported(), isFalse);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
-            (final call) async {
-      if (call.method == 'supportShortcut') {
-        return "something";
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, (
+          final call,
+        ) async {
+          if (call.method == 'supportShortcut') {
+            return "something";
+          }
+          return null;
+        });
 
     expect(await instance.shortcutSupported(), isFalse);
 
@@ -152,14 +174,15 @@ void main() {
     int readyForDataCalled = 0;
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(AndroidLauncherShortcut.channel,
-            (final call) async {
-      if (call.method == 'readyForData') {
-        readyForDataCalled++;
-        return;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(AndroidLauncherShortcut.channel, (
+          final call,
+        ) async {
+          if (call.method == 'readyForData') {
+            readyForDataCalled++;
+            return;
+          }
+          return null;
+        });
 
     await instance.readyForData();
 
@@ -175,7 +198,8 @@ void main() {
     instance.clearStateStream();
 
     await AndroidLauncherShortcut.messageHandler(
-        const MethodCall('handleMacShortcut', '00:00:00:00:00:00'));
+      const MethodCall('handleMacShortcut', '00:00:00:00:00:00'),
+    );
 
     final stateChange = await instance.changePowerStateMac.first;
     expect(stateChange, isNotNull);
@@ -191,11 +215,13 @@ void main() {
     instance.clearStateStream();
 
     await AndroidLauncherShortcut.messageHandler(
-        const MethodCall('handleMacShortcut', 12345));
+      const MethodCall('handleMacShortcut', 12345),
+    );
 
     try {
-      final stateChange = await instance.changePowerStateMac.first
-          .timeout(const Duration(seconds: 1));
+      final stateChange = await instance.changePowerStateMac.first.timeout(
+        const Duration(seconds: 1),
+      );
       debugPrint('$stateChange');
       fail('Should timeout');
     } catch (e) {
@@ -208,7 +234,8 @@ void main() {
 
     try {
       await AndroidLauncherShortcut.messageHandler(
-          const MethodCall('unsupportedMethod'));
+        const MethodCall('unsupportedMethod'),
+      );
       fail('Should fail');
     } catch (e) {
       expect(e, isA<NoSuchMethodError>());
@@ -221,7 +248,9 @@ void main() {
     const handle = ShortcutHandle(ShortcutTypes.macType, 'Data');
 
     expect(
-        handle.toString(), 'ShortcutHandle: {"type": "mac", "data": "Data"}');
+      handle.toString(),
+      'ShortcutHandle: {"type": "mac", "data": "Data"}',
+    );
   });
 
   test('Shortcut handle should compare', () {

@@ -103,66 +103,90 @@ const darkColorScheme = ColorScheme(
 const _bootingColor = Color(0xFFEDD400);
 
 final _lightBootingScheme = ColorScheme.fromSeed(
-    seedColor: _bootingColor, brightness: Brightness.light);
-final _darkBootingScheme =
-    ColorScheme.fromSeed(seedColor: _bootingColor, brightness: Brightness.dark);
+  seedColor: _bootingColor,
+  brightness: Brightness.light,
+);
+final _darkBootingScheme = ColorScheme.fromSeed(
+  seedColor: _bootingColor,
+  brightness: Brightness.dark,
+);
 
 const _standbyColor = Color(0xFFf57900);
 
 final _lightStandbyScheme = ColorScheme.fromSeed(
-    seedColor: _standbyColor, brightness: Brightness.light);
-final _darkStandbyScheme =
-    ColorScheme.fromSeed(seedColor: _standbyColor, brightness: Brightness.dark);
+  seedColor: _standbyColor,
+  brightness: Brightness.light,
+);
+final _darkStandbyScheme = ColorScheme.fromSeed(
+  seedColor: _standbyColor,
+  brightness: Brightness.dark,
+);
 
 const _sleepColor = Color(0xFF005eb4);
 
-final _lightSleepScheme =
-    ColorScheme.fromSeed(seedColor: _sleepColor, brightness: Brightness.light);
-final _darkSleepScheme =
-    ColorScheme.fromSeed(seedColor: _sleepColor, brightness: Brightness.dark);
+final _lightSleepScheme = ColorScheme.fromSeed(
+  seedColor: _sleepColor,
+  brightness: Brightness.light,
+);
+final _darkSleepScheme = ColorScheme.fromSeed(
+  seedColor: _sleepColor,
+  brightness: Brightness.dark,
+);
 
 const _onColor = Color(0xFF168516);
 
-final _lightOnScheme =
-    ColorScheme.fromSeed(seedColor: _onColor, brightness: Brightness.light);
-final _darkOnScheme =
-    ColorScheme.fromSeed(seedColor: _onColor, brightness: Brightness.dark);
+final _lightOnScheme = ColorScheme.fromSeed(
+  seedColor: _onColor,
+  brightness: Brightness.light,
+);
+final _darkOnScheme = ColorScheme.fromSeed(
+  seedColor: _onColor,
+  brightness: Brightness.dark,
+);
 
-final CustomColors lightCustomColors = CustomColors._(_lightBootingScheme,
-    _lightStandbyScheme, _lightSleepScheme, _lightOnScheme);
+final CustomColors lightCustomColors = CustomColors._(
+  _lightBootingScheme,
+  _lightStandbyScheme,
+  _lightSleepScheme,
+  _lightOnScheme,
+);
 final CustomColors darkCustomColors = CustomColors._(
-    _darkBootingScheme, _darkStandbyScheme, _darkSleepScheme, _darkOnScheme);
+  _darkBootingScheme,
+  _darkStandbyScheme,
+  _darkSleepScheme,
+  _darkOnScheme,
+);
 
 class CustomColors {
   CustomColors._(
-      final ColorScheme bootingScheme,
-      final ColorScheme standbyScheme,
-      final ColorScheme sleepScheme,
-      final ColorScheme onScheme)
-      : booting = bootingScheme.primary,
-        onBooting = bootingScheme.onPrimary,
-        bootingContainer = bootingScheme.primaryContainer,
-        onBootingContainer = bootingScheme.onPrimaryContainer,
-        bootingSurface = bootingScheme.surface,
-        onBootingSurface = bootingScheme.onSurface,
-        standby = standbyScheme.primary,
-        onStandby = standbyScheme.onPrimary,
-        standbyContainer = standbyScheme.primaryContainer,
-        onStandbyContainer = standbyScheme.onPrimaryContainer,
-        standbySurface = standbyScheme.surface,
-        onStandbySurface = standbyScheme.onSurface,
-        sleep = sleepScheme.primary,
-        onSleep = sleepScheme.onPrimary,
-        sleepContainer = sleepScheme.primaryContainer,
-        onSleepContainer = sleepScheme.onPrimaryContainer,
-        sleepSurface = sleepScheme.surface,
-        onSleepSurface = sleepScheme.onSurface,
-        on = onScheme.primary,
-        onOn = onScheme.onPrimary,
-        onContainer = onScheme.primaryContainer,
-        onOnContainer = onScheme.onPrimaryContainer,
-        onSurface = onScheme.surface,
-        onOnSurface = onScheme.onSurface;
+    final ColorScheme bootingScheme,
+    final ColorScheme standbyScheme,
+    final ColorScheme sleepScheme,
+    final ColorScheme onScheme,
+  ) : booting = bootingScheme.primary,
+      onBooting = bootingScheme.onPrimary,
+      bootingContainer = bootingScheme.primaryContainer,
+      onBootingContainer = bootingScheme.onPrimaryContainer,
+      bootingSurface = bootingScheme.surface,
+      onBootingSurface = bootingScheme.onSurface,
+      standby = standbyScheme.primary,
+      onStandby = standbyScheme.onPrimary,
+      standbyContainer = standbyScheme.primaryContainer,
+      onStandbyContainer = standbyScheme.onPrimaryContainer,
+      standbySurface = standbyScheme.surface,
+      onStandbySurface = standbyScheme.onSurface,
+      sleep = sleepScheme.primary,
+      onSleep = sleepScheme.onPrimary,
+      sleepContainer = sleepScheme.primaryContainer,
+      onSleepContainer = sleepScheme.onPrimaryContainer,
+      sleepSurface = sleepScheme.surface,
+      onSleepSurface = sleepScheme.onSurface,
+      on = onScheme.primary,
+      onOn = onScheme.onPrimary,
+      onContainer = onScheme.primaryContainer,
+      onOnContainer = onScheme.onPrimaryContainer,
+      onSurface = onScheme.surface,
+      onOnSurface = onScheme.onSurface;
 
   final Color booting;
 

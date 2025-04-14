@@ -27,9 +27,10 @@ class IconBuilder extends MarkdownElementBuilder {
       'assets/images/$name.svg',
       height: preferredStyle?.fontSize ?? 17,
       width: preferredStyle?.fontSize ?? 17,
-      colorFilter: preferredStyle?.color != null
-          ? ColorFilter.mode(preferredStyle!.color!, BlendMode.srcIn)
-          : null,
+      colorFilter:
+          preferredStyle?.color != null
+              ? ColorFilter.mode(preferredStyle!.color!, BlendMode.srcIn)
+              : null,
     );
   }
 
@@ -72,7 +73,9 @@ class IconBuilder extends MarkdownElementBuilder {
 
   @override
   Widget? visitElementAfter(
-      final md.Element element, final TextStyle? preferredStyle) {
+    final md.Element element,
+    final TextStyle? preferredStyle,
+  ) {
     final icon = _getIcon(element.textContent);
     if (icon != null) {
       return RichText(text: TextSpan(children: [WidgetSpan(child: icon)]));

@@ -23,22 +23,14 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
 
     final items = <Widget>[
       ListTile(
-        leading: const Icon(
-          Icons.warning,
-          color: Colors.orange,
-          size: 30,
-        ),
-        title: Text(
-          'WARNING!',
-          style: theming.headlineMedium,
-        ),
+        leading: const Icon(Icons.warning, color: Colors.orange, size: 30),
+        title: Text('WARNING!', style: theming.headlineMedium),
         subtitle: const Text(
-            'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!'),
+          'This is a page meant for development, changing values here may cause the (web)app to become unstable and crash!',
+        ),
         isThreeLine: true,
       ),
-      const Divider(
-        thickness: 3,
-      ),
+      const Divider(thickness: 3),
       ListTile(
         title: const Text('Schema version'),
         subtitle: Text('Version: ${bloc.db.schemaVersion}'),
@@ -51,79 +43,91 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
           await Clipboard.setData(ClipboardData(text: _getTables(bloc)));
           if (context.mounted) {
             ToastContext().init(context);
-            Toast.show('Copied to clipboard',
-                duration: Toast.lengthShort, gravity: Toast.bottom);
+            Toast.show(
+              'Copied to clipboard',
+              duration: Toast.lengthShort,
+              gravity: Toast.bottom,
+            );
           }
         },
         isThreeLine: true,
       ),
       const Divider(),
       FutureBuilder<String>(
-          future: _getInstalledTables(bloc),
-          builder: (final context, final snapshot) {
-            final data = snapshot.data;
-            if (snapshot.hasError) {
-              final error = snapshot.error;
+        future: _getInstalledTables(bloc),
+        builder: (final context, final snapshot) {
+          final data = snapshot.data;
+          if (snapshot.hasError) {
+            final error = snapshot.error;
+            return ListTile(
+              title: const Text('Error!'),
+              subtitle: Text(error.toString()),
+            );
+          } else if (data != null) {
+            final knownTables = _getTables(bloc).split('\n');
+            final installedTables = data.split('\n');
+            // Check if the lists are equal, if they are not show a warning.
+            if (listEquals(knownTables, installedTables)) {
               return ListTile(
-                title: const Text('Error!'),
-                subtitle: Text(error.toString()),
+                title: const Text('Installed tables'),
+                subtitle: Text(data),
+                onLongPress: () async {
+                  await Clipboard.setData(ClipboardData(text: data));
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Copied to clipboard',
+                      duration: Toast.lengthShort,
+                      gravity: Toast.bottom,
+                    );
+                  }
+                },
               );
-            } else if (data != null) {
-              final knownTables = _getTables(bloc).split('\n');
-              final installedTables = data.split('\n');
-              // Check if the lists are equal, if they are not show a warning.
-              if (listEquals(knownTables, installedTables)) {
-                return ListTile(
-                  title: const Text('Installed tables'),
-                  subtitle: Text(data),
-                  onLongPress: () async {
-                    await Clipboard.setData(ClipboardData(text: data));
-                    if (context.mounted) {
-                      ToastContext().init(context);
-                      Toast.show('Copied to clipboard',
-                          duration: Toast.lengthShort, gravity: Toast.bottom);
-                    }
-                  },
-                );
-              } else {
-                return Column(
-                  children: [
-                    ListTile(
-                      title: const Text('Installed tables'),
-                      subtitle: Text(data),
-                      onLongPress: () async {
-                        await Clipboard.setData(ClipboardData(text: data));
-                        if (context.mounted) {
-                          ToastContext().init(context);
-                          Toast.show('Copied to clipboard',
-                              duration: Toast.lengthShort,
-                              gravity: Toast.bottom);
-                        }
-                      },
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                          'WARNING installed tables do not match known tables!'
-                          '\nYou should create a migration!',
-                          style: theming.headlineSmall),
-                      leading: const Icon(
-                        Icons.warning,
-                        color: Colors.orange,
-                        size: 30,
-                      ),
-                    ),
-                  ],
-                );
-              }
             } else {
-              return const CircularProgressIndicator();
+              return Column(
+                children: [
+                  ListTile(
+                    title: const Text('Installed tables'),
+                    subtitle: Text(data),
+                    onLongPress: () async {
+                      await Clipboard.setData(ClipboardData(text: data));
+                      if (context.mounted) {
+                        ToastContext().init(context);
+                        Toast.show(
+                          'Copied to clipboard',
+                          duration: Toast.lengthShort,
+                          gravity: Toast.bottom,
+                        );
+                      }
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    title: Text(
+                      'WARNING installed tables do not match known tables!'
+                      '\nYou should create a migration!',
+                      style: theming.headlineSmall,
+                    ),
+                    leading: const Icon(
+                      Icons.warning,
+                      color: Colors.orange,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              );
             }
-          }),
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
+      ),
       const Divider(),
       ListTile(
-        title: Text('Daos',
-            style: theming.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Daos',
+          style: theming.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
       ),
       const Divider(thickness: 1.5),
     ];
@@ -144,12 +148,9 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Database test page'),
-        ),
-        body: ContentContainerListView(
-          children: items,
-        ));
+      appBar: AppBar(title: const Text('Database test page')),
+      body: ContentContainerListView(children: items),
+    );
   }
 
   String _getTables(final LighthousePMBloc bloc) {
@@ -199,15 +200,26 @@ class _DaoContainer {
   const _DaoContainer(this.daoName, this.pageLink, {this.daoDescription});
 
   static const List<_DaoContainer> _knownDaos = [
-    _DaoContainer('NicknameDao', '/nicknameDao',
-        daoDescription:
-            'A dao that handles storage of nicknames and last seen'),
-    _DaoContainer('SettingsDao', '/settingsDao',
-        daoDescription: 'A dao that handles storage of settings'),
-    _DaoContainer('ViveBaseStationDao', '/viveBaseStationDao',
-        daoDescription: 'A dao that handles storage of vive base station ids'),
-    _DaoContainer('GroupDao', '/groupDao',
-        daoDescription:
-            'A dao that handles the storage and linking of groups to lighthouses')
+    _DaoContainer(
+      'NicknameDao',
+      '/nicknameDao',
+      daoDescription: 'A dao that handles storage of nicknames and last seen',
+    ),
+    _DaoContainer(
+      'SettingsDao',
+      '/settingsDao',
+      daoDescription: 'A dao that handles storage of settings',
+    ),
+    _DaoContainer(
+      'ViveBaseStationDao',
+      '/viveBaseStationDao',
+      daoDescription: 'A dao that handles storage of vive base station ids',
+    ),
+    _DaoContainer(
+      'GroupDao',
+      '/groupDao',
+      daoDescription:
+          'A dao that handles the storage and linking of groups to lighthouses',
+    ),
   ];
 }

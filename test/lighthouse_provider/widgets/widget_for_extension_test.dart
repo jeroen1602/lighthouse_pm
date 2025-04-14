@@ -11,7 +11,7 @@ import 'package:lighthouse_test_helper/lighthouse_test_helper.dart';
 
 class DefaultEnabledDeviceExtension extends DeviceExtension {
   DefaultEnabledDeviceExtension()
-      : super(toolTip: 'Default enabled', onTap: () async {});
+    : super(toolTip: 'Default enabled', onTap: () async {});
 
   @override
   String get extensionName => "DefaultEnabledExtension";
@@ -35,7 +35,7 @@ void main() {
       SleepExtension: isA<Icon>(),
       StandbyExtension: isA<Icon>(),
       IdentifyDeviceExtension: isA<SvgPicture>(),
-      ClearIdExtension: isA<Text>()
+      ClearIdExtension: isA<Text>(),
     };
 
     final extensions = [
@@ -43,19 +43,23 @@ void main() {
         return "DEVICE_NAME";
       }, (final mac, final name) {}),
       OnExtension(
-          changeState: (final newState) async {},
-          powerStateStream: () => const Stream.empty()),
+        changeState: (final newState) async {},
+        powerStateStream: () => const Stream.empty(),
+      ),
       SleepExtension(
-          changeState: (final newState) async {},
-          powerStateStream: () => const Stream.empty()),
+        changeState: (final newState) async {},
+        powerStateStream: () => const Stream.empty(),
+      ),
       StandbyExtension(
-          changeState: (final newState) async {},
-          powerStateStream: () => const Stream.empty()),
+        changeState: (final newState) async {},
+        powerStateStream: () => const Stream.empty(),
+      ),
       IdentifyDeviceExtension(onTap: () async {}),
       ClearIdExtension(
-          persistence: persistence,
-          deviceId: const LHDeviceIdentifier("12345678901234567"),
-          clearId: () {})
+        persistence: persistence,
+        deviceId: const LHDeviceIdentifier("12345678901234567"),
+        clearId: () {},
+      ),
     ];
 
     for (final extension in extensions) {

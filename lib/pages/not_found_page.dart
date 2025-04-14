@@ -12,9 +12,7 @@ class NotFoundPage extends BasePage {
     final theming = Theming.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Not found'),
-      ),
+      appBar: AppBar(title: const Text('Not found')),
       body: ContentContainerListView(
         children: [
           ListTile(

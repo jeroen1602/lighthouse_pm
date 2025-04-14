@@ -22,13 +22,16 @@ class DaoDataCreateAlertWidget extends StatefulWidget {
 
   /// Open a dialog with the question if the user wants to delete a database entry.
   /// `true` if the use has selected the yes option, `false` otherwise.
-  static Future<bool> showCustomDialog(final BuildContext context,
-      final List<DaoDataCreateAlertDecorator<dynamic>> decorators) {
+  static Future<bool> showCustomDialog(
+    final BuildContext context,
+    final List<DaoDataCreateAlertDecorator<dynamic>> decorators,
+  ) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return DaoDataCreateAlertWidget(decorators);
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return DaoDataCreateAlertWidget(decorators);
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }
@@ -43,24 +46,24 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
 
   @override
   Widget build(final BuildContext context) {
-    final List<Widget> children = widget.decorators
-        .map((final e) => e.getEdit(context, (final value) {
-              e.value = value;
-              setState(() {
-                final value = _formKey.currentState?.validate();
-                saveEnabled = value ?? false;
-              });
-            }))
-        .toList();
+    final List<Widget> children =
+        widget.decorators
+            .map(
+              (final e) => e.getEdit(context, (final value) {
+                e.value = value;
+                setState(() {
+                  final value = _formKey.currentState?.validate();
+                  saveEnabled = value ?? false;
+                });
+              }),
+            )
+            .toList();
 
     return AlertDialog(
       title: const Text('Create new item!'),
       content: IntrinsicHeight(
-          child: Form(
-              key: _formKey,
-              child: Column(
-                children: children,
-              ))),
+        child: Form(key: _formKey, child: Column(children: children)),
+      ),
       actions: <Widget>[
         SimpleDialogOption(
           child: const Text('Cancel'),
@@ -96,14 +99,19 @@ abstract class DaoDataCreateAlertDecorator<T> {
 ///
 class DaoDataCreateAlertStringDecorator
     extends DaoDataCreateAlertDecorator<String> {
-  DaoDataCreateAlertStringDecorator(super.name, super.originalValue,
-      {this.validator});
+  DaoDataCreateAlertStringDecorator(
+    super.name,
+    super.originalValue, {
+    this.validator,
+  });
 
   final FormFieldValidator<String>? validator;
 
   @override
   Widget getEdit(
-      final BuildContext context, final ValueChanged<String> onChange) {
+    final BuildContext context,
+    final ValueChanged<String> onChange,
+  ) {
     return _DaoDataCreateAlertStringDecoratorWidget(
       this,
       onChange,
@@ -117,8 +125,11 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
   final ValueChanged<String> onChange;
   final FormFieldValidator<String>? validator;
 
-  const _DaoDataCreateAlertStringDecoratorWidget(this.item, this.onChange,
-      {this.validator});
+  const _DaoDataCreateAlertStringDecoratorWidget(
+    this.item,
+    this.onChange, {
+    this.validator,
+  });
 
   @override
   Widget build(final BuildContext context) {
@@ -144,15 +155,21 @@ class _DaoDataCreateAlertStringDecoratorWidget extends StatelessWidget {
 /// Use [autoIncrement] if the int can also be null and thus set via autoincrement.
 ///
 class DaoDataCreateAlertIntDecorator extends DaoDataCreateAlertDecorator<int> {
-  DaoDataCreateAlertIntDecorator(super.name, super.originalValue,
-      {this.autoIncrement = false, this.negative = false});
+  DaoDataCreateAlertIntDecorator(
+    super.name,
+    super.originalValue, {
+    this.autoIncrement = false,
+    this.negative = false,
+  });
 
   final bool autoIncrement;
   final bool negative;
 
   @override
   Widget getEdit(
-      final BuildContext context, final ValueChanged<int?> onChange) {
+    final BuildContext context,
+    final ValueChanged<int?> onChange,
+  ) {
     return _DaoDataCreateAlertIntDecoratorWidget(this, onChange);
   }
 }
@@ -199,48 +216,55 @@ class _DaoDataCreateAlertIntDecoratorWidgetState
     final List<Widget> children = [];
 
     if (widget.item.autoIncrement) {
-      children.add(SwitchListTile(
-        title: const Text('Auto increment'),
-        value: autoIncrementEnabled,
-        onChanged: (final newValue) {
-          setState(() {
-            autoIncrementEnabled = newValue == true;
-          });
-          if (newValue == true) {
-            widget.onChange(null);
-          }
-        },
-      ));
+      children.add(
+        SwitchListTile(
+          title: const Text('Auto increment'),
+          value: autoIncrementEnabled,
+          onChanged: (final newValue) {
+            setState(() {
+              autoIncrementEnabled = newValue == true;
+            });
+            if (newValue == true) {
+              widget.onChange(null);
+            }
+          },
+        ),
+      );
     }
 
     if (!autoIncrementEnabled) {
-      children.add(TextFormField(
-        initialValue: widget.item.originalValue?.toRadixString(10),
-        validator: widget._validateId,
-        decoration: InputDecoration(labelText: widget.item.name),
-        onChanged: (final val) {
-          final intValue = int.tryParse(val, radix: 10);
-          if (intValue != null) {
-            widget.onChange(intValue);
-          }
-        },
-      ));
+      children.add(
+        TextFormField(
+          initialValue: widget.item.originalValue?.toRadixString(10),
+          validator: widget._validateId,
+          decoration: InputDecoration(labelText: widget.item.name),
+          onChanged: (final val) {
+            final intValue = int.tryParse(val, radix: 10);
+            if (intValue != null) {
+              widget.onChange(intValue);
+            }
+          },
+        ),
+      );
     } else {
       final theming = Theming.of(context);
-      children.add(FocusScope(
+      children.add(
+        FocusScope(
           node: FocusScopeNode(canRequestFocus: false),
           canRequestFocus: false,
           child: TextFormField(
             style: theming.titleSmall,
             decoration: InputDecoration(
-                labelText: widget.item.name, hintText: 'Auto increment is on'),
-          )));
+              labelText: widget.item.name,
+              hintText: 'Auto increment is on',
+            ),
+          ),
+        ),
+      );
     }
 
     children.add(const Divider());
 
-    return Column(
-      children: children,
-    );
+    return Column(children: children);
   }
 }

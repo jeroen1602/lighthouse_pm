@@ -24,12 +24,14 @@ class OfflineGroupItemAlertWidget extends StatefulWidget {
   }
 
   static Future<OfflineGroupItemAlertWidgetReturn> showCustomDialog(
-      final BuildContext context) {
+    final BuildContext context,
+  ) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return const OfflineGroupItemAlertWidget();
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return const OfflineGroupItemAlertWidget();
+      },
+    ).then((final value) {
       if (value is OfflineGroupItemAlertWidgetReturn) {
         return value;
       }
@@ -47,12 +49,13 @@ class _OfflineGroupItemAlertWidgetContent
     return AlertDialog(
       title: const Text('Some devices are offline'),
       content: IntrinsicHeight(
-          child: Column(
-        children: [
-          const Text(
+        child: Column(
+          children: [
+            const Text(
               'Some devices in this group are offline, do you want to continue'
-              ' and change the state of the devices that are online?'),
-          CheckboxListTile(
+              ' and change the state of the devices that are online?',
+            ),
+            CheckboxListTile(
               title: const Text("Don't show this warning again."),
               value: disableWarning,
               onChanged: (final value) {
@@ -61,22 +64,28 @@ class _OfflineGroupItemAlertWidgetContent
                     disableWarning = value;
                   }
                 });
-              }),
-        ],
-      )),
+              },
+            ),
+          ],
+        ),
+      ),
       actions: [
         SimpleDialogOption(
           child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(
-                context, OfflineGroupItemAlertWidgetReturn._(true, false));
+              context,
+              OfflineGroupItemAlertWidgetReturn._(true, false),
+            );
           },
         ),
         SimpleDialogOption(
           child: const Text('Continue'),
           onPressed: () {
-            Navigator.pop(context,
-                OfflineGroupItemAlertWidgetReturn._(false, disableWarning));
+            Navigator.pop(
+              context,
+              OfflineGroupItemAlertWidgetReturn._(false, disableWarning),
+            );
           },
         ),
       ],

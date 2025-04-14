@@ -17,14 +17,12 @@ Widget createSelectableListTile(
   final theme = Theme.of(context);
   final theming = Theming.fromTheme(theme);
 
-  final trailing = selecting
-      ? selected
-          ? Icon(
-              Icons.check_circle,
-              color: theme.colorScheme.primary,
-            )
-          : const Icon(Icons.radio_button_unchecked)
-      : null;
+  final trailing =
+      selecting
+          ? selected
+              ? Icon(Icons.check_circle, color: theme.colorScheme.primary)
+              : const Icon(Icons.radio_button_unchecked)
+          : null;
 
   return Container(
     key: key,

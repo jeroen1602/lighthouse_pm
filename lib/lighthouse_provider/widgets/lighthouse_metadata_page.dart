@@ -26,17 +26,21 @@ class LighthouseMetadataPage extends StatefulWidget {
 
 class LighthouseMetadataState extends State<LighthouseMetadataPage> {
   Future<void> changeNicknameHandler(final String? currentNickname) async {
-    final newNickname = await NicknameAlertWidget.showCustomDialog(context,
-        deviceId: widget.device.deviceIdentifier.toString(),
-        deviceName: widget.device.name,
-        nickname: currentNickname);
+    final newNickname = await NicknameAlertWidget.showCustomDialog(
+      context,
+      deviceId: widget.device.deviceIdentifier.toString(),
+      deviceName: widget.device.name,
+      nickname: currentNickname,
+    );
     if (newNickname != null) {
       if (newNickname.nickname == null) {
-        await blocWithoutListen.nicknames
-            .deleteNicknames([newNickname.deviceId]);
+        await blocWithoutListen.nicknames.deleteNicknames([
+          newNickname.deviceId,
+        ]);
       } else {
-        await blocWithoutListen.nicknames
-            .insertNickname(newNickname.toNickname()!);
+        await blocWithoutListen.nicknames.insertNickname(
+          newNickname.toNickname()!,
+        );
       }
     }
   }
@@ -52,51 +56,61 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
 
     if (widget.device is DeviceWithExtensions &&
         (widget.device as DeviceWithExtensions).deviceExtensions.isNotEmpty) {
-      body.add(_ExtraActionsWidget(
-        widget.device as DeviceWithExtensions,
-        updateList: () {
-          widget._updateSubject
-              .add((widget._updateSubject.valueOrNull ?? 0) + 1);
-        },
-      ));
+      body.add(
+        _ExtraActionsWidget(
+          widget.device as DeviceWithExtensions,
+          updateList: () {
+            widget._updateSubject.add(
+              (widget._updateSubject.valueOrNull ?? 0) + 1,
+            );
+          },
+        ),
+      );
     }
 
     for (int i = 0; i < entries.length; i++) {
       body.add(_MetadataInkWell(name: entries[i].key, value: entries[i].value));
     }
 
-    body.add(StreamBuilder<Nickname?>(
-      stream: bloc.nicknames
-          .watchNicknameForDeviceIds(widget.device.deviceIdentifier.toString()),
-      builder: (final BuildContext context,
-          final AsyncSnapshot<Nickname?> snapshot) {
-        final nickname = snapshot.data;
-        if (nickname != null) {
-          return _MetadataInkWell(
-            name: 'Nickname',
-            value: nickname.nickname,
-            onTap: () {
-              changeNicknameHandler(nickname.nickname);
-            },
-          );
-        } else {
-          final theming = Theming.of(context);
-          return InkWell(
-            child: ListTile(
-              title: const Text('Nickname'),
-              subtitle: Text(
-                'Not set',
-                style: theming.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic, color: theming.disabledColor),
-              ),
+    body.add(
+      StreamBuilder<Nickname?>(
+        stream: bloc.nicknames.watchNicknameForDeviceIds(
+          widget.device.deviceIdentifier.toString(),
+        ),
+        builder: (
+          final BuildContext context,
+          final AsyncSnapshot<Nickname?> snapshot,
+        ) {
+          final nickname = snapshot.data;
+          if (nickname != null) {
+            return _MetadataInkWell(
+              name: 'Nickname',
+              value: nickname.nickname,
               onTap: () {
-                changeNicknameHandler(null);
+                changeNicknameHandler(nickname.nickname);
               },
-            ),
-          );
-        }
-      },
-    ));
+            );
+          } else {
+            final theming = Theming.of(context);
+            return InkWell(
+              child: ListTile(
+                title: const Text('Nickname'),
+                subtitle: Text(
+                  'Not set',
+                  style: theming.bodyMedium?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theming.disabledColor,
+                  ),
+                ),
+                onTap: () {
+                  changeNicknameHandler(null);
+                },
+              ),
+            );
+          }
+        },
+      ),
+    );
 
     return body;
   }
@@ -107,9 +121,7 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
       appBar: AppBar(title: const Text('Lighthouse Metadata')),
       body: StreamBuilder<int>(
         stream: widget._updateSubject.stream,
-        builder: (final c, final s) => ListView(
-          children: _generateBody(),
-        ),
+        builder: (final c, final s) => ListView(children: _generateBody()),
       ),
     );
   }
@@ -132,18 +144,24 @@ class _MetadataInkWell extends StatelessWidget {
         }
         Vibration.vibrate(duration: 200);
         ToastContext().init(context);
-        Toast.show('Copied to clipboard',
-            duration: Toast.lengthShort, gravity: Toast.bottom);
+        Toast.show(
+          'Copied to clipboard',
+          duration: Toast.lengthShort,
+          gravity: Toast.bottom,
+        );
       },
       onTap: onTap,
       child: ListTile(
         title: Text(name),
         subtitle: Text(
           value ?? 'Not set',
-          style: value != null
-              ? null
-              : theming.bodyMedium?.copyWith(
-                  fontStyle: FontStyle.italic, color: theming.disabledColor),
+          style:
+              value != null
+                  ? null
+                  : theming.bodyMedium?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theming.disabledColor,
+                  ),
         ),
       ),
     );
@@ -162,66 +180,64 @@ class _ExtraActionsWidget extends StatelessWidget {
     final theming = Theming.of(context);
 
     return SizedBox(
-        height: 165.0,
-        child: Column(
-          children: [
-            Flexible(
-              child: ListTile(
-                title: Text(
-                  'Extra actions',
-                  style: theming.headlineSmall,
-                ),
-              ),
+      height: 165.0,
+      child: Column(
+        children: [
+          Flexible(
+            child: ListTile(
+              title: Text('Extra actions', style: theming.headlineSmall),
             ),
-            const Divider(),
-            SizedBox(
-              height: 85.0,
-              child: ListView.builder(
-                itemBuilder: (final c, final index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 60.0,
-                          child: StreamBuilder<bool>(
-                            stream: extensions[index].enabledStream,
-                            initialData: false,
-                            builder: (final c, final snapshot) {
-                              final enabled = snapshot.data ?? false;
-                              return ElevatedButton(
-                                onPressed: enabled
-                                    ? () async {
+          ),
+          const Divider(),
+          SizedBox(
+            height: 85.0,
+            child: ListView.builder(
+              itemBuilder: (final c, final index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 60.0,
+                        child: StreamBuilder<bool>(
+                          stream: extensions[index].enabledStream,
+                          initialData: false,
+                          builder: (final c, final snapshot) {
+                            final enabled = snapshot.data ?? false;
+                            return ElevatedButton(
+                              onPressed:
+                                  enabled
+                                      ? () async {
                                         await extensions[index].onTap();
                                         if (extensions[index].updateListAfter) {
                                           updateList?.call();
                                         }
                                       }
-                                    : null,
-                                style: getButtonStyleFromDeviceExtension(
-                                    theming, extensions[index]),
-                                child: getWidgetFromDeviceExtension(
-                                    extensions[index]),
-                              );
-                            },
-                          ),
+                                      : null,
+                              style: getButtonStyleFromDeviceExtension(
+                                theming,
+                                extensions[index],
+                              ),
+                              child: getWidgetFromDeviceExtension(
+                                extensions[index],
+                              ),
+                            );
+                          },
                         ),
-                        Container(
-                          height: 5,
-                        ),
-                        Text(extensions[index].toolTip),
-                      ],
-                    ),
-                  );
-                },
-                itemCount: extensions.length,
-                scrollDirection: Axis.horizontal,
-              ),
+                      ),
+                      Container(height: 5),
+                      Text(extensions[index].toolTip),
+                    ],
+                  ),
+                );
+              },
+              itemCount: extensions.length,
+              scrollDirection: Axis.horizontal,
             ),
-            const Divider(
-              thickness: 1.5,
-            ),
-          ],
-        ));
+          ),
+          const Divider(thickness: 1.5),
+        ],
+      ),
+    );
   }
 }

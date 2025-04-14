@@ -22,19 +22,22 @@ class NicknameAlertWidget extends StatefulWidget {
 
   /// Open a dialog and return a [Nickname] with the new setting.
   /// Can return `null` if the dialog is cancelled.
-  static Future<NicknamesHelper?> showCustomDialog(final BuildContext context,
-      {required final String deviceId,
-      final String? deviceName,
-      final String? nickname}) {
+  static Future<NicknamesHelper?> showCustomDialog(
+    final BuildContext context, {
+    required final String deviceId,
+    final String? deviceName,
+    final String? nickname,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return NicknameAlertWidget(
-            deviceId: deviceId,
-            deviceName: deviceName,
-            nickname: nickname,
-          );
-        });
+      context: context,
+      builder: (final BuildContext context) {
+        return NicknameAlertWidget(
+          deviceId: deviceId,
+          deviceName: deviceName,
+          nickname: nickname,
+        );
+      },
+    );
   }
 }
 
@@ -56,16 +59,18 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
 
     return AlertDialog(
       title: RichText(
-          text: TextSpan(
-        style: theming.bodyMedium,
-        children: <InlineSpan>[
-          const TextSpan(text: "Set a nickname for "),
-          TextSpan(
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
+            const TextSpan(text: "Set a nickname for "),
+            TextSpan(
               style: theming.bodyTextBold,
-              text: widget.deviceName ?? widget.deviceId),
-          const TextSpan(text: "."),
-        ],
-      )),
+              text: widget.deviceName ?? widget.deviceId,
+            ),
+            const TextSpan(text: "."),
+          ],
+        ),
+      ),
       content: TextField(
         decoration: const InputDecoration(labelText: 'Nickname'),
         controller: textController,
@@ -82,11 +87,15 @@ class _NicknameAlertWidget extends State<NicknameAlertWidget> {
           onPressed: () {
             final text = textController.text.trim();
             if (text.isEmpty) {
-              Navigator.pop(context,
-                  NicknamesHelper(deviceId: widget.deviceId, nickname: null));
+              Navigator.pop(
+                context,
+                NicknamesHelper(deviceId: widget.deviceId, nickname: null),
+              );
             } else {
-              Navigator.pop(context,
-                  NicknamesHelper(deviceId: widget.deviceId, nickname: text));
+              Navigator.pop(
+                context,
+                NicknamesHelper(deviceId: widget.deviceId, nickname: text),
+              );
             }
           },
         ),

@@ -22,12 +22,13 @@ class LighthousePMBloc {
   Future<List<String>> getInstalledTables() {
     return db
         .customSelect(
-            'SELECT `name` FROM `sqlite_master` WHERE `type` IN (\'table\',\'view\') AND `name` NOT LIKE \'sqlite_%\' ORDER BY 1;')
+          'SELECT `name` FROM `sqlite_master` WHERE `type` IN (\'table\',\'view\') AND `name` NOT LIKE \'sqlite_%\' ORDER BY 1;',
+        )
         .get()
         .then((final rows) {
-      return rows.map((final row) => row.read<String>('name')).toList()
-        ..sort((final a, final b) => a.compareTo(b));
-    });
+          return rows.map((final row) => row.read<String>('name')).toList()
+            ..sort((final a, final b) => a.compareTo(b));
+        });
   }
 
   List<String> getKnownTables() {
@@ -43,9 +44,10 @@ class LighthousePMBloc {
 }
 
 mixin class WithBlocStateless {
-  LighthousePMBloc bloc(final BuildContext context,
-          {final bool listen = true}) =>
-      Provider.of<LighthousePMBloc>(context, listen: listen);
+  LighthousePMBloc bloc(
+    final BuildContext context, {
+    final bool listen = true,
+  }) => Provider.of<LighthousePMBloc>(context, listen: listen);
 
   LighthousePMBloc blocWithoutListen(final BuildContext context) =>
       bloc(context, listen: false);

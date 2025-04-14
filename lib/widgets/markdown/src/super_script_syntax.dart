@@ -23,7 +23,7 @@ class SuperscriptSyntax extends md.InlineSyntax {
     "7": "⁷",
     "8": "⁸",
     "9": "⁹",
-    "-": "⁻"
+    "-": "⁻",
   };
 
   ///

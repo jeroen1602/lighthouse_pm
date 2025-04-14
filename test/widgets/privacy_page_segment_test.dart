@@ -28,11 +28,13 @@ void main() {
     final fakeLauncher = URLLauncherFake();
     UrlLauncherPlatform.instance = fakeLauncher;
 
-    await tester.pumpWidget(buildTestApp((final context) {
-      return ListView(
-        children: const [PrivacyPageSegment(version: "1.1", language: "en")],
-      );
-    }));
+    await tester.pumpWidget(
+      buildTestApp((final context) {
+        return ListView(
+          children: const [PrivacyPageSegment(version: "1.1", language: "en")],
+        );
+      }),
+    );
 
     await tester.pumpAndSettle();
 

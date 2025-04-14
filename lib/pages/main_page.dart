@@ -34,21 +34,24 @@ import 'base_page.dart';
 const double _deviceListScrollPadding = 80.0;
 
 Stream<Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>>
-    _mergeNicknameAndLighthouseDevice(final LighthousePMBloc bloc) {
+_mergeNicknameAndLighthouseDevice(final LighthousePMBloc bloc) {
   return Rx.combineLatest3<
-          List<Nickname>,
-          List<LighthouseDevice>,
-          List<GroupWithEntries>,
-          Tuple3<List<Nickname>, List<LighthouseDevice>,
-              List<GroupWithEntries>>>(
-      MergeStream([Stream.value([]), bloc.nicknames.watchSavedNicknames]),
-      MergeStream(
-          [Stream.value([]), LighthouseProvider.instance.lighthouseDevices]),
-      MergeStream([Stream.value([]), bloc.groups.watchGroups()]),
-      (final nicknames, final devices, final groups) {
-    groups.sort((final a, final b) => a.group.name.compareTo(b.group.name));
-    return Tuple3(nicknames, devices, groups);
-  });
+    List<Nickname>,
+    List<LighthouseDevice>,
+    List<GroupWithEntries>,
+    Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>
+  >(
+    MergeStream([Stream.value([]), bloc.nicknames.watchSavedNicknames]),
+    MergeStream([
+      Stream.value([]),
+      LighthouseProvider.instance.lighthouseDevices,
+    ]),
+    MergeStream([Stream.value([]), bloc.groups.watchGroups()]),
+    (final nicknames, final devices, final groups) {
+      groups.sort((final a, final b) => a.group.name.compareTo(b.group.name));
+      return Tuple3(nicknames, devices, groups);
+    },
+  );
 }
 
 class MainPage extends BasePage with WithBlocStateless {
@@ -61,15 +64,18 @@ class MainPage extends BasePage with WithBlocStateless {
       builder: (final context, final settings) {
         if (settings != null) {
           return StreamBuilder<BluetoothAdapterState>(
-              stream: LighthouseProvider.instance.state,
-              initialData: BluetoothAdapterState.unknown,
-              builder: (final BuildContext context,
-                  final AsyncSnapshot<BluetoothAdapterState> snapshot) {
-                final state = snapshot.data;
-                return state == BluetoothAdapterState.on
-                    ? ScanDevicesPage(settings: settings)
-                    : BluetoothOffScreen(state: state, settings: settings);
-              });
+            stream: LighthouseProvider.instance.state,
+            initialData: BluetoothAdapterState.unknown,
+            builder: (
+              final BuildContext context,
+              final AsyncSnapshot<BluetoothAdapterState> snapshot,
+            ) {
+              final state = snapshot.data;
+              return state == BluetoothAdapterState.on
+                  ? ScanDevicesPage(settings: settings)
+                  : BluetoothOffScreen(state: state, settings: settings);
+            },
+          );
         } else {
           return const Text('Booting');
         }
@@ -85,9 +91,11 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
 
   Stream<int> getPairedDevicesStream(final List<PairBackEnd> backEnds) {
     return Rx.combineLatestList(
-            backEnds.map((final e) => e.numberOfPairedDevices()))
-        .map((final event) =>
-            event.reduce((final value, final element) => element + value));
+      backEnds.map((final e) => e.numberOfPairedDevices()),
+    ).map(
+      (final event) =>
+          event.reduce((final value, final element) => element + value),
+    );
   }
 
   @override
@@ -99,8 +107,10 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
     return StreamBuilder<int>(
       stream: pairedDevicesStream,
       initialData: 0,
-      builder: (final BuildContext context,
-          final AsyncSnapshot<int> pairedDevicesSnapshot) {
+      builder: (
+        final BuildContext context,
+        final AsyncSnapshot<int> pairedDevicesSnapshot,
+      ) {
         var pairedDevices = 0;
         if (pairedDevicesSnapshot.hasError) {
           debugPrint(pairedDevicesSnapshot.error.toString());
@@ -123,18 +133,20 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                     // TODO show dialog to select the provider
                   } else {
                     pairBackEnds[0].pairNewDevice(
-                        timeout: Duration(seconds: settings.scanDuration),
-                        updateInterval:
-                            Duration(seconds: settings.updateInterval));
+                      timeout: Duration(seconds: settings.scanDuration),
+                      updateInterval: Duration(
+                        seconds: settings.updateInterval,
+                      ),
+                    );
                   }
                 },
                 tooltip: 'Pair a new device',
-                child: Icon(Icons.bluetooth_connected,
-                    color: theme.colorScheme.onPrimary),
+                child: Icon(
+                  Icons.bluetooth_connected,
+                  color: theme.colorScheme.onPrimary,
+                ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(4.0),
-              ),
+              const Padding(padding: EdgeInsets.all(4.0)),
             ],
             // The button for starting and stopping scanning.
             StreamBuilder<bool>(
@@ -148,46 +160,56 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
                     onPressed: () => stopScan(),
                     backgroundColor: theme.colorScheme.error,
                     tooltip: 'Stop scanning',
-                    child: Icon(
-                      Icons.stop,
-                      color: theme.colorScheme.onError,
-                    ),
+                    child: Icon(Icons.stop, color: theme.colorScheme.onError),
                   );
                 } else {
                   return FloatingActionButton(
                     heroTag: 'scanButton',
                     backgroundColor: theming.getDisabledColorIf(
-                        !shouldScanBeDisabled, theming.buttonColor),
+                      !shouldScanBeDisabled,
+                      theming.buttonColor,
+                    ),
                     elevation: shouldScanBeDisabled ? 0 : null,
                     hoverElevation: shouldScanBeDisabled ? 0 : null,
                     onPressed: () async {
                       if (shouldScanBeDisabled) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
                             content: Text(
-                                'Please pair a device first, before scanning for devices.')));
+                              'Please pair a device first, before scanning for devices.',
+                            ),
+                          ),
+                        );
                         return;
                       }
                       if (!context.mounted) {
                         return;
                       }
-                      final locationPermission = LocationPermissionDialogFlow
-                          .showLocationPermissionDialogFlow(context);
+                      final locationPermission =
+                          LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
+                            context,
+                          );
                       if (await locationPermission) {
                         await startScan(
                           Duration(seconds: settings.scanDuration),
-                          updateInterval:
-                              Duration(seconds: settings.updateInterval),
+                          updateInterval: Duration(
+                            seconds: settings.updateInterval,
+                          ),
                         );
                       }
                     },
                     tooltip: 'Start scanning',
-                    child: Icon(Icons.search,
-                        color: theming.getDisabledColorIf(!shouldScanBeDisabled,
-                            theme.colorScheme.onPrimary)),
+                    child: Icon(
+                      Icons.search,
+                      color: theming.getDisabledColorIf(
+                        !shouldScanBeDisabled,
+                        theme.colorScheme.onPrimary,
+                      ),
+                    ),
                   );
                 }
               },
-            )
+            ),
           ],
         );
       },
@@ -221,10 +243,12 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
-        updateInterval: Duration(seconds: widget.settings.updateInterval),
-        failMessage:
-            "Could not start scan because the permission has not been granted");
+    startScanWithCheck(
+      Duration(seconds: widget.settings.scanDuration),
+      updateInterval: Duration(seconds: widget.settings.updateInterval),
+      failMessage:
+          "Could not start scan because the permission has not been granted",
+    );
   }
 
   @override
@@ -234,21 +258,28 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   Map<String, String> _nicknamesToMap(final List<Nickname> nicknames) {
-    return Map.fromEntries(nicknames.map(
-        (final nickname) => MapEntry(nickname.deviceId, nickname.nickname)));
+    return Map.fromEntries(
+      nicknames.map(
+        (final nickname) => MapEntry(nickname.deviceId, nickname.nickname),
+      ),
+    );
   }
 
   List<LighthouseDevice> _devicesNotInAGroup(
-      final List<LighthouseDevice> devices,
-      final List<GroupWithEntries> groups) {
+    final List<LighthouseDevice> devices,
+    final List<GroupWithEntries> groups,
+  ) {
     final List<LighthouseDevice> output = [];
     final selectedCopy = <LHDeviceIdentifier>{};
     selectedCopy.addAll(selected);
     final newSelected = <LHDeviceIdentifier>{};
 
     for (final device in devices) {
-      bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          deviceId: device.deviceIdentifier.toString()));
+      bloc.nicknames.insertLastSeenDevice(
+        LastSeenDevicesCompanion.insert(
+          deviceId: device.deviceIdentifier.toString(),
+        ),
+      );
       // Make sure a device hasn't left
       if (selectedCopy.contains(device.deviceIdentifier)) {
         newSelected.add(device.deviceIdentifier);
@@ -287,7 +318,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     return Center(
       child: Padding(
         padding: EdgeInsets.only(
-            bottom: (MediaQuery.of(context).padding.top + kToolbarHeight)),
+          bottom: (MediaQuery.of(context).padding.top + kToolbarHeight),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -338,48 +370,50 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   Widget build(final BuildContext context) {
     final selecting = selected.isNotEmpty || selectedGroup != null;
     return buildScanPopScope(
-        beforeWillPop: () {
-          if (selecting) {
-            setState(() {
-              clearSelected();
-            });
-            return false;
+      beforeWillPop: () {
+        if (selecting) {
+          setState(() {
+            clearSelected();
+          });
+          return false;
+        }
+        return true;
+      },
+      child: StreamBuilder<
+        Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>
+      >(
+        stream: _mergeNicknameAndLighthouseDevice(bloc),
+        initialData: const Tuple3([], [], []),
+        builder: (final c, final snapshot) {
+          updates++;
+          final tuple = snapshot.requireData;
+          final devices = tuple.item2;
+          if (devices.isNotEmpty) {
+            devices.sort(
+              (final a, final b) =>
+                  a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id),
+            );
           }
-          return true;
-        },
-        child: StreamBuilder<
-                Tuple3<List<Nickname>, List<LighthouseDevice>,
-                    List<GroupWithEntries>>>(
-            stream: _mergeNicknameAndLighthouseDevice(bloc),
-            initialData: const Tuple3([], [], []),
-            builder: (final c, final snapshot) {
-              updates++;
-              final tuple = snapshot.requireData;
-              final devices = tuple.item2;
-              if (devices.isNotEmpty) {
-                devices.sort((final a, final b) =>
-                    a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id));
-              }
-              final nicknames = _nicknamesToMap(tuple.item1);
-              final groups = tuple.item3;
-              final notGroupedDevices = _devicesNotInAGroup(devices, groups);
-              final listLength = groups.length + notGroupedDevices.length;
-              final theming = Theming.of(context);
-              final theme = Theme.of(context);
+          final nicknames = _nicknamesToMap(tuple.item1);
+          final groups = tuple.item3;
+          final notGroupedDevices = _devicesNotInAGroup(devices, groups);
+          final listLength = groups.length + notGroupedDevices.length;
+          final theming = Theming.of(context);
+          final theme = Theme.of(context);
 
-              final Widget body = (groups.isEmpty &&
-                      devices.isEmpty &&
-                      updates > 2)
+          final Widget body =
+              (groups.isEmpty && devices.isEmpty && updates > 2)
                   ? StreamBuilder<bool>(
-                      stream: LighthouseProvider.instance.isScanning,
-                      initialData: true,
-                      builder: (final context, final scanningSnapshot) {
-                        final scanning = scanningSnapshot.data;
-                        if (scanning ?? false) {
-                          return _buildLoadingComponent(theme, theming);
-                        }
+                    stream: LighthouseProvider.instance.isScanning,
+                    initialData: true,
+                    builder: (final context, final scanningSnapshot) {
+                      final scanning = scanningSnapshot.data;
+                      if (scanning ?? false) {
+                        return _buildLoadingComponent(theme, theming);
+                      }
 
-                        return ContentContainerListView(children: [
+                      return ContentContainerListView(
+                        children: [
                           Padding(
                             padding: const EdgeInsets.all(12),
                             child: Text(
@@ -388,171 +422,194 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          const Divider(
-                            thickness: 1.5,
-                          ),
+                          const Divider(thickness: 1.5),
                           ...TroubleshootingContentWidget.getContent(context),
                           // Add an extra container at the bottom to stop the floating
                           // button from obstructing the last item.
-                          Container(
-                            height: _deviceListScrollPadding,
-                          ),
-                        ]);
-                      },
-                    )
+                          Container(height: _deviceListScrollPadding),
+                        ],
+                      );
+                    },
+                  )
                   : ContentScrollbar(
-                      scrollbarChildBuilder: (final context, final controller) {
-                        return ListView.builder(
-                          controller: controller,
-                          itemBuilder: (final BuildContext context, int index) {
-                            if (index == listLength) {
-                              // Add an extra container at the bottom to stop the floating
-                              // button from obstructing the last item.
-                              return Container(
-                                height: _deviceListScrollPadding,
-                              );
-                            }
-                            if (index < groups.length) {
-                              return LighthouseGroupWidget(
-                                group: groups[index],
-                                devices: devices,
-                                selectedDevices: selected,
-                                selectedGroup: selectedGroup,
-                                nicknameMap: nicknames,
-                                sleepState: widget.settings.sleepState,
-                                showOfflineWarning:
-                                    widget.settings.groupShowOfflineWarning,
-                                onGroupSelected: () {
-                                  setState(() {
-                                    if (groups[index].deviceIds.isEmpty) {
-                                      clearSelected();
-                                      selectedGroup = groups[index].group;
-                                      return;
-                                    }
-                                    if (LighthouseGroupWidget.isGroupSelected(
-                                        groups[index].deviceIds,
-                                        selected
-                                            .map((final e) => e.toString())
-                                            .toList())) {
-                                      clearSelected();
-                                    } else {
-                                      clearSelected();
-                                      selected.addAll(groups[index]
-                                          .deviceIds
-                                          .map((final e) =>
-                                              LHDeviceIdentifier(e)));
-                                    }
-                                  });
-                                },
-                                onSelectedDevice:
-                                    (final LHDeviceIdentifier device) {
-                                  setState(() {
-                                    selectedGroup = null;
-                                    if (selected.contains(device)) {
-                                      selected.remove(device);
-                                    } else {
-                                      selected.add(device);
-                                    }
-                                  });
-                                },
-                              );
-                            }
-
-                            index -= groups.length;
-                            final device = notGroupedDevices[index];
-
-                            final nickname =
-                                nicknames[device.deviceIdentifier.toString()];
-                            return LighthouseWidget(
-                              device,
-                              selected:
-                                  selected.contains(device.deviceIdentifier),
-                              selecting: selecting,
-                              onSelected: () {
+                    scrollbarChildBuilder: (final context, final controller) {
+                      return ListView.builder(
+                        controller: controller,
+                        itemBuilder: (final BuildContext context, int index) {
+                          if (index == listLength) {
+                            // Add an extra container at the bottom to stop the floating
+                            // button from obstructing the last item.
+                            return Container(height: _deviceListScrollPadding);
+                          }
+                          if (index < groups.length) {
+                            return LighthouseGroupWidget(
+                              group: groups[index],
+                              devices: devices,
+                              selectedDevices: selected,
+                              selectedGroup: selectedGroup,
+                              nicknameMap: nicknames,
+                              sleepState: widget.settings.sleepState,
+                              showOfflineWarning:
+                                  widget.settings.groupShowOfflineWarning,
+                              onGroupSelected: () {
                                 setState(() {
-                                  selectedGroup = null;
-                                  if (selected
-                                      .contains(device.deviceIdentifier)) {
-                                    selected.remove(device.deviceIdentifier);
+                                  if (groups[index].deviceIds.isEmpty) {
+                                    clearSelected();
+                                    selectedGroup = groups[index].group;
+                                    return;
+                                  }
+                                  if (LighthouseGroupWidget.isGroupSelected(
+                                    groups[index].deviceIds,
+                                    selected
+                                        .map((final e) => e.toString())
+                                        .toList(),
+                                  )) {
+                                    clearSelected();
                                   } else {
-                                    selected.add(device.deviceIdentifier);
+                                    clearSelected();
+                                    selected.addAll(
+                                      groups[index].deviceIds.map(
+                                        (final e) => LHDeviceIdentifier(e),
+                                      ),
+                                    );
                                   }
                                 });
                               },
-                              nickname: nickname,
-                              sleepState: widget.settings.sleepState,
+                              onSelectedDevice: (
+                                final LHDeviceIdentifier device,
+                              ) {
+                                setState(() {
+                                  selectedGroup = null;
+                                  if (selected.contains(device)) {
+                                    selected.remove(device);
+                                  } else {
+                                    selected.add(device);
+                                  }
+                                });
+                              },
                             );
-                          },
-                          itemCount: listLength + 1,
-                        );
-                      },
-                    );
+                          }
 
-              final List<Widget> actions = [];
-              if (selecting) {
-                if (selected.length == 1) {
-                  actions.add(
-                      _getChangeNicknameAction(devices, nicknames, theming));
-                }
-                if (selected.isNotEmpty) {
-                  actions.add(_getChangeGroupAction(groups, devices, theming));
-                }
-                final Group? currentlySelectedGroup =
-                    _getSelectedGroupFromSelected(groups);
-                if (currentlySelectedGroup != null) {
-                  actions.add(_getChangeGroupNameAction(
-                      currentlySelectedGroup, theming));
-                  actions.add(_getDeleteGroupNameAction(
-                      currentlySelectedGroup, theming));
-                }
-              }
+                          index -= groups.length;
+                          final device = notGroupedDevices[index];
 
-              return Scaffold(
-                appBar: createSelectableAppBar(context,
-                    numberOfSelections: selected.length,
-                    title: const Text('Lighthouse PM'),
-                    actions: actions, onClearSelection: () {
-                  setState(() {
-                    clearSelected();
-                  });
-                }),
-                floatingActionButton: _ScanFloatingButtonWidget(
-                  settings: widget.settings,
-                ),
-                drawer: MainPageDrawer(
-                    Duration(seconds: widget.settings.scanDuration),
-                    Duration(seconds: widget.settings.updateInterval)),
-                body: Shortcuts(
-                    shortcuts: <LogicalKeySet, Intent>{
-                      if (!SharedPlatform.isWeb) ...{
-                        LogicalKeySet(LogicalKeyboardKey.f5):
-                            const ScanDevicesIntent(),
-                        LogicalKeySet(LogicalKeyboardKey.control,
-                            LogicalKeyboardKey.keyR): const ScanDevicesIntent(),
-                        LogicalKeySet(LogicalKeyboardKey.superKey,
-                            LogicalKeyboardKey.keyR): const ScanDevicesIntent(),
-                      } else ...{
-                        LogicalKeySet(LogicalKeyboardKey.alt,
-                            LogicalKeyboardKey.keyR): const ScanDevicesIntent()
-                      }
+                          final nickname =
+                              nicknames[device.deviceIdentifier.toString()];
+                          return LighthouseWidget(
+                            device,
+                            selected: selected.contains(
+                              device.deviceIdentifier,
+                            ),
+                            selecting: selecting,
+                            onSelected: () {
+                              setState(() {
+                                selectedGroup = null;
+                                if (selected.contains(
+                                  device.deviceIdentifier,
+                                )) {
+                                  selected.remove(device.deviceIdentifier);
+                                } else {
+                                  selected.add(device.deviceIdentifier);
+                                }
+                              });
+                            },
+                            nickname: nickname,
+                            sleepState: widget.settings.sleepState,
+                          );
+                        },
+                        itemCount: listLength + 1,
+                      );
                     },
-                    child: Actions(
-                      actions: <Type, Action<Intent>>{
-                        ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
-                            onInvoke: (final ScanDevicesIntent intent) {
-                          startScanWithCheck(
-                              Duration(seconds: widget.settings.scanDuration),
-                              updateInterval: Duration(
-                                  seconds: widget.settings.updateInterval),
-                              failMessage:
-                                  "Could not start scan because the permission has not been granted on keyboard shortcut.");
-                          return null;
-                        })
-                      },
-                      child: Focus(autofocus: true, child: body),
-                    )),
+                  );
+
+          final List<Widget> actions = [];
+          if (selecting) {
+            if (selected.length == 1) {
+              actions.add(
+                _getChangeNicknameAction(devices, nicknames, theming),
               );
-            }));
+            }
+            if (selected.isNotEmpty) {
+              actions.add(_getChangeGroupAction(groups, devices, theming));
+            }
+            final Group? currentlySelectedGroup = _getSelectedGroupFromSelected(
+              groups,
+            );
+            if (currentlySelectedGroup != null) {
+              actions.add(
+                _getChangeGroupNameAction(currentlySelectedGroup, theming),
+              );
+              actions.add(
+                _getDeleteGroupNameAction(currentlySelectedGroup, theming),
+              );
+            }
+          }
+
+          return Scaffold(
+            appBar: createSelectableAppBar(
+              context,
+              numberOfSelections: selected.length,
+              title: const Text('Lighthouse PM'),
+              actions: actions,
+              onClearSelection: () {
+                setState(() {
+                  clearSelected();
+                });
+              },
+            ),
+            floatingActionButton: _ScanFloatingButtonWidget(
+              settings: widget.settings,
+            ),
+            drawer: MainPageDrawer(
+              Duration(seconds: widget.settings.scanDuration),
+              Duration(seconds: widget.settings.updateInterval),
+            ),
+            body: Shortcuts(
+              shortcuts: <LogicalKeySet, Intent>{
+                if (!SharedPlatform.isWeb) ...{
+                  LogicalKeySet(LogicalKeyboardKey.f5):
+                      const ScanDevicesIntent(),
+                  LogicalKeySet(
+                        LogicalKeyboardKey.control,
+                        LogicalKeyboardKey.keyR,
+                      ):
+                      const ScanDevicesIntent(),
+                  LogicalKeySet(
+                        LogicalKeyboardKey.superKey,
+                        LogicalKeyboardKey.keyR,
+                      ):
+                      const ScanDevicesIntent(),
+                } else ...{
+                  LogicalKeySet(
+                        LogicalKeyboardKey.alt,
+                        LogicalKeyboardKey.keyR,
+                      ):
+                      const ScanDevicesIntent(),
+                },
+              },
+              child: Actions(
+                actions: <Type, Action<Intent>>{
+                  ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
+                    onInvoke: (final ScanDevicesIntent intent) {
+                      startScanWithCheck(
+                        Duration(seconds: widget.settings.scanDuration),
+                        updateInterval: Duration(
+                          seconds: widget.settings.updateInterval,
+                        ),
+                        failMessage:
+                            "Could not start scan because the permission has not been granted on keyboard shortcut.",
+                      );
+                      return null;
+                    },
+                  ),
+                },
+                child: Focus(autofocus: true, child: body),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   /// Get the change nickname action, this action is only for a single item.
@@ -565,35 +622,39 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       tooltip: 'Change nickname',
       icon: SvgPicture.asset(
         'assets/images/nickname-icon.svg',
-        colorFilter: theming.iconColor != null
-            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-            : null,
+        colorFilter:
+            theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
       ),
       onPressed: () async {
         if (selected.length == 1) {
           final item = selected.first;
           final name =
               devices.cast<LighthouseDevice?>().singleWhere((final element) {
-                    if (element != null) {
-                      return element.deviceIdentifier == item;
-                    }
-                    return false;
-                  }, orElse: () => null)?.name ??
-                  item.toString();
+                if (element != null) {
+                  return element.deviceIdentifier == item;
+                }
+                return false;
+              }, orElse: () => null)?.name ??
+              item.toString();
           final String? nickname = nicknames[item.toString()];
 
           final newNickname = await NicknameAlertWidget.showCustomDialog(
-              context,
-              deviceId: item.toString(),
-              deviceName: name,
-              nickname: nickname);
+            context,
+            deviceId: item.toString(),
+            deviceName: name,
+            nickname: nickname,
+          );
           if (newNickname != null) {
             if (newNickname.nickname == null) {
-              blocWithoutListen.nicknames
-                  .deleteNicknames([newNickname.deviceId]);
+              blocWithoutListen.nicknames.deleteNicknames([
+                newNickname.deviceId,
+              ]);
             } else {
-              blocWithoutListen.nicknames
-                  .insertNickname(newNickname.toNickname()!);
+              blocWithoutListen.nicknames.insertNickname(
+                newNickname.toNickname()!,
+              );
             }
             setState(() {
               clearSelected();
@@ -605,125 +666,151 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   /// Get the action for changing a group.
-  IconButton _getChangeGroupAction(final List<GroupWithEntries> groups,
-      final List<LighthouseDevice> devices, final Theming theming) {
+  IconButton _getChangeGroupAction(
+    final List<GroupWithEntries> groups,
+    final List<LighthouseDevice> devices,
+    final Theming theming,
+  ) {
     return IconButton(
-        tooltip: 'Change group',
-        icon: SvgPicture.asset(
-          'assets/images/group-add-icon.svg',
-          colorFilter: theming.iconColor != null
-              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-              : null,
-        ),
-        onPressed: () async {
-          final Group? commonGroup = _getGroupFromSelected(groups);
-          final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
-              context,
-              groups: groups,
-              selectedGroup: commonGroup);
-          if (newGroup != null) {
-            if (newGroup.id == ChangeGroupAlertWidget.removeGroupId) {
-              await blocWithoutListen.groups.deleteGroupEntries(
-                  selected.map((final e) => e.toString()).toList());
-            } else if (newGroup.id == ChangeGroupAlertWidget.newGroupId) {
-              // The devices that have been selected.
-              final List<LighthouseDevice> selectedDevices =
-                  devices.where((final device) {
-                return selected.contains(device.deviceIdentifier);
-              }).toList();
+      tooltip: 'Change group',
+      icon: SvgPicture.asset(
+        'assets/images/group-add-icon.svg',
+        colorFilter:
+            theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
+      ),
+      onPressed: () async {
+        final Group? commonGroup = _getGroupFromSelected(groups);
+        final Group? newGroup = await ChangeGroupAlertWidget.showCustomDialog(
+          context,
+          groups: groups,
+          selectedGroup: commonGroup,
+        );
+        if (newGroup != null) {
+          if (newGroup.id == ChangeGroupAlertWidget.removeGroupId) {
+            await blocWithoutListen.groups.deleteGroupEntries(
+              selected.map((final e) => e.toString()).toList(),
+            );
+          } else if (newGroup.id == ChangeGroupAlertWidget.newGroupId) {
+            // The devices that have been selected.
+            final List<LighthouseDevice> selectedDevices =
+                devices.where((final device) {
+                  return selected.contains(device.deviceIdentifier);
+                }).toList();
 
-              final int newGroupId = await blocWithoutListen.groups
-                  .insertEmptyGroup(
-                      GroupsCompanion.insert(name: newGroup.name));
-              final insertGroup = Group(id: newGroupId, name: newGroup.name);
+            final int newGroupId = await blocWithoutListen.groups
+                .insertEmptyGroup(GroupsCompanion.insert(name: newGroup.name));
+            final insertGroup = Group(id: newGroupId, name: newGroup.name);
 
-              final saveChanges =
-                  await _checkDevicesBeforeAddingToAGroup(selectedDevices);
+            final saveChanges = await _checkDevicesBeforeAddingToAGroup(
+              selectedDevices,
+            );
 
-              if (saveChanges) {
-                await blocWithoutListen.groups.insertGroup(GroupWithEntries(
-                    insertGroup,
-                    selected.map((final e) => e.toString()).toList()));
-              }
-            } else {
-              final foundGroup = groups.firstWhere(
-                  (final element) => element.group.id == newGroup.id);
-              final Set<String> items = <String>{};
-              items.addAll(foundGroup.deviceIds);
-              items.addAll(selected.map((final e) => e.toString()));
-
-              // The devices that have been selected.
-              final List<LighthouseDevice> selectedDevices =
-                  devices.where((final device) {
-                return items.contains(device.deviceIdentifier.toString());
-              }).toList();
-
-              final saveChanges =
-                  await _checkDevicesBeforeAddingToAGroup(selectedDevices);
-              if (saveChanges) {
-                await blocWithoutListen.groups
-                    .insertGroup(GroupWithEntries(newGroup, items.toList()));
-              }
+            if (saveChanges) {
+              await blocWithoutListen.groups.insertGroup(
+                GroupWithEntries(
+                  insertGroup,
+                  selected.map((final e) => e.toString()).toList(),
+                ),
+              );
             }
-            setState(() {
-              clearSelected();
-            });
+          } else {
+            final foundGroup = groups.firstWhere(
+              (final element) => element.group.id == newGroup.id,
+            );
+            final Set<String> items = <String>{};
+            items.addAll(foundGroup.deviceIds);
+            items.addAll(selected.map((final e) => e.toString()));
+
+            // The devices that have been selected.
+            final List<LighthouseDevice> selectedDevices =
+                devices.where((final device) {
+                  return items.contains(device.deviceIdentifier.toString());
+                }).toList();
+
+            final saveChanges = await _checkDevicesBeforeAddingToAGroup(
+              selectedDevices,
+            );
+            if (saveChanges) {
+              await blocWithoutListen.groups.insertGroup(
+                GroupWithEntries(newGroup, items.toList()),
+              );
+            }
           }
-        });
+          setState(() {
+            clearSelected();
+          });
+        }
+      },
+    );
   }
 
   /// Get the change name action for a group.
   IconButton _getChangeGroupNameAction(
-      final Group group, final Theming theming) {
+    final Group group,
+    final Theming theming,
+  ) {
     return IconButton(
-        tooltip: 'Rename group',
-        icon: SvgPicture.asset(
-          'assets/images/group-edit-icon.svg',
-          colorFilter: theming.iconColor != null
-              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-              : null,
-        ),
-        onPressed: () async {
-          final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
-              context,
-              initialGroupName: group.name);
-          if (newName != null) {
-            await blocWithoutListen.groups
-                .insertJustGroup(Group(id: group.id, name: newName));
-            setState(() {
-              clearSelected();
-            });
-          }
-        });
+      tooltip: 'Rename group',
+      icon: SvgPicture.asset(
+        'assets/images/group-edit-icon.svg',
+        colorFilter:
+            theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
+      ),
+      onPressed: () async {
+        final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
+          context,
+          initialGroupName: group.name,
+        );
+        if (newName != null) {
+          await blocWithoutListen.groups.insertJustGroup(
+            Group(id: group.id, name: newName),
+          );
+          setState(() {
+            clearSelected();
+          });
+        }
+      },
+    );
   }
 
   /// Get the action for deleting a group.
   IconButton _getDeleteGroupNameAction(
-      final Group group, final Theming theming) {
+    final Group group,
+    final Theming theming,
+  ) {
     return IconButton(
-        tooltip: 'Delete group',
-        icon: SvgPicture.asset(
-          'assets/images/group-delete-icon.svg',
-          colorFilter: theming.iconColor != null
-              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-              : null,
-        ),
-        onPressed: () async {
-          final deleteGroupWidget =
-              DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-          if (await deleteGroupWidget) {
-            await blocWithoutListen.groups.deleteGroup(group.id);
-            setState(() {
-              clearSelected();
-            });
-          }
-        });
+      tooltip: 'Delete group',
+      icon: SvgPicture.asset(
+        'assets/images/group-delete-icon.svg',
+        colorFilter:
+            theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
+      ),
+      onPressed: () async {
+        final deleteGroupWidget = DeleteGroupAlertWidget.showCustomDialog(
+          context,
+          group: group,
+        );
+        if (await deleteGroupWidget) {
+          await blocWithoutListen.groups.deleteGroup(group.id);
+          setState(() {
+            clearSelected();
+          });
+        }
+      },
+    );
   }
 
   /// Check if the devices to be added to a group have some compatibility error
   /// This will show a dialog if this is the case.
   Future<bool> _checkDevicesBeforeAddingToAGroup(
-      final List<LighthouseDevice> devicesToBeInAGroup) async {
+    final List<LighthouseDevice> devicesToBeInAGroup,
+  ) async {
     // check channel.
     if (!_checkDevicesHaveUniqueChannel(devicesToBeInAGroup)) {
       final differentGroupItemChannel =
@@ -747,7 +834,8 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
   }
 
   bool _checkDevicesHaveUniqueChannel(
-      final List<LighthouseDevice> devicesToBeInAGroup) {
+    final List<LighthouseDevice> devicesToBeInAGroup,
+  ) {
     final Set<String> knownChannels = <String>{};
     for (final device in devicesToBeInAGroup) {
       String? channel = device.otherMetadata['Channel'];
@@ -811,7 +899,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
     selectedGroup = null;
     for (final group in groups) {
       if (LighthouseGroupWidget.isGroupSelected(
-          group.deviceIds, selected.map((final e) => e.toString()).toList())) {
+        group.deviceIds,
+        selected.map((final e) => e.toString()).toList(),
+      )) {
         return group.group;
       }
     }
@@ -831,11 +921,13 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         cleanUp();
         break;
       case AppLifecycleState.resumed:
-        startScanWithCheck(Duration(seconds: widget.settings.scanDuration),
-            updateInterval: Duration(seconds: widget.settings.updateInterval),
-            failMessage:
-                "Could not start scan because the permission has not been granted on resume.",
-            clean: false);
+        startScanWithCheck(
+          Duration(seconds: widget.settings.scanDuration),
+          updateInterval: Duration(seconds: widget.settings.updateInterval),
+          failMessage:
+              "Could not start scan because the permission has not been granted on resume.",
+          clean: false,
+        );
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
@@ -850,8 +942,11 @@ class ScanDevicesIntent extends Intent {
 }
 
 class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
-  const BluetoothOffScreen(
-      {super.key, required this.state, required this.settings});
+  const BluetoothOffScreen({
+    super.key,
+    required this.state,
+    required this.settings,
+  });
 
   final BluetoothAdapterState? state;
   final MainPageSettings settings;
@@ -859,14 +954,16 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
   Widget _toSettingsButton(final BuildContext context, final Theming theming) {
     if (SharedPlatform.isAndroid && state == BluetoothAdapterState.off) {
       return ElevatedButton(
-          onPressed: () async {
-            await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
-                context);
-          },
-          child: Text(
-            'Enable Bluetooth.',
-            style: theming.bodyMedium?.copyWith(color: Colors.black),
-          ));
+        onPressed: () async {
+          await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
+            context,
+          );
+        },
+        child: Text(
+          'Enable Bluetooth.',
+          style: theming.bodyMedium?.copyWith(color: Colors.black),
+        ),
+      );
     }
     return Container();
   }
@@ -878,7 +975,8 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
 
     var subText = const [
       TextSpan(
-          text: 'Bluetooth needs to be enabled to talk to the lighthouses.')
+        text: 'Bluetooth needs to be enabled to talk to the lighthouses.',
+      ),
     ];
     if (SharedPlatform.isWeb) {
       if (!FlutterWebBluetooth.instance.isBluetoothApiSupported) {
@@ -886,50 +984,64 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
 
         subText = [
           const TextSpan(
-              text: "Your browser doesn't support the bluetooth web API."
-                  " It may need to be enabled behind a flag, try going to "
-                  "about:flags in your browser bar."),
-          if (browser?.browserAgent == BrowserAgent.Chrome)
+            text:
+                "Your browser doesn't support the bluetooth web API."
+                " It may need to be enabled behind a flag, try going to "
+                "about:flags in your browser bar.",
+          ),
+          if (browser?.browserAgent.browserName == 'Chrome' ||
+              browser?.browserAgent.browserName == 'Chromium Edge' ||
+              browser?.browserAgent.browserName == 'Brave' ||
+              browser?.browserAgent.browserName == 'Opera')
             const TextSpan(
-                text: '\nFor Chrome (or chrome like browsers) you will need to '
-                    'enable the "enable-experimental-web-platform-features" flag.')
-          else if (browser?.browserAgent == BrowserAgent.Firefox ||
-              browser?.browserAgent == BrowserAgent.Safari)
+              text:
+                  '\nFor Chrome (or chrome like browsers) you will need to '
+                  'enable the "enable-experimental-web-platform-features" flag.',
+            )
+          else if (browser?.browserAgent.browserName == 'Firefox' ||
+              browser?.browserAgent.browserName == 'Safari')
             TextSpan(
-                text:
-                    '\n${browser?.browser} does not support Bluetooth web yet.')
-          else if (browser?.browserAgent == BrowserAgent.Explorer)
+              text: '\n${browser?.browser} does not support Bluetooth web yet.',
+            )
+          else if (browser?.browserAgent.browserName == 'Internet Explorer')
             const TextSpan(
-                text: "\nWhat are you doing trying this in Internet Explorer!? "
-                    "Of course it doesn't support it!")
-          else if (browser?.browserAgent == BrowserAgent.Edge)
+              text:
+                  "\nWhat are you doing trying this in Internet Explorer!? "
+                  "Of course it doesn't support it!",
+            )
+          else if (browser?.browserAgent.browserName == 'Edge')
             const TextSpan(
-                text: "\nTry switching to the new Chrome based browser.")
+              text: "\nTry switching to the new Chrome based browser.",
+            ),
         ];
       } else {
         subText = const [
           TextSpan(
-              text: "Try enabling Bluetooth on your device or "
-                  "stick in a USB Bluetooth adapter.")
+            text:
+                "Try enabling Bluetooth on your device or "
+                "stick in a USB Bluetooth adapter.",
+          ),
         ];
       }
     } else if (SharedPlatform.isLinux) {
       if (state == BluetoothAdapterState.unavailable) {
         subText = const [
           TextSpan(
-              text: "No bluetooth adapter has been found. "
-                  "Try sticking in a USB Bluetooth adapter.")
+            text:
+                "No bluetooth adapter has been found. "
+                "Try sticking in a USB Bluetooth adapter.",
+          ),
         ];
       }
     }
 
     return Scaffold(
       backgroundColor: Colors.lightBlue,
-      drawer: MainPageDrawer(Duration(seconds: settings.scanDuration),
-          Duration(seconds: settings.updateInterval)),
-      appBar: AppBar(
-        title: const Text('Lighthouse PM'),
+      drawer: MainPageDrawer(
+        Duration(seconds: settings.scanDuration),
+        Duration(seconds: settings.updateInterval),
       ),
+      appBar: AppBar(title: const Text('Lighthouse PM')),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -944,12 +1056,13 @@ class BluetoothOffScreen extends StatelessWidget with ScanningMixin {
               style: theming.titleLarge?.copyWith(color: Colors.white),
             ),
             RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: theming.titleSmall?.copyWith(color: Colors.white),
-                  children: subText,
-                )),
-            _toSettingsButton(context, theming)
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: theming.titleSmall?.copyWith(color: Colors.white),
+                children: subText,
+              ),
+            ),
+            _toSettingsButton(context, theming),
           ],
         ),
       ),

@@ -13,7 +13,8 @@ class AndroidLauncherShortcut {
     channel.setMethodCallHandler(AndroidLauncherShortcut.messageHandler);
     if (!kReleaseMode && !SharedPlatform.isAndroid) {
       throw UnsupportedError(
-          "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?");
+        "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?",
+      );
     }
   }
 
@@ -25,7 +26,9 @@ class AndroidLauncherShortcut {
       }
     }
     throw NoSuchMethodError.withInvocation(
-        instance, Invocation.method(Symbol(call.method), null));
+      instance,
+      Invocation.method(Symbol(call.method), null),
+    );
   }
 
   static AndroidLauncherShortcut? _instance;
@@ -69,19 +72,26 @@ class AndroidLauncherShortcut {
     });
   }
 
-  Future<bool> _requestShortcut(final ShortcutTypes type,
-      final String shortCutString, final String name) {
-    return channel.invokeMethod<bool>('requestShortcut', <String, dynamic>{
-      'action': "${type.part}/$shortCutString",
-      'name': name
-    }).then((final value) => value ?? false);
+  Future<bool> _requestShortcut(
+    final ShortcutTypes type,
+    final String shortCutString,
+    final String name,
+  ) {
+    return channel
+        .invokeMethod<bool>('requestShortcut', <String, dynamic>{
+          'action': "${type.part}/$shortCutString",
+          'name': name,
+        })
+        .then((final value) => value ?? false);
   }
 
   ///
   /// Request the user to a shortcut for a lighthouse.
   ///
   Future<bool> requestShortcutLighthouse(
-      final String macAddress, final String name) {
+    final String macAddress,
+    final String name,
+  ) {
     return _requestShortcut(ShortcutTypes.macType, macAddress, name);
   }
 
@@ -99,11 +109,14 @@ class AndroidLauncherShortcut {
   ///
   static Future<void> _handleMacShortcut(final MethodCall call) async {
     if (call.arguments != null && call.arguments is String) {
-      instance._changePowerStateMac
-          .add(ShortcutHandle(ShortcutTypes.macType, call.arguments as String));
+      instance._changePowerStateMac.add(
+        ShortcutHandle(ShortcutTypes.macType, call.arguments as String),
+      );
     } else {
-      debugPrint("Could not handle mac shortcut callback because the argument "
-          "was missing or of a wrong type");
+      debugPrint(
+        "Could not handle mac shortcut callback because the argument "
+        "was missing or of a wrong type",
+      );
     }
     return;
   }
@@ -117,7 +130,9 @@ typedef _InMethodHandler = Future<dynamic> Function(MethodCall call);
 ///
 class _InMethods {
   static const handleMacShortcut = _InMethods._(
-      'handleMacShortcut', AndroidLauncherShortcut._handleMacShortcut);
+    'handleMacShortcut',
+    AndroidLauncherShortcut._handleMacShortcut,
+  );
 
   static const items = [handleMacShortcut];
 

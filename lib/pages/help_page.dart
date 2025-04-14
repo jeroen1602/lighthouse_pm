@@ -16,20 +16,22 @@ class HelpPage extends BasePage with WithBlocStateless {
   @override
   Widget buildPage(final BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Help')),
-        body: MainPageSettings.mainPageSettingsStreamBuilder(
-            bloc: blocWithoutListen(context),
-            builder: (final context, final settings) {
-              return ContentContainerListView(
-                children: [
-                  const HelpPageSegment('metadata'),
-                  const HelpPageSegment('nickname'),
-                  const HelpPageSegment('group'),
-                  if (LighthouseProvider.instance.getPairBackEnds().isNotEmpty)
-                    const HelpPageSegment('pairing'),
-                  const HelpPageSegment('extended'),
-                ],
-              );
-            }));
+      appBar: AppBar(title: const Text('Help')),
+      body: MainPageSettings.mainPageSettingsStreamBuilder(
+        bloc: blocWithoutListen(context),
+        builder: (final context, final settings) {
+          return ContentContainerListView(
+            children: [
+              const HelpPageSegment('metadata'),
+              const HelpPageSegment('nickname'),
+              const HelpPageSegment('group'),
+              if (LighthouseProvider.instance.getPairBackEnds().isNotEmpty)
+                const HelpPageSegment('pairing'),
+              const HelpPageSegment('extended'),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

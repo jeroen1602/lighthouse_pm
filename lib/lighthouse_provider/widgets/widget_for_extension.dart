@@ -7,9 +7,7 @@ import 'package:lighthouse_provider/lighthouse_provider.dart';
 import 'package:lighthouse_providers/lighthouse_v2_device_provider.dart';
 import 'package:lighthouse_providers/vive_base_station_device_provider.dart';
 
-Widget getWidgetFromDeviceExtension(
-  final DeviceExtension extension,
-) {
+Widget getWidgetFromDeviceExtension(final DeviceExtension extension) {
   if (extension is OnExtension ||
       extension is SleepExtension ||
       extension is StandbyExtension) {
@@ -20,16 +18,11 @@ Widget getWidgetFromDeviceExtension(
   }
 
   if (extension is ShortcutExtension) {
-    return const Icon(
-      Icons.add,
-      color: Color.fromARGB(255, 255, 255, 255),
-    );
+    return const Icon(Icons.add, color: Color.fromARGB(255, 255, 255, 255));
   }
 
   if (extension is IdentifyDeviceExtension) {
-    return SvgPicture.asset(
-      "assets/images/identify-icon.svg",
-    );
+    return SvgPicture.asset("assets/images/identify-icon.svg");
   }
 
   if (extension is ClearIdExtension) {
@@ -40,7 +33,9 @@ Widget getWidgetFromDeviceExtension(
 }
 
 Color getButtonColorFromDeviceExtension(
-    final BuildContext context, final DeviceExtension extension) {
+  final BuildContext context,
+  final DeviceExtension extension,
+) {
   final theming = Theming.of(context);
   if (extension is OnExtension) {
     return theming.customColors.onContainer;
@@ -54,47 +49,55 @@ Color getButtonColorFromDeviceExtension(
 }
 
 ButtonStyle? getButtonStyleFromState(
-    final Theming theming, final LighthousePowerState state) {
+  final Theming theming,
+  final LighthousePowerState state,
+) {
   switch (state) {
     case LighthousePowerState.on:
       return _createButtonStyle(
-          theming.customColors.onOn,
-          theming.customColors.on,
-          theming.brightness == Brightness.dark
-              ? theming.customColors.onSurface
-              : null,
-          theming.customColors.onOnSurface);
+        theming.customColors.onOn,
+        theming.customColors.on,
+        theming.brightness == Brightness.dark
+            ? theming.customColors.onSurface
+            : null,
+        theming.customColors.onOnSurface,
+      );
     case LighthousePowerState.sleep:
       return _createButtonStyle(
-          theming.customColors.onSleep,
-          theming.customColors.sleep,
-          theming.brightness == Brightness.dark
-              ? theming.customColors.sleepSurface
-              : null,
-          theming.customColors.onSleepSurface);
+        theming.customColors.onSleep,
+        theming.customColors.sleep,
+        theming.brightness == Brightness.dark
+            ? theming.customColors.sleepSurface
+            : null,
+        theming.customColors.onSleepSurface,
+      );
     case LighthousePowerState.standby:
       return _createButtonStyle(
-          theming.customColors.onStandby,
-          theming.customColors.standby,
-          theming.brightness == Brightness.dark
-              ? theming.customColors.standbySurface
-              : null,
-          theming.customColors.onStandbySurface);
+        theming.customColors.onStandby,
+        theming.customColors.standby,
+        theming.brightness == Brightness.dark
+            ? theming.customColors.standbySurface
+            : null,
+        theming.customColors.onStandbySurface,
+      );
     case LighthousePowerState.booting:
       return _createButtonStyle(
-          theming.customColors.onBooting,
-          theming.customColors.booting,
-          theming.brightness == Brightness.dark
-              ? theming.customColors.bootingSurface
-              : null,
-          theming.customColors.onBootingSurface);
+        theming.customColors.onBooting,
+        theming.customColors.booting,
+        theming.brightness == Brightness.dark
+            ? theming.customColors.bootingSurface
+            : null,
+        theming.customColors.onBootingSurface,
+      );
     case LighthousePowerState.unknown:
       return ElevatedButton.styleFrom(shape: const CircleBorder());
   }
 }
 
 ButtonStyle? getButtonStyleFromDeviceExtension(
-    final Theming theming, final DeviceExtension extension) {
+  final Theming theming,
+  final DeviceExtension extension,
+) {
   if (extension is OnExtension) {
     return getButtonStyleFromState(theming, LighthousePowerState.on);
   } else if (extension is SleepExtension) {
@@ -106,8 +109,12 @@ ButtonStyle? getButtonStyleFromDeviceExtension(
   return null;
 }
 
-ButtonStyle _createButtonStyle(final Color foreground, final Color background,
-    final Color? surface, final Color? onSurface) {
+ButtonStyle _createButtonStyle(
+  final Color foreground,
+  final Color background,
+  final Color? surface,
+  final Color? onSurface,
+) {
   return ElevatedButton.styleFrom(
     shape: const CircleBorder(),
     foregroundColor: foreground,

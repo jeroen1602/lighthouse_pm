@@ -20,11 +20,12 @@ class ViveBaseStationBloc implements ViveBaseStationPersistence {
   @override
   Stream<bool> hasIdStored(final LHDeviceIdentifier deviceId) {
     final deviceIdString = deviceId.toString();
-    return bloc.viveBaseStation
-        .getViveBaseStationIdsAsStream()
-        .map((final ids) {
+    return bloc.viveBaseStation.getViveBaseStationIdsAsStream().map((
+      final ids,
+    ) {
       return (ids.indexWhere(
-              (final element) => element.deviceId == deviceIdString) >=
+            (final element) => element.deviceId == deviceIdString,
+          ) >=
           0);
     });
   }

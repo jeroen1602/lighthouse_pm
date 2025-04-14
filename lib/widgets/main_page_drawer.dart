@@ -16,110 +16,125 @@ class MainPageDrawer extends StatelessWidget
   @override
   Widget build(final BuildContext context) {
     return StreamBuilder(
-        stream: blocWithoutListen(context).settings.getDebugModeEnabledStream(),
-        initialData: false,
-        builder: (final context, final snapshot) {
-          final theming = Theming.of(context);
-          final headTheme =
-              theming.titleLarge?.copyWith(fontWeight: FontWeight.bold);
+      stream: blocWithoutListen(context).settings.getDebugModeEnabledStream(),
+      initialData: false,
+      builder: (final context, final snapshot) {
+        final theming = Theming.of(context);
+        final headTheme = theming.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+        );
 
-          final children = <Widget>[
-            DrawerHeader(
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/drawer-image.png'),
-                        fit: BoxFit.cover)),
-                child: SvgPicture.asset('assets/images/app-icon.svg')),
+        final children = <Widget>[
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/drawer-image.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: SvgPicture.asset('assets/images/app-icon.svg'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('Troubleshooting'),
+            onTap: () async {
+              Navigator.pop(context);
+              cleanUp();
+              await Navigator.pushNamed(context, '/troubleshooting');
+              startScanWithCheck(
+                scanDuration,
+                updateInterval: updateInterval,
+                failMessage:
+                    "Could not start scan because permission has not been granted. On navigator pop",
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('Help'),
+            onTap: () async {
+              Navigator.pop(context);
+              cleanUp();
+              await Navigator.pushNamed(context, '/help');
+              startScanWithCheck(
+                scanDuration,
+                updateInterval: updateInterval,
+                failMessage:
+                    "Could not start scan because permission has not been granted. On navigator pop",
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () async {
+              Navigator.pop(context);
+              cleanUp();
+              await Navigator.pushNamed(context, '/settings');
+              startScanWithCheck(
+                scanDuration,
+                updateInterval: updateInterval,
+                failMessage:
+                    "Could not start scan because permission has not been granted. On navigator pop",
+              );
+            },
+          ),
+          if (!kReleaseMode || (snapshot.data ?? false)) ...[
+            ListTile(title: Text('debug', style: headTheme)),
+          ],
+          if (snapshot.data ?? false) ...[
             ListTile(
-                leading: const Icon(Icons.report),
-                title: const Text('Troubleshooting'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  cleanUp();
-                  await Navigator.pushNamed(context, '/troubleshooting');
-                  startScanWithCheck(scanDuration,
-                      updateInterval: updateInterval,
-                      failMessage:
-                          "Could not start scan because permission has not been granted. On navigator pop");
-                }),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('Help'),
+              leading: const Icon(CommunityMaterialIcons.material_design),
+              title: const Text('Material test page'),
               onTap: () async {
                 Navigator.pop(context);
                 cleanUp();
-                await Navigator.pushNamed(context, '/help');
-                startScanWithCheck(scanDuration,
-                    updateInterval: updateInterval,
-                    failMessage:
-                        "Could not start scan because permission has not been granted. On navigator pop");
+                await Navigator.pushNamed(context, '/material');
+                startScanWithCheck(
+                  scanDuration,
+                  updateInterval: updateInterval,
+                  failMessage:
+                      "Could not start scan because permission has not been granted. On navigator pop",
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              leading: const Icon(CommunityMaterialIcons.pulse),
+              title: const Text('Activity log'),
               onTap: () async {
                 Navigator.pop(context);
                 cleanUp();
-                await Navigator.pushNamed(context, '/settings');
-                startScanWithCheck(scanDuration,
-                    updateInterval: updateInterval,
-                    failMessage:
-                        "Could not start scan because permission has not been granted. On navigator pop");
+                await Navigator.pushNamed(context, '/log');
+                startScanWithCheck(
+                  scanDuration,
+                  updateInterval: updateInterval,
+                  failMessage:
+                      "Could not start scan because permission has not been granted. On navigator pop",
+                );
               },
             ),
-            if (!kReleaseMode || (snapshot.data ?? false)) ...[
-              ListTile(
-                title: Text('debug', style: headTheme),
-              ),
-            ],
-            if (snapshot.data ?? false) ...[
-              ListTile(
-                leading: const Icon(CommunityMaterialIcons.material_design),
-                title: const Text('Material test page'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  cleanUp();
-                  await Navigator.pushNamed(context, '/material');
-                  startScanWithCheck(scanDuration,
-                      updateInterval: updateInterval,
-                      failMessage:
-                          "Could not start scan because permission has not been granted. On navigator pop");
-                },
-              ),
-              ListTile(
-                  leading: const Icon(CommunityMaterialIcons.pulse),
-                  title: const Text('Activity log'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    cleanUp();
-                    await Navigator.pushNamed(context, '/log');
-                    startScanWithCheck(scanDuration,
-                        updateInterval: updateInterval,
-                        failMessage:
-                            "Could not start scan because permission has not been granted. On navigator pop");
-                  }),
-            ],
-            if (!kReleaseMode) ...[
-              ListTile(
-                  leading: const Icon(CommunityMaterialIcons.database),
-                  title: const Text('Database test'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    cleanUp();
-                    await Navigator.pushNamed(context, '/databaseTest');
-                    startScanWithCheck(scanDuration,
-                        updateInterval: updateInterval,
-                        failMessage:
-                            "Could not start scan because permission has not been granted. On navigator pop");
-                  }),
-            ]
-          ];
+          ],
+          if (!kReleaseMode) ...[
+            ListTile(
+              leading: const Icon(CommunityMaterialIcons.database),
+              title: const Text('Database test'),
+              onTap: () async {
+                Navigator.pop(context);
+                cleanUp();
+                await Navigator.pushNamed(context, '/databaseTest');
+                startScanWithCheck(
+                  scanDuration,
+                  updateInterval: updateInterval,
+                  failMessage:
+                      "Could not start scan because permission has not been granted. On navigator pop",
+                );
+              },
+            ),
+          ],
+        ];
 
-          return Drawer(
-              child: ListView(
-            children: children,
-          ));
-        });
+        return Drawer(child: ListView(children: children));
+      },
+    );
   }
 }

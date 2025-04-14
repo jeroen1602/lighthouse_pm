@@ -16,15 +16,16 @@ class ChangeGroupNameAlertWidget extends StatefulWidget {
   ///
   /// Returns `null` if the user cancels the change or enters a string that
   /// is empty after trimming. Will return the new [String].
-  static Future<String?> showCustomDialog(final BuildContext context,
-      {final String? initialGroupName}) {
+  static Future<String?> showCustomDialog(
+    final BuildContext context, {
+    final String? initialGroupName,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return ChangeGroupNameAlertWidget(
-            initialGroupName: initialGroupName,
-          );
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return ChangeGroupNameAlertWidget(initialGroupName: initialGroupName);
+      },
+    ).then((final value) {
       if (value is String) {
         if (value.trim().isEmpty) {
           return null;

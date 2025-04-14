@@ -9,12 +9,13 @@ class ContentContainerWidget extends StatelessWidget {
   static const defaultMaxSize = 1280.0;
   static const defaultContentSize = 0.5;
 
-  const ContentContainerWidget(
-      {required this.builder,
-      this.maxSize = ContentContainerWidget.defaultMaxSize,
-      this.contentSize = ContentContainerWidget.defaultContentSize,
-      this.addMaterial = true,
-      super.key});
+  const ContentContainerWidget({
+    required this.builder,
+    this.maxSize = ContentContainerWidget.defaultMaxSize,
+    this.contentSize = ContentContainerWidget.defaultContentSize,
+    this.addMaterial = true,
+    super.key,
+  });
 
   /// At what size should the content become smaller?
   final double maxSize;
@@ -37,25 +38,15 @@ class ContentContainerWidget extends StatelessWidget {
 
       return Row(
         children: [
-          Container(
-            width: spacerWidth / 2.0,
-          ),
+          Container(width: spacerWidth / 2.0),
           if (addMaterial)
             SizedBox(
               width: contentWidth,
-              child: Material(
-                elevation: 2.0,
-                child: builder(context),
-              ),
+              child: Material(elevation: 2.0, child: builder(context)),
             )
           else
-            SizedBox(
-              width: contentWidth,
-              child: builder(context),
-            ),
-          Container(
-            width: spacerWidth / 2.0,
-          ),
+            SizedBox(width: contentWidth, child: builder(context)),
+          Container(width: spacerWidth / 2.0),
         ],
       );
     } else {
@@ -95,26 +86,27 @@ class ContentContainerListView extends StatelessWidget {
           contentSize: contentSize,
         ),
         ContentScrollbar(
-            scrollbarChildBuilder: (final context, final controller) {
-          return ListView.builder(
-            controller: controller,
-            itemBuilder: (final BuildContext context, final int index) {
-              final Widget? content = itemBuilder(context, index);
-              return ContentContainerWidget(
-                builder: (final BuildContext context) {
-                  if (content == null) {
-                    return Container();
-                  }
-                  return content;
-                },
-                addMaterial: false,
-                maxSize: maxSize,
-                contentSize: contentSize,
-              );
-            },
-            itemCount: itemCount,
-          );
-        }),
+          scrollbarChildBuilder: (final context, final controller) {
+            return ListView.builder(
+              controller: controller,
+              itemBuilder: (final BuildContext context, final int index) {
+                final Widget? content = itemBuilder(context, index);
+                return ContentContainerWidget(
+                  builder: (final BuildContext context) {
+                    if (content == null) {
+                      return Container();
+                    }
+                    return content;
+                  },
+                  addMaterial: false,
+                  maxSize: maxSize,
+                  contentSize: contentSize,
+                );
+              },
+              itemCount: itemCount,
+            );
+          },
+        ),
       ],
     );
   }
@@ -135,17 +127,21 @@ class ContentContainerListView extends StatelessWidget {
         ContentScrollbar(
           scrollbarChildBuilder: (final context, final controller) {
             return ListView(
-                controller: controller,
-                children: children
-                    .map((final item) => ContentContainerWidget(
+              controller: controller,
+              children:
+                  children
+                      .map(
+                        (final item) => ContentContainerWidget(
                           builder: (final context) {
                             return item;
                           },
                           addMaterial: false,
                           maxSize: maxSize,
                           contentSize: contentSize,
-                        ))
-                    .toList());
+                        ),
+                      )
+                      .toList(),
+            );
           },
           maxSize: maxSize,
         ),
@@ -154,8 +150,8 @@ class ContentContainerListView extends StatelessWidget {
   }
 }
 
-typedef ScrollbarChildBuilder = Widget Function(
-    BuildContext context, ScrollController controller);
+typedef ScrollbarChildBuilder =
+    Widget Function(BuildContext context, ScrollController controller);
 
 class ContentScrollbar extends StatelessWidget {
   ContentScrollbar({
@@ -175,9 +171,10 @@ class ContentScrollbar extends StatelessWidget {
   Widget build(final BuildContext context) {
     final child = scrollbarChildBuilder(context, controller);
     return Scrollbar(
-        controller: controller,
-        thumbVisibility: alwaysShowScrollbar(context, maxSize: maxSize),
-        child: child);
+      controller: controller,
+      thumbVisibility: alwaysShowScrollbar(context, maxSize: maxSize),
+      child: child,
+    );
   }
 
   static bool alwaysShowScrollbar(

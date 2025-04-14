@@ -34,16 +34,20 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final Group data) async {
+    final BuildContext context,
+    final Group data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: '${data.id}',
-        startValue: data.name);
+      context,
+      primaryKey: '${data.id}',
+      startValue: data.name,
+    );
     if (newValue == null) {
       return;
     }
     await bloc.groups.insertEmptyGroup(
-        GroupsCompanion.insert(id: drift.Value(data.id), name: newValue));
+      GroupsCompanion.insert(id: drift.Value(data.id), name: newValue),
+    );
   }
 
   @override
@@ -52,8 +56,10 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: true),
       DaoDataCreateAlertStringDecorator('Name', null),
     ];
-    final saveNewItem =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (saveNewItem) {
       final int? id =
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
@@ -70,7 +76,8 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
         await bloc.groups.insertEmptyGroup(GroupsCompanion.insert(name: value));
       } else {
         await bloc.groups.insertEmptyGroup(
-            GroupsCompanion.insert(id: drift.Value(id), name: value));
+          GroupsCompanion.insert(id: drift.Value(id), name: value),
+        );
       }
     }
   }
@@ -98,11 +105,14 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final GroupEntry data) async {
+    final BuildContext context,
+    final GroupEntry data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: data.deviceId,
-        startValue: '${data.groupId}');
+      context,
+      primaryKey: data.deviceId,
+      startValue: '${data.groupId}',
+    );
     if (newValue == null) {
       return;
     }
@@ -115,19 +125,24 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
       return;
     }
     await bloc.groups.insertGroupEntry(
-        GroupEntry(deviceId: data.deviceId, groupId: intValue));
+      GroupEntry(deviceId: data.deviceId, groupId: intValue),
+    );
   }
 
   @override
   Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
       DaoDataCreateAlertIntDecorator('Group id', null, autoIncrement: false),
-      DaoDataCreateAlertStringDecorator('Device id', null,
-          validator:
-              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
+      DaoDataCreateAlertStringDecorator(
+        'Device id',
+        null,
+        validator: SharedPlatform.isAndroid ? MacValidator.macValidator : null,
+      ),
     ];
-    final saveNewItem =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (saveNewItem) {
       final int? groupId =
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
@@ -150,8 +165,9 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
         }
         return;
       }
-      await bloc.groups
-          .insertGroupEntry(GroupEntry(deviceId: deviceId, groupId: groupId));
+      await bloc.groups.insertGroupEntry(
+        GroupEntry(deviceId: deviceId, groupId: groupId),
+      );
     }
   }
 }
@@ -164,19 +180,19 @@ class GroupDaoPage extends BasePage with WithBlocStateless {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('GroupDao'),
-      ),
+      appBar: AppBar(title: const Text('GroupDao')),
       body: ContentContainerListView(
         children: [
           DaoTableDataWidget<Group>(
-              'Groups',
-              bloc.groups.select(bloc.groups.groups).watch(),
-              _GroupConverter(bloc)),
+            'Groups',
+            bloc.groups.select(bloc.groups.groups).watch(),
+            _GroupConverter(bloc),
+          ),
           DaoTableDataWidget<GroupEntry>(
-              'Group entries',
-              bloc.groups.select(bloc.groups.groupEntries).watch(),
-              _GroupEntryConverter(bloc)),
+            'Group entries',
+            bloc.groups.select(bloc.groups.groupEntries).watch(),
+            _GroupEntryConverter(bloc),
+          ),
         ],
       ),
     );

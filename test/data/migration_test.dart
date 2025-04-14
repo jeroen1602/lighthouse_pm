@@ -21,8 +21,10 @@ class FakeQueryExecutor extends Fake implements TransactionExecutor {
   String? lastStatement;
 
   @override
-  Future<void> runCustom(final String statement,
-      [final List<Object?>? args]) async {
+  Future<void> runCustom(
+    final String statement, [
+    final List<Object?>? args,
+  ]) async {
     lastStatement = statement;
   }
 
@@ -53,9 +55,12 @@ void main() {
       for (final schema2 in schemas.entries) {
         if (schema1.key == schema2.key) {
           final value = schema1.value.compare(schema2.value);
-          expect(value, isTrue,
-              reason:
-                  "Schema version ${schema1.key} should match version ${schema2.key}");
+          expect(
+            value,
+            isTrue,
+            reason:
+                "Schema version ${schema1.key} should match version ${schema2.key}",
+          );
         } else {
           try {
             schema1.value.compare(schema2.value);
@@ -79,12 +84,18 @@ void main() {
 
       await strategy.onCreate(migrator);
 
-      expect(migrator.currentSchema, isNotNull,
-          reason:
-              'Current schema should not be null for schema version ${finalSchema.key}');
-      expect(migrator.currentSchema!.compare(finalSchema.value), isTrue,
-          reason:
-              'Current schema should match final schema version ${finalSchema.key}');
+      expect(
+        migrator.currentSchema,
+        isNotNull,
+        reason:
+            'Current schema should not be null for schema version ${finalSchema.key}',
+      );
+      expect(
+        migrator.currentSchema!.compare(finalSchema.value),
+        isTrue,
+        reason:
+            'Current schema should match final schema version ${finalSchema.key}',
+      );
     }
   });
 
@@ -97,18 +108,25 @@ void main() {
           continue;
         }
         debugPrint(
-            "Test migrating from schema version ${schemaStart.key} to ${schemaEnd.key}");
+          "Test migrating from schema version ${schemaStart.key} to ${schemaEnd.key}",
+        );
         final migrator = FakeMigrator(schemaStart.key);
         migrator.toHint = schemaEnd.key;
 
         await strategy.onCreate(migrator);
 
-        expect(migrator.currentSchema, isNotNull,
-            reason: 'Should have a starting schema');
+        expect(
+          migrator.currentSchema,
+          isNotNull,
+          reason: 'Should have a starting schema',
+        );
         await strategy.onUpgrade(migrator, schemaStart.key, schemaEnd.key);
 
-        expect(migrator.currentSchema!.compare(schemaEnd.value), isTrue,
-            reason: 'Should have migrated to the new schema');
+        expect(
+          migrator.currentSchema!.compare(schemaEnd.value),
+          isTrue,
+          reason: 'Should have migrated to the new schema',
+        );
       }
     }
   });
@@ -116,9 +134,12 @@ void main() {
   test('Current schema version should exist', () async {
     final db = getDatabase();
 
-    expect(FinalSchemas.schemas[db.schemaVersion], isNotNull,
-        reason:
-            'There should be a known schema available for the current schema version.');
+    expect(
+      FinalSchemas.schemas[db.schemaVersion],
+      isNotNull,
+      reason:
+          'There should be a known schema available for the current schema version.',
+    );
   });
 
   test('Before open should enable foreign keys', () async {

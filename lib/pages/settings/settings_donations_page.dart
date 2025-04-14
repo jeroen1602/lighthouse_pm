@@ -25,14 +25,18 @@ class SettingsSupportPage extends BasePage {
           trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             'assets/images/github-sponsors.svg',
-            colorFilter:
-                const ColorFilter.mode(_githubSponsorsColor, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(
+              _githubSponsorsColor,
+              BlendMode.srcIn,
+            ),
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launchUrl(Links.githubSponsorsUrl,
-                mode: LaunchMode.externalApplication);
+            await launchUrl(
+              Links.githubSponsorsUrl,
+              mode: LaunchMode.externalApplication,
+            );
           },
         ),
         const Divider(),
@@ -43,15 +47,18 @@ class SettingsSupportPage extends BasePage {
           trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             'assets/images/paypal.svg',
-            colorFilter: theming.iconColor != null
-                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                : null,
+            colorFilter:
+                theming.iconColor != null
+                    ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                    : null,
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
           ),
           onTap: () async {
-            await launchUrl(Links.paypalMeUrl,
-                mode: LaunchMode.externalApplication);
+            await launchUrl(
+              Links.paypalMeUrl,
+              mode: LaunchMode.externalApplication,
+            );
           },
         ),
         const Divider(),

@@ -62,11 +62,11 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
   Widget build(final BuildContext context) {
     return StreamBuilder<List<NicknamesLastSeenJoin>>(
       stream: bloc.nicknames.watchSavedNicknamesWithLastSeen(),
-      builder: (final BuildContext _,
-          final AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot) {
-        Widget body = const Center(
-          child: CircularProgressIndicator(),
-        );
+      builder: (
+        final BuildContext _,
+        final AsyncSnapshot<List<NicknamesLastSeenJoin>> snapshot,
+      ) {
+        Widget body = const Center(child: CircularProgressIndicator());
         final data = snapshot.data;
         if (data != null) {
           data.sort((final a, final b) {
@@ -100,36 +100,42 @@ class _NicknamesPageState extends State<_SettingsNicknamesPageContent> {
           );
         }
 
-        final List<Widget> actions = selected.isEmpty
-            ? const []
-            : [
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  tooltip: 'Delete selected',
-                  onPressed: () async {
-                    await blocWithoutListen.nicknames.deleteNicknames(
-                        selected.map((final e) => e.id).toList());
-                    setState(() {
-                      selected.clear();
-                    });
-                    if (context.mounted) {
-                      ToastContext().init(context);
-                      Toast.show('Nicknames have been removed');
-                    }
-                  },
-                )
-              ];
+        final List<Widget> actions =
+            selected.isEmpty
+                ? const []
+                : [
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    tooltip: 'Delete selected',
+                    onPressed: () async {
+                      await blocWithoutListen.nicknames.deleteNicknames(
+                        selected.map((final e) => e.id).toList(),
+                      );
+                      setState(() {
+                        selected.clear();
+                      });
+                      if (context.mounted) {
+                        ToastContext().init(context);
+                        Toast.show('Nicknames have been removed');
+                      }
+                    },
+                  ),
+                ];
 
         return Scaffold(
-            appBar: createSelectableAppBar(context,
-                numberOfSelections: selected.length,
-                title: const Text('Nicknames'),
-                actions: actions, onClearSelection: () {
+          appBar: createSelectableAppBar(
+            context,
+            numberOfSelections: selected.length,
+            title: const Text('Nicknames'),
+            actions: actions,
+            onClearSelection: () {
               setState(() {
                 selected.clear();
               });
-            }),
-            body: body);
+            },
+          ),
+          body: body,
+        );
       },
     );
   }
@@ -142,14 +148,15 @@ typedef _DeleteItem = Future Function(String deviceId);
 typedef _UpdateItem = Future Function(Nickname nickname);
 
 class _DataNicknamePage extends StatelessWidget {
-  const _DataNicknamePage(
-      {required this.selecting,
-      required this.nicknames,
-      required this.selectItem,
-      required this.isSelected,
-      required this.deselectItem,
-      required this.deleteItem,
-      required this.updateItem});
+  const _DataNicknamePage({
+    required this.selecting,
+    required this.nicknames,
+    required this.selectItem,
+    required this.isSelected,
+    required this.deselectItem,
+    required this.deleteItem,
+    required this.updateItem,
+  });
 
   final bool selecting;
   final List<NicknamesLastSeenJoin> nicknames;
@@ -159,10 +166,15 @@ class _DataNicknamePage extends StatelessWidget {
   final _DeleteItem deleteItem;
   final _UpdateItem updateItem;
 
-  Future _changeNickname(final BuildContext context,
-      final NicknamesLastSeenJoin oldNickname) async {
-    final newNickname = await NicknameAlertWidget.showCustomDialog(context,
-        deviceId: oldNickname.deviceId, nickname: oldNickname.nickname);
+  Future _changeNickname(
+    final BuildContext context,
+    final NicknamesLastSeenJoin oldNickname,
+  ) async {
+    final newNickname = await NicknameAlertWidget.showCustomDialog(
+      context,
+      deviceId: oldNickname.deviceId,
+      nickname: oldNickname.nickname,
+    );
     if (newNickname != null) {
       if (newNickname.nickname == null) {
         await deleteItem(newNickname.deviceId);
@@ -182,24 +194,26 @@ class _DataNicknamePage extends StatelessWidget {
 
         return Column(
           children: [
-            createSelectableListTile(context,
-                selected: selected,
-                selecting: selecting,
-                title: Text(item.nickname),
-                subtitle: Text(
-                    '${item.deviceId}${lastSeen != null ? ' | last seen: ${DateFormat.yMd(Intl.systemLocale).format(lastSeen)}' : ''}'),
-                onTap: () {
-              _changeNickname(context, item);
-            }, onSelect: (final newState) {
-              if (newState) {
-                selectItem(item.deviceId);
-              } else {
-                deselectItem(item.deviceId);
-              }
-            }),
-            const Divider(
-              height: 0,
+            createSelectableListTile(
+              context,
+              selected: selected,
+              selecting: selecting,
+              title: Text(item.nickname),
+              subtitle: Text(
+                '${item.deviceId}${lastSeen != null ? ' | last seen: ${DateFormat.yMd(Intl.systemLocale).format(lastSeen)}' : ''}',
+              ),
+              onTap: () {
+                _changeNickname(context, item);
+              },
+              onSelect: (final newState) {
+                if (newState) {
+                  selectItem(item.deviceId);
+                } else {
+                  deselectItem(item.deviceId);
+                }
+              },
             ),
+            const Divider(height: 0),
           ],
         );
       },
@@ -225,60 +239,77 @@ class _EmptyNicknameState extends State<_EmptyNicknamePage> {
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
-    final Widget blockIcon = kReleaseMode
-        ? const Icon(Icons.block, size: 120.0)
-        : GestureDetector(
-            onTap: () {
-              if (tapCounter < _tapTop) {
-                tapCounter++;
-              }
-              if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
-                if (context.mounted) {
-                  ToastContext().init(context);
-                  Toast.show(
-                      'Just ${_tapTop - tapCounter} left until a fake nicknames are created');
+    final Widget blockIcon =
+        kReleaseMode
+            ? const Icon(Icons.block, size: 120.0)
+            : GestureDetector(
+              onTap: () {
+                if (tapCounter < _tapTop) {
+                  tapCounter++;
                 }
-              }
-              if (tapCounter == _tapTop) {
-                blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
-                            0xFFFFFFFF)
-                        .toString(),
-                    nickname: "This is a test nickname1"));
-                blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
-                            0xFFFFFFFE)
-                        .toString(),
-                    nickname: "This is a test nickname2"));
-                blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
-                            0xFFFFFFFD)
-                        .toString(),
-                    nickname: "This is a test nickname3"));
-                blocWithoutListen.nicknames.insertNickname(Nickname(
-                    deviceId: FakeDeviceIdentifier.generateDeviceIdentifier(
-                            0xFFFFFFFC)
-                        .toString(),
-                    nickname: "This is a test nickname4"));
-                if (context.mounted) {
-                  ToastContext().init(context);
-                  Toast.show('Fake nickname created!',
-                      duration: Toast.lengthShort);
+                if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Just ${_tapTop - tapCounter} left until a fake nicknames are created',
+                    );
+                  }
                 }
-                tapCounter++;
-              }
-            },
-            child: const Icon(Icons.block, size: 120.0),
-          );
+                if (tapCounter == _tapTop) {
+                  blocWithoutListen.nicknames.insertNickname(
+                    Nickname(
+                      deviceId:
+                          FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFF,
+                          ).toString(),
+                      nickname: "This is a test nickname1",
+                    ),
+                  );
+                  blocWithoutListen.nicknames.insertNickname(
+                    Nickname(
+                      deviceId:
+                          FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFE,
+                          ).toString(),
+                      nickname: "This is a test nickname2",
+                    ),
+                  );
+                  blocWithoutListen.nicknames.insertNickname(
+                    Nickname(
+                      deviceId:
+                          FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFD,
+                          ).toString(),
+                      nickname: "This is a test nickname3",
+                    ),
+                  );
+                  blocWithoutListen.nicknames.insertNickname(
+                    Nickname(
+                      deviceId:
+                          FakeDeviceIdentifier.generateDeviceIdentifier(
+                            0xFFFFFFFC,
+                          ).toString(),
+                      nickname: "This is a test nickname4",
+                    ),
+                  );
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Fake nickname created!',
+                      duration: Toast.lengthShort,
+                    );
+                  }
+                  tapCounter++;
+                }
+              },
+              child: const Icon(Icons.block, size: 120.0),
+            );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           blockIcon,
-          Text(
-            'No nicknames given (yet).',
-            style: theming.titleLarge,
-          )
+          Text('No nicknames given (yet).', style: theming.titleLarge),
         ],
       ),
     );

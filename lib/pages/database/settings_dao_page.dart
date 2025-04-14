@@ -19,9 +19,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
   _SimpleSettingConverter(this.bloc);
 
   SettingsIds? getSettingFromId(final int id) {
-    return SettingsIds.values
-        .cast<SettingsIds?>()
-        .firstWhere((final e) => e?.value == id, orElse: () => null);
+    return SettingsIds.values.cast<SettingsIds?>().firstWhere(
+      (final e) => e?.value == id,
+      orElse: () => null,
+    );
   }
 
   String convertSettingIdToString(final int id) {
@@ -124,8 +125,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         final items = data
             .split(",")
             .map((final e) => int.tryParse(e, radix: 10))
-            .where((final e) =>
-                e != null && e >= 0 && e < LighthouseProviders.values.length)
+            .where(
+              (final e) =>
+                  e != null && e >= 0 && e < LighthouseProviders.values.length,
+            )
             .cast<int>()
             .map((final e) => '${LighthouseProviders.values[e].name} ($e)')
             .join(", ");
@@ -152,16 +155,20 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final SimpleSetting data) async {
+    final BuildContext context,
+    final SimpleSetting data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: '${data.settingsId}',
-        startValue: data.data);
+      context,
+      primaryKey: '${data.settingsId}',
+      startValue: data.data,
+    );
     if (newValue == null) {
       return;
     }
     return bloc.settings.insertSimpleSetting(
-        SimpleSetting(settingsId: data.settingsId, data: newValue));
+      SimpleSetting(settingsId: data.settingsId, data: newValue),
+    );
   }
 
   @override
@@ -170,8 +177,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
       DaoDataCreateAlertIntDecorator('Id', null, autoIncrement: false),
       DaoDataCreateAlertStringDecorator('Value', null),
     ];
-    final saveNewItem =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (saveNewItem) {
       final int? id =
           (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
@@ -184,8 +193,9 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
         }
         return;
       }
-      await bloc.settings
-          .insertSimpleSetting(SimpleSetting(settingsId: id, data: value));
+      await bloc.settings.insertSimpleSetting(
+        SimpleSetting(settingsId: id, data: value),
+      );
     }
   }
 }
@@ -198,13 +208,14 @@ class SettingsDaoPage extends BasePage with WithBlocStateless {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SettingsDao'),
-      ),
+      appBar: AppBar(title: const Text('SettingsDao')),
       body: ContentContainerListView(
         children: [
-          DaoTableDataWidget<SimpleSetting>('Simple settings',
-              bloc.settings.watchSimpleSettings, _SimpleSettingConverter(bloc)),
+          DaoTableDataWidget<SimpleSetting>(
+            'Simple settings',
+            bloc.settings.watchSimpleSettings,
+            _SimpleSettingConverter(bloc),
+          ),
         ],
       ),
     );

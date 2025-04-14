@@ -13,45 +13,34 @@ class PrivacyPage extends BasePage {
     final theming = Theming.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Privacy"),
-      ),
-      body: ContentContainerListView(children: [
-        PrivacyPageSegment(
-          version: "1.2",
-          language: "en",
-          startDate: DateTime(2024, 11, 24),
-        ),
-        const Divider(
-          thickness: 1.5,
-        ),
-        ListTile(
-          title: Text(
-            "Older versions",
-            style: theming.headlineMedium,
+      appBar: AppBar(title: const Text("Privacy")),
+      body: ContentContainerListView(
+        children: [
+          PrivacyPageSegment(
+            version: "1.2",
+            language: "en",
+            startDate: DateTime(2024, 11, 24),
           ),
-        ),
-        const Divider(
-          thickness: 1.5,
-        ),
-        PrivacyPageSegment(
-          version: "1.1",
-          language: "en",
-          startDate: DateTime(2022, 1, 1),
-          endDate: DateTime(2024, 11, 24),
-        ),
-        const Divider(
-          thickness: 1.5,
-        ),
-        PrivacyPageSegment(
-          version: "1.0",
-          language: "en",
-          endDate: DateTime(2022, 1, 1),
-        ),
-        Container(
-          height: 24.0,
-        )
-      ]),
+          const Divider(thickness: 1.5),
+          ListTile(
+            title: Text("Older versions", style: theming.headlineMedium),
+          ),
+          const Divider(thickness: 1.5),
+          PrivacyPageSegment(
+            version: "1.1",
+            language: "en",
+            startDate: DateTime(2022, 1, 1),
+            endDate: DateTime(2024, 11, 24),
+          ),
+          const Divider(thickness: 1.5),
+          PrivacyPageSegment(
+            version: "1.0",
+            language: "en",
+            endDate: DateTime(2022, 1, 1),
+          ),
+          Container(height: 24.0),
+        ],
+      ),
     );
   }
 }

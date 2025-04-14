@@ -6,12 +6,15 @@ import 'package:lighthouse_pm/lighthouse_provider/widgets/delete_group_alert_wid
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  testWidgets("Should create a delete group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should create a delete group alert widget", (
+    final WidgetTester tester,
+  ) async {
     const group = Group(id: 1, name: "Test group");
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -25,12 +28,15 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should show group name delete group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should show group name delete group alert widget", (
+    final WidgetTester tester,
+  ) async {
     const group = Group(id: 1, name: "Test group");
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -38,9 +44,13 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Delete group"), findsOneWidget);
 
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .toList()[1];
+    final richText =
+        (tester.widgetList<RichText>(
+          find.descendant(
+            of: find.byType(Dialog),
+            matching: find.byType(RichText),
+          ),
+        )).toList()[1];
     final text = richText.text.toPlainText();
 
     expect(text, contains("Test group"));
@@ -52,14 +62,17 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should return false when no is hit delete group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should return false when no is hit delete group alert widget", (
+    final WidgetTester tester,
+  ) async {
     const group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -76,14 +89,17 @@ void main() {
     expect(value, isFalse);
   });
 
-  testWidgets("Should return true when yes is hit delete group alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should return true when yes is hit delete group alert widget", (
+    final WidgetTester tester,
+  ) async {
     const group = Group(id: 1, name: "Test group");
 
     Future<bool>? future;
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = DeleteGroupAlertWidget.showCustomDialog(context, group: group);
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();

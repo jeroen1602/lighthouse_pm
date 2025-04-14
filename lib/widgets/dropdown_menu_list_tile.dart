@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class DropdownMenuListTile<T> extends StatelessWidget {
-  const DropdownMenuListTile(
-      {super.key,
-      this.title,
-      this.subTitle,
-      required this.value,
-      this.icon,
-      this.iconSize = 24.0,
-      this.elevation = 8,
-      required this.onChanged,
-      required this.items});
+  const DropdownMenuListTile({
+    super.key,
+    this.title,
+    this.subTitle,
+    required this.value,
+    this.icon,
+    this.iconSize = 24.0,
+    this.elevation = 8,
+    required this.onChanged,
+    required this.items,
+  });
 
   final Widget? title;
   final Widget? subTitle;
@@ -27,11 +28,12 @@ class DropdownMenuListTile<T> extends StatelessWidget {
       title: title,
       subtitle: subTitle,
       trailing: DropdownButton<T>(
-          value: value,
-          iconSize: iconSize,
-          elevation: elevation,
-          onChanged: onChanged,
-          items: items),
+        value: value,
+        iconSize: iconSize,
+        elevation: elevation,
+        onChanged: onChanged,
+        items: items,
+      ),
     );
   }
 }

@@ -30,34 +30,40 @@ class PermissionsAlertWidget extends StatelessWidget {
     final theming = Theming.of(context);
 
     return AlertDialog(
-        title: Text(_getTitle()),
-        content: RichText(
-            text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
-          TextSpan(text: "${_getExplanation()}\n"),
-          TextSpan(
-            text: "More info.",
-            style: theming.linkTheme,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Navigator.pushNamed(context, '/settings');
-                Navigator.pushNamed(context, '/settings/privacy');
-              },
-          )
-        ])),
-        actions: <Widget>[
-          SimpleDialogOption(
-            child: const Text("Cancel"),
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-          ),
-          SimpleDialogOption(
-            child: const Text("Allow permissions"),
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-          ),
-        ]);
+      title: Text(_getTitle()),
+      content: RichText(
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
+            TextSpan(text: "${_getExplanation()}\n"),
+            TextSpan(
+              text: "More info.",
+              style: theming.linkTheme,
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.pushNamed(context, '/settings');
+                      Navigator.pushNamed(context, '/settings/privacy');
+                    },
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        SimpleDialogOption(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        SimpleDialogOption(
+          child: const Text("Allow permissions"),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
+      ],
+    );
   }
 
   static Future<bool> showCustomDialog(final BuildContext context) {
@@ -66,14 +72,15 @@ class PermissionsAlertWidget extends StatelessWidget {
         return false;
       }
       return showDialog(
-          context: context,
-          builder: (final BuildContext context) {
-            if (deviceInfo is AndroidDeviceInfo) {
-              return PermissionsAlertWidget(deviceInfo.version.sdkInt);
-            }
+        context: context,
+        builder: (final BuildContext context) {
+          if (deviceInfo is AndroidDeviceInfo) {
+            return PermissionsAlertWidget(deviceInfo.version.sdkInt);
+          }
 
-            return PermissionsAlertWidget(-1);
-          }).then((final value) {
+          return PermissionsAlertWidget(-1);
+        },
+      ).then((final value) {
         if (value is bool) {
           return value;
         }

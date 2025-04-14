@@ -28,5 +28,6 @@ LighthouseDatabase constructDb({final bool logStatements = false}) {
   //   return Database(VMDatabase(file, logStatements: logStatements));
   // }
   return LighthouseDatabase(
-      NativeDatabase.memory(logStatements: logStatements));
+    NativeDatabase.memory(logStatements: logStatements),
+  );
 }

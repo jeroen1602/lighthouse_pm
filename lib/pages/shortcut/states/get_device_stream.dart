@@ -13,20 +13,27 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
   final String deviceId;
   final int settingsIndex;
 
-  GetDeviceStream(this.deviceId, this.settingsIndex,
-      {required super.upStream, required super.downStreamBuilders, super.key});
+  GetDeviceStream(
+    this.deviceId,
+    this.settingsIndex, {
+    required super.upStream,
+    required super.downStreamBuilders,
+    super.key,
+  });
 
   Stream<WithTimeout<LighthouseDevice?>> listenForDevice(
-      final Duration timeout) {
+    final Duration timeout,
+  ) {
     final LHDeviceIdentifier identifier = LHDeviceIdentifier(deviceId);
 
     final timeoutStream = Stream.fromFutures([
       Future.value(false),
-      Future.delayed(timeout).then((final value) => true)
+      Future.delayed(timeout).then((final value) => true),
     ]);
 
-    final deviceStream =
-        LighthouseProvider.instance.lighthouseDevices.map((final devices) {
+    final deviceStream = LighthouseProvider.instance.lighthouseDevices.map((
+      final devices,
+    ) {
       LighthouseDevice? foundDevice;
       for (final device in devices) {
         if (device.deviceIdentifier == identifier) {
@@ -38,14 +45,15 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
       return foundDevice;
     });
 
-    return CombineLatestStream.list<dynamic>([deviceStream, timeoutStream])
-        .map((final event) {
-      if (event[0] != null) {
-        return WithTimeout(event[0] as LighthouseDevice, false);
-      } else {
-        return WithTimeout(null, event[1] as bool);
-      }
-    });
+    return CombineLatestStream.list<dynamic>([deviceStream, timeoutStream]).map(
+      (final event) {
+        if (event[0] != null) {
+          return WithTimeout(event[0] as LighthouseDevice, false);
+        } else {
+          return WithTimeout(null, event[1] as bool);
+        }
+      },
+    );
   }
 
   @override
@@ -56,7 +64,8 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
         return const Text('Could not find device');
       } else {
         throw Exception(
-            'Illegal state, the settingsIndex is outside of the upStream items list');
+          'Illegal state, the settingsIndex is outside of the upStream items list',
+        );
       }
     }
     if (upStream[settingsIndex] is! MainPageSettings) {
@@ -65,39 +74,47 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
         return const Text('Could not find device');
       } else {
         throw Exception(
-            'Illegal state, the settingsIndex isn\'t an instance of MainPageSettings. upStream[$settingsIndex]');
+          'Illegal state, the settingsIndex isn\'t an instance of MainPageSettings. upStream[$settingsIndex]',
+        );
       }
     }
     final settings = upStream[settingsIndex] as MainPageSettings;
     WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
-      startScanWithCheck(Duration(seconds: settings.scanDuration),
-          failMessage:
-              "Could not start scan because the permission has not been granted at shortcut handler.");
+      startScanWithCheck(
+        Duration(seconds: settings.scanDuration),
+        failMessage:
+            "Could not start scan because the permission has not been granted at shortcut handler.",
+      );
     });
     return StreamBuilder<WithTimeout<LighthouseDevice?>>(
-        stream: listenForDevice(Duration(seconds: settings.scanDuration + 2)),
-        initialData: WithTimeout.empty(),
-        builder: (final BuildContext context,
-            final AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot) {
-          if (snapshot.requireData.timeoutExpired) {
-            stopScan().then((final _) {
-              if (context.mounted) {
-                closeCurrentRouteWithWait(context);
-              }
-            });
-            return const Text('Scan timeout reached!');
-          }
-          final data = snapshot.requireData.data;
-          if (data != null) {
-            return getNextStreamDown(context, data);
-          } else {
-            return const Text('Searching!');
-          }
-        });
+      stream: listenForDevice(Duration(seconds: settings.scanDuration + 2)),
+      initialData: WithTimeout.empty(),
+      builder: (
+        final BuildContext context,
+        final AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot,
+      ) {
+        if (snapshot.requireData.timeoutExpired) {
+          stopScan().then((final _) {
+            if (context.mounted) {
+              closeCurrentRouteWithWait(context);
+            }
+          });
+          return const Text('Scan timeout reached!');
+        }
+        final data = snapshot.requireData.data;
+        if (data != null) {
+          return getNextStreamDown(context, data);
+        } else {
+          return const Text('Searching!');
+        }
+      },
+    );
   }
 
   static DownStreamBuilder createBuilder(
-      final String deviceId, final int settingsIndex) {
+    final String deviceId,
+    final int settingsIndex,
+  ) {
     if (settingsIndex < 0) {
       throw Exception('Settings index should be at least higher than 0');
     }

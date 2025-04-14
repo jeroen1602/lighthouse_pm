@@ -9,18 +9,19 @@ import '../simple_base_page.dart';
 ///
 class LHLicensePage extends SimpleBasePage {
   LHLicensePage({final Key? key})
-      : super(
-            FutureBuilder<PackageInfo>(
-                future: PackageInfo.fromPlatform(),
-                builder: (final _, final snapshot) {
-                  final data = snapshot.data;
-                  return LicensePage(
-                    applicationName: "Lighthouse Power management",
-                    applicationIcon:
-                        SvgPicture.asset('assets/images/app-icon.svg'),
-                    applicationVersion: data?.version,
-                    applicationLegalese: "Copyright© 2020-2024 Jeroen1602",
-                  );
-                }),
-            key: key);
+    : super(
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (final _, final snapshot) {
+            final data = snapshot.data;
+            return LicensePage(
+              applicationName: "Lighthouse Power management",
+              applicationIcon: SvgPicture.asset('assets/images/app-icon.svg'),
+              applicationVersion: data?.version,
+              applicationLegalese: "Copyright© 2020-2024 Jeroen1602",
+            );
+          },
+        ),
+        key: key,
+      );
 }

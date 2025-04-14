@@ -25,13 +25,15 @@ class FakePermissionHandlerPlatform extends Fake
 
   @override
   Future<PermissionStatus> checkPermissionStatus(
-      final Permission permission) async {
+    final Permission permission,
+  ) async {
     return statusMap[permission] ?? status;
   }
 
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      final List<Permission> permissions) async {
+    final List<Permission> permissions,
+  ) async {
     final output = <Permission, PermissionStatus>{};
     for (final permission in permissions) {
       output[permission] = statusMap[permission] ?? status;
@@ -49,110 +51,126 @@ void main() {
     SharedPlatform.overridePlatform = null;
   });
 
-  test('Should return granted for the correct platforms, hasBLEPermissions',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
-    try {
-      await BLEPermissionsHelper.hasBLEPermissions();
-      fail('Should throw an error');
-    } catch (e) {
-      expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message, contains('UNKNOWN'));
-    }
+  test(
+    'Should return granted for the correct platforms, hasBLEPermissions',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.unsupported;
+      try {
+        await BLEPermissionsHelper.hasBLEPermissions();
+        fail('Should throw an error');
+      } catch (e) {
+        expect(e, isA<UnsupportedError>());
+        expect((e as UnsupportedError).message, contains('UNKNOWN'));
+      }
 
-    SharedPlatform.overridePlatform = PlatformOverride.web;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.granted);
+      SharedPlatform.overridePlatform = PlatformOverride.web;
+      expect(
+        await BLEPermissionsHelper.hasBLEPermissions(),
+        PermissionStatus.granted,
+      );
 
-    SharedPlatform.overridePlatform = PlatformOverride.linux;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.granted);
-  });
-
-  test('Should return granted for the correct platforms, requestBLEPermissions',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
-    try {
-      await BLEPermissionsHelper.requestBLEPermissions();
-      fail('Should throw an error');
-    } catch (e) {
-      expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message, contains('UNKNOWN'));
-    }
-
-    SharedPlatform.overridePlatform = PlatformOverride.web;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.granted);
-
-    SharedPlatform.overridePlatform = PlatformOverride.linux;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.granted);
-  });
-
-  test('Should not open BLE settings on platforms that don\'t support it',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
-    try {
-      await BLEPermissionsHelper.openBLESettings();
-      fail('Should throw an error');
-    } catch (e) {
-      expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message, contains('UNKNOWN'));
-    }
-
-    SharedPlatform.overridePlatform = PlatformOverride.ios;
-    expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
-
-    SharedPlatform.overridePlatform = PlatformOverride.web;
-    expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
-
-    SharedPlatform.overridePlatform = PlatformOverride.linux;
-    expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
-  });
+      SharedPlatform.overridePlatform = PlatformOverride.linux;
+      expect(
+        await BLEPermissionsHelper.hasBLEPermissions(),
+        PermissionStatus.granted,
+      );
+    },
+  );
 
   test(
-      'Should not be able to enable BLE settings on platforms that don\'t support it',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
-    try {
-      await BLEPermissionsHelper.enableBLE();
-      fail('Should throw an error');
-    } catch (e) {
-      expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message, contains('UNKNOWN'));
-    }
+    'Should return granted for the correct platforms, requestBLEPermissions',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.unsupported;
+      try {
+        await BLEPermissionsHelper.requestBLEPermissions();
+        fail('Should throw an error');
+      } catch (e) {
+        expect(e, isA<UnsupportedError>());
+        expect((e as UnsupportedError).message, contains('UNKNOWN'));
+      }
 
-    SharedPlatform.overridePlatform = PlatformOverride.ios;
-    expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+      SharedPlatform.overridePlatform = PlatformOverride.web;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted,
+      );
 
-    SharedPlatform.overridePlatform = PlatformOverride.web;
-    expect(await BLEPermissionsHelper.enableBLE(), isFalse);
-
-    SharedPlatform.overridePlatform = PlatformOverride.linux;
-    expect(await BLEPermissionsHelper.enableBLE(), isFalse);
-  });
+      SharedPlatform.overridePlatform = PlatformOverride.linux;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted,
+      );
+    },
+  );
 
   test(
-      'Should not be able to go to location settings on platforms that don\'t support it',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.unsupported;
-    try {
-      await BLEPermissionsHelper.openLocationSettings();
-      fail('Should throw an error');
-    } catch (e) {
-      expect(e, isA<UnsupportedError>());
-      expect((e as UnsupportedError).message, contains('UNKNOWN'));
-    }
+    'Should not open BLE settings on platforms that don\'t support it',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.unsupported;
+      try {
+        await BLEPermissionsHelper.openBLESettings();
+        fail('Should throw an error');
+      } catch (e) {
+        expect(e, isA<UnsupportedError>());
+        expect((e as UnsupportedError).message, contains('UNKNOWN'));
+      }
 
-    SharedPlatform.overridePlatform = PlatformOverride.ios;
-    expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+      SharedPlatform.overridePlatform = PlatformOverride.ios;
+      expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
-    SharedPlatform.overridePlatform = PlatformOverride.web;
-    expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+      SharedPlatform.overridePlatform = PlatformOverride.web;
+      expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
-    SharedPlatform.overridePlatform = PlatformOverride.linux;
-    expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
-  });
+      SharedPlatform.overridePlatform = PlatformOverride.linux;
+      expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
+    },
+  );
+
+  test(
+    'Should not be able to enable BLE settings on platforms that don\'t support it',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.unsupported;
+      try {
+        await BLEPermissionsHelper.enableBLE();
+        fail('Should throw an error');
+      } catch (e) {
+        expect(e, isA<UnsupportedError>());
+        expect((e as UnsupportedError).message, contains('UNKNOWN'));
+      }
+
+      SharedPlatform.overridePlatform = PlatformOverride.ios;
+      expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+
+      SharedPlatform.overridePlatform = PlatformOverride.web;
+      expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+
+      SharedPlatform.overridePlatform = PlatformOverride.linux;
+      expect(await BLEPermissionsHelper.enableBLE(), isFalse);
+    },
+  );
+
+  test(
+    'Should not be able to go to location settings on platforms that don\'t support it',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.unsupported;
+      try {
+        await BLEPermissionsHelper.openLocationSettings();
+        fail('Should throw an error');
+      } catch (e) {
+        expect(e, isA<UnsupportedError>());
+        expect((e as UnsupportedError).message, contains('UNKNOWN'));
+      }
+
+      SharedPlatform.overridePlatform = PlatformOverride.ios;
+      expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+
+      SharedPlatform.overridePlatform = PlatformOverride.web;
+      expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+
+      SharedPlatform.overridePlatform = PlatformOverride.linux;
+      expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
+    },
+  );
 
   test('Should return hasBLEPermission on iOS', () async {
     SharedPlatform.overridePlatform = PlatformOverride.ios;
@@ -161,37 +179,51 @@ void main() {
     PermissionHandlerPlatform.instance = fake;
 
     fake.status = PermissionStatus.granted;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.granted);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.granted,
+    );
 
     fake.status = PermissionStatus.denied;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.denied);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.denied,
+    );
 
     fake.status = PermissionStatus.permanentlyDenied;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.permanentlyDenied);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.permanentlyDenied,
+    );
   });
 
-  test('Should return correct value with requestBLEPermission on iOS',
-      () async {
-    SharedPlatform.overridePlatform = PlatformOverride.ios;
+  test(
+    'Should return correct value with requestBLEPermission on iOS',
+    () async {
+      SharedPlatform.overridePlatform = PlatformOverride.ios;
 
-    final fake = FakePermissionHandlerPlatform();
-    PermissionHandlerPlatform.instance = fake;
+      final fake = FakePermissionHandlerPlatform();
+      PermissionHandlerPlatform.instance = fake;
 
-    fake.status = PermissionStatus.granted;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.granted);
+      fake.status = PermissionStatus.granted;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted,
+      );
 
-    fake.status = PermissionStatus.denied;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.denied);
+      fake.status = PermissionStatus.denied;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.denied,
+      );
 
-    fake.status = PermissionStatus.permanentlyDenied;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.permanentlyDenied);
-  });
+      fake.status = PermissionStatus.permanentlyDenied;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.permanentlyDenied,
+      );
+    },
+  );
 
   test('Should return hasBLEPermissions on Android 11', () async {
     final fake = FakePermissionHandlerPlatform();
@@ -202,16 +234,22 @@ void main() {
 
     fakeVersion.androidDeviceInfo.setSdkInt(30);
     fake.status = PermissionStatus.granted;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.granted);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.granted,
+    );
 
     fake.status = PermissionStatus.denied;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.denied);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.denied,
+    );
 
     fake.status = PermissionStatus.permanentlyDenied;
-    expect(await BLEPermissionsHelper.hasBLEPermissions(),
-        PermissionStatus.permanentlyDenied);
+    expect(
+      await BLEPermissionsHelper.hasBLEPermissions(),
+      PermissionStatus.permanentlyDenied,
+    );
   });
 
   test('Should return hasBLEPermissions on Android 12', () async {
@@ -227,7 +265,7 @@ void main() {
     final states = [
       PermissionStatus.granted,
       PermissionStatus.denied,
-      PermissionStatus.permanentlyDenied
+      PermissionStatus.permanentlyDenied,
     ];
 
     for (final state1 in states) {
@@ -239,108 +277,132 @@ void main() {
 
         final expected = getLowest([state1, state2]);
 
-        expect(hasPermission, equals(expected),
-            reason: "${permissions[0].toString()} = "
-                "${state1.toString()}, "
-                "${permissions[1].toString()}, "
-                "${state2.toString()}. "
-                "Expected = ${expected.toString()}");
+        expect(
+          hasPermission,
+          equals(expected),
+          reason:
+              "${permissions[0].toString()} = "
+              "${state1.toString()}, "
+              "${permissions[1].toString()}, "
+              "${state2.toString()}. "
+              "Expected = ${expected.toString()}",
+        );
       }
     }
   });
 
-  test('Should return correct value with requestBLEPermission on Android 11',
-      () async {
-    final fake = FakePermissionHandlerPlatform();
-    PermissionHandlerPlatform.instance = fake;
+  test(
+    'Should return correct value with requestBLEPermission on Android 11',
+    () async {
+      final fake = FakePermissionHandlerPlatform();
+      PermissionHandlerPlatform.instance = fake;
 
-    final fakeVersion = FakePlatformVersions();
-    DeviceInfoPlatform.instance = fakeVersion;
+      final fakeVersion = FakePlatformVersions();
+      DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.setSdkInt(30);
+      fakeVersion.androidDeviceInfo.setSdkInt(30);
 
-    fake.status = PermissionStatus.granted;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.granted);
+      fake.status = PermissionStatus.granted;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.granted,
+      );
 
-    fake.status = PermissionStatus.denied;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.denied);
+      fake.status = PermissionStatus.denied;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.denied,
+      );
 
-    fake.status = PermissionStatus.permanentlyDenied;
-    expect(await BLEPermissionsHelper.requestBLEPermissions(),
-        PermissionStatus.permanentlyDenied);
-  });
+      fake.status = PermissionStatus.permanentlyDenied;
+      expect(
+        await BLEPermissionsHelper.requestBLEPermissions(),
+        PermissionStatus.permanentlyDenied,
+      );
+    },
+  );
 
-  test('Should return correct with requestBLEPermission on Android 12',
-      () async {
-    final fake = FakePermissionHandlerPlatform();
-    PermissionHandlerPlatform.instance = fake;
+  test(
+    'Should return correct with requestBLEPermission on Android 12',
+    () async {
+      final fake = FakePermissionHandlerPlatform();
+      PermissionHandlerPlatform.instance = fake;
 
-    final fakeVersion = FakePlatformVersions();
-    DeviceInfoPlatform.instance = fakeVersion;
+      final fakeVersion = FakePlatformVersions();
+      DeviceInfoPlatform.instance = fakeVersion;
 
-    fakeVersion.androidDeviceInfo.setSdkInt(31);
+      fakeVersion.androidDeviceInfo.setSdkInt(31);
 
-    final permissions = [Permission.bluetoothScan, Permission.bluetoothConnect];
-    final states = [
-      PermissionStatus.granted,
-      PermissionStatus.denied,
-      PermissionStatus.permanentlyDenied
-    ];
+      final permissions = [
+        Permission.bluetoothScan,
+        Permission.bluetoothConnect,
+      ];
+      final states = [
+        PermissionStatus.granted,
+        PermissionStatus.denied,
+        PermissionStatus.permanentlyDenied,
+      ];
 
-    for (final state1 in states) {
-      for (final state2 in states) {
-        fake.statusMap[permissions[0]] = state1;
-        fake.statusMap[permissions[1]] = state2;
+      for (final state1 in states) {
+        for (final state2 in states) {
+          fake.statusMap[permissions[0]] = state1;
+          fake.statusMap[permissions[1]] = state2;
 
-        final hasPermission =
-            await BLEPermissionsHelper.requestBLEPermissions();
+          final hasPermission =
+              await BLEPermissionsHelper.requestBLEPermissions();
 
-        final expected = getLowest([state1, state2]);
+          final expected = getLowest([state1, state2]);
 
-        expect(hasPermission, equals(expected),
-            reason: "${permissions[0].toString()} = "
+          expect(
+            hasPermission,
+            equals(expected),
+            reason:
+                "${permissions[0].toString()} = "
                 "${state1.toString()}, "
                 "${permissions[1].toString()}, "
                 "${state2.toString()}. "
-                "Expected = ${expected.toString()}");
+                "Expected = ${expected.toString()}",
+          );
+        }
       }
-    }
-  });
+    },
+  );
 
   test('Should open BLE settings on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openBLESettings") {
-        return true;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openBLESettings") {
+            return true;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.openBLESettings(), isTrue);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openBLESettings") {
-        return false;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openBLESettings") {
+            return false;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.openBLESettings(), isFalse);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openBLESettings") {
-        return 'other';
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openBLESettings") {
+            return 'other';
+          }
+          return null;
+        });
 
     try {
       await BLEPermissionsHelper.openBLESettings();
@@ -356,35 +418,38 @@ void main() {
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "enableBluetooth") {
-        return true;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "enableBluetooth") {
+            return true;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.enableBLE(), isTrue);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "enableBluetooth") {
-        return false;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "enableBluetooth") {
+            return false;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.enableBLE(), isFalse);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "enableBluetooth") {
-        return 'other';
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "enableBluetooth") {
+            return 'other';
+          }
+          return null;
+        });
 
     try {
       await BLEPermissionsHelper.enableBLE();
@@ -400,35 +465,38 @@ void main() {
   test('Should enable BLE on Android', () async {
     TestWidgetsFlutterBinding.ensureInitialized();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openLocationSettings") {
-        return true;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openLocationSettings") {
+            return true;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isTrue);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openLocationSettings") {
-        return false;
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openLocationSettings") {
+            return false;
+          }
+          return null;
+        });
 
     expect(await BLEPermissionsHelper.openLocationSettings(), isFalse);
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(BLEPermissionsHelper.channel,
-            (final call) async {
-      if (call.method == "openLocationSettings") {
-        return 'other';
-      }
-      return null;
-    });
+        .setMockMethodCallHandler(BLEPermissionsHelper.channel, (
+          final call,
+        ) async {
+          if (call.method == "openLocationSettings") {
+            return 'other';
+          }
+          return null;
+        });
 
     try {
       await BLEPermissionsHelper.openLocationSettings();

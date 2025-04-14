@@ -23,19 +23,22 @@ import 'package:shared_platform/shared_platform.dart';
 class LighthouseProviderStart {
   LighthouseProviderStart._();
 
-  static BehaviorSubject<List<LogRecord>> logs =
-      BehaviorSubject.seeded(<LogRecord>[]);
+  static BehaviorSubject<List<LogRecord>> logs = BehaviorSubject.seeded(
+    <LogRecord>[],
+  );
 
   static StreamSubscription? loggerSubscription;
 
   static void loadLibrary() {
     if (SharedPlatform.isIOS || SharedPlatform.isAndroid) {
-      LighthouseProvider.instance
-          .addBackEnd(FlutterBluePlusLighthouseBackEnd.instance);
+      LighthouseProvider.instance.addBackEnd(
+        FlutterBluePlusLighthouseBackEnd.instance,
+      );
     }
     if (SharedPlatform.isWeb) {
-      LighthouseProvider.instance
-          .addBackEnd(FlutterWebBluetoothBackEnd.instance);
+      LighthouseProvider.instance.addBackEnd(
+        FlutterWebBluetoothBackEnd.instance,
+      );
     }
     if (SharedPlatform.isLinux) {
       LighthouseProvider.instance.addBackEnd(BlueZBackEnd.instance);
@@ -57,30 +60,41 @@ class LighthouseProviderStart {
   }
 
   static void setupPersistence(final LighthousePMBloc bloc) {
-    ViveBaseStationDeviceProvider.instance
-        .setPersistence(ViveBaseStationBloc(bloc));
+    ViveBaseStationDeviceProvider.instance.setPersistence(
+      ViveBaseStationBloc(bloc),
+    );
     LighthouseV2DeviceProvider.instance.setPersistence(LighthouseV2Bloc(bloc));
   }
 
   static void setupCallbacks() {
     ViveBaseStationDeviceProvider.instance
-        .setRequestPairIdCallback<BuildContext>(
-            (final BuildContext? context, final pairIdHint) async {
-      assert(context != null, "Context should not be null");
-      assert(context is BuildContext,
-          "context should be of the type BuildContext");
-      if (context == null) {
-        return null;
-      }
-      return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
-          context, pairIdHint);
-    });
+        .setRequestPairIdCallback<BuildContext>((
+          final BuildContext? context,
+          final pairIdHint,
+        ) async {
+          assert(context != null, "Context should not be null");
+          assert(
+            context is BuildContext,
+            "context should be of the type BuildContext",
+          );
+          if (context == null) {
+            return null;
+          }
+          return ViveBaseStationExtraInfoAlertWidget.showCustomDialog(
+            context,
+            pairIdHint,
+          );
+        });
 
-    LighthouseV2DeviceProvider.instance
-        .setCreateShortcutCallback((final mac, final name) async {
+    LighthouseV2DeviceProvider.instance.setCreateShortcutCallback((
+      final mac,
+      final name,
+    ) async {
       if (SharedPlatform.isAndroid) {
-        await AndroidLauncherShortcut.instance
-            .requestShortcutLighthouse(mac, name);
+        await AndroidLauncherShortcut.instance.requestShortcutLighthouse(
+          mac,
+          name,
+        );
       }
     });
   }
@@ -116,11 +130,13 @@ class LighthouseProviderStart {
     });
   }
 
-  static void _addOrRemoveProvider(final List<LighthouseProviders> providers,
-      final DeviceProvider provider) {
+  static void _addOrRemoveProvider(
+    final List<LighthouseProviders> providers,
+    final DeviceProvider provider,
+  ) {
     final contains =
         providers.indexWhere((final element) => element.provider == provider) >=
-            0;
+        0;
     if (contains) {
       LighthouseProvider.instance.addProvider(provider);
     } else {

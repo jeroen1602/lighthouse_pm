@@ -18,21 +18,27 @@ AppBar createSelectableAppBar(
   var titleWidget = title;
   if (titleWidget is Text && isSelecting) {
     titleWidget = _createTextWithStyle(
-        titleWidget, theming.selectedAppBarTextColor, numberOfSelections);
+      titleWidget,
+      theming.selectedAppBarTextColor,
+      numberOfSelections,
+    );
   }
   var actionsWidget = actions;
   if (actionsWidget != null && isSelecting) {
-    actionsWidget =
-        _createActionsWithColor(actionsWidget, theming.selectedAppBarTextColor);
+    actionsWidget = _createActionsWithColor(
+      actionsWidget,
+      theming.selectedAppBarTextColor,
+    );
   }
   Widget? leading;
   if (isSelecting && onClearSelection != null) {
     leading = IconButton(
-        icon: Icon(Icons.close, color: theming.selectedAppBarTextColor),
-        tooltip: 'Cancel selection',
-        onPressed: () {
-          onClearSelection.call();
-        });
+      icon: Icon(Icons.close, color: theming.selectedAppBarTextColor),
+      tooltip: 'Cancel selection',
+      onPressed: () {
+        onClearSelection.call();
+      },
+    );
   }
 
   return AppBar(
@@ -45,40 +51,47 @@ AppBar createSelectableAppBar(
 }
 
 Tuple2<bool, Widget> _createIconWithColor(
-    final Widget oldIcon, final Color selectedAppBarTextColor) {
+  final Widget oldIcon,
+  final Color selectedAppBarTextColor,
+) {
   if (oldIcon is Icon) {
     return Tuple2(
-        true,
-        Icon(oldIcon.icon,
-            key: oldIcon.key,
-            size: oldIcon.size,
-            color: selectedAppBarTextColor,
-            semanticLabel: oldIcon.semanticLabel,
-            textDirection: oldIcon.textDirection));
+      true,
+      Icon(
+        oldIcon.icon,
+        key: oldIcon.key,
+        size: oldIcon.size,
+        color: selectedAppBarTextColor,
+        semanticLabel: oldIcon.semanticLabel,
+        textDirection: oldIcon.textDirection,
+      ),
+    );
   } else if (oldIcon is SvgPicture) {
     return Tuple2(
-        true,
-        SvgPicture(
-          oldIcon.bytesLoader,
-          key: oldIcon.key,
-          width: oldIcon.width,
-          height: oldIcon.height,
-          fit: oldIcon.fit,
-          alignment: oldIcon.alignment,
-          matchTextDirection: oldIcon.matchTextDirection,
-          allowDrawingOutsideViewBox: oldIcon.allowDrawingOutsideViewBox,
-          placeholderBuilder: oldIcon.placeholderBuilder,
-          colorFilter:
-              ColorFilter.mode(selectedAppBarTextColor, BlendMode.srcIn),
-          semanticsLabel: oldIcon.semanticsLabel,
-          excludeFromSemantics: oldIcon.excludeFromSemantics,
-        ));
+      true,
+      SvgPicture(
+        oldIcon.bytesLoader,
+        key: oldIcon.key,
+        width: oldIcon.width,
+        height: oldIcon.height,
+        fit: oldIcon.fit,
+        alignment: oldIcon.alignment,
+        matchTextDirection: oldIcon.matchTextDirection,
+        allowDrawingOutsideViewBox: oldIcon.allowDrawingOutsideViewBox,
+        placeholderBuilder: oldIcon.placeholderBuilder,
+        colorFilter: ColorFilter.mode(selectedAppBarTextColor, BlendMode.srcIn),
+        semanticsLabel: oldIcon.semanticsLabel,
+        excludeFromSemantics: oldIcon.excludeFromSemantics,
+      ),
+    );
   }
   return Tuple2(false, oldIcon);
 }
 
 IconButton _createIconButtonWithColor(
-    final IconButton old, final Color selectedAppBarTextColor) {
+  final IconButton old,
+  final Color selectedAppBarTextColor,
+) {
   final iconTuple = _createIconWithColor(old.icon, selectedAppBarTextColor);
   if (!iconTuple.item1) {
     return old;
@@ -109,7 +122,9 @@ IconButton _createIconButtonWithColor(
 }
 
 List<Widget> _createActionsWithColor(
-    final List<Widget> old, final Color selectedAppBarTextColor) {
+  final List<Widget> old,
+  final Color selectedAppBarTextColor,
+) {
   final out = <Widget>[];
   for (final widget in old) {
     if (widget is! IconButton) {
@@ -122,14 +137,18 @@ List<Widget> _createActionsWithColor(
   return out;
 }
 
-Text _createTextWithStyle(final Text old, final Color selectedAppBarTextColor,
-    final int? numberOfSelections) {
+Text _createTextWithStyle(
+  final Text old,
+  final Color selectedAppBarTextColor,
+  final int? numberOfSelections,
+) {
   return Text(
     numberOfSelections != null
         ? "$numberOfSelections selected"
         : old.data ?? "",
     key: old.key,
-    style: old.style?.copyWith(color: selectedAppBarTextColor) ??
+    style:
+        old.style?.copyWith(color: selectedAppBarTextColor) ??
         TextStyle(color: selectedAppBarTextColor),
     strutStyle: old.strutStyle,
     textAlign: old.textAlign,

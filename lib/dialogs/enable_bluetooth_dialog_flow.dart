@@ -16,27 +16,34 @@ class EnableBluetoothDialogFlow {
   /// Opening Bluetooth settings if snack bar action is used.
   ///
   /// This flow works only on Android!
-  static Future showEnableBluetoothDialogFlow(final BuildContext context,
-      {final bool showSnackBarOnFailure = true}) async {
+  static Future showEnableBluetoothDialogFlow(
+    final BuildContext context, {
+    final bool showSnackBarOnFailure = true,
+  }) async {
     if (!context.mounted) {
       return;
     }
-    final enableBluetooth =
-        EnableBluetoothAlertWidget.showCustomDialog(context);
+    final enableBluetooth = EnableBluetoothAlertWidget.showCustomDialog(
+      context,
+    );
     if (await enableBluetooth) {
       if (!await BLEPermissionsHelper.enableBLE()) {
         if (showSnackBarOnFailure && context.mounted) {
-          ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
               content: const Text('Could not enable Bluetooth.'),
               action: SnackBarAction(
                 label: 'Go to Settings.',
                 onPressed: () async {
                   await BLEPermissionsHelper.openBLESettings();
                 },
-              )));
+              ),
+            ),
+          );
         } else {
           debugPrint(
-              'Could not enable bluetooth, but no snack bar was shown because of a setting');
+            'Could not enable bluetooth, but no snack bar was shown because of a setting',
+          );
         }
       }
     }

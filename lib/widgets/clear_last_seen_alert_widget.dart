@@ -7,10 +7,11 @@ class ClearLastSeenAlertWidget extends StatelessWidget {
   Widget build(final BuildContext context) {
     return AlertDialog(
       title: const Text('Clear last seen devices?'),
-      content:
-          const Text('Are you sure you want to clear the last seen devices?\n'
-              'This is just for displaying when the app has last seen the '
-              'device and has no effect on functionality.'),
+      content: const Text(
+        'Are you sure you want to clear the last seen devices?\n'
+        'This is just for displaying when the app has last seen the '
+        'device and has no effect on functionality.',
+      ),
       actions: <Widget>[
         SimpleDialogOption(
           child: const Text('No'),
@@ -30,10 +31,11 @@ class ClearLastSeenAlertWidget extends StatelessWidget {
 
   static Future<bool> showCustomDialog(final BuildContext context) async {
     return await showDialog<bool?>(
-            context: context,
-            builder: (final BuildContext context) {
-              return const ClearLastSeenAlertWidget();
-            }) ??
+          context: context,
+          builder: (final BuildContext context) {
+            return const ClearLastSeenAlertWidget();
+          },
+        ) ??
         false;
   }
 }

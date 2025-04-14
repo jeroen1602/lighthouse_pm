@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lighthouse_pm/theming.dart';
 
 class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
-  const ViveBaseStationExtraInfoAlertWidget(
-      {super.key, required this.pairIdHint});
+  const ViveBaseStationExtraInfoAlertWidget({
+    super.key,
+    required this.pairIdHint,
+  });
 
   final int? pairIdHint;
 
@@ -13,14 +15,15 @@ class ViveBaseStationExtraInfoAlertWidget extends StatefulWidget {
   }
 
   static Future<String?> showCustomDialog(
-      final BuildContext context, final int? pairIdHint) {
+    final BuildContext context,
+    final int? pairIdHint,
+  ) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return ViveBaseStationExtraInfoAlertWidget(
-            pairIdHint: pairIdHint,
-          );
-        });
+      context: context,
+      builder: (final BuildContext context) {
+        return ViveBaseStationExtraInfoAlertWidget(pairIdHint: pairIdHint);
+      },
+    );
   }
 }
 
@@ -71,29 +74,35 @@ class _ViveBaseStationExtraInfoAlertState
 
     return AlertDialog(
       title: RichText(
-        text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
-          const TextSpan(text: 'Base station id required.\n'),
-          if (endHint != null) ...[
-            const TextSpan(
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
+            const TextSpan(text: 'Base station id required.\n'),
+            if (endHint != null) ...[
+              const TextSpan(
                 text:
-                    'The id is found on the back and will probably end with: '),
-            TextSpan(
+                    'The id is found on the back and will probably end with: ',
+              ),
+              TextSpan(
                 style: theming.bodyTextBold,
-                text: endHint.toRadixString(16).padLeft(4, '0').toUpperCase()),
-            const TextSpan(text: '.'),
-          ] else
-            const TextSpan(text: 'The id is found on the back.')
-        ]),
+                text: endHint.toRadixString(16).padLeft(4, '0').toUpperCase(),
+              ),
+              const TextSpan(text: '.'),
+            ] else
+              const TextSpan(text: 'The id is found on the back.'),
+          ],
+        ),
       ),
       content: Form(
-          key: _formKey,
-          child: TextFormField(
-            validator: _validateId,
-            onChanged: (final String value) {
-              _formKey.currentState?.validate();
-            },
-            controller: _textController,
-          )),
+        key: _formKey,
+        child: TextFormField(
+          validator: _validateId,
+          onChanged: (final String value) {
+            _formKey.currentState?.validate();
+          },
+          controller: _textController,
+        ),
+      ),
       actions: <Widget>[
         SimpleDialogOption(
           child: const Text('Cancel'),
@@ -108,9 +117,11 @@ class _ViveBaseStationExtraInfoAlertState
                 final intValue = int.parse(text, radix: 16);
                 if (text.length == 8 && intValue & 0xFFFF != endHint) {
                   final viveBaseStationExtraInfo =
-                      ViveBaseStationExtraInfoIdWarningAlertWidget
-                          .showCustomDialog(context,
-                              setId: text, existingIdEnd: endHint);
+                      ViveBaseStationExtraInfoIdWarningAlertWidget.showCustomDialog(
+                        context,
+                        setId: text,
+                        existingIdEnd: endHint,
+                      );
                   if (!(await viveBaseStationExtraInfo)) {
                     // The user doesn't want to close yet.
                     return;
@@ -135,8 +146,11 @@ class _ViveBaseStationExtraInfoAlertState
 }
 
 class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
-  const ViveBaseStationExtraInfoIdWarningAlertWidget(
-      {required this.setId, required this.existingIdEnd, super.key});
+  const ViveBaseStationExtraInfoIdWarningAlertWidget({
+    required this.setId,
+    required this.existingIdEnd,
+    super.key,
+  });
 
   final String setId;
   final int existingIdEnd;
@@ -148,22 +162,28 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
     return AlertDialog(
       title: const Text("The end of the id doesn't match"),
       content: RichText(
-        text: TextSpan(style: theming.bodyMedium, children: [
-          const TextSpan(text: "The id you have provided ("),
-          TextSpan(text: setId, style: theming.bodyTextBold),
-          const TextSpan(
-              text: ") doesn't end the same as the end of your lighthouse's "
-                  "name ("),
-          TextSpan(
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: [
+            const TextSpan(text: "The id you have provided ("),
+            TextSpan(text: setId, style: theming.bodyTextBold),
+            const TextSpan(
+              text:
+                  ") doesn't end the same as the end of your lighthouse's "
+                  "name (",
+            ),
+            TextSpan(
               style: theming.bodyTextBold,
-              text: existingIdEnd
-                  .toRadixString(16)
-                  .padLeft(4, '0')
-                  .toUpperCase()),
-          const TextSpan(
-              text: "). That doesn't mean that it isn't correct, but please "
-                  "double check to be sure!")
-        ]),
+              text:
+                  existingIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase(),
+            ),
+            const TextSpan(
+              text:
+                  "). That doesn't mean that it isn't correct, but please "
+                  "double check to be sure!",
+            ),
+          ],
+        ),
       ),
       actions: [
         SimpleDialogOption(
@@ -173,7 +193,7 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
         SimpleDialogOption(
           child: const Text("It's correct"),
           onPressed: () => Navigator.pop(context, true),
-        )
+        ),
       ],
     );
   }
@@ -184,13 +204,14 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
     required final int existingIdEnd,
   }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return ViveBaseStationExtraInfoIdWarningAlertWidget(
-            setId: setId,
-            existingIdEnd: existingIdEnd,
-          );
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return ViveBaseStationExtraInfoIdWarningAlertWidget(
+          setId: setId,
+          existingIdEnd: existingIdEnd,
+        );
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }

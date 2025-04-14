@@ -34,12 +34,15 @@ class _ViveBaseStationIdConverter
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final ViveBaseStationId data) async {
+    final BuildContext context,
+    final ViveBaseStationId data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: data.deviceId,
-        startValue:
-            data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase());
+      context,
+      primaryKey: data.deviceId,
+      startValue:
+          data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase(),
+    );
     if (newValue == null) {
       return;
     }
@@ -57,13 +60,17 @@ class _ViveBaseStationIdConverter
   @override
   Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Device id', null,
-          validator:
-              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
-      DaoDataCreateAlertStringDecorator('Base station id', null)
+      DaoDataCreateAlertStringDecorator(
+        'Device id',
+        null,
+        validator: SharedPlatform.isAndroid ? MacValidator.macValidator : null,
+      ),
+      DaoDataCreateAlertStringDecorator('Base station id', null),
     ];
-    final storeValue =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final storeValue = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (!storeValue) {
       return;
     }
@@ -109,15 +116,14 @@ class ViveBaseStationDaoPage extends BasePage with WithBlocStateless {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ViveBaseStationDao'),
-      ),
+      appBar: AppBar(title: const Text('ViveBaseStationDao')),
       body: ContentContainerListView(
         children: [
           DaoTableDataWidget<ViveBaseStationId>(
-              'ViveBaseStationIds',
-              bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
-              _ViveBaseStationIdConverter(bloc)),
+            'ViveBaseStationIds',
+            bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
+            _ViveBaseStationIdConverter(bloc),
+          ),
         ],
       ),
     );

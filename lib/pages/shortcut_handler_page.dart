@@ -10,19 +10,15 @@ class ShortcutHandlerPage extends BasePage {
   final Object? handle;
 
   const ShortcutHandlerPage(this.handle, {super.key})
-      : super(shortcutHandleArgument: handle as ShortcutHandle?, replace: true);
+    : super(shortcutHandleArgument: handle as ShortcutHandle?, replace: true);
 
   @override
   Widget buildPage(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shortcut'),
-      ),
+      appBar: AppBar(title: const Text('Shortcut')),
       body: Padding(
         padding: const EdgeInsets.all(25),
-        child: Center(
-          child: ShortcutHandlerWidget(handle),
-        ),
+        child: Center(child: ShortcutHandlerWidget(handle)),
       ),
     );
   }
@@ -49,9 +45,12 @@ class ShortcutHandlerWidget extends StatefulWidget with CloseCurrentRouteMixin {
       return _ShortcutHandleNullState();
     }
     throw NoSuchMethodError.withInvocation(
-        this,
-        Invocation.method(
-            Symbol("createStateHandler for ${shortcutHandle.data}"), []));
+      this,
+      Invocation.method(
+        Symbol("createStateHandler for ${shortcutHandle.data}"),
+        [],
+      ),
+    );
   }
 }
 
@@ -59,8 +58,10 @@ class _ShortcutHandleNullState extends State<ShortcutHandlerWidget> {
   @override
   Widget build(final BuildContext context) {
     if (!kReleaseMode) {
-      return const Text('Not sure how you got here\n'
-          'If you do know please create an issue as you shouldn\'t be here right now');
+      return const Text(
+        'Not sure how you got here\n'
+        'If you do know please create an issue as you shouldn\'t be here right now',
+      );
     } else {
       return const Text('shortcut Handle is `null`. How did you get here!?');
     }

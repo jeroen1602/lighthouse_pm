@@ -45,13 +45,13 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   static const updateIntervalValues = [1, 2, 3, 4, 5, 10, 20, 30];
   static const defaultDeviceProviders = LighthouseProviders.values;
 
-  Stream<LighthousePowerState> getSleepStateAsStream(
-      {final LighthousePowerState defaultValue = LighthousePowerState.sleep}) {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.defaultSleepStateId.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+  Stream<LighthousePowerState> getSleepStateAsStream({
+    final LighthousePowerState defaultValue = LighthousePowerState.sleep,
+  }) {
+    return (select(simpleSettings)..where(
+      (final tbl) =>
+          tbl.settingsId.equals(SettingsIds.defaultSleepStateId.value),
+    )).watchSingleOrNull().map((final event) {
       if (event != null && event.data != null) {
         try {
           final data = int.parse(event.data!, radix: 10);
@@ -60,7 +60,8 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
           debugPrint('Could not convert data returned to a string');
         } on ArgumentError {
           debugPrint(
-              'Could not convert data returned to Lighthouse power state');
+            'Could not convert data returned to Lighthouse power state',
+          );
         }
       }
       return defaultValue;
@@ -69,22 +70,24 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setSleepState(final LighthousePowerState sleepState) {
     assert(
-        sleepState == LighthousePowerState.sleep ||
-            sleepState == LighthousePowerState.standby,
-        'The new sleep state cannot be ${sleepState.text.toUpperCase()}');
+      sleepState == LighthousePowerState.sleep ||
+          sleepState == LighthousePowerState.standby,
+      'The new sleep state cannot be ${sleepState.text.toUpperCase()}',
+    );
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.defaultSleepStateId.value,
-            data: sleepState.index.toString()),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.defaultSleepStateId.value,
+        data: sleepState.index.toString(),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<bool> getGroupOfflineWarningEnabledStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) => tbl.settingsId
-              .equals(SettingsIds.groupShowOfflineWarningId.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) =>
+          tbl.settingsId.equals(SettingsIds.groupShowOfflineWarningId.value),
+    )).watchSingleOrNull().map((final event) {
       if (event == null) {
         return true;
       }
@@ -97,50 +100,57 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setGroupOfflineWarningEnabled(final bool enabled) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.groupShowOfflineWarningId.value,
-            data: enabled ? '1' : '0'),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.groupShowOfflineWarningId.value,
+        data: enabled ? '1' : '0',
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<List<LighthouseProviders>> getEnabledDeviceProvidersStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.deviceProvidersEnabled.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) =>
+          tbl.settingsId.equals(SettingsIds.deviceProvidersEnabled.value),
+    )).watchSingleOrNull().map((final event) {
       final data = event?.data;
       if (data == null) {
         return defaultDeviceProviders;
       }
-      final enabled = data
-          .split(",")
-          .map((final e) => int.tryParse(e, radix: 10))
-          .where((final e) =>
-              e != null && e >= 0 && e < LighthouseProviders.values.length)
-          .cast<int>()
-          .map((final e) => LighthouseProviders.values[e])
-          .toList();
+      final enabled =
+          data
+              .split(",")
+              .map((final e) => int.tryParse(e, radix: 10))
+              .where(
+                (final e) =>
+                    e != null &&
+                    e >= 0 &&
+                    e < LighthouseProviders.values.length,
+              )
+              .cast<int>()
+              .map((final e) => LighthouseProviders.values[e])
+              .toList();
 
       return enabled;
     });
   }
 
   Future<void> setEnabledDeviceProvidersStream(
-      final List<LighthouseProviders> enabledProviders) {
+    final List<LighthouseProviders> enabledProviders,
+  ) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.deviceProvidersEnabled.value,
-            data: enabledProviders.map((final e) => e.index).join(",")),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.deviceProvidersEnabled.value,
+        data: enabledProviders.map((final e) => e.index).join(","),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<bool> getShortcutsEnabledStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.shortcutEnabledId.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.shortcutEnabledId.value),
+    )).watchSingleOrNull().map((final event) {
       if (event == null || event.data == '0' || event.data == null) {
         return false;
       }
@@ -150,18 +160,18 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setShortcutsEnabledStream(final bool enabled) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.shortcutEnabledId.value,
-            data: enabled ? '1' : '0'),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.shortcutEnabledId.value,
+        data: enabled ? '1' : '0',
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<int> getScanDurationsAsStream({final int defaultValue = 5}) {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.scanDurationId.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.scanDurationId.value),
+    )).watchSingleOrNull().map((final event) {
       if (event != null && event.data != null) {
         final number = int.tryParse(event.data!, radix: 10);
         if (number != null && scanDurationValues.contains(number)) {
@@ -175,18 +185,18 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   Future<void> setScanDuration(final int duration) {
     assert(duration > 0, 'duration should be higher than 0');
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.scanDurationId.value,
-            data: duration.toRadixString(10)),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.scanDurationId.value,
+        data: duration.toRadixString(10),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<int> getUpdateIntervalAsStream({final int defaultUpdateInterval = 1}) {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.updateIntervalId.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.updateIntervalId.value),
+    )).watchSingleOrNull().map((final event) {
       if (event != null && event.data != null) {
         final number = int.tryParse(event.data!, radix: 10);
         if (number != null && updateIntervalValues.contains(number)) {
@@ -200,18 +210,18 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   Future<void> setUpdateInterval(final int updateInterval) {
     assert(updateInterval > 0, 'update interval should be higher than 0');
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.updateIntervalId.value,
-            data: updateInterval.toRadixString(10)),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.updateIntervalId.value,
+        data: updateInterval.toRadixString(10),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<ThemeMode> getPreferredThemeAsStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.preferredThemeId.value)))
-        .watchSingleOrNull()
-        .asyncMap((final event) async {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.preferredThemeId.value),
+    )).watchSingleOrNull().asyncMap((final event) async {
       if (event != null && event.data != null) {
         final themeIndex = int.tryParse(event.data!, radix: 10);
         if (themeIndex != null &&
@@ -232,10 +242,12 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setPreferredTheme(final ThemeMode theme) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.preferredThemeId.value,
-            data: theme.index.toRadixString(10)),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.preferredThemeId.value,
+        data: theme.index.toRadixString(10),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   /// Check if the currently running device supports system mode theme.
@@ -254,8 +266,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
        * With the new iOS version formats, it's possible to have versions with several dots (e.g. 18.1.1). 
        * To do this, I only recover the major version and the one after the dot.
       */
-      final iosVersion =
-          double.tryParse(iosInfo.systemVersion.split('.').take(2).join('.'));
+      final iosVersion = double.tryParse(
+        iosInfo.systemVersion.split('.').take(2).join('.'),
+      );
 
       return iosVersion != null && iosVersion >= 13.0;
     }
@@ -283,11 +296,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Stream<AppStyle> getPreferredStyleAsStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.appStyleId.value)))
-        .watchSingleOrNull()
-        .asyncMap((final event) async {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.appStyleId.value),
+    )).watchSingleOrNull().asyncMap((final event) async {
       if (event != null && event.data != null) {
         final styleIndex = int.tryParse(event.data!, radix: 10);
         if (styleIndex != null &&
@@ -309,10 +320,12 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setPreferredStyle(final AppStyle style) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.appStyleId.value,
-            data: style.index.toRadixString(10)),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.appStyleId.value,
+        data: style.index.toRadixString(10),
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   static Future<List<AppStyle>> get supportedAppStyles async {
@@ -322,7 +335,7 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
         SharedPlatform.isWindows ||
         SharedPlatform.isAndroid &&
             (await deviceInfo.androidInfo).version.sdkInt >=
-                31 /* Android 12 */) {
+                31 /* Android 12 */ ) {
       styles.add(AppStyle.materialDynamic);
     }
     return styles;
@@ -338,17 +351,18 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setDebugEnabled(final bool enabled) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.debugMode.value, data: enabled ? '1' : '0'),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.debugMode.value,
+        data: enabled ? '1' : '0',
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<bool> getDebugModeEnabledStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.debugMode.value)))
-        .watchSingleOrNull()
-        .map((final event) {
+    return (select(simpleSettings)..where(
+      (final tbl) => tbl.settingsId.equals(SettingsIds.debugMode.value),
+    )).watchSingleOrNull().map((final event) {
       if (event == null || event.data == '0' || event.data == null) {
         return false;
       }
@@ -358,25 +372,27 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> setUseFakeBackEnd(final bool use) {
     return into(simpleSettings).insert(
-        SimpleSetting(
-            settingsId: SettingsIds.useFakeBackEnd.value,
-            data: use ? '1' : '0'),
-        mode: InsertMode.insertOrReplace);
+      SimpleSetting(
+        settingsId: SettingsIds.useFakeBackEnd.value,
+        data: use ? '1' : '0',
+      ),
+      mode: InsertMode.insertOrReplace,
+    );
   }
 
   Stream<bool> getUseFakeBackEndStream() {
-    return (select(simpleSettings)
-          ..where((final tbl) =>
-              tbl.settingsId.equals(SettingsIds.useFakeBackEnd.value) |
-              tbl.settingsId.equals(SettingsIds.debugMode.value)))
-        .watch()
-        .map((final results) {
+    return (select(simpleSettings)..where(
+      (final tbl) =>
+          tbl.settingsId.equals(SettingsIds.useFakeBackEnd.value) |
+          tbl.settingsId.equals(SettingsIds.debugMode.value),
+    )).watch().map((final results) {
       if (results.length != 2) {
         return false;
       }
       final debugMode = results.cast<SimpleSetting?>().firstWhere(
-          (final x) => x?.settingsId == SettingsIds.debugMode.value,
-          orElse: () => null);
+        (final x) => x?.settingsId == SettingsIds.debugMode.value,
+        orElse: () => null,
+      );
 
       if (debugMode == null ||
           debugMode.data == '0' ||
@@ -385,8 +401,9 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
       }
 
       final fakeBackEnd = results.cast<SimpleSetting?>().firstWhere(
-          (final x) => x?.settingsId == SettingsIds.useFakeBackEnd.value,
-          orElse: () => null);
+        (final x) => x?.settingsId == SettingsIds.useFakeBackEnd.value,
+        orElse: () => null,
+      );
 
       if (fakeBackEnd == null ||
           fakeBackEnd.data == '0' ||
@@ -399,16 +416,17 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<List<SimpleSetting>> get watchSimpleSettings {
     debugPrint(
-        'WARNING using watchSimpleSettings, this should not happen in release mode!');
+      'WARNING using watchSimpleSettings, this should not happen in release mode!',
+    );
     return select(simpleSettings).watch();
   }
 
   Future<void> deleteSimpleSettingId(final int settingId) {
     debugPrint(
-        'WARNING using deleteSimpleSettingId, this should not happen in release mode!');
+      'WARNING using deleteSimpleSettingId, this should not happen in release mode!',
+    );
     return (delete(simpleSettings)
-          ..where((final tbl) => tbl.settingsId.equals(settingId)))
-        .go();
+      ..where((final tbl) => tbl.settingsId.equals(settingId))).go();
   }
 
   Future<void> deleteSimpleSetting(final SimpleSetting setting) {
@@ -417,8 +435,10 @@ class SettingsDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> insertSimpleSetting(final SimpleSetting setting) {
     debugPrint(
-        'WARNING using insertSimpleSetting, this should not happen in release mode!');
-    return into(simpleSettings)
-        .insert(setting, mode: InsertMode.insertOrReplace);
+      'WARNING using insertSimpleSetting, this should not happen in release mode!',
+    );
+    return into(
+      simpleSettings,
+    ).insert(setting, mode: InsertMode.insertOrReplace);
   }
 }

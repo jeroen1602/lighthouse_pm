@@ -16,14 +16,17 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
 
     final groupEntriesStream = select(groupEntries).watch();
 
-    return Rx.combineLatest2(groupsStream, groupEntriesStream,
-        (final List<Group> groups, final List<GroupEntry> entries) {
+    return Rx.combineLatest2(groupsStream, groupEntriesStream, (
+      final List<Group> groups,
+      final List<GroupEntry> entries,
+    ) {
       final combinedGroups = <GroupWithEntries>[];
       for (final group in groups) {
-        final deviceIds = entries
-            .where((final value) => value.groupId == group.id)
-            .map((final e) => e.deviceId)
-            .toList();
+        final deviceIds =
+            entries
+                .where((final value) => value.groupId == group.id)
+                .map((final e) => e.deviceId)
+                .toList();
         combinedGroups.add(GroupWithEntries(group, deviceIds));
       }
       return combinedGroups;
@@ -34,9 +37,9 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     final groupQuery = select(groups)
       ..where((final group) => group.id.equals(groupId));
 
-    final groupEntriesQuery = select(groupEntries)
-        .join([innerJoin(groups, groups.id.equalsExp(groupEntries.groupId))])
-      ..where(groupEntries.groupId.equals(groupId));
+    final groupEntriesQuery = select(groupEntries).join([
+      innerJoin(groups, groups.id.equalsExp(groupEntries.groupId)),
+    ])..where(groupEntries.groupId.equals(groupId));
 
     final groupStream = groupQuery.watchSingle();
 
@@ -44,10 +47,13 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
       return rows.map((final row) => row.readTable(groupEntries)).toList();
     });
 
-    return Rx.combineLatest2(groupStream, groupEntriesStream,
-        (final Group group, final List<GroupEntry> entries) {
-      final deviceIds =
-          entries.map((final entry) => entry.deviceId).toList(growable: true);
+    return Rx.combineLatest2(groupStream, groupEntriesStream, (
+      final Group group,
+      final List<GroupEntry> entries,
+    ) {
+      final deviceIds = entries
+          .map((final entry) => entry.deviceId)
+          .toList(growable: true);
       return GroupWithEntries(group, deviceIds);
     });
   }
@@ -61,14 +67,14 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
 
       // Delete all known entries.
       await (delete(groupEntries)
-            ..where((final entry) => entry.groupId.equals(group.id)))
-          .go();
+        ..where((final entry) => entry.groupId.equals(group.id))).go();
 
       // Insert all the new entries.
       for (final deviceId in entry.deviceIds) {
         await into(groupEntries).insert(
-            GroupEntry(deviceId: deviceId, groupId: group.id),
-            mode: InsertMode.insertOrReplace);
+          GroupEntry(deviceId: deviceId, groupId: group.id),
+          mode: InsertMode.insertOrReplace,
+        );
       }
     });
   }
@@ -85,29 +91,27 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     return transaction(() async {
       // Delete entries
       await (delete(groupEntries)
-            ..where((final entry) => entry.groupId.equals(groupId)))
-          .go();
+        ..where((final entry) => entry.groupId.equals(groupId))).go();
 
       // Delete group
-      await (delete(groups)..where((final entry) => entry.id.equals(groupId)))
-          .go();
+      await (delete(groups)
+        ..where((final entry) => entry.id.equals(groupId))).go();
     });
   }
 
   Future<void> deleteGroupEntry(final String deviceId) {
     return (delete(groupEntries)
-          ..where((final entry) => entry.deviceId.equals(deviceId)))
-        .go();
+      ..where((final entry) => entry.deviceId.equals(deviceId))).go();
   }
 
   Future<void> deleteGroupEntries(final List<String> entries) {
     return (delete(groupEntries)
-          ..where((final tbl) => tbl.deviceId.isIn(entries)))
-        .go();
+      ..where((final tbl) => tbl.deviceId.isIn(entries))).go();
   }
 
   Future<void> insertGroupEntry(final GroupEntry groupEntry) {
-    return into(groupEntries)
-        .insert(groupEntry, mode: InsertMode.insertOrReplace);
+    return into(
+      groupEntries,
+    ).insert(groupEntry, mode: InsertMode.insertOrReplace);
   }
 }

@@ -21,8 +21,12 @@ class DaoTableDataWidget<T> extends StatelessWidget {
   final Stream<List<T>> entriesStream;
   final DaoTableDataConverter<T> converter;
 
-  const DaoTableDataWidget(this.tableName, this.entriesStream, this.converter,
-      {super.key});
+  const DaoTableDataWidget(
+    this.tableName,
+    this.entriesStream,
+    this.converter, {
+    super.key,
+  });
 
   @override
   Widget build(final BuildContext context) {
@@ -38,110 +42,123 @@ class DaoTableDataWidget<T> extends StatelessWidget {
             title: Text(tableName),
             subtitle: Text('Entries: ${data?.length ?? 'loading'}'),
             trailing: RawMaterialButton(
-                onPressed: () async {
-                  try {
-                    await converter.openAddNewItemDialog(context);
-                  } catch (e, s) {
-                    debugPrint('$e');
-                    debugPrint('$s');
-                    if (context.mounted) {
-                      ToastContext().init(context);
-                      Toast.show('Error: $e',
-                          textStyle: theming.bodyMedium
-                              ?.copyWith(color: theme.colorScheme.onError),
-                          backgroundColor: theme.colorScheme.error,
-                          duration: 8);
-                    }
+              onPressed: () async {
+                try {
+                  await converter.openAddNewItemDialog(context);
+                } catch (e, s) {
+                  debugPrint('$e');
+                  debugPrint('$s');
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Error: $e',
+                      textStyle: theming.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onError,
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                      duration: 8,
+                    );
                   }
-                },
-                elevation: 2.0,
-                fillColor: theming.customColors.booting,
-                padding: const EdgeInsets.all(8.0),
-                shape: const CircleBorder(),
-                child: Icon(
-                  Icons.add,
-                  color: theming.customColors.onBooting,
-                  size: 24.0,
-                )),
+                }
+              },
+              elevation: 2.0,
+              fillColor: theming.customColors.booting,
+              padding: const EdgeInsets.all(8.0),
+              shape: const CircleBorder(),
+              child: Icon(
+                Icons.add,
+                color: theming.customColors.onBooting,
+                size: 24.0,
+              ),
+            ),
           ),
-          const Divider(
-            thickness: 1.5,
-          ),
+          const Divider(thickness: 1.5),
           if (snapshot.hasError)
             Container(
               color: theme.colorScheme.error,
               child: ListTile(
                 title: Text(
                   'Error!',
-                  style: theming.bodyMedium
-                      ?.copyWith(color: theme.colorScheme.onError),
+                  style: theming.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onError,
+                  ),
                 ),
-                subtitle: Text(snapshot.error.toString(),
-                    style: theming.bodyMedium?.copyWith(
-                        color:
-                            theme.colorScheme.onError.withValues(alpha: 0.75))),
+                subtitle: Text(
+                  snapshot.error.toString(),
+                  style: theming.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onError.withValues(alpha: 0.75),
+                  ),
+                ),
               ),
             )
           else if (data != null)
             for (int i = 0; i < data.length; i++) ...[
               ListTile(
-                  title: Text(converter.getDataTitle(data[i])),
-                  subtitle: Text(converter.getDataSubtitle(data[i])),
-                  onTap: () async {
-                    try {
-                      await converter.openChangeDialog(context, data[i]);
-                    } catch (e, s) {
-                      debugPrint('$e');
-                      debugPrint('$s');
-                      if (context.mounted) {
-                        ToastContext().init(context);
-                        Toast.show('Error: $e',
-                            textStyle: theming.bodyMedium
-                                ?.copyWith(color: theme.colorScheme.onError),
+                title: Text(converter.getDataTitle(data[i])),
+                subtitle: Text(converter.getDataSubtitle(data[i])),
+                onTap: () async {
+                  try {
+                    await converter.openChangeDialog(context, data[i]);
+                  } catch (e, s) {
+                    debugPrint('$e');
+                    debugPrint('$s');
+                    if (context.mounted) {
+                      ToastContext().init(context);
+                      Toast.show(
+                        'Error: $e',
+                        textStyle: theming.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                        backgroundColor: theme.colorScheme.error,
+                        duration: 8,
+                      );
+                    }
+                  }
+                },
+                trailing: RawMaterialButton(
+                  onPressed: () async {
+                    final daoDeleteAlert =
+                        DaoDeleteAlertWidget.showCustomDialog(
+                          context,
+                          title: converter.getDataTitle(data[i]),
+                          subTitle: converter.getDataSubtitle(data[i]),
+                        );
+                    if (await daoDeleteAlert) {
+                      try {
+                        await converter.deleteItem(data[i]);
+                        if (context.mounted) {
+                          ToastContext().init(context);
+                          Toast.show('Deleted!');
+                        }
+                      } catch (e, s) {
+                        debugPrint('$e');
+                        debugPrint('$s');
+                        if (context.mounted) {
+                          ToastContext().init(context);
+                          Toast.show(
+                            'Error: $e',
+                            textStyle: theming.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onError,
+                            ),
                             backgroundColor: theme.colorScheme.error,
-                            duration: 8);
+                            duration: 8,
+                          );
+                        }
                       }
                     }
                   },
-                  trailing: RawMaterialButton(
-                      onPressed: () async {
-                        final daoDeleteAlert =
-                            DaoDeleteAlertWidget.showCustomDialog(context,
-                                title: converter.getDataTitle(data[i]),
-                                subTitle: converter.getDataSubtitle(data[i]));
-                        if (await daoDeleteAlert) {
-                          try {
-                            await converter.deleteItem(data[i]);
-                            if (context.mounted) {
-                              ToastContext().init(context);
-                              Toast.show('Deleted!');
-                            }
-                          } catch (e, s) {
-                            debugPrint('$e');
-                            debugPrint('$s');
-                            if (context.mounted) {
-                              ToastContext().init(context);
-                              Toast.show('Error: $e',
-                                  textStyle: theming.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onError),
-                                  backgroundColor: theme.colorScheme.error,
-                                  duration: 8);
-                            }
-                          }
-                        }
-                      },
-                      elevation: 2.0,
-                      fillColor: theme.colorScheme.error,
-                      padding: const EdgeInsets.all(8.0),
-                      shape: const CircleBorder(),
-                      child: Icon(
-                        Icons.delete_forever,
-                        color: theme.colorScheme.onError,
-                        size: 24.0,
-                      ))),
-              Divider(
-                thickness: (i == data.length - 1) ? 2 : null,
+                  elevation: 2.0,
+                  fillColor: theme.colorScheme.error,
+                  padding: const EdgeInsets.all(8.0),
+                  shape: const CircleBorder(),
+                  child: Icon(
+                    Icons.delete_forever,
+                    color: theme.colorScheme.onError,
+                    size: 24.0,
+                  ),
+                ),
               ),
+              Divider(thickness: (i == data.length - 1) ? 2 : null),
             ]
           else
             const CircularProgressIndicator(),

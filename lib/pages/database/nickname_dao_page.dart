@@ -34,28 +34,36 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final Nickname data) async {
+    final BuildContext context,
+    final Nickname data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: data.deviceId,
-        startValue: data.nickname);
+      context,
+      primaryKey: data.deviceId,
+      startValue: data.nickname,
+    );
     if (newValue == null) {
       return;
     }
-    await bloc.nicknames
-        .insertNickname(Nickname(deviceId: data.deviceId, nickname: newValue));
+    await bloc.nicknames.insertNickname(
+      Nickname(deviceId: data.deviceId, nickname: newValue),
+    );
   }
 
   @override
   Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Device id', null,
-          validator:
-              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
+      DaoDataCreateAlertStringDecorator(
+        'Device id',
+        null,
+        validator: SharedPlatform.isAndroid ? MacValidator.macValidator : null,
+      ),
       DaoDataCreateAlertStringDecorator('Nickname', null),
     ];
-    final saveNewItem =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
@@ -78,8 +86,9 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
         }
         return;
       }
-      await bloc.nicknames
-          .insertNickname(Nickname(deviceId: deviceId, nickname: value));
+      await bloc.nicknames.insertNickname(
+        Nickname(deviceId: deviceId, nickname: value),
+      );
     }
   }
 }
@@ -106,18 +115,25 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
 
   @override
   Future<void> openChangeDialog(
-      final BuildContext context, final LastSeenDevice data) async {
+    final BuildContext context,
+    final LastSeenDevice data,
+  ) async {
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
-        context,
-        primaryKey: data.deviceId,
-        startValue: data.lastSeen.toIso8601String());
+      context,
+      primaryKey: data.deviceId,
+      startValue: data.lastSeen.toIso8601String(),
+    );
     if (newValue == null) {
       return;
     }
     try {
       final newData = DateTime.parse(newValue);
-      await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          deviceId: data.deviceId, lastSeen: drift.Value(newData)));
+      await bloc.nicknames.insertLastSeenDevice(
+        LastSeenDevicesCompanion.insert(
+          deviceId: data.deviceId,
+          lastSeen: drift.Value(newData),
+        ),
+      );
     } on FormatException {
       if (context.mounted) {
         ToastContext().init(context);
@@ -129,15 +145,21 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
   @override
   Future<void> openAddNewItemDialog(final BuildContext context) async {
     final List<DaoDataCreateAlertDecorator<dynamic>> decorators = [
-      DaoDataCreateAlertStringDecorator('Device id', null,
-          validator:
-              SharedPlatform.isAndroid ? MacValidator.macValidator : null),
+      DaoDataCreateAlertStringDecorator(
+        'Device id',
+        null,
+        validator: SharedPlatform.isAndroid ? MacValidator.macValidator : null,
+      ),
       // TODO: use date picker
       DaoDataCreateAlertStringDecorator(
-          'Last seen', DateTime.now().toIso8601String()),
+        'Last seen',
+        DateTime.now().toIso8601String(),
+      ),
     ];
-    final saveNewItem =
-        await DaoDataCreateAlertWidget.showCustomDialog(context, decorators);
+    final saveNewItem = await DaoDataCreateAlertWidget.showCustomDialog(
+      context,
+      decorators,
+    );
     if (saveNewItem) {
       String? deviceId =
           (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
@@ -158,8 +180,12 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
         date = DateTime.tryParse(value);
       }
       date ??= DateTime.now();
-      await bloc.nicknames.insertLastSeenDevice(LastSeenDevicesCompanion.insert(
-          deviceId: deviceId, lastSeen: drift.Value(date)));
+      await bloc.nicknames.insertLastSeenDevice(
+        LastSeenDevicesCompanion.insert(
+          deviceId: deviceId,
+          lastSeen: drift.Value(date),
+        ),
+      );
     }
   }
 }
@@ -172,15 +198,19 @@ class NicknameDaoPage extends BasePage with WithBlocStateless {
     final bloc = blocWithoutListen(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('NicknameDao'),
-      ),
+      appBar: AppBar(title: const Text('NicknameDao')),
       body: ContentContainerListView(
         children: [
-          DaoTableDataWidget<Nickname>('Nicknames',
-              bloc.nicknames.watchNicknames, _NicknameConverter(bloc)),
-          DaoTableDataWidget<LastSeenDevice>('Last seen devices',
-              bloc.nicknames.watchLastSeenDevices, _LastSeenConverter(bloc))
+          DaoTableDataWidget<Nickname>(
+            'Nicknames',
+            bloc.nicknames.watchNicknames,
+            _NicknameConverter(bloc),
+          ),
+          DaoTableDataWidget<LastSeenDevice>(
+            'Last seen devices',
+            bloc.nicknames.watchLastSeenDevices,
+            _LastSeenConverter(bloc),
+          ),
         ],
       ),
     );

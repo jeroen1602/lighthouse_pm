@@ -15,16 +15,22 @@ void main() {
     SharedPlatform.overridePlatform = null;
   });
 
-  testWidgets("Should create an universal unknown state alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should create an universal unknown state alert widget", (
+    final WidgetTester tester,
+  ) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        UnknownStateAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -32,15 +38,19 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Unknown state"), findsOneWidget);
 
-    final richText = (tester.widgetList<RichText>(find.descendant(
-            of: find.byType(Dialog), matching: find.byType(RichText))))
-        .toList()[1];
+    final richText =
+        (tester.widgetList<RichText>(
+          find.descendant(
+            of: find.byType(Dialog),
+            matching: find.byType(RichText),
+          ),
+        )).toList()[1];
     final text = richText.text.toPlainText();
 
     expect(
-        text,
-        contains(
-            "The state of this device is unknown. What do you want to do?"));
+      text,
+      contains("The state of this device is unknown. What do you want to do?"),
+    );
     expect(text, contains("Help out."));
 
     await tester.tap(find.text('Cancel'));
@@ -49,16 +59,22 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should create actions for unknown state alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should create actions for unknown state alert widget", (
+    final WidgetTester tester,
+  ) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        UnknownStateAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -77,51 +93,70 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should add standby if supported for unknown state alert widget",
-      (final WidgetTester tester) async {
-    SharedPlatform.overridePlatform = PlatformOverride.android;
-    final device = FakeHighLevelDevice.simple();
-    device.extensions.add(StandbyExtension(
-        changeState: (final LighthousePowerState newState) async {},
-        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
-    SharedPlatform.overridePlatform = null;
+  testWidgets(
+    "Should add standby if supported for unknown state alert widget",
+    (final WidgetTester tester) async {
+      SharedPlatform.overridePlatform = PlatformOverride.android;
+      final device = FakeHighLevelDevice.simple();
+      device.extensions.add(
+        StandbyExtension(
+          changeState: (final LighthousePowerState newState) async {},
+          powerStateStream: () => Stream.value(LighthousePowerState.unknown),
+        ),
+      );
+      SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+      await tester.pumpWidget(
+        buildTestAppForWidgets((final context) {
+          UnknownStateAlertWidget.showCustomDialog(
+            context,
+            device,
+            currentState: 0xFF,
+          );
+        }),
+      );
 
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('X'));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsOneWidget);
-    expect(find.text("Unknown state"), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(find.text("Unknown state"), findsOneWidget);
 
-    expect(find.text("Cancel"), findsOneWidget);
-    expect(find.text("Standby"), findsOneWidget);
-    expect(find.text("Sleep"), findsOneWidget);
-    expect(find.text("On"), findsOneWidget);
+      expect(find.text("Cancel"), findsOneWidget);
+      expect(find.text("Standby"), findsOneWidget);
+      expect(find.text("Sleep"), findsOneWidget);
+      expect(find.text("On"), findsOneWidget);
 
-    await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsNothing);
-  });
+      expect(find.byType(Dialog), findsNothing);
+    },
+  );
 
-  testWidgets("Should return null on cancel unknown state alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should return null on cancel unknown state alert widget", (
+    final WidgetTester tester,
+  ) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
-    device.extensions.add(StandbyExtension(
+    device.extensions.add(
+      StandbyExtension(
         changeState: (final LighthousePowerState newState) async {},
-        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown),
+      ),
+    );
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = UnknownStateAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -138,20 +173,29 @@ void main() {
     expect(value, isNull);
   });
 
-  testWidgets("Should return on state on 'on' unknown state alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should return on state on 'on' unknown state alert widget", (
+    final WidgetTester tester,
+  ) async {
     Future<LighthousePowerState?>? future;
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
-    device.extensions.add(StandbyExtension(
+    device.extensions.add(
+      StandbyExtension(
         changeState: (final LighthousePowerState newState) async {},
-        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
+        powerStateStream: () => Stream.value(LighthousePowerState.unknown),
+      ),
+    );
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        future = UnknownStateAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -169,79 +213,104 @@ void main() {
     expect(value, LighthousePowerState.on);
   });
 
-  testWidgets("Should return sleep state on 'sleep' unknown state alert widget",
-      (final WidgetTester tester) async {
-    Future<LighthousePowerState?>? future;
-    SharedPlatform.overridePlatform = PlatformOverride.android;
-    final device = FakeHighLevelDevice.simple();
-    device.extensions.add(StandbyExtension(
-        changeState: (final LighthousePowerState newState) async {},
-        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
-    SharedPlatform.overridePlatform = null;
+  testWidgets(
+    "Should return sleep state on 'sleep' unknown state alert widget",
+    (final WidgetTester tester) async {
+      Future<LighthousePowerState?>? future;
+      SharedPlatform.overridePlatform = PlatformOverride.android;
+      final device = FakeHighLevelDevice.simple();
+      device.extensions.add(
+        StandbyExtension(
+          changeState: (final LighthousePowerState newState) async {},
+          powerStateStream: () => Stream.value(LighthousePowerState.unknown),
+        ),
+      );
+      SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+      await tester.pumpWidget(
+        buildTestAppForWidgets((final context) {
+          future = UnknownStateAlertWidget.showCustomDialog(
+            context,
+            device,
+            currentState: 0xFF,
+          );
+        }),
+      );
 
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('X'));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsOneWidget);
-    expect(find.text("Unknown state"), findsOneWidget);
-    expect(future, isNotNull);
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(find.text("Unknown state"), findsOneWidget);
+      expect(future, isNotNull);
 
-    await tester.tap(find.text('Sleep'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Sleep'));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(const Duration(seconds: 1));
-    expect(value, isNotNull);
-    expect(value, LighthousePowerState.sleep);
-  });
+      expect(find.byType(Dialog), findsNothing);
+      final value = await future!.timeout(const Duration(seconds: 1));
+      expect(value, isNotNull);
+      expect(value, LighthousePowerState.sleep);
+    },
+  );
 
   testWidgets(
-      "Should return standby state on 'standby' unknown state alert widget",
-      (final WidgetTester tester) async {
-    Future<LighthousePowerState?>? future;
+    "Should return standby state on 'standby' unknown state alert widget",
+    (final WidgetTester tester) async {
+      Future<LighthousePowerState?>? future;
+      SharedPlatform.overridePlatform = PlatformOverride.android;
+      final device = FakeHighLevelDevice.simple();
+      device.extensions.add(
+        StandbyExtension(
+          changeState: (final LighthousePowerState newState) async {},
+          powerStateStream: () => Stream.value(LighthousePowerState.unknown),
+        ),
+      );
+      SharedPlatform.overridePlatform = null;
+
+      await tester.pumpWidget(
+        buildTestAppForWidgets((final context) {
+          future = UnknownStateAlertWidget.showCustomDialog(
+            context,
+            device,
+            currentState: 0xFF,
+          );
+        }),
+      );
+
+      await tester.tap(find.text('X'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Dialog), findsOneWidget);
+      expect(find.text("Unknown state"), findsOneWidget);
+      expect(future, isNotNull);
+
+      await tester.tap(find.text('Standby'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Dialog), findsNothing);
+      final value = await future!.timeout(const Duration(seconds: 1));
+      expect(value, isNotNull);
+      expect(value, LighthousePowerState.standby);
+    },
+  );
+
+  testWidgets("Open help out alert widget unknown state alert widget", (
+    final WidgetTester tester,
+  ) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
-    device.extensions.add(StandbyExtension(
-        changeState: (final LighthousePowerState newState) async {},
-        powerStateStream: () => Stream.value(LighthousePowerState.unknown)));
     SharedPlatform.overridePlatform = null;
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      future = UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
-
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(Dialog), findsOneWidget);
-    expect(find.text("Unknown state"), findsOneWidget);
-    expect(future, isNotNull);
-
-    await tester.tap(find.text('Standby'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(Dialog), findsNothing);
-    final value = await future!.timeout(const Duration(seconds: 1));
-    expect(value, isNotNull);
-    expect(value, LighthousePowerState.standby);
-  });
-
-  testWidgets("Open help out alert widget unknown state alert widget",
-      (final WidgetTester tester) async {
-    SharedPlatform.overridePlatform = PlatformOverride.android;
-    final device = FakeHighLevelDevice.simple();
-    SharedPlatform.overridePlatform = null;
-
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        UnknownStateAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
@@ -259,8 +328,12 @@ void main() {
     expect(find.byType(Dialog), findsNWidgets(2));
 
     //Close the dialog
-    await tester.tap(find.descendant(
-        of: find.byType(Dialog).last, matching: find.text("Cancel")));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(Dialog).last,
+        matching: find.text("Cancel"),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text("Cancel"));
@@ -269,8 +342,9 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should create unknown state help out alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should create unknown state help out alert widget", (
+    final WidgetTester tester,
+  ) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
@@ -284,19 +358,25 @@ void main() {
       installerStore: "UNIT_TESTS",
     );
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        UnknownStateHelpOutAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text = tester
-        .widgetList<RichText>(find.byType(RichText))
-        .toList()[2]
-        .text
-        .toPlainText();
+    final text =
+        tester
+            .widgetList<RichText>(find.byType(RichText))
+            .toList()[2]
+            .text
+            .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("Fake high level device"));
@@ -306,8 +386,9 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
   });
 
-  testWidgets("Should open issue for unknown state help out alert widget",
-      (final WidgetTester tester) async {
+  testWidgets("Should open issue for unknown state help out alert widget", (
+    final WidgetTester tester,
+  ) async {
     SharedPlatform.overridePlatform = PlatformOverride.android;
     final device = FakeHighLevelDevice.simple();
     SharedPlatform.overridePlatform = null;
@@ -321,19 +402,25 @@ void main() {
       installerStore: "UNIT_TESTS",
     );
 
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+    await tester.pumpWidget(
+      buildTestAppForWidgets((final context) {
+        UnknownStateHelpOutAlertWidget.showCustomDialog(
+          context,
+          device,
+          currentState: 0xFF,
+        );
+      }),
+    );
 
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text = tester
-        .widgetList<RichText>(find.byType(RichText))
-        .toList()[2]
-        .text
-        .toPlainText();
+    final text =
+        tester
+            .widgetList<RichText>(find.byType(RichText))
+            .toList()[2]
+            .text
+            .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("Fake high level device"));
@@ -347,41 +434,47 @@ void main() {
   });
 
   testWidgets(
-      "Should copy to clipboard for unknown state help out alert widget",
-      (final WidgetTester tester) async {
-    SharedPlatform.overridePlatform = PlatformOverride.android;
-    final device = FakeHighLevelDevice.simple();
-    SharedPlatform.overridePlatform = null;
+    "Should copy to clipboard for unknown state help out alert widget",
+    (final WidgetTester tester) async {
+      SharedPlatform.overridePlatform = PlatformOverride.android;
+      final device = FakeHighLevelDevice.simple();
+      SharedPlatform.overridePlatform = null;
 
-    PackageInfo.setMockInitialValues(
-      appName: "Lighthouse pm",
-      packageName: "com.jeroen1602.lighthouse_pm",
-      version: "fake-version",
-      buildNumber: "-9",
-      buildSignature: "SIGN_HERE_PLEASE",
-      installerStore: "UNIT_TESTS",
-    );
-    await tester.pumpWidget(buildTestAppForWidgets((final context) {
-      ToastContext().init(context);
-      UnknownStateHelpOutAlertWidget.showCustomDialog(context, device,
-          currentState: 0xFF);
-    }));
+      PackageInfo.setMockInitialValues(
+        appName: "Lighthouse pm",
+        packageName: "com.jeroen1602.lighthouse_pm",
+        version: "fake-version",
+        buildNumber: "-9",
+        buildSignature: "SIGN_HERE_PLEASE",
+        installerStore: "UNIT_TESTS",
+      );
+      await tester.pumpWidget(
+        buildTestAppForWidgets((final context) {
+          ToastContext().init(context);
+          UnknownStateHelpOutAlertWidget.showCustomDialog(
+            context,
+            device,
+            currentState: 0xFF,
+          );
+        }),
+      );
 
-    await tester.tap(find.text('X'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('X'));
+      await tester.pumpAndSettle();
 
-    final textWidget =
-        tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
-    final text = textWidget.text.toPlainText();
+      final textWidget =
+          tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
+      final text = textWidget.text.toPlainText();
 
-    expect(text, contains("fake-version"));
-    expect(text, contains("Fake high level device"));
+      expect(text, contains("fake-version"));
+      expect(text, contains("Fake high level device"));
 
-    final held = holdTextSpan(textWidget, "App version: ");
-    expect(held, isTrue);
+      final held = holdTextSpan(textWidget, "App version: ");
+      expect(held, isTrue);
 
-    await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle(const Duration(seconds: Toast.lengthLong));
-    expect(find.byType(Dialog), findsNothing);
-  });
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle(const Duration(seconds: Toast.lengthLong));
+      expect(find.byType(Dialog), findsNothing);
+    },
+  );
 }

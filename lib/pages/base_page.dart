@@ -15,14 +15,20 @@ abstract class BasePage extends StatelessWidget {
   final ShortcutHandle? shortcutHandleArgument;
   final bool replace;
 
-  const BasePage(
-      {this.shortcutHandleArgument, this.replace = false, super.key});
+  const BasePage({
+    this.shortcutHandleArgument,
+    this.replace = false,
+    super.key,
+  });
 
   @override
   Widget build(final BuildContext context) {
     ContentScrollbar.updateShowScrollbarSubject(context);
     return _ShortcutLaunchHandleWidget(
-        buildPage(context), shortcutHandleArgument, replace);
+      buildPage(context),
+      shortcutHandleArgument,
+      replace,
+    );
   }
 
   Widget buildPage(final BuildContext context);
@@ -56,24 +62,33 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
   @override
   Widget build(final BuildContext context) {
     return StreamBuilder<ShortcutHandle?>(
-        stream: _shortcutStream(),
-        initialData: null,
-        builder: (final BuildContext shortcutContext,
-            final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot) {
-          WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
-            if (shortcutSnapshot.data != null &&
-                shortcutSnapshot.data != widget.handle) {
-              if (widget.replace) {
-                Navigator.pushReplacementNamed(context, '/shortcutHandler',
-                    arguments: shortcutSnapshot.data);
-              } else {
-                Navigator.pushNamed(context, '/shortcutHandler',
-                    arguments: shortcutSnapshot.data);
-              }
+      stream: _shortcutStream(),
+      initialData: null,
+      builder: (
+        final BuildContext shortcutContext,
+        final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot,
+      ) {
+        WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
+          if (shortcutSnapshot.data != null &&
+              shortcutSnapshot.data != widget.handle) {
+            if (widget.replace) {
+              Navigator.pushReplacementNamed(
+                context,
+                '/shortcutHandler',
+                arguments: shortcutSnapshot.data,
+              );
+            } else {
+              Navigator.pushNamed(
+                context,
+                '/shortcutHandler',
+                arguments: shortcutSnapshot.data,
+              );
             }
-          });
-          return widget.body;
+          }
         });
+        return widget.body;
+      },
+    );
   }
 }
 

@@ -7,38 +7,38 @@ import 'package:shared_platform/shared_platform.dart';
 
 class FakeAndroidDeviceInfo extends BaseDeviceInfo {
   FakeAndroidDeviceInfo({final int? sdkInt})
-      : super({
-          'version': {
-            'baseOS': null,
-            'codename': 'UNIT_TEST',
-            'incremental': 'no?',
-            'previewSdkInt': null,
-            'release': 'no',
-            'sdkInt': sdkInt ?? -1,
-            'securityPatch': 'Never',
-          },
-          'board': 'BOARD',
-          'bootloader': 'UNIT_TEST_LOADER',
-          'brand': 'UNIT_TEST_BRAND',
-          'device': 'UNIT_TEST',
-          'display': 'NO_DISPLAY',
-          'fingerprint': 'FINGERS_PRINTING',
-          'hardware': 'THE_CURRENTLY_RUNNING_COMPUTER',
-          'host': 'localhost',
-          'id': 'IDENTIFICATION',
-          'manufacturer': 'SOMEONE_PROBABLY',
-          'model': 'UNIT_TEST_MODEL',
-          'product': 'UNIT_TEST',
-          'supported32BitAbis': ['Probably'],
-          'supported64BitAbis': ['Probably'],
-          'supportedAbis': ['Probably'],
-          'tags': 'UNIT_TEST_TAGS',
-          'type': 'UNIT_TEST_TYPE',
-          'isPhysicalDevice': false,
-          'systemFeatures': ['SomeFeatures'],
-          'serialNumber': 'SERIAL_NUMBER',
-          'isLowRamDevice': false,
-        });
+    : super({
+        'version': {
+          'baseOS': null,
+          'codename': 'UNIT_TEST',
+          'incremental': 'no?',
+          'previewSdkInt': null,
+          'release': 'no',
+          'sdkInt': sdkInt ?? -1,
+          'securityPatch': 'Never',
+        },
+        'board': 'BOARD',
+        'bootloader': 'UNIT_TEST_LOADER',
+        'brand': 'UNIT_TEST_BRAND',
+        'device': 'UNIT_TEST',
+        'display': 'NO_DISPLAY',
+        'fingerprint': 'FINGERS_PRINTING',
+        'hardware': 'THE_CURRENTLY_RUNNING_COMPUTER',
+        'host': 'localhost',
+        'id': 'IDENTIFICATION',
+        'manufacturer': 'SOMEONE_PROBABLY',
+        'model': 'UNIT_TEST_MODEL',
+        'product': 'UNIT_TEST',
+        'supported32BitAbis': ['Probably'],
+        'supported64BitAbis': ['Probably'],
+        'supportedAbis': ['Probably'],
+        'tags': 'UNIT_TEST_TAGS',
+        'type': 'UNIT_TEST_TYPE',
+        'isPhysicalDevice': false,
+        'systemFeatures': ['SomeFeatures'],
+        'serialNumber': 'SERIAL_NUMBER',
+        'isLowRamDevice': false,
+      });
 
   void setSdkInt(final int sdkInt) {
     data['version']['sdkInt'] = sdkInt;
@@ -47,24 +47,24 @@ class FakeAndroidDeviceInfo extends BaseDeviceInfo {
 
 class FakeIOSDeviceInfo extends BaseDeviceInfo {
   FakeIOSDeviceInfo({final String? systemVersion})
-      : super({
-          'name': 'phone with an i somewhere',
-          'systemName': 'Darwin?',
-          'systemVersion': systemVersion ?? '0.0',
-          'model': 'phone with an i somewhere',
-          'modelName': 'phone with an i somewhere',
-          'localizedModel': 'phone with an i somewhere',
-          'identifierForVendor': null,
-          'isPhysicalDevice': false,
-          'isiOSAppOnMac': false,
-          'utsname': {
-            'sysname': 'THIS_PC',
-            'nodename': 'localhost',
-            'release': '0.0',
-            'version': '-1.0',
-            'machine': 'THIS_MACHINE'
-          }
-        });
+    : super({
+        'name': 'phone with an i somewhere',
+        'systemName': 'Darwin?',
+        'systemVersion': systemVersion ?? '0.0',
+        'model': 'phone with an i somewhere',
+        'modelName': 'phone with an i somewhere',
+        'localizedModel': 'phone with an i somewhere',
+        'identifierForVendor': null,
+        'isPhysicalDevice': false,
+        'isiOSAppOnMac': false,
+        'utsname': {
+          'sysname': 'THIS_PC',
+          'nodename': 'localhost',
+          'release': '0.0',
+          'version': '-1.0',
+          'machine': 'THIS_MACHINE',
+        },
+      });
 
   set systemVersion(final String version) {
     data['systemVersion'] = version;
@@ -86,6 +86,7 @@ class FakePlatformVersions extends Fake
       return iosDeviceInfo;
     }
     throw UnimplementedError(
-        'deviceInfo() has not been implemented on this platform.');
+      'deviceInfo() has not been implemented on this platform.',
+    );
   }
 }

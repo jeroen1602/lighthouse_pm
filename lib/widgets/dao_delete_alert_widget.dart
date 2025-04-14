@@ -16,19 +16,28 @@ class DaoDeleteAlertWidget extends StatelessWidget {
     final theming = Theming.of(context);
     return AlertDialog(
       title: RichText(
-          text: TextSpan(style: theming.bodyMedium, children: [
-        const TextSpan(text: 'Do you want to delete: '),
-        TextSpan(text: title, style: theming.bodyTextBold),
-        const TextSpan(text: '?'),
-      ])),
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: [
+            const TextSpan(text: 'Do you want to delete: '),
+            TextSpan(text: title, style: theming.bodyTextBold),
+            const TextSpan(text: '?'),
+          ],
+        ),
+      ),
       content: RichText(
-          text: TextSpan(children: [
-        const TextSpan(text: 'This will delete:\n'),
-        TextSpan(text: '$title\n$subTitle\n', style: theming.bodyTextBold),
-        const TextSpan(
-            text: 'from the database.\n'
-                'Since this is a test page it may break stuff if you do this!'),
-      ])),
+        text: TextSpan(
+          children: [
+            const TextSpan(text: 'This will delete:\n'),
+            TextSpan(text: '$title\n$subTitle\n', style: theming.bodyTextBold),
+            const TextSpan(
+              text:
+                  'from the database.\n'
+                  'Since this is a test page it may break stuff if you do this!',
+            ),
+          ],
+        ),
+      ),
       actions: [
         SimpleDialogOption(
           child: const Text('No'),
@@ -44,13 +53,17 @@ class DaoDeleteAlertWidget extends StatelessWidget {
 
   /// Open a dialog with the question if the user wants to delete a database entry.
   /// `true` if the use has selected the yes option, `false` otherwise.
-  static Future<bool> showCustomDialog(final BuildContext context,
-      {required final String title, required final String subTitle}) {
+  static Future<bool> showCustomDialog(
+    final BuildContext context, {
+    required final String title,
+    required final String subTitle,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return DaoDeleteAlertWidget(title: title, subTitle: subTitle);
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return DaoDeleteAlertWidget(title: title, subTitle: subTitle);
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }

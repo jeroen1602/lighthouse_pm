@@ -32,21 +32,27 @@ class FakeMigrator extends Fake implements Migrator {
   }
 
   @override
-  Future<void> renameColumn(final TableInfo<Table, dynamic> table,
-      final String oldName, final GeneratedColumn column) async {
+  Future<void> renameColumn(
+    final TableInfo<Table, dynamic> table,
+    final String oldName,
+    final GeneratedColumn column,
+  ) async {
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (final element) => element!.tableName == table.actualTableName,
-        orElse: () => null);
+      (final element) => element!.tableName == table.actualTableName,
+      orElse: () => null,
+    );
     if (testTable == null) {
       throw MigrationError("Could not find table ${table.actualTableName}");
     }
 
     final testColumn = testTable.columns.cast<TestColumn?>().firstWhere(
-        (final element) => element!.columnName == oldName,
-        orElse: () => null);
+      (final element) => element!.columnName == oldName,
+      orElse: () => null,
+    );
     if (testColumn == null) {
       throw MigrationError(
-          "Could not find column '$oldName' in table: '${testTable.tableName}'");
+        "Could not find column '$oldName' in table: '${testTable.tableName}'",
+      );
     }
 
     testColumn.columnName = column.name;
@@ -54,14 +60,16 @@ class FakeMigrator extends Fake implements Migrator {
 
   @override
   Future<void> createTable(final TableInfo<Table, dynamic> table) async {
-    final String tableName = (toHint != null
+    final String tableName =
+        (toHint != null
             ? (FinalSchemas.tableRename[toHint]?[table.actualTableName])
             : null) ??
         table.actualTableName;
 
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (final element) => element!.tableName == tableName,
-        orElse: () => null);
+      (final element) => element!.tableName == tableName,
+      orElse: () => null,
+    );
     if (testTable != null) {
       throw MigrationError("Table already exists! $tableName");
     }
@@ -69,33 +77,41 @@ class FakeMigrator extends Fake implements Migrator {
     if (toHint != null) {
       final testTable = FinalSchemas.schemas[toHint]?.testTables
           .cast<TestTable?>()
-          .firstWhere((final element) => element!.tableName == tableName,
-              orElse: () => null);
+          .firstWhere(
+            (final element) => element!.tableName == tableName,
+            orElse: () => null,
+          );
       if (testTable != null) {
         currentSchema!.testTables.add(testTable.copy());
         return;
       }
       debugPrint(
-          "Warning: could not find table $tableName in final schema version $toHint");
+        "Warning: could not find table $tableName in final schema version $toHint",
+      );
     }
 
-    final columns = table.columnsByName.entries.map((final entry) {
-      return TestColumn(
-          entry.key,
-          TestColumn.columnTypeFromDriftTypeString(
-              entry.value.type.sqlTypeName(generator)));
-    }).toList();
+    final columns =
+        table.columnsByName.entries.map((final entry) {
+          return TestColumn(
+            entry.key,
+            TestColumn.columnTypeFromDriftTypeString(
+              entry.value.type.sqlTypeName(generator),
+            ),
+          );
+        }).toList();
 
     currentSchema!.testTables.add(TestTable(tableName, columns));
   }
 
   @override
   Future<void> deleteTable(final String name) async {
-    final index = currentSchema!.testTables
-        .indexWhere((final element) => element.tableName == name);
+    final index = currentSchema!.testTables.indexWhere(
+      (final element) => element.tableName == name,
+    );
     if (index < 0) {
       throw MigrationError(
-          "Can't remove table because it doesn't exists ($name)");
+        "Can't remove table because it doesn't exists ($name)",
+      );
     }
     currentSchema!.testTables.removeAt(index);
   }
@@ -103,60 +119,66 @@ class FakeMigrator extends Fake implements Migrator {
   @override
   Future<void> alterTable(final TableMigration migration) async {
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (final element) =>
-            element!.tableName == migration.affectedTable.actualTableName,
-        orElse: () => null);
+      (final element) =>
+          element!.tableName == migration.affectedTable.actualTableName,
+      orElse: () => null,
+    );
     if (testTable == null) {
       throw MigrationError(
-          "Table doesn't exists, so it can't be altered! ${migration.affectedTable.actualTableName}");
+        "Table doesn't exists, so it can't be altered! ${migration.affectedTable.actualTableName}",
+      );
     }
 
     if (toHint != null) {
       final testTable = FinalSchemas.schemas[toHint]?.testTables
           .cast<TestTable?>()
           .firstWhere(
-              (final element) =>
-                  element!.tableName == migration.affectedTable.actualTableName,
-              orElse: () => null);
+            (final element) =>
+                element!.tableName == migration.affectedTable.actualTableName,
+            orElse: () => null,
+          );
       if (testTable != null) {
         currentSchema!.testTables.add(testTable.copy());
         return;
       }
       debugPrint(
-          "Warning: could not find table ${migration.affectedTable.actualTableName} in final schema version $toHint");
+        "Warning: could not find table ${migration.affectedTable.actualTableName} in final schema version $toHint",
+      );
     }
 
     final columns =
         migration.affectedTable.columnsByName.entries.map((final entry) {
-      return TestColumn(
-          entry.key,
-          TestColumn.columnTypeFromDriftTypeString(
-              entry.value.type.sqlTypeName(generator)));
-    }).toList();
+          return TestColumn(
+            entry.key,
+            TestColumn.columnTypeFromDriftTypeString(
+              entry.value.type.sqlTypeName(generator),
+            ),
+          );
+        }).toList();
 
     testTable.columns = columns;
   }
 
   @override
   Future<void> renameTable(
-      final TableInfo<Table, dynamic> table, final String oldName) async {
+    final TableInfo<Table, dynamic> table,
+    final String oldName,
+  ) async {
     final testTable = currentSchema!.testTables.cast<TestTable?>().firstWhere(
-        (final element) => element!.tableName == oldName,
-        orElse: () => null);
+      (final element) => element!.tableName == oldName,
+      orElse: () => null,
+    );
     if (testTable == null) {
       throw MigrationError(
-          "Table doesn't exists, so it can't be renamed! $oldName");
+        "Table doesn't exists, so it can't be renamed! $oldName",
+      );
     }
 
     testTable.tableName = table.actualTableName;
   }
 }
 
-enum ColumnType {
-  integer,
-  string,
-  dateTime,
-}
+enum ColumnType { integer, string, dateTime }
 
 class TestColumnIncorrectError extends Error {
   TestColumnIncorrectError(this.sample, this.truth);
@@ -186,7 +208,8 @@ class TestColumnIncorrectError extends Error {
         output +=
             "Type incorrect for column (truth '${truth.columnName}' actual '${sample.columnName}'). ";
       }
-      output += "Expected ${TestColumn.columnTypeToString(truth.type)}, was "
+      output +=
+          "Expected ${TestColumn.columnTypeToString(truth.type)}, was "
           "${TestColumn.columnTypeToString(truth.type)}.\n";
     }
 
@@ -198,8 +221,13 @@ class TestColumnIncorrectError extends Error {
 }
 
 class TestTableIncorrectError extends Error {
-  TestTableIncorrectError(this.sample, this.truth, this.extraColumns,
-      this.missingColumns, this.incorrectColumnErrors);
+  TestTableIncorrectError(
+    this.sample,
+    this.truth,
+    this.extraColumns,
+    this.missingColumns,
+    this.incorrectColumnErrors,
+  );
 
   final TestTable sample;
   final TestTable truth;
@@ -213,23 +241,26 @@ class TestTableIncorrectError extends Error {
     if (extraColumns.isNotEmpty) {
       output += "Extra columns:\n";
       output += extraColumns.fold(
-          "",
-          (final previousValue, final element) =>
-              "$previousValue\t${element.toString()}\n");
+        "",
+        (final previousValue, final element) =>
+            "$previousValue\t${element.toString()}\n",
+      );
     }
     if (missingColumns.isNotEmpty) {
       output += "Missing columns:\n";
       output += missingColumns.fold(
-          "",
-          (final previousValue, final element) =>
-              "$previousValue\t${element.toString()}\n");
+        "",
+        (final previousValue, final element) =>
+            "$previousValue\t${element.toString()}\n",
+      );
     }
     if (incorrectColumnErrors.isNotEmpty) {
       output += "Incorrect columns:\n";
       output += incorrectColumnErrors.fold(
-          "",
-          (final previousValue, final element) =>
-              "$previousValue\t${element.toString()}\n");
+        "",
+        (final previousValue, final element) =>
+            "$previousValue\t${element.toString()}\n",
+      );
     }
 
     return output;
@@ -237,8 +268,13 @@ class TestTableIncorrectError extends Error {
 }
 
 class TestSchemaIncorrectError extends Error {
-  TestSchemaIncorrectError(this.sample, this.truth, this.extraTables,
-      this.missingTables, this.incorrectTableErrors);
+  TestSchemaIncorrectError(
+    this.sample,
+    this.truth,
+    this.extraTables,
+    this.missingTables,
+    this.incorrectTableErrors,
+  );
 
   final TestSchema sample;
   final TestSchema truth;
@@ -252,16 +288,18 @@ class TestSchemaIncorrectError extends Error {
     if (extraTables.isNotEmpty) {
       output += "Extra tables:\n";
       output += extraTables.fold(
-          "",
-          (final previousValue, final element) =>
-              "$previousValue\t${element.tableName}\n");
+        "",
+        (final previousValue, final element) =>
+            "$previousValue\t${element.tableName}\n",
+      );
     }
     if (missingTables.isNotEmpty) {
       output += "Missing tables:\n";
       output += missingTables.fold(
-          "",
-          (final previousValue, final element) =>
-              "$previousValue\t${element.tableName}\n");
+        "",
+        (final previousValue, final element) =>
+            "$previousValue\t${element.tableName}\n",
+      );
     }
     if (incorrectTableErrors.isNotEmpty) {
       output += "Incorrect tables:\n";
@@ -271,9 +309,10 @@ class TestSchemaIncorrectError extends Error {
             .split("\n")
             .where((final element) => element.trim().isNotEmpty)
             .fold(
-                "",
-                (final previousValue, final element) =>
-                    "$previousValue\t$element\n");
+              "",
+              (final previousValue, final element) =>
+                  "$previousValue\t$element\n",
+            );
       }
     }
 
@@ -349,7 +388,8 @@ class TestTable {
     // Look for extra columns.
     for (final column in columns) {
       if (truth.columns.indexWhere(
-              (final element) => element.columnName == column.columnName) <
+            (final element) => element.columnName == column.columnName,
+          ) <
           0) {
         // we've got an extra column.
         extraColumns.add(column);
@@ -359,7 +399,8 @@ class TestTable {
     // Look for missing columns.
     for (final column in truth.columns) {
       if (columns.indexWhere(
-              (final element) => element.columnName == column.columnName) <
+            (final element) => element.columnName == column.columnName,
+          ) <
           0) {
         // we've got a missing column.
         missingColumns.add(column);
@@ -371,7 +412,8 @@ class TestTable {
 
     for (final column in columns) {
       final index = truth.columns.indexWhere(
-          (final element) => element.columnName == column.columnName);
+        (final element) => element.columnName == column.columnName,
+      );
       if (index >= 0) {
         try {
           if (!column.compare(truth.columns[index], shouldThrow)) {
@@ -393,7 +435,12 @@ class TestTable {
         incorrectColumnErrors.isNotEmpty) {
       if (shouldThrow) {
         throw TestTableIncorrectError(
-            this, truth, extraColumns, missingColumns, incorrectColumnErrors);
+          this,
+          truth,
+          extraColumns,
+          missingColumns,
+          incorrectColumnErrors,
+        );
       }
       return false;
     }
@@ -417,7 +464,8 @@ class TestSchema {
     // Look for extra tables.
     for (final table in testTables) {
       if (truth.testTables.indexWhere(
-              (final element) => element.tableName == table.tableName) <
+            (final element) => element.tableName == table.tableName,
+          ) <
           0) {
         // we've got an extra table.
         extraTables.add(table);
@@ -426,7 +474,8 @@ class TestSchema {
     // Look for missing tables.
     for (final table in truth.testTables) {
       if (testTables.indexWhere(
-              (final element) => element.tableName == table.tableName) <
+            (final element) => element.tableName == table.tableName,
+          ) <
           0) {
         // we've got an missing table.
         missingTables.add(table);
@@ -437,8 +486,9 @@ class TestSchema {
     final List<TestTableIncorrectError> incorrectTableErrors = [];
 
     for (final table in testTables) {
-      final index = truth.testTables
-          .indexWhere((final element) => element.tableName == table.tableName);
+      final index = truth.testTables.indexWhere(
+        (final element) => element.tableName == table.tableName,
+      );
       if (index >= 0) {
         try {
           if (!table.compare(truth.testTables[index], shouldThrow)) {
@@ -460,7 +510,12 @@ class TestSchema {
         incorrectTableErrors.isNotEmpty) {
       if (shouldThrow) {
         throw TestSchemaIncorrectError(
-            this, truth, extraTables, missingTables, incorrectTableErrors);
+          this,
+          truth,
+          extraTables,
+          missingTables,
+          incorrectTableErrors,
+        );
       }
       return false;
     }
@@ -474,7 +529,7 @@ abstract class FinalSchemas {
     1: {},
     2: {},
     3: {"groups": "\"\"groups\"\""},
-    4: {}
+    4: {},
   };
 
   static final schemas = {
@@ -485,7 +540,7 @@ abstract class FinalSchemas {
       ]),
       TestTable('nicknames', [
         TestColumn('mac_address', ColumnType.string),
-        TestColumn('nickname', ColumnType.string)
+        TestColumn('nickname', ColumnType.string),
       ]),
       TestTable('simple_settings', [
         TestColumn('id', ColumnType.integer),
@@ -502,7 +557,7 @@ abstract class FinalSchemas {
       ]),
       TestTable('nicknames', [
         TestColumn('mac_address', ColumnType.string),
-        TestColumn('nickname', ColumnType.string)
+        TestColumn('nickname', ColumnType.string),
       ]),
       TestTable('simple_settings', [
         TestColumn('settings_id', ColumnType.integer),
@@ -515,7 +570,7 @@ abstract class FinalSchemas {
     3: TestSchema([
       TestTable('""groups""', [
         TestColumn('id', ColumnType.integer),
-        TestColumn('name', ColumnType.string)
+        TestColumn('name', ColumnType.string),
       ]),
       TestTable('group_entries', [
         TestColumn('mac_address', ColumnType.string),
@@ -527,7 +582,7 @@ abstract class FinalSchemas {
       ]),
       TestTable('nicknames', [
         TestColumn('mac_address', ColumnType.string),
-        TestColumn('nickname', ColumnType.string)
+        TestColumn('nickname', ColumnType.string),
       ]),
       TestTable('simple_settings', [
         TestColumn('settings_id', ColumnType.integer),
@@ -540,7 +595,7 @@ abstract class FinalSchemas {
     4: TestSchema([
       TestTable('groups', [
         TestColumn('id', ColumnType.integer),
-        TestColumn('name', ColumnType.string)
+        TestColumn('name', ColumnType.string),
       ]),
       TestTable('group_entries', [
         TestColumn('device_id', ColumnType.string),
@@ -552,7 +607,7 @@ abstract class FinalSchemas {
       ]),
       TestTable('nicknames', [
         TestColumn('device_id', ColumnType.string),
-        TestColumn('nickname', ColumnType.string)
+        TestColumn('nickname', ColumnType.string),
       ]),
       TestTable('simple_settings', [
         TestColumn('settings_id', ColumnType.integer),
@@ -566,14 +621,16 @@ abstract class FinalSchemas {
   };
 
   static const expectedErrors = {
-    '1to2': 'Error for schema!\n'
+    '1to2':
+        'Error for schema!\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
         '\tExtra columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n',
-    '1to3': 'Error for schema!\n'
+    '1to3':
+        'Error for schema!\n'
         'Missing tables:\n'
         '\t""groups""\n'
         '\tgroup_entries\n'
@@ -583,7 +640,8 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n',
-    '1to4': 'Error for schema!\n'
+    '1to4':
+        'Error for schema!\n'
         'Missing tables:\n'
         '\tgroups\n'
         '\tgroup_entries\n'
@@ -609,18 +667,21 @@ abstract class FinalSchemas {
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "device_id", "type": "string"}\n'
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
-    '2to1': 'Error for schema!\n'
+    '2to1':
+        'Error for schema!\n'
         'Incorrect tables:\n'
         '\tError for table simple_settings.\n'
         '\tExtra columns:\n'
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
-    '2to3': 'Error for schema!\n'
+    '2to3':
+        'Error for schema!\n'
         'Missing tables:\n'
         '\t""groups""\n'
         '\tgroup_entries\n',
-    '2to4': 'Error for schema!\n'
+    '2to4':
+        'Error for schema!\n'
         'Missing tables:\n'
         '\tgroups\n'
         '\tgroup_entries\n'
@@ -641,7 +702,8 @@ abstract class FinalSchemas {
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "device_id", "type": "string"}\n'
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
-    '3to1': 'Error for schema!\n'
+    '3to1':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\t""groups""\n'
         '\tgroup_entries\n'
@@ -651,11 +713,13 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "settings_id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
-    '3to2': 'Error for schema!\n'
+    '3to2':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\t""groups""\n'
         '\tgroup_entries\n',
-    '3to4': 'Error for schema!\n'
+    '3to4':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\t""groups""\n'
         'Missing tables:\n'
@@ -682,7 +746,8 @@ abstract class FinalSchemas {
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "device_id", "type": "string"}\n'
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n',
-    '4to1': 'Error for schema!\n'
+    '4to1':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\tgroups\n'
         '\tgroup_entries\n'
@@ -708,7 +773,8 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
-    '4to2': 'Error for schema!\n'
+    '4to2':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\tgroups\n'
         '\tgroup_entries\n'
@@ -729,7 +795,8 @@ abstract class FinalSchemas {
         '\t\tColumn {"columnName": "base_station_id", "type": "integer"}\n'
         '\tMissing columns:\n'
         '\t\tColumn {"columnName": "id", "type": "integer"}\n',
-    '4to3': 'Error for schema!\n'
+    '4to3':
+        'Error for schema!\n'
         'Extra tables:\n'
         '\tgroups\n'
         'Missing tables:\n'

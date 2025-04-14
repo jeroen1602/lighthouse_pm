@@ -55,11 +55,11 @@ class _SettingsViveBaseStationIdsPageState
   Widget build(final BuildContext context) {
     return StreamBuilder<List<ViveBaseStationId>>(
       stream: bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
-      builder: (final BuildContext _,
-          final AsyncSnapshot<List<ViveBaseStationId>> snapshot) {
-        Widget body = const Center(
-          child: CircularProgressIndicator(),
-        );
+      builder: (
+        final BuildContext _,
+        final AsyncSnapshot<List<ViveBaseStationId>> snapshot,
+      ) {
+        Widget body = const Center(child: CircularProgressIndicator());
         final data = snapshot.data;
         if (data != null) {
           data.sort((final a, final b) {
@@ -79,37 +79,42 @@ class _SettingsViveBaseStationIdsPageState
           }
         }
 
-        final List<Widget> actions = selected.isEmpty
-            ? const []
-            : [
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  tooltip: 'Delete selected',
-                  onPressed: () async {
-                    for (final id in selected) {
-                      await blocWithoutListen.viveBaseStation.deleteId(id);
-                    }
-                    setState(() {
-                      selected.clear();
-                    });
-                    if (context.mounted) {
-                      ToastContext().init(context);
-                      Toast.show('Ids have been removed!');
-                    }
-                  },
-                )
-              ];
+        final List<Widget> actions =
+            selected.isEmpty
+                ? const []
+                : [
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    tooltip: 'Delete selected',
+                    onPressed: () async {
+                      for (final id in selected) {
+                        await blocWithoutListen.viveBaseStation.deleteId(id);
+                      }
+                      setState(() {
+                        selected.clear();
+                      });
+                      if (context.mounted) {
+                        ToastContext().init(context);
+                        Toast.show('Ids have been removed!');
+                      }
+                    },
+                  ),
+                ];
 
         return Scaffold(
-            appBar: createSelectableAppBar(context,
-                numberOfSelections: selected.length,
-                title: const Text('Vive Base station ids'),
-                actions: actions, onClearSelection: () {
+          appBar: createSelectableAppBar(
+            context,
+            numberOfSelections: selected.length,
+            title: const Text('Vive Base station ids'),
+            actions: actions,
+            onClearSelection: () {
               setState(() {
                 selected.clear();
               });
-            }),
-            body: body);
+            },
+          ),
+          body: body,
+        );
       },
     );
   }
@@ -121,13 +126,14 @@ typedef _DeselectItem = void Function(String deviceId);
 typedef _DeleteItem = Future Function(String deviceId);
 
 class _DataPage extends StatelessWidget {
-  const _DataPage(
-      {required this.selecting,
-      required this.ids,
-      required this.selectItem,
-      required this.isSelected,
-      required this.deselectItem,
-      required this.deleteItem});
+  const _DataPage({
+    required this.selecting,
+    required this.ids,
+    required this.selectItem,
+    required this.isSelected,
+    required this.deselectItem,
+    required this.deleteItem,
+  });
 
   final bool selecting;
   final List<ViveBaseStationId> ids;
@@ -144,23 +150,26 @@ class _DataPage extends StatelessWidget {
         final selected = isSelected(id.deviceId);
         return Column(
           children: [
-            createSelectableListTile(context,
-                selected: selected,
-                selecting: selecting,
-                title: Text(id.baseStationId
+            createSelectableListTile(
+              context,
+              selected: selected,
+              selecting: selecting,
+              title: Text(
+                id.baseStationId
                     .toRadixString(16)
                     .padLeft(8, '0')
-                    .toUpperCase()),
-                subtitle: Text(id.deviceId), onSelect: (final newState) {
-              if (newState) {
-                selectItem(id.deviceId);
-              } else {
-                deselectItem(id.deviceId);
-              }
-            }),
-            const Divider(
-              height: 0,
+                    .toUpperCase(),
+              ),
+              subtitle: Text(id.deviceId),
+              onSelect: (final newState) {
+                if (newState) {
+                  selectItem(id.deviceId);
+                } else {
+                  deselectItem(id.deviceId);
+                }
+              },
             ),
+            const Divider(height: 0),
           ],
         );
       },
@@ -186,55 +195,65 @@ class _EmptyState extends State<_EmptyPage> {
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
-    final Widget blockIcon = kReleaseMode
-        ? const Icon(Icons.block, size: 120.0)
-        : GestureDetector(
-            onTap: () {
-              if (tapCounter < _tapTop) {
-                tapCounter++;
-              }
-              if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
-                if (context.mounted) {
-                  ToastContext().init(context);
-                  Toast.show(
-                      'Just ${_tapTop - tapCounter} left until a fake ids are created');
+    final Widget blockIcon =
+        kReleaseMode
+            ? const Icon(Icons.block, size: 120.0)
+            : GestureDetector(
+              onTap: () {
+                if (tapCounter < _tapTop) {
+                  tapCounter++;
                 }
-              }
-              if (tapCounter == _tapTop) {
-                blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFF)
-                        .toString(),
-                    0xFFFFFFFF);
-                blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFE)
-                        .toString(),
-                    0xFFFFFFFE);
-                blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFD)
-                        .toString(),
-                    0xFFFFFFFD);
-                blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(0xFFFFFFFC)
-                        .toString(),
-                    0xFFFFFFFC);
-                if (context.mounted) {
-                  ToastContext().init(context);
-                  Toast.show('Fake ids created!', duration: Toast.lengthShort);
+                if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Just ${_tapTop - tapCounter} left until a fake ids are created',
+                    );
+                  }
                 }
-                tapCounter++;
-              }
-            },
-            child: const Icon(Icons.block, size: 120.0),
-          );
+                if (tapCounter == _tapTop) {
+                  blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(
+                      0xFFFFFFFF,
+                    ).toString(),
+                    0xFFFFFFFF,
+                  );
+                  blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(
+                      0xFFFFFFFE,
+                    ).toString(),
+                    0xFFFFFFFE,
+                  );
+                  blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(
+                      0xFFFFFFFD,
+                    ).toString(),
+                    0xFFFFFFFD,
+                  );
+                  blocWithoutListen.viveBaseStation.insertId(
+                    FakeDeviceIdentifier.generateDeviceIdentifier(
+                      0xFFFFFFFC,
+                    ).toString(),
+                    0xFFFFFFFC,
+                  );
+                  if (context.mounted) {
+                    ToastContext().init(context);
+                    Toast.show(
+                      'Fake ids created!',
+                      duration: Toast.lengthShort,
+                    );
+                  }
+                  tapCounter++;
+                }
+              },
+              child: const Icon(Icons.block, size: 120.0),
+            );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           blockIcon,
-          Text(
-            'No ids set (yet).',
-            style: theming.titleLarge,
-          )
+          Text('No ids set (yet).', style: theming.titleLarge),
         ],
       ),
     );

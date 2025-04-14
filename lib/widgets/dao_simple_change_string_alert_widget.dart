@@ -18,16 +18,20 @@ class DaoSimpleChangeStringAlertWidget extends StatefulWidget {
 
   /// Open a dialog and return a [String] with the new value.
   /// Can return `null` if the dialog is cancelled.
-  static Future<String?> showCustomDialog(final BuildContext context,
-      {required final String primaryKey, final String? startValue}) {
+  static Future<String?> showCustomDialog(
+    final BuildContext context, {
+    required final String primaryKey,
+    final String? startValue,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return DaoSimpleChangeStringAlertWidget(
-            primaryKey: primaryKey,
-            startValue: startValue,
-          );
-        });
+      context: context,
+      builder: (final BuildContext context) {
+        return DaoSimpleChangeStringAlertWidget(
+          primaryKey: primaryKey,
+          startValue: startValue,
+        );
+      },
+    );
   }
 }
 
@@ -50,16 +54,19 @@ class _DaoSimpleChangeStringAlertWidget
 
     return AlertDialog(
       title: RichText(
-          text: TextSpan(
-        style: theming.bodyMedium,
-        children: <InlineSpan>[
-          const TextSpan(text: "Set a new value for "),
-          TextSpan(style: theming.bodyTextBold, text: widget.primaryKey),
-          const TextSpan(
-              text: ".\n"
-                  "NOTE doing this may force the app into an illegal state."),
-        ],
-      )),
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
+            const TextSpan(text: "Set a new value for "),
+            TextSpan(style: theming.bodyTextBold, text: widget.primaryKey),
+            const TextSpan(
+              text:
+                  ".\n"
+                  "NOTE doing this may force the app into an illegal state.",
+            ),
+          ],
+        ),
+      ),
       content: TextField(
         decoration: InputDecoration(labelText: widget.primaryKey),
         controller: textController,

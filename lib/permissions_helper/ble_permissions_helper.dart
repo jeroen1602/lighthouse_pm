@@ -10,8 +10,9 @@ import 'package:shared_platform/shared_platform.dart';
 ///
 abstract class BLEPermissionsHelper {
   @visibleForTesting
-  static const channel =
-      MethodChannel("com.jeroen1602.lighthouse_pm/bluetooth");
+  static const channel = MethodChannel(
+    "com.jeroen1602.lighthouse_pm/bluetooth",
+  );
 
   ///
   /// A function to check if the app is allowed to use BLE.
@@ -49,7 +50,8 @@ abstract class BLEPermissionsHelper {
       return PermissionStatus.granted;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${SharedPlatform.current}");
+      "ERROR: unsupported platform! ${SharedPlatform.current}",
+    );
   }
 
   ///
@@ -68,10 +70,10 @@ abstract class BLEPermissionsHelper {
       final version = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
       if (version >= 31) {
         // Request the new bluetooth permission for Android 12 and higher.
-        return await [Permission.bluetoothScan, Permission.bluetoothConnect]
-            .request()
-            .then((final map) => map.values)
-            .then((final statuses) {
+        return await [
+          Permission.bluetoothScan,
+          Permission.bluetoothConnect,
+        ].request().then((final map) => map.values).then((final statuses) {
           for (final status in statuses) {
             if (!status.isGranted) {
               return status;
@@ -94,7 +96,8 @@ abstract class BLEPermissionsHelper {
       return PermissionStatus.granted;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${SharedPlatform.current}");
+      "ERROR: unsupported platform! ${SharedPlatform.current}",
+    );
   }
 
   ///
@@ -129,7 +132,8 @@ abstract class BLEPermissionsHelper {
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${SharedPlatform.current}");
+      "ERROR: unsupported platform! ${SharedPlatform.current}",
+    );
   }
 
   ///
@@ -163,7 +167,8 @@ abstract class BLEPermissionsHelper {
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${SharedPlatform.current}");
+      "ERROR: unsupported platform! ${SharedPlatform.current}",
+    );
   }
 
   ///
@@ -194,10 +199,12 @@ abstract class BLEPermissionsHelper {
     }
     if (SharedPlatform.isLinux) {
       debugPrint(
-          "Can't open location settings on Linux since there is no api.");
+        "Can't open location settings on Linux since there is no api.",
+      );
       return false;
     }
     throw UnsupportedError(
-        "ERROR: unsupported platform! ${SharedPlatform.current}");
+      "ERROR: unsupported platform! ${SharedPlatform.current}",
+    );
   }
 }

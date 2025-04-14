@@ -15,9 +15,9 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<Nickname?> watchNicknameForDeviceIds(String deviceId) {
     deviceId = deviceId.toUpperCase();
-    return (select(nicknames)..where((final n) => n.deviceId.equals(deviceId)))
-        .watch()
-        .map((final list) {
+    return (select(nicknames)..where(
+      (final n) => n.deviceId.equals(deviceId),
+    )).watch().map((final list) {
       if (list.isEmpty) {
         return null;
       }
@@ -30,13 +30,14 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> deleteNicknames(final List<String> deviceIds) {
-    return (delete(nicknames)..where((final t) => t.deviceId.isIn(deviceIds)))
-        .go();
+    return (delete(nicknames)
+      ..where((final t) => t.deviceId.isIn(deviceIds))).go();
   }
 
   Future<int> insertLastSeenDevice(final LastSeenDevicesCompanion lastSeen) {
-    return into(lastSeenDevices)
-        .insert(lastSeen, mode: InsertMode.insertOrReplace);
+    return into(
+      lastSeenDevices,
+    ).insert(lastSeen, mode: InsertMode.insertOrReplace);
   }
 
   Stream<List<LastSeenDevice>> get watchLastSeenDevices =>
@@ -46,13 +47,18 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<List<NicknamesLastSeenJoin>> watchSavedNicknamesWithLastSeen() {
     final query = select(nicknames).join([
-      leftOuterJoin(lastSeenDevices,
-          lastSeenDevices.deviceId.equalsExp(nicknames.deviceId))
+      leftOuterJoin(
+        lastSeenDevices,
+        lastSeenDevices.deviceId.equalsExp(nicknames.deviceId),
+      ),
     ]);
     return query.watch().map((final rows) {
       return rows.map((final row) {
-        return NicknamesLastSeenJoin(row.read(nicknames.deviceId)!,
-            row.read(nicknames.nickname)!, row.read(lastSeenDevices.lastSeen));
+        return NicknamesLastSeenJoin(
+          row.read(nicknames.deviceId)!,
+          row.read(nicknames.nickname)!,
+          row.read(lastSeenDevices.lastSeen),
+        );
       }).toList();
     });
   }
@@ -63,7 +69,6 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Future<void> deleteLastSeen(final LastSeenDevice lastSeen) {
     return (delete(lastSeenDevices)
-          ..where((final tbl) => tbl.deviceId.equals(lastSeen.deviceId)))
-        .go();
+      ..where((final tbl) => tbl.deviceId.equals(lastSeen.deviceId))).go();
   }
 }

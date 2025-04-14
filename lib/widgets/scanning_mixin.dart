@@ -15,25 +15,37 @@ mixin class ScanningMixin {
     await LighthouseProvider.instance.stopScan();
   }
 
-  Future startScan(final Duration scanDuration,
-      {final Duration? updateInterval, final bool clean = true}) async {
+  Future startScan(
+    final Duration scanDuration, {
+    final Duration? updateInterval,
+    final bool clean = true,
+  }) async {
     try {
       await LighthouseProvider.instance.startScan(
-          timeout: scanDuration, updateInterval: updateInterval, clean: clean);
+        timeout: scanDuration,
+        updateInterval: updateInterval,
+        clean: clean,
+      );
     } catch (e, s) {
       debugPrint(
-          "Error trying to start scan! ${e.toString()}\n${s.toString()}");
+        "Error trying to start scan! ${e.toString()}\n${s.toString()}",
+      );
     }
   }
 
-  Future startScanWithCheck(final Duration scanDuration,
-      {final Duration? updateInterval,
-      final String failMessage = "",
-      final bool clean = true}) async {
+  Future startScanWithCheck(
+    final Duration scanDuration, {
+    final Duration? updateInterval,
+    final String failMessage = "",
+    final bool clean = true,
+  }) async {
     if (await BLEPermissionsHelper.hasBLEPermissions() ==
         PermissionStatus.granted) {
-      await startScan(scanDuration,
-          updateInterval: updateInterval, clean: clean);
+      await startScan(
+        scanDuration,
+        updateInterval: updateInterval,
+        clean: clean,
+      );
     } else if (failMessage.isNotEmpty && !kReleaseMode) {
       debugPrint(failMessage);
     }
@@ -41,10 +53,11 @@ mixin class ScanningMixin {
 
   Future cleanUp() async => await LighthouseProvider.instance.cleanUp();
 
-  Widget buildScanPopScope(
-      {required final Widget child,
-      final CanPop? beforeWillPop,
-      final CanPop? afterWillPop}) {
+  Widget buildScanPopScope({
+    required final Widget child,
+    final CanPop? beforeWillPop,
+    final CanPop? afterWillPop,
+  }) {
     final canPopList = <CanPop>[];
     if (beforeWillPop != null) {
       canPopList.add(beforeWillPop);
@@ -54,9 +67,6 @@ mixin class ScanningMixin {
       canPopList.add(afterWillPop);
     }
 
-    return MultipleCallbackPopScope(
-      canPop: canPopList,
-      child: child,
-    );
+    return MultipleCallbackPopScope(canPop: canPopList, child: child);
   }
 }

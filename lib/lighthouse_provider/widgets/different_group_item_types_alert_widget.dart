@@ -16,10 +16,11 @@ class DifferentGroupItemTypesAlertWidget extends StatefulWidget {
   /// Will be `false` if the user cancels the dialog.
   static Future<bool> showCustomDialog(final BuildContext context) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return const DifferentGroupItemTypesAlertWidget();
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return const DifferentGroupItemTypesAlertWidget();
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }
@@ -34,10 +35,12 @@ class _DifferentGroupItemTypesAlertWidgetContent
   Widget build(final BuildContext context) {
     return AlertDialog(
       title: const Text('Not all devices have the same type'),
-      content: const Text('Not all the devices you want to add to the group'
-          ' are of the same type, this could cause problems with your VR setup.'
-          ' No vr headset support 2 different types of base stations.'
-          '\nAre you sure you want to do this?'),
+      content: const Text(
+        'Not all the devices you want to add to the group'
+        ' are of the same type, this could cause problems with your VR setup.'
+        ' No vr headset support 2 different types of base stations.'
+        '\nAre you sure you want to do this?',
+      ),
       actions: [
         SimpleDialogOption(
           child: const Text('Cancel'),

@@ -24,12 +24,11 @@ class TroubleshootingPage extends BasePage {
   @override
   Widget buildPage(final BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Troubleshooting')),
-        body: const ContentContainerListView(
-          children: [
-            TroubleshootingContentWidget(),
-          ],
-        ));
+      appBar: AppBar(title: const Text('Troubleshooting')),
+      body: const ContentContainerListView(
+        children: [TroubleshootingContentWidget()],
+      ),
+    );
   }
 }
 
@@ -44,16 +43,15 @@ class TroubleshootingContentWidget extends StatelessWidget
 
   static List<Widget> getContent(final BuildContext context) {
     return [
-      Container(
-        height: _troubleshootingScrollPadding,
-      ),
+      Container(height: _troubleshootingScrollPadding),
       if (SharedPlatform.isAndroid) ...[
         _TroubleshootingItemWithAction(
           leadingIcon: Icons.location_off,
           leadingColor: Colors.green,
           title: const Text('Enable location services'),
           subtitle: const Text(
-              'On Android 6.0 or higher it is required to enable location services. Or no devices will show up.'),
+            'On Android 6.0 or higher it is required to enable location services. Or no devices will show up.',
+          ),
           actionIcon: Icons.settings,
           onTap: () async {
             await BLEPermissionsHelper.openLocationSettings();
@@ -68,45 +66,50 @@ class TroubleshootingContentWidget extends StatelessWidget
               return Container();
             }
             return FutureBuilder<AndroidDeviceInfo>(
-                future: DeviceInfoPlugin().androidInfo,
-                builder: (final context, final snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  } else {
-                    final sdkInt = snapshot.requireData.version.sdkInt;
-                    return Column(
-                      children: [
-                        if (sdkInt >= 31)
-                          _TroubleshootingItemWithAction(
-                            leadingIcon: Icons.lock,
-                            leadingColor: Colors.red,
-                            title: const Text('Allow Bluetooth permission'),
-                            subtitle: const Text(
-                                'Bluetooth permission is required to scan for devices'),
-                            actionIcon: Icons.bluetooth,
-                            onTap: () async {
-                              await LocationPermissionDialogFlow
-                                  .showLocationPermissionDialogFlow(context);
-                            },
-                          )
-                        else
-                          _TroubleshootingItemWithAction(
-                            leadingIcon: Icons.lock,
-                            leadingColor: Colors.red,
-                            title: const Text('Allow Location permissions'),
-                            subtitle: const Text(
-                                'On Android you need to allow location permissions to scan for devices'),
-                            actionIcon: Icons.location_on,
-                            onTap: () async {
-                              await LocationPermissionDialogFlow
-                                  .showLocationPermissionDialogFlow(context);
-                            },
+              future: DeviceInfoPlugin().androidInfo,
+              builder: (final context, final snapshot) {
+                if (!snapshot.hasData) {
+                  return Container();
+                } else {
+                  final sdkInt = snapshot.requireData.version.sdkInt;
+                  return Column(
+                    children: [
+                      if (sdkInt >= 31)
+                        _TroubleshootingItemWithAction(
+                          leadingIcon: Icons.lock,
+                          leadingColor: Colors.red,
+                          title: const Text('Allow Bluetooth permission'),
+                          subtitle: const Text(
+                            'Bluetooth permission is required to scan for devices',
                           ),
-                        const Divider(),
-                      ],
-                    );
-                  }
-                });
+                          actionIcon: Icons.bluetooth,
+                          onTap: () async {
+                            await LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
+                              context,
+                            );
+                          },
+                        )
+                      else
+                        _TroubleshootingItemWithAction(
+                          leadingIcon: Icons.lock,
+                          leadingColor: Colors.red,
+                          title: const Text('Allow Location permissions'),
+                          subtitle: const Text(
+                            'On Android you need to allow location permissions to scan for devices',
+                          ),
+                          actionIcon: Icons.location_on,
+                          onTap: () async {
+                            await LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
+                              context,
+                            );
+                          },
+                        ),
+                      const Divider(),
+                    ],
+                  );
+                }
+              },
+            );
           },
         ),
         // FlutterBlue doesn't like it when you have two of the same streams
@@ -130,16 +133,19 @@ class TroubleshootingContentWidget extends StatelessWidget
                 return Column(
                   children: [
                     _TroubleshootingItemWithAction(
-                        leadingIcon: Icons.bluetooth_disabled,
-                        leadingColor: Colors.blue,
-                        title: const Text('Enable Bluetooth'),
-                        subtitle: const Text(
-                            'Bluetooth needs to be enabled to scan for devices'),
-                        actionIcon: Icons.settings_bluetooth,
-                        onTap: () async {
-                          await EnableBluetoothDialogFlow
-                              .showEnableBluetoothDialogFlow(context);
-                        }),
+                      leadingIcon: Icons.bluetooth_disabled,
+                      leadingColor: Colors.blue,
+                      title: const Text('Enable Bluetooth'),
+                      subtitle: const Text(
+                        'Bluetooth needs to be enabled to scan for devices',
+                      ),
+                      actionIcon: Icons.settings_bluetooth,
+                      onTap: () async {
+                        await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
+                          context,
+                        );
+                      },
+                    ),
                     const Divider(),
                   ],
                 );
@@ -162,11 +168,13 @@ class TroubleshootingContentWidget extends StatelessWidget
                   leadingColor: Colors.red,
                   title: const Text('Allow Bluetooth permission'),
                   subtitle: const Text(
-                      'Bluetooth permission is required to scan for devices'),
+                    'Bluetooth permission is required to scan for devices',
+                  ),
                   actionIcon: Icons.bluetooth,
                   onTap: () async {
-                    await LocationPermissionDialogFlow
-                        .showLocationPermissionDialogFlow(context);
+                    await LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
+                      context,
+                    );
                   },
                 ),
                 const Divider(),
@@ -191,16 +199,19 @@ class TroubleshootingContentWidget extends StatelessWidget
                 return Column(
                   children: [
                     _TroubleshootingItemWithAction(
-                        leadingIcon: Icons.bluetooth_disabled,
-                        leadingColor: Colors.blue,
-                        title: const Text('Enable Bluetooth'),
-                        subtitle: const Text(
-                            'Bluetooth needs to be enabled to scan for devices'),
-                        actionIcon: Icons.settings_bluetooth,
-                        onTap: () async {
-                          await EnableBluetoothDialogFlow
-                              .showEnableBluetoothDialogFlow(context);
-                        }),
+                      leadingIcon: Icons.bluetooth_disabled,
+                      leadingColor: Colors.blue,
+                      title: const Text('Enable Bluetooth'),
+                      subtitle: const Text(
+                        'Bluetooth needs to be enabled to scan for devices',
+                      ),
+                      actionIcon: Icons.settings_bluetooth,
+                      onTap: () async {
+                        await EnableBluetoothDialogFlow.showEnableBluetoothDialogFlow(
+                          context,
+                        );
+                      },
+                    ),
                     const Divider(),
                   ],
                 );
@@ -210,12 +221,10 @@ class TroubleshootingContentWidget extends StatelessWidget
       ],
       if (LighthouseProvider.instance.getPairBackEnds().isNotEmpty) ...const [
         ListTile(
-            title: Text("Make sure you have paired with the lighthouse"),
-            leading: Icon(
-              Icons.bluetooth_connected,
-              color: Colors.lightBlue,
-            )),
-        Divider()
+          title: Text("Make sure you have paired with the lighthouse"),
+          leading: Icon(Icons.bluetooth_connected, color: Colors.lightBlue),
+        ),
+        Divider(),
       ],
       const ListTile(
         title: Text('Make sure the lighthouse is plugged in'),
@@ -223,54 +232,68 @@ class TroubleshootingContentWidget extends StatelessWidget
       ),
       const Divider(),
       const ListTile(
-          title: Text('You might be out of range'),
-          subtitle: Text('Try moving closer to the lighthouses.'),
-          leading: Icon(Icons.signal_cellular_null, color: Colors.orange)),
-      const Divider(),
-      const ListTile(
-          title: Text(
-              'Your lighthouse may be running an older unsupported software version'),
-          subtitle:
-              Text('Check to see if there is an update for your lighthouse.'),
-          leading: Icon(Icons.update, color: Colors.cyan)),
-      const Divider(),
-      const ListTile(
-          title:
-              Text('Sometimes a lighthouse reports it\'s own state as booting'),
-          subtitle: Text(
-              'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.'),
-          leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink)),
-      const Divider(),
-      if (SharedPlatform.isWeb)
-        const ListTile(
-            title: Text('Sometimes the page needs to be reloaded'),
-            subtitle: Text('Try to reload the web page and connect again'),
-            leading: Icon(Icons.replay, color: Colors.deepOrange))
-      else
-        const ListTile(
-            title: Text('Sometimes the app needs a restart'),
-            subtitle: Text(
-                'The app is a work in progress and sometimes it needs a restart in order to working perfectly.'),
-            leading: Icon(Icons.replay, color: Colors.deepOrange)),
-      const Divider(),
-      if (SharedPlatform.isWeb)
-        const ListTile(
-            title: Text(
-                'Make sure no other tab is communicating with the lighthouse'),
-            subtitle: Text(
-                'The site cannot find the lighthouse if another program is already communicating with it.'),
-            leading: Icon(Icons.apps, color: Colors.greenAccent))
-      else
-        const ListTile(
-            title: Text(
-                'Make sure no other app is communicating with the lighthouse'),
-            subtitle: Text(
-                'The app cannot find the lighthouse if another app is already communicating with it.'),
-            leading: Icon(Icons.apps, color: Colors.greenAccent)),
-      const Divider(),
-      Container(
-        height: _troubleshootingScrollPadding,
+        title: Text('You might be out of range'),
+        subtitle: Text('Try moving closer to the lighthouses.'),
+        leading: Icon(Icons.signal_cellular_null, color: Colors.orange),
       ),
+      const Divider(),
+      const ListTile(
+        title: Text(
+          'Your lighthouse may be running an older unsupported software version',
+        ),
+        subtitle: Text(
+          'Check to see if there is an update for your lighthouse.',
+        ),
+        leading: Icon(Icons.update, color: Colors.cyan),
+      ),
+      const Divider(),
+      const ListTile(
+        title: Text(
+          'Sometimes a lighthouse reports it\'s own state as booting',
+        ),
+        subtitle: Text(
+          'Sometimes a lighthouse may report it\'s own state as booting even though it\'s already on.\nJust click on the gray power-button and select "I\'m sure" in the popup at the bottom.',
+        ),
+        leading: Icon(CommunityMaterialIcons.ray_start, color: Colors.pink),
+      ),
+      const Divider(),
+      if (SharedPlatform.isWeb)
+        const ListTile(
+          title: Text('Sometimes the page needs to be reloaded'),
+          subtitle: Text('Try to reload the web page and connect again'),
+          leading: Icon(Icons.replay, color: Colors.deepOrange),
+        )
+      else
+        const ListTile(
+          title: Text('Sometimes the app needs a restart'),
+          subtitle: Text(
+            'The app is a work in progress and sometimes it needs a restart in order to working perfectly.',
+          ),
+          leading: Icon(Icons.replay, color: Colors.deepOrange),
+        ),
+      const Divider(),
+      if (SharedPlatform.isWeb)
+        const ListTile(
+          title: Text(
+            'Make sure no other tab is communicating with the lighthouse',
+          ),
+          subtitle: Text(
+            'The site cannot find the lighthouse if another program is already communicating with it.',
+          ),
+          leading: Icon(Icons.apps, color: Colors.greenAccent),
+        )
+      else
+        const ListTile(
+          title: Text(
+            'Make sure no other app is communicating with the lighthouse',
+          ),
+          subtitle: Text(
+            'The app cannot find the lighthouse if another app is already communicating with it.',
+          ),
+          leading: Icon(Icons.apps, color: Colors.greenAccent),
+        ),
+      const Divider(),
+      Container(height: _troubleshootingScrollPadding),
     ];
   }
 
@@ -287,13 +310,14 @@ class TroubleshootingContentWidget extends StatelessWidget
 /// For example 'location service should be enabled' with the action go to settings.
 ///
 class _TroubleshootingItemWithAction extends StatelessWidget {
-  const _TroubleshootingItemWithAction(
-      {required this.leadingIcon,
-      required this.leadingColor,
-      required this.actionIcon,
-      required this.onTap,
-      required this.title,
-      this.subtitle});
+  const _TroubleshootingItemWithAction({
+    required this.leadingIcon,
+    required this.leadingColor,
+    required this.actionIcon,
+    required this.onTap,
+    required this.title,
+    this.subtitle,
+  });
 
   final IconData leadingIcon;
   final Color leadingColor;
@@ -317,16 +341,17 @@ class _TroubleshootingItemWithAction extends StatelessWidget {
           ),
         ),
         RawMaterialButton(
-            onPressed: onTap,
-            elevation: 2.0,
-            fillColor: theming.buttonColor,
-            padding: const EdgeInsets.all(8.0),
-            shape: const CircleBorder(),
-            child: Icon(
-              actionIcon,
-              color: theme.colorScheme.onPrimary,
-              size: 24.0,
-            )),
+          onPressed: onTap,
+          elevation: 2.0,
+          fillColor: theming.buttonColor,
+          padding: const EdgeInsets.all(8.0),
+          shape: const CircleBorder(),
+          child: Icon(
+            actionIcon,
+            color: theme.colorScheme.onPrimary,
+            size: 24.0,
+          ),
+        ),
       ],
     );
   }

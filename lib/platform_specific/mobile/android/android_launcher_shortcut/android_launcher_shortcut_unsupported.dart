@@ -12,14 +12,16 @@ class AndroidLauncherShortcut {
   AndroidLauncherShortcut._() {
     if (!kReleaseMode) {
       throw UnsupportedError(
-          "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?");
+        "Hey developer this platform doesn't support shortcuts!\nHow come the class is still initialized?",
+      );
     }
   }
 
   @visibleForTesting
   AndroidLauncherShortcut.testing() {
     debugPrint(
-        "Warning created testing version of unsupported AndroidLauncherShortcut!");
+      "Warning created testing version of unsupported AndroidLauncherShortcut!",
+    );
   }
 
   static AndroidLauncherShortcut get instance {
@@ -40,7 +42,9 @@ class AndroidLauncherShortcut {
   }
 
   Future<bool> requestShortcutLighthouse(
-      final String macAddress, final String name) async {
+    final String macAddress,
+    final String name,
+  ) async {
     _throwUnsupportedError();
     return false;
   }
@@ -48,7 +52,8 @@ class AndroidLauncherShortcut {
   static void _throwUnsupportedError() {
     if (!kReleaseMode) {
       throw UnsupportedError(
-          "Hey developer this platform doesn't support shortcuts!");
+        "Hey developer this platform doesn't support shortcuts!",
+      );
     }
   }
 }

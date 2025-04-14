@@ -10,8 +10,9 @@ class HelpPageSegment extends StatefulWidget {
   final String language;
 
   Future<String> _loadMarkdown(final BuildContext context) async {
-    return await DefaultAssetBundle.of(context)
-        .loadString('assets/pages/help/${page}_$language.md');
+    return await DefaultAssetBundle.of(
+      context,
+    ).loadString('assets/pages/help/${page}_$language.md');
   }
 
   @override
@@ -37,27 +38,26 @@ class _HelpItemState extends State<HelpPageSegment> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FutureBuilder(
-              future: widget._loadMarkdown(context),
-              builder: (final context, final snapshot) {
-                if (snapshot.hasError) {
-                  debugPrint(snapshot.error?.toString());
-                  return Container();
-                }
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
+            future: widget._loadMarkdown(context),
+            builder: (final context, final snapshot) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error?.toString());
+                return Container();
+              }
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
 
-                return MarkdownBody(
-                  data: snapshot.requireData,
-                  styleSheet: style,
-                  selectable: false,
-                  inlineSyntaxes: [IconSyntax()],
-                  builders: {
-                    'icn': IconBuilder(iconStyle),
-                  },
-                  onTapLink: markdownOpenLinkOnTap,
-                );
-              }),
+              return MarkdownBody(
+                data: snapshot.requireData,
+                styleSheet: style,
+                selectable: false,
+                inlineSyntaxes: [IconSyntax()],
+                builders: {'icn': IconBuilder(iconStyle)},
+                onTapLink: markdownOpenLinkOnTap,
+              );
+            },
+          ),
           const Divider(),
         ],
       ),

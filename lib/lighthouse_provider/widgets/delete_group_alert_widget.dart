@@ -14,11 +14,14 @@ class DeleteGroupAlertWidget extends StatelessWidget {
     return AlertDialog(
       title: const Text('Delete group'),
       content: RichText(
-        text: TextSpan(style: theming.bodyMedium, children: <InlineSpan>[
-          const TextSpan(text: "Are you sure you want to delete the group "),
-          TextSpan(style: theming.bodyTextBold, text: group.name),
-          const TextSpan(text: '?')
-        ]),
+        text: TextSpan(
+          style: theming.bodyMedium,
+          children: <InlineSpan>[
+            const TextSpan(text: "Are you sure you want to delete the group "),
+            TextSpan(style: theming.bodyTextBold, text: group.name),
+            const TextSpan(text: '?'),
+          ],
+        ),
       ),
       actions: [
         SimpleDialogOption(
@@ -39,15 +42,16 @@ class DeleteGroupAlertWidget extends StatelessWidget {
 
   /// Show a dialog asking the user if they are sure if they want to delete
   /// the device.
-  static Future<bool> showCustomDialog(final BuildContext context,
-      {required final Group group}) {
+  static Future<bool> showCustomDialog(
+    final BuildContext context, {
+    required final Group group,
+  }) {
     return showDialog(
-        context: context,
-        builder: (final BuildContext context) {
-          return DeleteGroupAlertWidget(
-            group: group,
-          );
-        }).then((final value) {
+      context: context,
+      builder: (final BuildContext context) {
+        return DeleteGroupAlertWidget(group: group);
+      },
+    ).then((final value) {
       if (value is bool) {
         return value;
       }

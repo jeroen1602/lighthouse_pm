@@ -6,12 +6,13 @@ import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
 
 class PrivacyPageSegment extends StatefulWidget {
-  const PrivacyPageSegment(
-      {required this.version,
-      required this.language,
-      this.startDate,
-      this.endDate,
-      super.key});
+  const PrivacyPageSegment({
+    required this.version,
+    required this.language,
+    this.startDate,
+    this.endDate,
+    super.key,
+  });
 
   final String version;
   final String language;
@@ -45,10 +46,14 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
     return out;
   }
 
-  Future<String> _loadMarkdown(final BuildContext context, final String version,
-      [final String language = "en"]) async {
-    return await DefaultAssetBundle.of(context)
-        .loadString('assets/pages/privacy/v${version}_$language.md');
+  Future<String> _loadMarkdown(
+    final BuildContext context,
+    final String version, [
+    final String language = "en",
+  ]) async {
+    return await DefaultAssetBundle.of(
+      context,
+    ).loadString('assets/pages/privacy/v${version}_$language.md');
   }
 
   @override
@@ -63,26 +68,27 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
           subtitle: Text(_getSubtitle()),
         ),
         Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
-            child: FutureBuilder(
-              future: _loadMarkdown(context, widget.version, widget.language),
-              builder: (final context, final snapshot) {
-                if (snapshot.hasError) {
-                  debugPrint(snapshot.error?.toString());
-                  return Container();
-                }
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
-                return MarkdownBody(
-                  data: snapshot.requireData,
-                  styleSheet: MarkdownStyleSheet.fromTheme(theme),
-                  inlineSyntaxes: [SuperscriptSyntax()],
-                  selectable: true,
-                  onTapLink: markdownOpenLinkOnTap,
-                );
-              },
-            )),
+          padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+          child: FutureBuilder(
+            future: _loadMarkdown(context, widget.version, widget.language),
+            builder: (final context, final snapshot) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error?.toString());
+                return Container();
+              }
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+              return MarkdownBody(
+                data: snapshot.requireData,
+                styleSheet: MarkdownStyleSheet.fromTheme(theme),
+                inlineSyntaxes: [SuperscriptSyntax()],
+                selectable: true,
+                onTapLink: markdownOpenLinkOnTap,
+              );
+            },
+          ),
+        ),
       ],
     );
   }

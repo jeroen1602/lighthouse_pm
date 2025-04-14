@@ -75,8 +75,9 @@ class Theming {
     const iconSizeLarge = 24.0;
 
     final iconColor = getIconColor(theme.iconTheme);
-    final selectedRowColor = theme.colorScheme.primary
-        .withAlpha(theme.brightness == Brightness.dark ? 0x55 : 0x33);
+    final selectedRowColor = theme.colorScheme.primary.withAlpha(
+      theme.brightness == Brightness.dark ? 0x55 : 0x33,
+    );
     final selectedAppBarTextColor = theme.colorScheme.onPrimary;
     final selectedAppBarColor = theme.colorScheme.primary;
     final buttonColor = theme.colorScheme.primary;
@@ -84,19 +85,25 @@ class Theming {
     final displayLarge = theme.textTheme.displayLarge;
     final displayMedium = theme.textTheme.displayMedium;
     final displaySmall = theme.textTheme.displaySmall;
-    final headlineMedium =
-        theme.textTheme.headlineMedium?.copyWith(color: bodyMedium?.color);
-    final headlineSmall = theme.textTheme.headlineSmall
-        ?.copyWith(color: bodyMedium?.color, fontWeight: FontWeight.bold);
-    final titleLarge =
-        theme.textTheme.titleLarge?.copyWith(color: bodyMedium?.color);
+    final headlineMedium = theme.textTheme.headlineMedium?.copyWith(
+      color: bodyMedium?.color,
+    );
+    final headlineSmall = theme.textTheme.headlineSmall?.copyWith(
+      color: bodyMedium?.color,
+      fontWeight: FontWeight.bold,
+    );
+    final titleLarge = theme.textTheme.titleLarge?.copyWith(
+      color: bodyMedium?.color,
+    );
 
-    final titleSmall =
-        theme.textTheme.titleSmall?.copyWith(color: theme.disabledColor);
+    final titleSmall = theme.textTheme.titleSmall?.copyWith(
+      color: theme.disabledColor,
+    );
 
-    final customColors = theme.brightness == Brightness.dark
-        ? darkCustomColors
-        : lightCustomColors;
+    final customColors =
+        theme.brightness == Brightness.dark
+            ? darkCustomColors
+            : lightCustomColors;
 
     return Theming(
       bodyMedium,
@@ -128,10 +135,13 @@ class Theming {
   }
 
   static TextStyle? createLinkTheme(
-      final TextStyle? input, final ThemeData theme) {
+    final TextStyle? input,
+    final ThemeData theme,
+  ) {
     return input?.copyWith(
-        color: theme.colorScheme.secondary,
-        decoration: TextDecoration.underline);
+      color: theme.colorScheme.secondary,
+      decoration: TextDecoration.underline,
+    );
   }
 
   static Color? getIconColor(final IconThemeData iconTheme) {
@@ -156,7 +166,9 @@ class Theming {
   }
 
   static Color staticGetDisabledColor(
-      final Brightness brightness, final Color original) {
+    final Brightness brightness,
+    final Color original,
+  ) {
     return original.withAlpha(brightness == Brightness.dark ? 0x55 : 0x33);
   }
 }

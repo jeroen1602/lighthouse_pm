@@ -12,8 +12,13 @@ class Groups extends Table {
 class GroupEntries extends Table {
   TextColumn get deviceId => text().withLength(min: 17, max: 37)();
 
-  IntColumn get groupId => integer().references(Groups, #id,
-      onUpdate: KeyAction.cascade, onDelete: KeyAction.cascade)();
+  IntColumn get groupId =>
+      integer().references(
+        Groups,
+        #id,
+        onUpdate: KeyAction.cascade,
+        onDelete: KeyAction.cascade,
+      )();
 
   @override
   Set<Column> get primaryKey => {deviceId};

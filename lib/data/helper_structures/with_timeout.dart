@@ -19,7 +19,5 @@ class WithTimeout<T> {
 
   WithTimeout(this.data, this.timeoutExpired);
 
-  WithTimeout.empty()
-      : data = null,
-        timeoutExpired = false;
+  WithTimeout.empty() : data = null, timeoutExpired = false;
 }
