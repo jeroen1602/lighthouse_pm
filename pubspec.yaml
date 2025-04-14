@@ -27,7 +27,7 @@ dependencies:
     sdk: flutter
   rxdart: ^0.28.0
   package_info_plus: ^8.3.0
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.0+1
   flutter_svg: ^2.0.17
   url_launcher: ^6.3.1
   community_material_icon: 5.9.55
