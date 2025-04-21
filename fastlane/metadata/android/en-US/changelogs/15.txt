@@ -1,0 +1,10 @@
+Time for the yearly update
+
+Changes:
+<ul>
+<li>added the option to request location permissions. This may fix issues for people where the
+characteristics can't be read.</li>
+<li>Updated dependencies.</li>
+<li>removed google play billing. Didn't feel right to ask for money if I can't afford to always allocate time to this project.</li>
+<li>Created debug options in the release to help create debug information about what is happening on people's devices.</li>
+</ul>
