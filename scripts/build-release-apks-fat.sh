@@ -24,4 +24,4 @@ mkdir -p "$SCRIPT_DIR/../output"
 
 VERSION=$(grep -oP 'version: \K\d+\.\d+\.\d+(-.+)?\+\d+' "${SCRIPT_DIR}/../pubspec.yaml")
 
-cp -vrf "${SCRIPT_DIR}/../build/app/outputs/flutter-apk/app-defaultversion-release.apk" "${SCRIPT_DIR}/../output/lighthouse_pm-${VERSION}.fat.apk"
+cp -vrf "${SCRIPT_DIR}/../build/app/outputs/flutter-apk/app-release.apk" "${SCRIPT_DIR}/../output/lighthouse_pm-${VERSION}.fat.apk"

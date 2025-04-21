@@ -1,4 +1,4 @@
-# Version 1.3.2+14
+# Version 1.3.2+14 21-04-2025
 
 - (Android) added the option to request location permissions. This may fix issues for people where
   the characteristics can't be read.
@@ -10,6 +10,9 @@
     - (Web) use new(er) bootstrap script
 - Created debug options in the release to help create debug information about what is happening on
   people's devices.
+- Updated dependencies
+- Better support for IOS builds. (Still not published to the Appstore though). Thanks [@Zaphkiel-Ivanovna](https://github.com/Zaphkiel-Ivanovna)
+- Added new loading page while scanning. Thanks [@Zaphkiel-Ivanovna](https://github.com/Zaphkiel-Ivanovna)
 
 # Version 1.3.1+12 09-12-2023
 

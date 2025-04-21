@@ -24,4 +24,4 @@ mkdir -p "$SCRIPT_DIR/../output"
 
 VERSION=$(grep -oP 'version: \K\d+\.\d+\.\d+(-.+)?\+\d+' "${SCRIPT_DIR}/../pubspec.yaml")
 
-cp -vrf "${SCRIPT_DIR}/../build/app/outputs/bundle/googlePlayRelease/app-googlePlay-release.aab" "$SCRIPT_DIR/../output/googlePlay-${VERSION}.aab"
+cp -vrf "${SCRIPT_DIR}/../build/app/outputs/bundle/release/app-release.aab" "$SCRIPT_DIR/../output/googlePlay-${VERSION}.aab"

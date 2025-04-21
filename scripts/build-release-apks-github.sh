@@ -20,6 +20,8 @@ EXIT_CODE=$?
 
 patch -p1 -R -d "${SCRIPT_DIR}/../" <"${SCRIPT_DIR}/split-per-abi-build.gradle.patch"
 
+rm -f android/app/build.gradle.orig
+
 if [ $EXIT_CODE != 0 ]; then
   echo 'Could not build'
   exit $EXIT_CODE
@@ -35,7 +37,7 @@ function copy_result() {
   VERSION=$1
   ABI=$2
   NEW_ABI=$3
-  ORIGINAL_PATH="${SCRIPT_DIR}/../build/app/outputs/flutter-apk/app-${ABI}-defaultversion-$BUILD_FLAVOR.apk"
+  ORIGINAL_PATH="${SCRIPT_DIR}/../build/app/outputs/flutter-apk/app-${ABI}-$BUILD_FLAVOR.apk"
   NEW_PATH="${SCRIPT_DIR}/../output/lighthouse_pm-${VERSION}.${NEW_ABI}.apk"
   cp -vrf "$ORIGINAL_PATH" "$NEW_PATH"
 }

@@ -153,9 +153,10 @@ class _SettingsContentState extends State<SettingsContent> {
             return _androidUpdateExtraPermissionInfo.asyncMap((final _) async {
               return await Permission.locationWhenInUse.status;
             });
-          });
+          })
+          .shareReplay(maxSize: 1);
     } else {
-      _androidExtraPermissionInfo = Stream.value(null);
+      _androidExtraPermissionInfo = Stream.value(null).asBroadcastStream();
     }
   }
 
@@ -213,7 +214,9 @@ class _SettingsContentState extends State<SettingsContent> {
       ),
       const Divider(),
       StreamBuilder<LighthousePowerState>(
-        stream: blocWithoutListen.settings.getSleepStateAsStream(),
+        stream: blocWithoutListen.settings.getSleepStateAsStream().shareReplay(
+          maxSize: 1,
+        ),
         builder: (
           final BuildContext c,
           final AsyncSnapshot<LighthousePowerState> snapshot,
@@ -246,7 +249,9 @@ class _SettingsContentState extends State<SettingsContent> {
       ),
       const Divider(),
       StreamBuilder<int>(
-        stream: blocWithoutListen.settings.getScanDurationsAsStream(),
+        stream: blocWithoutListen.settings
+            .getScanDurationsAsStream()
+            .shareReplay(maxSize: 1),
         builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
@@ -283,7 +288,9 @@ class _SettingsContentState extends State<SettingsContent> {
       ),
       const Divider(),
       StreamBuilder<int>(
-        stream: blocWithoutListen.settings.getUpdateIntervalAsStream(),
+        stream: blocWithoutListen.settings
+            .getUpdateIntervalAsStream()
+            .shareReplay(maxSize: 1),
         builder: (final BuildContext c, final AsyncSnapshot<int> snapshot) {
           if (snapshot.hasError) {
             debugPrint(snapshot.error.toString());
@@ -334,7 +341,9 @@ class _SettingsContentState extends State<SettingsContent> {
             return const CircularProgressIndicator();
           }
           return StreamBuilder<ThemeMode>(
-            stream: blocWithoutListen.settings.getPreferredThemeAsStream(),
+            stream: blocWithoutListen.settings
+                .getPreferredThemeAsStream()
+                .shareReplay(maxSize: 1),
             builder: (
               final BuildContext context,
               final AsyncSnapshot<ThemeMode> snapshot,
@@ -384,8 +393,9 @@ class _SettingsContentState extends State<SettingsContent> {
             return Column(
               children: [
                 StreamBuilder<AppStyle>(
-                  stream:
-                      blocWithoutListen.settings.getPreferredStyleAsStream(),
+                  stream: blocWithoutListen.settings
+                      .getPreferredStyleAsStream()
+                      .shareReplay(maxSize: 1),
                   initialData: null,
                   builder: (final context, final snapshot) {
                     if (snapshot.hasError) {
