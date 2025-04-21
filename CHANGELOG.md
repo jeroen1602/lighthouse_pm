@@ -1,4 +1,4 @@
-# Version 1.3.2+14 21-04-2025
+# Version 1.3.2+15 21-04-2025
 
 - (Android) added the option to request location permissions. This may fix issues for people where
   the characteristics can't be read.

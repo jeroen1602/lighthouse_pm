@@ -185,7 +185,7 @@ class Shortcut {
         result.success(null)
         // Fire the earlier recorded queued methods
         while (dataQue.isNotEmpty()) {
-            val data = dataQue.removeFirst()
+            val data = dataQue.removeAt(0)
             invokeMethod(data.methodName, data.data)
         }
     }
