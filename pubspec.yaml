@@ -44,7 +44,7 @@ dependencies:
   provider: ^6.1.4
   tuple: ^2.0.2
   intl: ^0.20.2
-  device_info_plus: ^11.3.3
+  device_info_plus: ^11.4.0
   meta: ^1.16.0
   flutter_markdown: ^0.7.7
   markdown: ^7.3.0
