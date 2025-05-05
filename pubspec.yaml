@@ -72,7 +72,7 @@ dependencies:
     path: shared/shared_platform
   lighthouse_logger:
     path: lighthouse_provider/lighthouse_logger
-  flutter_blue_plus: ^1.35.4
+  flutter_blue_plus: ^1.35.5
 
 dev_dependencies:
   flutter_test:
