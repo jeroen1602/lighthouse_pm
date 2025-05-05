@@ -77,7 +77,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.26.0
+  drift_dev: ^2.26.1
   build_runner: ^2.4.15
   flutter_lints: ^5.0.0
   lighthouse_test_helper:
