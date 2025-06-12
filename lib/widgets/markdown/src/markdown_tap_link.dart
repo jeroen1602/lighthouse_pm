@@ -1,6 +1,6 @@
 part of '../markdown.dart';
 
-markdownOpenLinkOnTap(
+void markdownOpenLinkOnTap(
   final String text,
   final String? href,
   final String title,

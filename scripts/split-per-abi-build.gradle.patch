@@ -1,15 +1,15 @@
---- ./android/app/build.gradle	2023-12-08 11:17:36.130601770 +0100
-+++ ./android/app/build_split_abi.gradle	2023-12-08 11:21:11.144304948 +0100
-@@ -79,9 +79,9 @@
+--- ./android/app/build.gradle.kts	2025-06-12 17:50:25.720695603 +0200
++++ ./android/app/build_split_abi.gradle.kts	2025-06-12 17:59:55.119389553 +0200
+@@ -73,9 +73,9 @@
      buildTypes {
          release {
-             signingConfig signingConfigs.release
+             signingConfig = signingConfigs.getByName("release")
 -            ndk {
--                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
+-                abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
 -            }
 +//            ndk {
-+//                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
++//                abiFilters.addAll(arrayOf("armeabi-v7a", "arm64-v8a", "x86_64"))
 +//            }
-             minifyEnabled true
-             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             isMinifyEnabled = true
+             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
          }

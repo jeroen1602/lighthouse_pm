@@ -20,7 +20,7 @@ EXIT_CODE=$?
 
 patch -p1 -R -d "${SCRIPT_DIR}/../" <"${SCRIPT_DIR}/split-per-abi-build.gradle.patch"
 
-rm -f android/app/build.gradle.orig
+rm -f android/app/build.gradle.kts.orig
 
 if [ $EXIT_CODE != 0 ]; then
   echo 'Could not build'

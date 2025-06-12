@@ -52,8 +52,10 @@ mixin class WithBlocStateless {
   LighthousePMBloc blocWithoutListen(final BuildContext context) =>
       bloc(context, listen: false);
 
-  static blocStatic(final BuildContext context, {final bool listen = true}) =>
-      Provider.of<LighthousePMBloc>(context, listen: listen);
+  static LighthousePMBloc blocStatic(
+    final BuildContext context, {
+    final bool listen = true,
+  }) => Provider.of<LighthousePMBloc>(context, listen: listen);
 }
 
 extension WithBlocState on State {

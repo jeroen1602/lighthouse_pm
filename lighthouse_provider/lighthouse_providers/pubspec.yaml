@@ -7,7 +7,7 @@ environment:
   sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
-  flutter_web_bluetooth: ^1.0.0
+  flutter_web_bluetooth: ^1.1.0
   meta: ">=1.16.0 <2.0.0"
   rxdart: ">=0.28.0 <1.0.0"
   lighthouse_provider:
@@ -20,8 +20,8 @@ dependencies:
     path: ../lighthouse_logger
 
 dev_dependencies:
-  lints: ">=5.1.0 <6.0.0"
-  test: ">=1.25.12 < 2.0.0"
+  lints: ">=5.1.0 <7.0.0"
+  test: ">=1.25.12 <2.0.0"
   fake_back_end:
     path: ../lighthouse_back_ends/fake_back_end
   lighthouse_test_helper:
