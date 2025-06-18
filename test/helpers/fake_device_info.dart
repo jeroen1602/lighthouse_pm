@@ -35,9 +35,13 @@ class FakeAndroidDeviceInfo extends BaseDeviceInfo {
         'tags': 'UNIT_TEST_TAGS',
         'type': 'UNIT_TEST_TYPE',
         'isPhysicalDevice': false,
+        'freeDiskSize': 50,
+        'totalDiskSize': 100,
         'systemFeatures': ['SomeFeatures'],
         'serialNumber': 'SERIAL_NUMBER',
         'isLowRamDevice': false,
+        'physicalRamSize': 10,
+        'availableRamSize': 5,
       });
 
   void setSdkInt(final int sdkInt) {
@@ -55,7 +59,11 @@ class FakeIOSDeviceInfo extends BaseDeviceInfo {
         'modelName': 'phone with an i somewhere',
         'localizedModel': 'phone with an i somewhere',
         'identifierForVendor': null,
+        'freeDiskSize': 50,
+        'totalDiskSize': 100,
         'isPhysicalDevice': false,
+        'physicalRamSize': 10,
+        'availableRamSize': 5,
         'isiOSAppOnMac': false,
         'utsname': {
           'sysname': 'THIS_PC',
