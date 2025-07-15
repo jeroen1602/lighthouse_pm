@@ -62,23 +62,19 @@ class MainPage extends BasePage with WithBlocStateless {
     return MainPageSettings.mainPageSettingsStreamBuilder(
       bloc: blocWithoutListen(context),
       builder: (final context, final settings) {
-        if (settings != null) {
-          return StreamBuilder<BluetoothAdapterState>(
-            stream: LighthouseProvider.instance.state,
-            initialData: BluetoothAdapterState.unknown,
-            builder: (
-              final BuildContext context,
-              final AsyncSnapshot<BluetoothAdapterState> snapshot,
-            ) {
-              final state = snapshot.data;
-              return state == BluetoothAdapterState.on
-                  ? ScanDevicesPage(settings: settings)
-                  : BluetoothOffScreen(state: state, settings: settings);
-            },
-          );
-        } else {
-          return const Text('Booting');
-        }
+        return StreamBuilder<BluetoothAdapterState>(
+          stream: LighthouseProvider.instance.state,
+          initialData: BluetoothAdapterState.unknown,
+          builder: (
+            final BuildContext context,
+            final AsyncSnapshot<BluetoothAdapterState> snapshot,
+          ) {
+            final state = snapshot.data;
+            return state == BluetoothAdapterState.on
+                ? ScanDevicesPage(settings: settings)
+                : BluetoothOffScreen(state: state, settings: settings);
+          },
+        );
       },
     );
   }

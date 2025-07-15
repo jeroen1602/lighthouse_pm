@@ -16,9 +16,6 @@ class SettingsStream extends WaterfallStreamWidget<MainPageSettings>
     return MainPageSettings.mainPageSettingsStreamBuilder(
       bloc: blocWithoutListen(context),
       builder: (final context, final settings) {
-        if (settings == null) {
-          return const CircularProgressIndicator();
-        }
         return getNextStreamDown(context, settings);
       },
     );

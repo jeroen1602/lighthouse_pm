@@ -7,7 +7,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 typedef MainPageSettingsWidgetBuilder =
-    Widget Function(BuildContext context, MainPageSettings? settings);
+    Widget Function(BuildContext context, MainPageSettings settings);
 
 class MainPageSettings {
   const MainPageSettings._({
@@ -126,7 +126,11 @@ class MainPageSettings {
         final BuildContext context,
         final AsyncSnapshot<MainPageSettings> settingsSnapshot,
       ) {
-        return builder(context, settingsSnapshot.data);
+        // TODO: destroy local database if the settings are null. Which shouldn't happen unlesss there is a database error.
+        return builder(
+          context,
+          settingsSnapshot.data ?? MainPageSettings.defaultMainPageSettings,
+        );
       },
     );
   }

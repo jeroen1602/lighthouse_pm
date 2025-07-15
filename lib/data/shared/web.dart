@@ -3,11 +3,13 @@ import 'package:drift/wasm.dart';
 
 import '../database.dart';
 
+const _databaseKey = 'LighthouseDatabase';
+
 LighthouseDatabase constructDb({final bool logStatements = false}) {
   final connection = DatabaseConnection.delayed(
     Future(() async {
       final result = await WasmDatabase.open(
-        databaseName: 'LighthouseDatabase',
+        databaseName: _databaseKey,
         sqlite3Uri: Uri.parse('sqlite3.wasm'),
         driftWorkerUri: Uri.parse('drift_worker.js'),
       );

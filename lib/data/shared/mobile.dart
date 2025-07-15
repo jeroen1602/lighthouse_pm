@@ -7,19 +7,13 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as paths;
 
 LighthouseDatabase constructDb({final bool logStatements = false}) {
-  if (Platform.isIOS || Platform.isAndroid) {
+  if (Platform.isIOS ||
+      Platform.isAndroid ||
+      Platform.isMacOS ||
+      Platform.isLinux) {
     final executor = LazyDatabase(() async {
-      final dbFolder = await paths.getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, 'db.sqlite'));
-      return NativeDatabase(file, logStatements: logStatements);
-    });
-    return LighthouseDatabase(executor);
-  }
-  if (Platform.isMacOS || Platform.isLinux) {
-    final executor = LazyDatabase(() async {
-      final dbFolder = await paths.getApplicationSupportDirectory();
-      final file = File(p.join(dbFolder.path, 'settings.sqlite'));
-      return NativeDatabase(file, logStatements: logStatements);
+      final file = await getDatabaseFile();
+      return NativeDatabase(file!, logStatements: logStatements);
     });
     return LighthouseDatabase(executor);
   }
@@ -30,4 +24,16 @@ LighthouseDatabase constructDb({final bool logStatements = false}) {
   return LighthouseDatabase(
     NativeDatabase.memory(logStatements: logStatements),
   );
+}
+
+Future<File?> getDatabaseFile() async {
+  if (Platform.isIOS || Platform.isAndroid) {
+    final dbFolder = await paths.getApplicationDocumentsDirectory();
+    return File(p.join(dbFolder.path, 'db.sqlite'));
+  }
+  if (Platform.isMacOS || Platform.isLinux) {
+    final dbFolder = await paths.getApplicationSupportDirectory();
+    return File(p.join(dbFolder.path, 'settings.sqlite'));
+  }
+  return null;
 }
