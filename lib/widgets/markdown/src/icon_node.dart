@@ -4,11 +4,13 @@ part of '../markdown.dart';
 /// Convert an [md.Element] to the actual [Widget] for rendering. Use [IconSyntax]
 /// to get these elements from a markdown.
 ///
-/// Add it to the [MarkdownWidget] using:
+/// Add it to the [MarkdownGenerator] using:
 /// ```dart
-/// builders: {
-///   'icn': IconBuilder(iconStyle),
-/// }
+///MarkdownGenerator(
+//   inlineSyntaxList: [IconSyntax()],
+//   generators: [IconNode.iconGeneratorWithTag],
+//   textGenerator: getMarkdownTextGenerator(),
+// );
 ///```
 ///
 /// If the icon name starts with `svg-` then it will be interpreted as an svg
@@ -17,10 +19,20 @@ part of '../markdown.dart';
 ///
 /// `mat-` [Icons] need to be translated manually because no reflection is used
 /// for this implementation
-class IconBuilder extends MarkdownElementBuilder {
-  IconBuilder(this.preferredStyle);
+class IconNode extends ElementNode {
+  final String iconName;
+  final IconConfig iconConfig;
 
-  final TextStyle? preferredStyle;
+  TextStyle? get preferredStyle => iconConfig.style;
+
+  IconNode(this.iconName, this.iconConfig);
+
+  static final iconGeneratorWithTag = SpanNodeGeneratorWithTag(
+    tag: "icn",
+    generator:
+        (final e, final config, final visitor) =>
+            IconNode(e.textContent, config.iconConfig),
+  );
 
   Widget _getSVG(final String name) {
     return SvgPicture.asset(
@@ -72,14 +84,11 @@ class IconBuilder extends MarkdownElementBuilder {
   }
 
   @override
-  Widget? visitElementAfter(
-    final md.Element element,
-    final TextStyle? preferredStyle,
-  ) {
-    final icon = _getIcon(element.textContent);
+  InlineSpan build() {
+    final icon = _getIcon(iconName);
     if (icon != null) {
-      return RichText(text: TextSpan(children: [WidgetSpan(child: icon)]));
+      return TextSpan(children: [WidgetSpan(child: icon)]);
     }
-    return null;
+    return TextSpan(text: iconName);
   }
 }

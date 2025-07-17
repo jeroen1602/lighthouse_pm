@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 class HelpPageSegment extends StatefulWidget {
   const HelpPageSegment(this.page, {this.language = 'en', super.key});
@@ -26,10 +26,24 @@ class _HelpItemState extends State<HelpPageSegment> {
   Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
-    final style = MarkdownStyleSheet.fromTheme(theme);
-    final iconStyle = style.p?.copyWith(
-      fontSize: theming.bodyTextIconSize,
-      color: theming.iconColor,
+
+    final fallbackPConfig =
+        theme.brightness == Brightness.dark
+            ? PConfig.darkConfig
+            : const PConfig();
+
+    final markdownConfig = MarkdownConfigFrom.fromTheme(
+      theme,
+      creator: (final configs) => MarkdownConfigOpen(configs: configs),
+      extraConfigs: [
+        IconConfig(
+          style: ((theme.textTheme.bodyMedium ?? fallbackPConfig.textStyle)
+              .copyWith(
+                fontSize: theming.bodyTextIconSize,
+                color: theming.iconColor,
+              )),
+        ),
+      ],
     );
 
     return Padding(
@@ -48,13 +62,15 @@ class _HelpItemState extends State<HelpPageSegment> {
                 return const CircularProgressIndicator();
               }
 
-              return MarkdownBody(
+              return MarkdownBlock(
                 data: snapshot.requireData,
-                styleSheet: style,
+                config: markdownConfig,
                 selectable: false,
-                inlineSyntaxes: [IconSyntax()],
-                builders: {'icn': IconBuilder(iconStyle)},
-                onTapLink: markdownOpenLinkOnTap,
+                generator: MarkdownGenerator(
+                  inlineSyntaxList: [IconSyntax()],
+                  generators: [IconNode.iconGeneratorWithTag],
+                  textGenerator: getMarkdownTextGenerator(),
+                ),
               );
             },
           ),

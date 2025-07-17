@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 import '../../helpers/widget_helpers.dart';
 
@@ -23,14 +23,16 @@ void main() {
         final WidgetTester tester,
       ) async {
         const exampleText =
-            '# wow a test\n\n'
+            '#### wow a test\n\n'
             'Now with super script!<sup>123</sup>\n';
 
         await tester.pumpWidget(
           buildTestApp((final context) {
-            return Markdown(
+            return MarkdownBlock(
               data: exampleText,
-              inlineSyntaxes: [SuperscriptSyntax()],
+              generator: MarkdownGenerator(
+                inlineSyntaxList: [SuperscriptSyntax()],
+              ),
             );
           }),
         );
@@ -40,7 +42,7 @@ void main() {
         final richTexts = tester
             .widgetList(
               find.descendant(
-                of: find.byType(Markdown),
+                of: find.byType(MarkdownBlock),
                 matching: find.byType(RichText),
               ),
             )

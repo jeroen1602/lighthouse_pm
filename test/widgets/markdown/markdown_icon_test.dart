@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 import '../../helpers/widget_helpers.dart';
 
-/// This lookup contains the current material icons conversion that [IconBuilder]
+/// This lookup contains the current material icons conversion that [IconNode]
 /// supports.
 ///
 /// This is here to make coverage analyzer happy, and to make sure that all
@@ -17,6 +17,32 @@ final materialIconsLookup = {
   'clear': Icons.clear,
 };
 
+List<InlineSpan>? _getMyTextSpanFromRichText(
+  final List<Widget> input, {
+  final index = 1,
+}) {
+  final richText = input.elementAtOrNull(index);
+  if (richText == null) {
+    return null;
+  }
+  if (richText is! RichText) {
+    return null;
+  }
+  final text = richText.text;
+  if (text is! TextSpan) {
+    return null;
+  }
+  final children1 = text.children;
+  if (children1 == null || children1.length != 1) {
+    return null;
+  }
+  final children2 = children1[0];
+  if (children2 is! TextSpan) {
+    return null;
+  }
+  return children2.children;
+}
+
 void main() {
   group('markdown', () {
     group('super_script_syntax', () {
@@ -24,15 +50,17 @@ void main() {
         final WidgetTester tester,
       ) async {
         const exampleText =
-            '# wow a test\n\n'
+            '#### wow a test\n\n'
             'Now with svg icons <icon>svg-group-edit-icon</icon>\n';
 
         await tester.pumpWidget(
           buildTestApp((final context) {
-            return Markdown(
+            return MarkdownBlock(
               data: exampleText,
-              inlineSyntaxes: [IconSyntax()],
-              builders: {'icn': IconBuilder(null)},
+              generator: MarkdownGenerator(
+                inlineSyntaxList: [IconSyntax()],
+                generators: [IconNode.iconGeneratorWithTag],
+              ),
             );
           }),
         );
@@ -42,7 +70,7 @@ void main() {
         final richTexts = tester
             .widgetList(
               find.descendant(
-                of: find.byType(Markdown),
+                of: find.byType(MarkdownBlock),
                 matching: find.byType(RichText),
               ),
             )
@@ -54,7 +82,7 @@ void main() {
           reason: 'Should contain two rich text blocks',
         );
 
-        final children = ((richTexts[1] as RichText).text as TextSpan).children;
+        final children = _getMyTextSpanFromRichText(richTexts);
         expect(children, isNotNull);
         expect(children, hasLength(1), reason: 'Should have nested TextSpan');
         expect(children![0], isA<TextSpan>());
@@ -65,15 +93,19 @@ void main() {
         expect(children[0].toPlainText(), isNot(contains('</icn>')));
 
         expect((children[0] as TextSpan).children, isNotNull);
-        expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
+
+        final iconTextSpan = (children[0] as TextSpan).children![1];
+        expect(iconTextSpan, isA<TextSpan>());
+        expect((iconTextSpan as TextSpan).children, hasLength(1));
+
+        expect(iconTextSpan.children![0], isA<WidgetSpan>());
         expect(
-          ((children[0] as TextSpan).children![1] as WidgetSpan).child,
+          (iconTextSpan.children![0] as WidgetSpan).child,
           isA<SvgPicture>(),
         );
 
         final svg =
-            ((children[0] as TextSpan).children![1] as WidgetSpan).child
-                as SvgPicture;
+            (iconTextSpan.children![0] as WidgetSpan).child as SvgPicture;
         final loader = svg.bytesLoader;
         expect(loader, isA<SvgAssetLoader>());
         expect(
@@ -86,15 +118,17 @@ void main() {
         final WidgetTester tester,
       ) async {
         const exampleText =
-            '# wow a test\n\n'
+            '#### wow a test\n\n'
             'Now with mat icons <icon>mat-power_settings_new</icon>\n';
 
         await tester.pumpWidget(
           buildTestApp((final context) {
-            return Markdown(
+            return MarkdownBlock(
               data: exampleText,
-              inlineSyntaxes: [IconSyntax()],
-              builders: {'icn': IconBuilder(null)},
+              generator: MarkdownGenerator(
+                inlineSyntaxList: [IconSyntax()],
+                generators: [IconNode.iconGeneratorWithTag],
+              ),
             );
           }),
         );
@@ -104,7 +138,7 @@ void main() {
         final richTexts = tester
             .widgetList(
               find.descendant(
-                of: find.byType(Markdown),
+                of: find.byType(MarkdownBlock),
                 matching: find.byType(RichText),
               ),
             )
@@ -116,7 +150,7 @@ void main() {
           reason: 'Should contain three rich text blocks',
         );
 
-        final children = ((richTexts[1] as RichText).text as TextSpan).children;
+        final children = _getMyTextSpanFromRichText(richTexts);
         expect(children, isNotNull);
         expect(children, hasLength(1), reason: 'Should have nested TextSpan');
         expect(children![0], isA<TextSpan>());
@@ -127,15 +161,15 @@ void main() {
         expect(children[0].toPlainText(), isNot(contains('</icn>')));
 
         expect((children[0] as TextSpan).children, isNotNull);
-        expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
-        expect(
-          ((children[0] as TextSpan).children![1] as WidgetSpan).child,
-          isA<Icon>(),
-        );
 
-        final icon =
-            ((children[0] as TextSpan).children![1] as WidgetSpan).child
-                as Icon;
+        final iconTextSpan = (children[0] as TextSpan).children![1];
+        expect(iconTextSpan, isA<TextSpan>());
+        expect((iconTextSpan as TextSpan).children, hasLength(1));
+
+        expect(iconTextSpan.children![0], isA<WidgetSpan>());
+        expect((iconTextSpan.children![0] as WidgetSpan).child, isA<Icon>());
+
+        final icon = (iconTextSpan.children![0] as WidgetSpan).child as Icon;
         expect(icon.icon, Icons.power_settings_new);
       });
 
@@ -143,15 +177,17 @@ void main() {
         final WidgetTester tester,
       ) async {
         const exampleText =
-            '# wow a test\n\n'
+            '#### wow a test\n\n'
             'Now with non existent mat icons <icon>mat-non_existent</icon>\n';
 
         await tester.pumpWidget(
           buildTestApp((final context) {
-            return Markdown(
+            return MarkdownBlock(
               data: exampleText,
-              inlineSyntaxes: [IconSyntax()],
-              builders: {'icn': IconBuilder(null)},
+              generator: MarkdownGenerator(
+                inlineSyntaxList: [IconSyntax()],
+                generators: [IconNode.iconGeneratorWithTag],
+              ),
             );
           }),
         );
@@ -161,7 +197,7 @@ void main() {
         final richTexts = tester
             .widgetList(
               find.descendant(
-                of: find.byType(Markdown),
+                of: find.byType(MarkdownBlock),
                 matching: find.byType(RichText),
               ),
             )
@@ -175,7 +211,7 @@ void main() {
 
         final text =
             ((richTexts[1] as RichText).text as TextSpan).toPlainText();
-        expect(text, contains('mat'));
+        expect(text, contains('mat-'));
         expect(text, isNot(contains('<icon>')));
         expect(text, isNot(contains('</icon>')));
         expect(text, isNot(contains('<icn>')));
@@ -190,15 +226,17 @@ void main() {
           final WidgetTester tester,
         ) async {
           final exampleText =
-              '# wow a test\n\n'
+              '#### wow a test\n\n'
               'Now with mat icons <icon>mat-${entry.key}</icon>\n';
 
           await tester.pumpWidget(
             buildTestApp((final context) {
-              return Markdown(
+              return MarkdownBlock(
                 data: exampleText,
-                inlineSyntaxes: [IconSyntax()],
-                builders: {'icn': IconBuilder(null)},
+                generator: MarkdownGenerator(
+                  inlineSyntaxList: [IconSyntax()],
+                  generators: [IconNode.iconGeneratorWithTag],
+                ),
               );
             }),
           );
@@ -208,7 +246,7 @@ void main() {
           final richTexts = tester
               .widgetList(
                 find.descendant(
-                  of: find.byType(Markdown),
+                  of: find.byType(MarkdownBlock),
                   matching: find.byType(RichText),
                 ),
               )
@@ -220,22 +258,21 @@ void main() {
             reason: 'Should contain three rich text blocks',
           );
 
-          final children =
-              ((richTexts[1] as RichText).text as TextSpan).children;
+          final children = _getMyTextSpanFromRichText(richTexts);
           expect(children, isNotNull);
           expect(children, hasLength(1), reason: 'Should have nested children');
 
           expect(children![0], isA<TextSpan>());
           expect((children[0] as TextSpan).children, isNotNull);
-          expect((children[0] as TextSpan).children![1], isA<WidgetSpan>());
-          expect(
-            ((children[0] as TextSpan).children![1] as WidgetSpan).child,
-            isA<Icon>(),
-          );
 
-          final icon =
-              ((children[0] as TextSpan).children![1] as WidgetSpan).child
-                  as Icon;
+          final iconTextSpan = (children[0] as TextSpan).children![1];
+          expect(iconTextSpan, isA<TextSpan>());
+          expect((iconTextSpan as TextSpan).children, hasLength(1));
+
+          expect(iconTextSpan.children![0], isA<WidgetSpan>());
+          expect((iconTextSpan.children![0] as WidgetSpan).child, isA<Icon>());
+
+          final icon = (iconTextSpan.children![0] as WidgetSpan).child as Icon;
           expect(icon.icon, entry.value);
         });
       }
