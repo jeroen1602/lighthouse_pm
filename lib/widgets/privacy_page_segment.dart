@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:lighthouse_pm/intl/ordinal.dart';
 import 'package:lighthouse_pm/theming.dart';
 import 'package:lighthouse_pm/widgets/markdown/markdown.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 class PrivacyPageSegment extends StatefulWidget {
   const PrivacyPageSegment({
@@ -61,6 +61,11 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
 
+    final markdownConfig = MarkdownConfigFrom.fromTheme(
+      theme,
+      creator: (final configs) => MarkdownConfig(configs: configs),
+    );
+
     return Column(
       children: [
         ListTile(
@@ -79,12 +84,15 @@ class _PrivacyPageSegmentState extends State<PrivacyPageSegment> {
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
               }
-              return MarkdownBody(
+
+              return MarkdownBlock(
                 data: snapshot.requireData,
-                styleSheet: MarkdownStyleSheet.fromTheme(theme),
-                inlineSyntaxes: [SuperscriptSyntax()],
+                config: markdownConfig,
                 selectable: true,
-                onTapLink: markdownOpenLinkOnTap,
+                generator: MarkdownGenerator(
+                  inlineSyntaxList: [SuperscriptSyntax()],
+                  textGenerator: getMarkdownTextGenerator(),
+                ),
               );
             },
           ),

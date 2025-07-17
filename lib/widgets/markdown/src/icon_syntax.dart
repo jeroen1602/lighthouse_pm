@@ -2,7 +2,7 @@ part of '../markdown.dart';
 
 ///
 /// Convert an &lt;icon&gt;{the icon}&lt;/icon&gt; tag into an element that can be used in
-/// markdown. Use the [IconBuilder] to then build the correct icon.
+/// markdown. Use the [IconNode] to then build the correct icon.
 ///
 class IconSyntax extends md.InlineSyntax {
   IconSyntax() : super('<icon>[^<]*<\\/icon>', caseSensitive: false);

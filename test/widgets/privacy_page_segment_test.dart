@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lighthouse_pm/widgets/privacy_page_segment.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 // ignore: depend_on_referenced_packages
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 // ignore: depend_on_referenced_packages
@@ -38,15 +38,16 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    final widget = tester.firstWidget(find.byType(MarkdownBody));
+    final widget = tester.firstWidget(find.byType(MarkdownBlock));
 
-    expect(widget, isA<MarkdownBody>());
-    final markdown = widget as MarkdownBody;
+    expect(widget, isA<MarkdownBlock>());
 
-    expect(markdown.onTapLink, isNotNull);
-    final handler = markdown.onTapLink!;
-
-    handler.call("some link!", "http://example.org", "");
-    expect(fakeLauncher.lastUrl, "http://example.org");
+    await tester.tapOnText(
+      find.textRange.ofSubstring('Github privacy statement'),
+    );
+    expect(
+      fakeLauncher.lastUrl,
+      "https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages",
+    );
   });
 }
