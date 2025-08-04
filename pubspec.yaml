@@ -31,7 +31,7 @@ dependencies:
   flutter_svg: ^2.2.0
   url_launcher: ^6.3.2
   community_material_icon: 5.9.55
-  dynamic_color: ^1.7.0
+  dynamic_color: ^1.8.1
   mutex: ^3.1.0
   convert: ^3.1.2
   vibration: ^3.1.3
