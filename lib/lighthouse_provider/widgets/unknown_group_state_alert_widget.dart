@@ -52,9 +52,9 @@ class UnknownGroupStateAlertWidget extends StatelessWidget {
       content: Text(
         isStateUniversal
             ? 'The state of the devices in this group are unknown, '
-                'what do you want to do?'
+                  'what do you want to do?'
             : 'Not all the devices in this group have the same state, '
-                'what do you want to do?',
+                  'what do you want to do?',
       ),
       actions: actions,
     );

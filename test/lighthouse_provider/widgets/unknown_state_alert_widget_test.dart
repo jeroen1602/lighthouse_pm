@@ -38,13 +38,9 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Unknown state"), findsOneWidget);
 
-    final richText =
-        (tester.widgetList<RichText>(
-          find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(RichText),
-          ),
-        )).toList()[1];
+    final richText = (tester.widgetList<RichText>(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(RichText)),
+    )).toList()[1];
     final text = richText.text.toPlainText();
 
     expect(
@@ -318,8 +314,9 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Unknown state"), findsOneWidget);
 
-    final richText =
-        tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
+    final richText = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .toList()[2];
 
     final tapped = tapTextSpan(richText, "Help out.");
     expect(tapped, isTrue);
@@ -371,12 +368,11 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text =
-        tester
-            .widgetList<RichText>(find.byType(RichText))
-            .toList()[2]
-            .text
-            .toPlainText();
+    final text = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .toList()[2]
+        .text
+        .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("Fake high level device"));
@@ -415,12 +411,11 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final text =
-        tester
-            .widgetList<RichText>(find.byType(RichText))
-            .toList()[2]
-            .text
-            .toPlainText();
+    final text = tester
+        .widgetList<RichText>(find.byType(RichText))
+        .toList()[2]
+        .text
+        .toPlainText();
 
     expect(text, contains("fake-version"));
     expect(text, contains("Fake high level device"));
@@ -462,8 +457,9 @@ void main() {
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
 
-      final textWidget =
-          tester.widgetList<RichText>(find.byType(RichText)).toList()[2];
+      final textWidget = tester
+          .widgetList<RichText>(find.byType(RichText))
+          .toList()[2];
       final text = textWidget.text.toPlainText();
 
       expect(text, contains("fake-version"));

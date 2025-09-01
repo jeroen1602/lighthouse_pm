@@ -107,9 +107,9 @@ class _LighthouseWidgetContentState extends State<LighthouseWidgetContent> {
               ),
               if (widget.powerStateData != null && widget.statefulDevice)
                 LighthousePowerButtonWidget(
-                  powerState: (widget.lighthouseDevice
-                          as StatefulLighthouseDevice)
-                      .powerStateFromByte(widget.powerStateData!),
+                  powerState:
+                      (widget.lighthouseDevice as StatefulLighthouseDevice)
+                          .powerStateFromByte(widget.powerStateData!),
                   onPress: () async {
                     await _stateSwitch(
                       (widget.lighthouseDevice as StatefulLighthouseDevice)
@@ -260,22 +260,23 @@ class LighthouseWidgetState extends State<LighthouseWidget> {
       return StreamBuilder<int>(
         stream:
             (widget.lighthouseDevice as StatefulLighthouseDevice).powerState,
-        builder: (
-          final BuildContext context,
-          final AsyncSnapshot<int> powerStateSnapshot,
-        ) {
-          final powerStateData = powerStateSnapshot.data ?? 0xFF;
+        builder:
+            (
+              final BuildContext context,
+              final AsyncSnapshot<int> powerStateSnapshot,
+            ) {
+              final powerStateData = powerStateSnapshot.data ?? 0xFF;
 
-          return LighthouseWidgetContent(
-            widget.lighthouseDevice,
-            powerStateData: powerStateData,
-            onSelected: widget.onSelected,
-            selected: widget.selected,
-            nickname: widget.nickname,
-            sleepState: widget.sleepState,
-            selecting: widget.selecting,
-          );
-        },
+              return LighthouseWidgetContent(
+                widget.lighthouseDevice,
+                powerStateData: powerStateData,
+                onSelected: widget.onSelected,
+                selected: widget.selected,
+                nickname: widget.nickname,
+                sleepState: widget.sleepState,
+                selecting: widget.selecting,
+              );
+            },
       );
     } else {
       return LighthouseWidgetContent(

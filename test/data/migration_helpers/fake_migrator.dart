@@ -90,15 +90,14 @@ class FakeMigrator extends Fake implements Migrator {
       );
     }
 
-    final columns =
-        table.columnsByName.entries.map((final entry) {
-          return TestColumn(
-            entry.key,
-            TestColumn.columnTypeFromDriftTypeString(
-              entry.value.type.sqlTypeName(generator),
-            ),
-          );
-        }).toList();
+    final columns = table.columnsByName.entries.map((final entry) {
+      return TestColumn(
+        entry.key,
+        TestColumn.columnTypeFromDriftTypeString(
+          entry.value.type.sqlTypeName(generator),
+        ),
+      );
+    }).toList();
 
     currentSchema!.testTables.add(TestTable(tableName, columns));
   }
@@ -146,15 +145,16 @@ class FakeMigrator extends Fake implements Migrator {
       );
     }
 
-    final columns =
-        migration.affectedTable.columnsByName.entries.map((final entry) {
-          return TestColumn(
-            entry.key,
-            TestColumn.columnTypeFromDriftTypeString(
-              entry.value.type.sqlTypeName(generator),
-            ),
-          );
-        }).toList();
+    final columns = migration.affectedTable.columnsByName.entries.map((
+      final entry,
+    ) {
+      return TestColumn(
+        entry.key,
+        TestColumn.columnTypeFromDriftTypeString(
+          entry.value.type.sqlTypeName(generator),
+        ),
+      );
+    }).toList();
 
     testTable.columns = columns;
   }

@@ -29,9 +29,8 @@ class IconNode extends ElementNode {
 
   static final iconGeneratorWithTag = SpanNodeGeneratorWithTag(
     tag: "icn",
-    generator:
-        (final e, final config, final visitor) =>
-            IconNode(e.textContent, config.iconConfig),
+    generator: (final e, final config, final visitor) =>
+        IconNode(e.textContent, config.iconConfig),
   );
 
   Widget _getSVG(final String name) {
@@ -39,10 +38,9 @@ class IconNode extends ElementNode {
       'assets/images/$name.svg',
       height: preferredStyle?.fontSize ?? 17,
       width: preferredStyle?.fontSize ?? 17,
-      colorFilter:
-          preferredStyle?.color != null
-              ? ColorFilter.mode(preferredStyle!.color!, BlendMode.srcIn)
-              : null,
+      colorFilter: preferredStyle?.color != null
+          ? ColorFilter.mode(preferredStyle!.color!, BlendMode.srcIn)
+          : null,
     );
   }
 

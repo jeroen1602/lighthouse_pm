@@ -21,7 +21,9 @@ MaterialApp buildTestAppForWidgets(
 }
 
 MaterialApp buildTestApp(final WidgetBuilder builder) {
-  return MaterialApp(home: Material(child: Builder(builder: builder)));
+  return MaterialApp(
+    home: Material(child: Builder(builder: builder)),
+  );
 }
 
 bool findTextAndTap(final InlineSpan visitor, final String text) {
@@ -35,10 +37,9 @@ bool findTextAndTap(final InlineSpan visitor, final String text) {
 }
 
 bool tapTextSpan(final RichText richText, final String text) {
-  final isTapped =
-      !richText.text.visitChildren(
-        (final visitor) => findTextAndTap(visitor, text),
-      );
+  final isTapped = !richText.text.visitChildren(
+    (final visitor) => findTextAndTap(visitor, text),
+  );
 
   return isTapped;
 }
@@ -53,10 +54,9 @@ bool findTextAndHold(final InlineSpan visitor, final String text) {
 }
 
 bool holdTextSpan(final RichText richText, final String text) {
-  final hasHeld =
-      !richText.text.visitChildren(
-        (final visitor) => findTextAndHold(visitor, text),
-      );
+  final hasHeld = !richText.text.visitChildren(
+    (final visitor) => findTextAndHold(visitor, text),
+  );
 
   return hasHeld;
 }

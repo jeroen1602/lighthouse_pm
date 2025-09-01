@@ -64,30 +64,31 @@ class _ShortcutLaunchHandleState extends State<_ShortcutLaunchHandleWidget> {
     return StreamBuilder<ShortcutHandle?>(
       stream: _shortcutStream(),
       initialData: null,
-      builder: (
-        final BuildContext shortcutContext,
-        final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot,
-      ) {
-        WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
-          if (shortcutSnapshot.data != null &&
-              shortcutSnapshot.data != widget.handle) {
-            if (widget.replace) {
-              Navigator.pushReplacementNamed(
-                context,
-                '/shortcutHandler',
-                arguments: shortcutSnapshot.data,
-              );
-            } else {
-              Navigator.pushNamed(
-                context,
-                '/shortcutHandler',
-                arguments: shortcutSnapshot.data,
-              );
-            }
-          }
-        });
-        return widget.body;
-      },
+      builder:
+          (
+            final BuildContext shortcutContext,
+            final AsyncSnapshot<ShortcutHandle?> shortcutSnapshot,
+          ) {
+            WidgetsBinding.instance.addPostFrameCallback((final timeStamp) {
+              if (shortcutSnapshot.data != null &&
+                  shortcutSnapshot.data != widget.handle) {
+                if (widget.replace) {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    '/shortcutHandler',
+                    arguments: shortcutSnapshot.data,
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    '/shortcutHandler',
+                    arguments: shortcutSnapshot.data,
+                  );
+                }
+              }
+            });
+            return widget.body;
+          },
     );
   }
 }

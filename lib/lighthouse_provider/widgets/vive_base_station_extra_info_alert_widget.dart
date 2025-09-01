@@ -174,8 +174,10 @@ class ViveBaseStationExtraInfoIdWarningAlertWidget extends StatelessWidget {
             ),
             TextSpan(
               style: theming.bodyTextBold,
-              text:
-                  existingIdEnd.toRadixString(16).padLeft(4, '0').toUpperCase(),
+              text: existingIdEnd
+                  .toRadixString(16)
+                  .padLeft(4, '0')
+                  .toUpperCase(),
             ),
             const TextSpan(
               text:

@@ -89,25 +89,26 @@ class GetDeviceStream extends WaterfallStreamWidget<LighthouseDevice>
     return StreamBuilder<WithTimeout<LighthouseDevice?>>(
       stream: listenForDevice(Duration(seconds: settings.scanDuration + 2)),
       initialData: WithTimeout.empty(),
-      builder: (
-        final BuildContext context,
-        final AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot,
-      ) {
-        if (snapshot.requireData.timeoutExpired) {
-          stopScan().then((final _) {
-            if (context.mounted) {
-              closeCurrentRouteWithWait(context);
+      builder:
+          (
+            final BuildContext context,
+            final AsyncSnapshot<WithTimeout<LighthouseDevice?>> snapshot,
+          ) {
+            if (snapshot.requireData.timeoutExpired) {
+              stopScan().then((final _) {
+                if (context.mounted) {
+                  closeCurrentRouteWithWait(context);
+                }
+              });
+              return const Text('Scan timeout reached!');
             }
-          });
-          return const Text('Scan timeout reached!');
-        }
-        final data = snapshot.requireData.data;
-        if (data != null) {
-          return getNextStreamDown(context, data);
-        } else {
-          return const Text('Searching!');
-        }
-      },
+            final data = snapshot.requireData.data;
+            if (data != null) {
+              return getNextStreamDown(context, data);
+            } else {
+              return const Text('Searching!');
+            }
+          },
     );
   }
 

@@ -8,51 +8,40 @@ abstract class MarkdownConfigFrom {
   }) {
     final textTheme = theme.primaryTextTheme;
 
-    final fallbackHrConfig =
-        theme.brightness == Brightness.dark
-            ? HrConfig.darkConfig
-            : const HrConfig();
-    final fallbackH1Config =
-        theme.brightness == Brightness.dark
-            ? H1Config.darkConfig
-            : const H1Config();
-    final fallbackH2Config =
-        theme.brightness == Brightness.dark
-            ? H2Config.darkConfig
-            : const H2Config();
-    final fallbackH3Config =
-        theme.brightness == Brightness.dark
-            ? H3Config.darkConfig
-            : const H3Config();
-    final fallbackH4Config =
-        theme.brightness == Brightness.dark
-            ? H4Config.darkConfig
-            : const H4Config();
-    final fallbackH5Config =
-        theme.brightness == Brightness.dark
-            ? H5Config.darkConfig
-            : const H5Config();
-    final fallbackH6Config =
-        theme.brightness == Brightness.dark
-            ? H6Config.darkConfig
-            : const H6Config();
-    final fallbackPreConfig =
-        theme.brightness == Brightness.dark
-            ? PreConfig.darkConfig
-            : const PreConfig();
-    final fallbackPConfig =
-        theme.brightness == Brightness.dark
-            ? PConfig.darkConfig
-            : const PConfig();
-    final fallbackBlockquoteConfig =
-        theme.brightness == Brightness.dark
-            ? BlockquoteConfig.darkConfig
-            : const BlockquoteConfig();
+    final fallbackHrConfig = theme.brightness == Brightness.dark
+        ? HrConfig.darkConfig
+        : const HrConfig();
+    final fallbackH1Config = theme.brightness == Brightness.dark
+        ? H1Config.darkConfig
+        : const H1Config();
+    final fallbackH2Config = theme.brightness == Brightness.dark
+        ? H2Config.darkConfig
+        : const H2Config();
+    final fallbackH3Config = theme.brightness == Brightness.dark
+        ? H3Config.darkConfig
+        : const H3Config();
+    final fallbackH4Config = theme.brightness == Brightness.dark
+        ? H4Config.darkConfig
+        : const H4Config();
+    final fallbackH5Config = theme.brightness == Brightness.dark
+        ? H5Config.darkConfig
+        : const H5Config();
+    final fallbackH6Config = theme.brightness == Brightness.dark
+        ? H6Config.darkConfig
+        : const H6Config();
+    final fallbackPreConfig = theme.brightness == Brightness.dark
+        ? PreConfig.darkConfig
+        : const PreConfig();
+    final fallbackPConfig = theme.brightness == Brightness.dark
+        ? PConfig.darkConfig
+        : const PConfig();
+    final fallbackBlockquoteConfig = theme.brightness == Brightness.dark
+        ? BlockquoteConfig.darkConfig
+        : const BlockquoteConfig();
     final fallbackTableConfig = const TableConfig();
-    final fallbackCodeConfig =
-        theme.brightness == Brightness.dark
-            ? CodeConfig.darkConfig
-            : const CodeConfig();
+    final fallbackCodeConfig = theme.brightness == Brightness.dark
+        ? CodeConfig.darkConfig
+        : const CodeConfig();
 
     return creator([
       _getFromConfigAndRemove(

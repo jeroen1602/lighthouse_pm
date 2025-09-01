@@ -22,11 +22,10 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
     ) {
       final combinedGroups = <GroupWithEntries>[];
       for (final group in groups) {
-        final deviceIds =
-            entries
-                .where((final value) => value.groupId == group.id)
-                .map((final e) => e.deviceId)
-                .toList();
+        final deviceIds = entries
+            .where((final value) => value.groupId == group.id)
+            .map((final e) => e.deviceId)
+            .toList();
         combinedGroups.add(GroupWithEntries(group, deviceIds));
       }
       return combinedGroups;
@@ -66,8 +65,9 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
       await into(groups).insert(group, mode: InsertMode.insertOrReplace);
 
       // Delete all known entries.
-      await (delete(groupEntries)
-        ..where((final entry) => entry.groupId.equals(group.id))).go();
+      await (delete(
+        groupEntries,
+      )..where((final entry) => entry.groupId.equals(group.id))).go();
 
       // Insert all the new entries.
       for (final deviceId in entry.deviceIds) {
@@ -90,23 +90,27 @@ class GroupDao extends DatabaseAccessor<LighthouseDatabase>
   Future<void> deleteGroup(final int groupId) {
     return transaction(() async {
       // Delete entries
-      await (delete(groupEntries)
-        ..where((final entry) => entry.groupId.equals(groupId))).go();
+      await (delete(
+        groupEntries,
+      )..where((final entry) => entry.groupId.equals(groupId))).go();
 
       // Delete group
-      await (delete(groups)
-        ..where((final entry) => entry.id.equals(groupId))).go();
+      await (delete(
+        groups,
+      )..where((final entry) => entry.id.equals(groupId))).go();
     });
   }
 
   Future<void> deleteGroupEntry(final String deviceId) {
-    return (delete(groupEntries)
-      ..where((final entry) => entry.deviceId.equals(deviceId))).go();
+    return (delete(
+      groupEntries,
+    )..where((final entry) => entry.deviceId.equals(deviceId))).go();
   }
 
   Future<void> deleteGroupEntries(final List<String> entries) {
-    return (delete(groupEntries)
-      ..where((final tbl) => tbl.deviceId.isIn(entries))).go();
+    return (delete(
+      groupEntries,
+    )..where((final tbl) => tbl.deviceId.isIn(entries))).go();
   }
 
   Future<void> insertGroupEntry(final GroupEntry groupEntry) {

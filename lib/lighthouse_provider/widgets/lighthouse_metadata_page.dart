@@ -77,38 +77,39 @@ class LighthouseMetadataState extends State<LighthouseMetadataPage> {
         stream: bloc.nicknames.watchNicknameForDeviceIds(
           widget.device.deviceIdentifier.toString(),
         ),
-        builder: (
-          final BuildContext context,
-          final AsyncSnapshot<Nickname?> snapshot,
-        ) {
-          final nickname = snapshot.data;
-          if (nickname != null) {
-            return _MetadataInkWell(
-              name: 'Nickname',
-              value: nickname.nickname,
-              onTap: () {
-                changeNicknameHandler(nickname.nickname);
-              },
-            );
-          } else {
-            final theming = Theming.of(context);
-            return InkWell(
-              child: ListTile(
-                title: const Text('Nickname'),
-                subtitle: Text(
-                  'Not set',
-                  style: theming.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theming.disabledColor,
+        builder:
+            (
+              final BuildContext context,
+              final AsyncSnapshot<Nickname?> snapshot,
+            ) {
+              final nickname = snapshot.data;
+              if (nickname != null) {
+                return _MetadataInkWell(
+                  name: 'Nickname',
+                  value: nickname.nickname,
+                  onTap: () {
+                    changeNicknameHandler(nickname.nickname);
+                  },
+                );
+              } else {
+                final theming = Theming.of(context);
+                return InkWell(
+                  child: ListTile(
+                    title: const Text('Nickname'),
+                    subtitle: Text(
+                      'Not set',
+                      style: theming.bodyMedium?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: theming.disabledColor,
+                      ),
+                    ),
+                    onTap: () {
+                      changeNicknameHandler(null);
+                    },
                   ),
-                ),
-                onTap: () {
-                  changeNicknameHandler(null);
-                },
-              ),
-            );
-          }
-        },
+                );
+              }
+            },
       ),
     );
 
@@ -155,13 +156,12 @@ class _MetadataInkWell extends StatelessWidget {
         title: Text(name),
         subtitle: Text(
           value ?? 'Not set',
-          style:
-              value != null
-                  ? null
-                  : theming.bodyMedium?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: theming.disabledColor,
-                  ),
+          style: value != null
+              ? null
+              : theming.bodyMedium?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theming.disabledColor,
+                ),
         ),
       ),
     );
@@ -205,15 +205,14 @@ class _ExtraActionsWidget extends StatelessWidget {
                           builder: (final c, final snapshot) {
                             final enabled = snapshot.data ?? false;
                             return ElevatedButton(
-                              onPressed:
-                                  enabled
-                                      ? () async {
-                                        await extensions[index].onTap();
-                                        if (extensions[index].updateListAfter) {
-                                          updateList?.call();
-                                        }
+                              onPressed: enabled
+                                  ? () async {
+                                      await extensions[index].onTap();
+                                      if (extensions[index].updateListAfter) {
+                                        updateList?.call();
                                       }
-                                      : null,
+                                    }
+                                  : null,
                               style: getButtonStyleFromDeviceExtension(
                                 theming,
                                 extensions[index],

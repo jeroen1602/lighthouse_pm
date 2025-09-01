@@ -47,10 +47,9 @@ class SettingsSupportPage extends BasePage {
           trailing: const Icon(Icons.arrow_forward_ios),
           leading: SvgPicture.asset(
             'assets/images/paypal.svg',
-            colorFilter:
-                theming.iconColor != null
-                    ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                    : null,
+            colorFilter: theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
           ),

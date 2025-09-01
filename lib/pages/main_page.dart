@@ -65,15 +65,16 @@ class MainPage extends BasePage with WithBlocStateless {
         return StreamBuilder<BluetoothAdapterState>(
           stream: LighthouseProvider.instance.state,
           initialData: BluetoothAdapterState.unknown,
-          builder: (
-            final BuildContext context,
-            final AsyncSnapshot<BluetoothAdapterState> snapshot,
-          ) {
-            final state = snapshot.data;
-            return state == BluetoothAdapterState.on
-                ? ScanDevicesPage(settings: settings)
-                : BluetoothOffScreen(state: state, settings: settings);
-          },
+          builder:
+              (
+                final BuildContext context,
+                final AsyncSnapshot<BluetoothAdapterState> snapshot,
+              ) {
+                final state = snapshot.data;
+                return state == BluetoothAdapterState.on
+                    ? ScanDevicesPage(settings: settings)
+                    : BluetoothOffScreen(state: state, settings: settings);
+              },
         );
       },
     );
@@ -103,112 +104,116 @@ class _ScanFloatingButtonWidget extends StatelessWidget with ScanningMixin {
     return StreamBuilder<int>(
       stream: pairedDevicesStream,
       initialData: 0,
-      builder: (
-        final BuildContext context,
-        final AsyncSnapshot<int> pairedDevicesSnapshot,
-      ) {
-        var pairedDevices = 0;
-        if (pairedDevicesSnapshot.hasError) {
-          debugPrint(pairedDevicesSnapshot.error.toString());
-        } else {
-          pairedDevices = pairedDevicesSnapshot.requireData;
-        }
-        final shouldScanBeDisabled = onlyPairBackEnds && pairedDevices <= 0;
-        final theme = Theme.of(context);
-        final theming = Theming.fromTheme(theme);
+      builder:
+          (
+            final BuildContext context,
+            final AsyncSnapshot<int> pairedDevicesSnapshot,
+          ) {
+            var pairedDevices = 0;
+            if (pairedDevicesSnapshot.hasError) {
+              debugPrint(pairedDevicesSnapshot.error.toString());
+            } else {
+              pairedDevices = pairedDevicesSnapshot.requireData;
+            }
+            final shouldScanBeDisabled = onlyPairBackEnds && pairedDevices <= 0;
+            final theme = Theme.of(context);
+            final theming = Theming.fromTheme(theme);
 
-        return Row(
-          children: [
-            const Spacer(),
-            if (pairBackEnds.isNotEmpty) ...[
-              FloatingActionButton(
-                heroTag: 'pairButton',
-                backgroundColor: theming.buttonColor,
-                onPressed: () {
-                  if (pairBackEnds.length > 1) {
-                    // TODO show dialog to select the provider
-                  } else {
-                    pairBackEnds[0].pairNewDevice(
-                      timeout: Duration(seconds: settings.scanDuration),
-                      updateInterval: Duration(
-                        seconds: settings.updateInterval,
-                      ),
-                    );
-                  }
-                },
-                tooltip: 'Pair a new device',
-                child: Icon(
-                  Icons.bluetooth_connected,
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-              const Padding(padding: EdgeInsets.all(4.0)),
-            ],
-            // The button for starting and stopping scanning.
-            StreamBuilder<bool>(
-              stream: LighthouseProvider.instance.isScanning,
-              initialData: false,
-              builder: (final c, final snapshot) {
-                final isScanning = snapshot.data;
-                if (isScanning ?? false) {
-                  return FloatingActionButton(
-                    heroTag: 'scanButton',
-                    onPressed: () => stopScan(),
-                    backgroundColor: theme.colorScheme.error,
-                    tooltip: 'Stop scanning',
-                    child: Icon(Icons.stop, color: theme.colorScheme.onError),
-                  );
-                } else {
-                  return FloatingActionButton(
-                    heroTag: 'scanButton',
-                    backgroundColor: theming.getDisabledColorIf(
-                      !shouldScanBeDisabled,
-                      theming.buttonColor,
-                    ),
-                    elevation: shouldScanBeDisabled ? 0 : null,
-                    hoverElevation: shouldScanBeDisabled ? 0 : null,
-                    onPressed: () async {
-                      if (shouldScanBeDisabled) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Please pair a device first, before scanning for devices.',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
-                      if (!context.mounted) {
-                        return;
-                      }
-                      final locationPermission =
-                          LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
-                            context,
-                          );
-                      if (await locationPermission) {
-                        await startScan(
-                          Duration(seconds: settings.scanDuration),
+            return Row(
+              children: [
+                const Spacer(),
+                if (pairBackEnds.isNotEmpty) ...[
+                  FloatingActionButton(
+                    heroTag: 'pairButton',
+                    backgroundColor: theming.buttonColor,
+                    onPressed: () {
+                      if (pairBackEnds.length > 1) {
+                        // TODO show dialog to select the provider
+                      } else {
+                        pairBackEnds[0].pairNewDevice(
+                          timeout: Duration(seconds: settings.scanDuration),
                           updateInterval: Duration(
                             seconds: settings.updateInterval,
                           ),
                         );
                       }
                     },
-                    tooltip: 'Start scanning',
+                    tooltip: 'Pair a new device',
                     child: Icon(
-                      Icons.search,
-                      color: theming.getDisabledColorIf(
-                        !shouldScanBeDisabled,
-                        theme.colorScheme.onPrimary,
-                      ),
+                      Icons.bluetooth_connected,
+                      color: theme.colorScheme.onPrimary,
                     ),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
+                  ),
+                  const Padding(padding: EdgeInsets.all(4.0)),
+                ],
+                // The button for starting and stopping scanning.
+                StreamBuilder<bool>(
+                  stream: LighthouseProvider.instance.isScanning,
+                  initialData: false,
+                  builder: (final c, final snapshot) {
+                    final isScanning = snapshot.data;
+                    if (isScanning ?? false) {
+                      return FloatingActionButton(
+                        heroTag: 'scanButton',
+                        onPressed: () => stopScan(),
+                        backgroundColor: theme.colorScheme.error,
+                        tooltip: 'Stop scanning',
+                        child: Icon(
+                          Icons.stop,
+                          color: theme.colorScheme.onError,
+                        ),
+                      );
+                    } else {
+                      return FloatingActionButton(
+                        heroTag: 'scanButton',
+                        backgroundColor: theming.getDisabledColorIf(
+                          !shouldScanBeDisabled,
+                          theming.buttonColor,
+                        ),
+                        elevation: shouldScanBeDisabled ? 0 : null,
+                        hoverElevation: shouldScanBeDisabled ? 0 : null,
+                        onPressed: () async {
+                          if (shouldScanBeDisabled) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Please pair a device first, before scanning for devices.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          if (!context.mounted) {
+                            return;
+                          }
+                          final locationPermission =
+                              LocationPermissionDialogFlow.showLocationPermissionDialogFlow(
+                                context,
+                              );
+                          if (await locationPermission) {
+                            await startScan(
+                              Duration(seconds: settings.scanDuration),
+                              updateInterval: Duration(
+                                seconds: settings.updateInterval,
+                              ),
+                            );
+                          }
+                        },
+                        tooltip: 'Start scanning',
+                        child: Icon(
+                          Icons.search,
+                          color: theming.getDisabledColorIf(
+                            !shouldScanBeDisabled,
+                            theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          },
     );
   }
 }
@@ -375,236 +380,238 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
         }
         return true;
       },
-      child: StreamBuilder<
-        Tuple3<List<Nickname>, List<LighthouseDevice>, List<GroupWithEntries>>
-      >(
-        stream: _mergeNicknameAndLighthouseDevice(bloc),
-        initialData: const Tuple3([], [], []),
-        builder: (final c, final snapshot) {
-          updates++;
-          final tuple = snapshot.requireData;
-          final devices = tuple.item2;
-          if (devices.isNotEmpty) {
-            devices.sort(
-              (final a, final b) =>
-                  a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id),
-            );
-          }
-          final nicknames = _nicknamesToMap(tuple.item1);
-          final groups = tuple.item3;
-          final notGroupedDevices = _devicesNotInAGroup(devices, groups);
-          final listLength = groups.length + notGroupedDevices.length;
-          final theming = Theming.of(context);
-          final theme = Theme.of(context);
+      child:
+          StreamBuilder<
+            Tuple3<
+              List<Nickname>,
+              List<LighthouseDevice>,
+              List<GroupWithEntries>
+            >
+          >(
+            stream: _mergeNicknameAndLighthouseDevice(bloc),
+            initialData: const Tuple3([], [], []),
+            builder: (final c, final snapshot) {
+              updates++;
+              final tuple = snapshot.requireData;
+              final devices = tuple.item2;
+              if (devices.isNotEmpty) {
+                devices.sort(
+                  (final a, final b) =>
+                      a.deviceIdentifier.id.compareTo(b.deviceIdentifier.id),
+                );
+              }
+              final nicknames = _nicknamesToMap(tuple.item1);
+              final groups = tuple.item3;
+              final notGroupedDevices = _devicesNotInAGroup(devices, groups);
+              final listLength = groups.length + notGroupedDevices.length;
+              final theming = Theming.of(context);
+              final theme = Theme.of(context);
 
-          final Widget body =
-              (groups.isEmpty && devices.isEmpty && updates > 2)
+              final Widget body =
+                  (groups.isEmpty && devices.isEmpty && updates > 2)
                   ? StreamBuilder<bool>(
-                    stream: LighthouseProvider.instance.isScanning,
-                    initialData: true,
-                    builder: (final context, final scanningSnapshot) {
-                      final scanning = scanningSnapshot.data;
-                      if (scanning ?? false) {
-                        return _buildLoadingComponent(theme, theming);
-                      }
+                      stream: LighthouseProvider.instance.isScanning,
+                      initialData: true,
+                      builder: (final context, final scanningSnapshot) {
+                        final scanning = scanningSnapshot.data;
+                        if (scanning ?? false) {
+                          return _buildLoadingComponent(theme, theming);
+                        }
 
-                      return ContentContainerListView(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Text(
-                              'Unable to find lighthouses, try some troubleshooting.',
-                              style: theming.headlineMedium,
-                              textAlign: TextAlign.center,
+                        return ContentContainerListView(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                'Unable to find lighthouses, try some troubleshooting.',
+                                style: theming.headlineMedium,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                          const Divider(thickness: 1.5),
-                          ...TroubleshootingContentWidget.getContent(context),
-                          // Add an extra container at the bottom to stop the floating
-                          // button from obstructing the last item.
-                          Container(height: _deviceListScrollPadding),
-                        ],
-                      );
-                    },
-                  )
-                  : ContentScrollbar(
-                    scrollbarChildBuilder: (final context, final controller) {
-                      return ListView.builder(
-                        controller: controller,
-                        itemBuilder: (final BuildContext context, int index) {
-                          if (index == listLength) {
+                            const Divider(thickness: 1.5),
+                            ...TroubleshootingContentWidget.getContent(context),
                             // Add an extra container at the bottom to stop the floating
                             // button from obstructing the last item.
-                            return Container(height: _deviceListScrollPadding);
-                          }
-                          if (index < groups.length) {
-                            return LighthouseGroupWidget(
-                              group: groups[index],
-                              devices: devices,
-                              selectedDevices: selected,
-                              selectedGroup: selectedGroup,
-                              nicknameMap: nicknames,
-                              sleepState: widget.settings.sleepState,
-                              showOfflineWarning:
-                                  widget.settings.groupShowOfflineWarning,
-                              onGroupSelected: () {
-                                setState(() {
-                                  if (groups[index].deviceIds.isEmpty) {
-                                    clearSelected();
-                                    selectedGroup = groups[index].group;
-                                    return;
-                                  }
-                                  if (LighthouseGroupWidget.isGroupSelected(
-                                    groups[index].deviceIds,
-                                    selected
-                                        .map((final e) => e.toString())
-                                        .toList(),
-                                  )) {
-                                    clearSelected();
-                                  } else {
-                                    clearSelected();
-                                    selected.addAll(
-                                      groups[index].deviceIds.map(
-                                        (final e) => LHDeviceIdentifier(e),
-                                      ),
-                                    );
-                                  }
-                                });
-                              },
-                              onSelectedDevice: (
-                                final LHDeviceIdentifier device,
-                              ) {
+                            Container(height: _deviceListScrollPadding),
+                          ],
+                        );
+                      },
+                    )
+                  : ContentScrollbar(
+                      scrollbarChildBuilder: (final context, final controller) {
+                        return ListView.builder(
+                          controller: controller,
+                          itemBuilder: (final BuildContext context, int index) {
+                            if (index == listLength) {
+                              // Add an extra container at the bottom to stop the floating
+                              // button from obstructing the last item.
+                              return Container(
+                                height: _deviceListScrollPadding,
+                              );
+                            }
+                            if (index < groups.length) {
+                              return LighthouseGroupWidget(
+                                group: groups[index],
+                                devices: devices,
+                                selectedDevices: selected,
+                                selectedGroup: selectedGroup,
+                                nicknameMap: nicknames,
+                                sleepState: widget.settings.sleepState,
+                                showOfflineWarning:
+                                    widget.settings.groupShowOfflineWarning,
+                                onGroupSelected: () {
+                                  setState(() {
+                                    if (groups[index].deviceIds.isEmpty) {
+                                      clearSelected();
+                                      selectedGroup = groups[index].group;
+                                      return;
+                                    }
+                                    if (LighthouseGroupWidget.isGroupSelected(
+                                      groups[index].deviceIds,
+                                      selected
+                                          .map((final e) => e.toString())
+                                          .toList(),
+                                    )) {
+                                      clearSelected();
+                                    } else {
+                                      clearSelected();
+                                      selected.addAll(
+                                        groups[index].deviceIds.map(
+                                          (final e) => LHDeviceIdentifier(e),
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                                onSelectedDevice:
+                                    (final LHDeviceIdentifier device) {
+                                      setState(() {
+                                        selectedGroup = null;
+                                        if (selected.contains(device)) {
+                                          selected.remove(device);
+                                        } else {
+                                          selected.add(device);
+                                        }
+                                      });
+                                    },
+                              );
+                            }
+
+                            index -= groups.length;
+                            final device = notGroupedDevices[index];
+
+                            final nickname =
+                                nicknames[device.deviceIdentifier.toString()];
+                            return LighthouseWidget(
+                              device,
+                              selected: selected.contains(
+                                device.deviceIdentifier,
+                              ),
+                              selecting: selecting,
+                              onSelected: () {
                                 setState(() {
                                   selectedGroup = null;
-                                  if (selected.contains(device)) {
-                                    selected.remove(device);
+                                  if (selected.contains(
+                                    device.deviceIdentifier,
+                                  )) {
+                                    selected.remove(device.deviceIdentifier);
                                   } else {
-                                    selected.add(device);
+                                    selected.add(device.deviceIdentifier);
                                   }
                                 });
                               },
+                              nickname: nickname,
+                              sleepState: widget.settings.sleepState,
                             );
-                          }
+                          },
+                          itemCount: listLength + 1,
+                        );
+                      },
+                    );
 
-                          index -= groups.length;
-                          final device = notGroupedDevices[index];
-
-                          final nickname =
-                              nicknames[device.deviceIdentifier.toString()];
-                          return LighthouseWidget(
-                            device,
-                            selected: selected.contains(
-                              device.deviceIdentifier,
-                            ),
-                            selecting: selecting,
-                            onSelected: () {
-                              setState(() {
-                                selectedGroup = null;
-                                if (selected.contains(
-                                  device.deviceIdentifier,
-                                )) {
-                                  selected.remove(device.deviceIdentifier);
-                                } else {
-                                  selected.add(device.deviceIdentifier);
-                                }
-                              });
-                            },
-                            nickname: nickname,
-                            sleepState: widget.settings.sleepState,
-                          );
-                        },
-                        itemCount: listLength + 1,
-                      );
-                    },
+              final List<Widget> actions = [];
+              if (selecting) {
+                if (selected.length == 1) {
+                  actions.add(
+                    _getChangeNicknameAction(devices, nicknames, theming),
                   );
+                }
+                if (selected.isNotEmpty) {
+                  actions.add(_getChangeGroupAction(groups, devices, theming));
+                }
+                final Group? currentlySelectedGroup =
+                    _getSelectedGroupFromSelected(groups);
+                if (currentlySelectedGroup != null) {
+                  actions.add(
+                    _getChangeGroupNameAction(currentlySelectedGroup, theming),
+                  );
+                  actions.add(
+                    _getDeleteGroupNameAction(currentlySelectedGroup, theming),
+                  );
+                }
+              }
 
-          final List<Widget> actions = [];
-          if (selecting) {
-            if (selected.length == 1) {
-              actions.add(
-                _getChangeNicknameAction(devices, nicknames, theming),
-              );
-            }
-            if (selected.isNotEmpty) {
-              actions.add(_getChangeGroupAction(groups, devices, theming));
-            }
-            final Group? currentlySelectedGroup = _getSelectedGroupFromSelected(
-              groups,
-            );
-            if (currentlySelectedGroup != null) {
-              actions.add(
-                _getChangeGroupNameAction(currentlySelectedGroup, theming),
-              );
-              actions.add(
-                _getDeleteGroupNameAction(currentlySelectedGroup, theming),
-              );
-            }
-          }
-
-          return Scaffold(
-            appBar: createSelectableAppBar(
-              context,
-              numberOfSelections: selected.length,
-              title: const Text('Lighthouse PM'),
-              actions: actions,
-              onClearSelection: () {
-                setState(() {
-                  clearSelected();
-                });
-              },
-            ),
-            floatingActionButton: _ScanFloatingButtonWidget(
-              settings: widget.settings,
-            ),
-            drawer: MainPageDrawer(
-              Duration(seconds: widget.settings.scanDuration),
-              Duration(seconds: widget.settings.updateInterval),
-            ),
-            body: Shortcuts(
-              shortcuts: <LogicalKeySet, Intent>{
-                if (!SharedPlatform.isWeb) ...{
-                  LogicalKeySet(LogicalKeyboardKey.f5):
-                      const ScanDevicesIntent(),
-                  LogicalKeySet(
+              return Scaffold(
+                appBar: createSelectableAppBar(
+                  context,
+                  numberOfSelections: selected.length,
+                  title: const Text('Lighthouse PM'),
+                  actions: actions,
+                  onClearSelection: () {
+                    setState(() {
+                      clearSelected();
+                    });
+                  },
+                ),
+                floatingActionButton: _ScanFloatingButtonWidget(
+                  settings: widget.settings,
+                ),
+                drawer: MainPageDrawer(
+                  Duration(seconds: widget.settings.scanDuration),
+                  Duration(seconds: widget.settings.updateInterval),
+                ),
+                body: Shortcuts(
+                  shortcuts: <LogicalKeySet, Intent>{
+                    if (!SharedPlatform.isWeb) ...{
+                      LogicalKeySet(LogicalKeyboardKey.f5):
+                          const ScanDevicesIntent(),
+                      LogicalKeySet(
                         LogicalKeyboardKey.control,
                         LogicalKeyboardKey.keyR,
-                      ):
-                      const ScanDevicesIntent(),
-                  LogicalKeySet(
+                      ): const ScanDevicesIntent(),
+                      LogicalKeySet(
                         LogicalKeyboardKey.superKey,
                         LogicalKeyboardKey.keyR,
-                      ):
-                      const ScanDevicesIntent(),
-                } else ...{
-                  LogicalKeySet(
+                      ): const ScanDevicesIntent(),
+                    } else ...{
+                      LogicalKeySet(
                         LogicalKeyboardKey.alt,
                         LogicalKeyboardKey.keyR,
-                      ):
-                      const ScanDevicesIntent(),
-                },
-              },
-              child: Actions(
-                actions: <Type, Action<Intent>>{
-                  ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
-                    onInvoke: (final ScanDevicesIntent intent) {
-                      startScanWithCheck(
-                        Duration(seconds: widget.settings.scanDuration),
-                        updateInterval: Duration(
-                          seconds: widget.settings.updateInterval,
-                        ),
-                        failMessage:
-                            "Could not start scan because the permission has not been granted on keyboard shortcut.",
-                      );
-                      return null;
+                      ): const ScanDevicesIntent(),
                     },
+                  },
+                  child: Actions(
+                    actions: <Type, Action<Intent>>{
+                      ScanDevicesIntent: CallbackAction<ScanDevicesIntent>(
+                        onInvoke: (final ScanDevicesIntent intent) {
+                          startScanWithCheck(
+                            Duration(seconds: widget.settings.scanDuration),
+                            updateInterval: Duration(
+                              seconds: widget.settings.updateInterval,
+                            ),
+                            failMessage:
+                                "Could not start scan because the permission has not been granted on keyboard shortcut.",
+                          );
+                          return null;
+                        },
+                      ),
+                    },
+                    child: Focus(autofocus: true, child: body),
                   ),
-                },
-                child: Focus(autofocus: true, child: body),
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
     );
   }
 
@@ -618,10 +625,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       tooltip: 'Change nickname',
       icon: SvgPicture.asset(
         'assets/images/nickname-icon.svg',
-        colorFilter:
-            theming.iconColor != null
-                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                : null,
+        colorFilter: theming.iconColor != null
+            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+            : null,
       ),
       onPressed: () async {
         if (selected.length == 1) {
@@ -671,10 +677,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       tooltip: 'Change group',
       icon: SvgPicture.asset(
         'assets/images/group-add-icon.svg',
-        colorFilter:
-            theming.iconColor != null
-                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                : null,
+        colorFilter: theming.iconColor != null
+            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+            : null,
       ),
       onPressed: () async {
         final Group? commonGroup = _getGroupFromSelected(groups);
@@ -690,10 +695,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
             );
           } else if (newGroup.id == ChangeGroupAlertWidget.newGroupId) {
             // The devices that have been selected.
-            final List<LighthouseDevice> selectedDevices =
-                devices.where((final device) {
-                  return selected.contains(device.deviceIdentifier);
-                }).toList();
+            final List<LighthouseDevice> selectedDevices = devices.where((
+              final device,
+            ) {
+              return selected.contains(device.deviceIdentifier);
+            }).toList();
 
             final int newGroupId = await blocWithoutListen.groups
                 .insertEmptyGroup(GroupsCompanion.insert(name: newGroup.name));
@@ -720,10 +726,11 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
             items.addAll(selected.map((final e) => e.toString()));
 
             // The devices that have been selected.
-            final List<LighthouseDevice> selectedDevices =
-                devices.where((final device) {
-                  return items.contains(device.deviceIdentifier.toString());
-                }).toList();
+            final List<LighthouseDevice> selectedDevices = devices.where((
+              final device,
+            ) {
+              return items.contains(device.deviceIdentifier.toString());
+            }).toList();
 
             final saveChanges = await _checkDevicesBeforeAddingToAGroup(
               selectedDevices,
@@ -751,10 +758,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       tooltip: 'Rename group',
       icon: SvgPicture.asset(
         'assets/images/group-edit-icon.svg',
-        colorFilter:
-            theming.iconColor != null
-                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                : null,
+        colorFilter: theming.iconColor != null
+            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+            : null,
       ),
       onPressed: () async {
         final newName = await ChangeGroupNameAlertWidget.showCustomDialog(
@@ -782,10 +788,9 @@ class _ScanDevicesPage extends State<ScanDevicesPage>
       tooltip: 'Delete group',
       icon: SvgPicture.asset(
         'assets/images/group-delete-icon.svg',
-        colorFilter:
-            theming.iconColor != null
-                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                : null,
+        colorFilter: theming.iconColor != null
+            ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+            : null,
       ),
       onPressed: () async {
         final deleteGroupWidget = DeleteGroupAlertWidget.showCustomDialog(

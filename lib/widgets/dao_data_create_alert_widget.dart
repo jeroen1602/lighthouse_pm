@@ -46,23 +46,25 @@ class _DaoDataCreateAlertWidget extends State<DaoDataCreateAlertWidget> {
 
   @override
   Widget build(final BuildContext context) {
-    final List<Widget> children =
-        widget.decorators
-            .map(
-              (final e) => e.getEdit(context, (final value) {
-                e.value = value;
-                setState(() {
-                  final value = _formKey.currentState?.validate();
-                  saveEnabled = value ?? false;
-                });
-              }),
-            )
-            .toList();
+    final List<Widget> children = widget.decorators
+        .map(
+          (final e) => e.getEdit(context, (final value) {
+            e.value = value;
+            setState(() {
+              final value = _formKey.currentState?.validate();
+              saveEnabled = value ?? false;
+            });
+          }),
+        )
+        .toList();
 
     return AlertDialog(
       title: const Text('Create new item!'),
       content: IntrinsicHeight(
-        child: Form(key: _formKey, child: Column(children: children)),
+        child: Form(
+          key: _formKey,
+          child: Column(children: children),
+        ),
       ),
       actions: <Widget>[
         SimpleDialogOption(

@@ -54,12 +54,11 @@ class PermanentPermissionDeniedAlertWidget extends StatelessWidget {
             TextSpan(
               text: "More info.",
               style: theming.linkTheme,
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () {
-                      Navigator.pushNamed(context, '/settings');
-                      Navigator.pushNamed(context, '/settings/privacy');
-                    },
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Navigator.pushNamed(context, '/settings');
+                  Navigator.pushNamed(context, '/settings/privacy');
+                },
             ),
           ],
         ),

@@ -65,13 +65,13 @@ class _NicknameConverter extends DaoTableDataConverter<Nickname> {
       decorators,
     );
     if (saveNewItem) {
-      String? deviceId =
-          (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+      String? deviceId = (decorators[0] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
-      final String? value =
-          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (deviceId == null) {
         if (context.mounted) {
           ToastContext().init(context);
@@ -161,13 +161,13 @@ class _LastSeenConverter extends DaoTableDataConverter<LastSeenDevice> {
       decorators,
     );
     if (saveNewItem) {
-      String? deviceId =
-          (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+      String? deviceId = (decorators[0] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }
-      final String? value =
-          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (deviceId == null) {
         if (context.mounted) {
           ToastContext().init(context);

@@ -27,10 +27,9 @@ class _HelpItemState extends State<HelpPageSegment> {
     final theme = Theme.of(context);
     final theming = Theming.fromTheme(theme);
 
-    final fallbackPConfig =
-        theme.brightness == Brightness.dark
-            ? PConfig.darkConfig
-            : const PConfig();
+    final fallbackPConfig = theme.brightness == Brightness.dark
+        ? PConfig.darkConfig
+        : const PConfig();
 
     final markdownConfig = MarkdownConfigFrom.fromTheme(
       theme,

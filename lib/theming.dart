@@ -100,10 +100,9 @@ class Theming {
       color: theme.disabledColor,
     );
 
-    final customColors =
-        theme.brightness == Brightness.dark
-            ? darkCustomColors
-            : lightCustomColors;
+    final customColors = theme.brightness == Brightness.dark
+        ? darkCustomColors
+        : lightCustomColors;
 
     return Theming(
       bodyMedium,

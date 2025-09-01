@@ -61,10 +61,10 @@ class _GroupConverter extends DaoTableDataConverter<Group> {
       decorators,
     );
     if (saveNewItem) {
-      final int? id =
-          (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      final String? value =
-          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final int? id = (decorators[0] as DaoDataCreateAlertIntDecorator)
+          .getNewValue();
+      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (value == null) {
         if (context.mounted) {
           ToastContext().init(context);
@@ -144,10 +144,10 @@ class _GroupEntryConverter extends DaoTableDataConverter<GroupEntry> {
       decorators,
     );
     if (saveNewItem) {
-      final int? groupId =
-          (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      String? deviceId =
-          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final int? groupId = (decorators[0] as DaoDataCreateAlertIntDecorator)
+          .getNewValue();
+      String? deviceId = (decorators[1] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (SharedPlatform.isAndroid) {
         deviceId = deviceId?.trim().toUpperCase();
       }

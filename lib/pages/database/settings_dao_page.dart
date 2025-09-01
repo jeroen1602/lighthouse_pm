@@ -182,10 +182,10 @@ class _SimpleSettingConverter extends DaoTableDataConverter<SimpleSetting> {
       decorators,
     );
     if (saveNewItem) {
-      final int? id =
-          (decorators[0] as DaoDataCreateAlertIntDecorator).getNewValue();
-      final String? value =
-          (decorators[1] as DaoDataCreateAlertStringDecorator).getNewValue();
+      final int? id = (decorators[0] as DaoDataCreateAlertIntDecorator)
+          .getNewValue();
+      final String? value = (decorators[1] as DaoDataCreateAlertStringDecorator)
+          .getNewValue();
       if (id == null) {
         if (context.mounted) {
           ToastContext().init(context);

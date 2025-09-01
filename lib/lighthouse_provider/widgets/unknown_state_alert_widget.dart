@@ -70,15 +70,14 @@ class UnknownStateAlertWidget extends StatelessWidget {
             TextSpan(
               text: "Help out.",
               style: theming.linkTheme,
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () async {
-                      await UnknownStateHelpOutAlertWidget.showCustomDialog(
-                        context,
-                        device,
-                        currentState: currentState,
-                      );
-                    },
+              recognizer: TapGestureRecognizer()
+                ..onTap = () async {
+                  await UnknownStateHelpOutAlertWidget.showCustomDialog(
+                    context,
+                    device,
+                    currentState: currentState,
+                  );
+                },
             ),
           ],
         ),
@@ -154,10 +153,9 @@ class UnknownStateHelpOutAlertWidget extends StatelessWidget {
         future: PackageInfo.fromPlatform(),
         builder: (final context, final snapshot) {
           final version = snapshot.data;
-          final recognizer =
-              version != null
-                  ? createRecognizer(context, version.version)
-                  : null;
+          final recognizer = version != null
+              ? createRecognizer(context, version.version)
+              : null;
           return RichText(
             text: TextSpan(
               style: theming.bodyMedium,

@@ -122,16 +122,17 @@ class MainPageSettings {
     return StreamBuilder<MainPageSettings>(
       stream: mainPageSettingsStream(bloc),
       initialData: MainPageSettings.defaultMainPageSettings,
-      builder: (
-        final BuildContext context,
-        final AsyncSnapshot<MainPageSettings> settingsSnapshot,
-      ) {
-        // TODO: destroy local database if the settings are null. Which shouldn't happen unlesss there is a database error.
-        return builder(
-          context,
-          settingsSnapshot.data ?? MainPageSettings.defaultMainPageSettings,
-        );
-      },
+      builder:
+          (
+            final BuildContext context,
+            final AsyncSnapshot<MainPageSettings> settingsSnapshot,
+          ) {
+            // TODO: destroy local database if the settings are null. Which shouldn't happen unlesss there is a database error.
+            return builder(
+              context,
+              settingsSnapshot.data ?? MainPageSettings.defaultMainPageSettings,
+            );
+          },
     );
   }
 }

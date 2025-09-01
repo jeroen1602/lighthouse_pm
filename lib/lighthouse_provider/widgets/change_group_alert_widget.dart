@@ -77,13 +77,12 @@ class _ChangeGroupAlertWidgetContent extends State<ChangeGroupAlertWidget> {
   }
 
   List<DropdownMenuItem<Group>> _getGroupMenuItems() {
-    final list =
-        widget.groups
-            .map(
-              (final e) =>
-                  DropdownMenuItem(value: e.group, child: Text(e.group.name)),
-            )
-            .toList();
+    final list = widget.groups
+        .map(
+          (final e) =>
+              DropdownMenuItem(value: e.group, child: Text(e.group.name)),
+        )
+        .toList();
 
     final localSelected = selected;
     if (localSelected != null &&

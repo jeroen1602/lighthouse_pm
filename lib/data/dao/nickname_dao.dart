@@ -15,14 +15,14 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
 
   Stream<Nickname?> watchNicknameForDeviceIds(String deviceId) {
     deviceId = deviceId.toUpperCase();
-    return (select(nicknames)..where(
-      (final n) => n.deviceId.equals(deviceId),
-    )).watch().map((final list) {
-      if (list.isEmpty) {
-        return null;
-      }
-      return list[0];
-    });
+    return (select(nicknames)..where((final n) => n.deviceId.equals(deviceId)))
+        .watch()
+        .map((final list) {
+          if (list.isEmpty) {
+            return null;
+          }
+          return list[0];
+        });
   }
 
   Future<int> insertNickname(final Nickname nickname) {
@@ -30,8 +30,9 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> deleteNicknames(final List<String> deviceIds) {
-    return (delete(nicknames)
-      ..where((final t) => t.deviceId.isIn(deviceIds))).go();
+    return (delete(
+      nicknames,
+    )..where((final t) => t.deviceId.isIn(deviceIds))).go();
   }
 
   Future<int> insertLastSeenDevice(final LastSeenDevicesCompanion lastSeen) {
@@ -68,7 +69,8 @@ class NicknameDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> deleteLastSeen(final LastSeenDevice lastSeen) {
-    return (delete(lastSeenDevices)
-      ..where((final tbl) => tbl.deviceId.equals(lastSeen.deviceId))).go();
+    return (delete(
+      lastSeenDevices,
+    )..where((final tbl) => tbl.deviceId.equals(lastSeen.deviceId))).go();
   }
 }

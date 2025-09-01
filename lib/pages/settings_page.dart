@@ -95,8 +95,9 @@ class _SettingsContentState extends State<SettingsContent> {
   }
 
   Future<void> _tapAbout() async {
-    final enabled =
-        await blocWithoutListen.settings.getDebugModeEnabledStream().first;
+    final enabled = await blocWithoutListen.settings
+        .getDebugModeEnabledStream()
+        .first;
     if (enabled) {
       if (mounted) {
         ToastContext().init(context);
@@ -173,10 +174,9 @@ class _SettingsContentState extends State<SettingsContent> {
           "assets/images/app-icon.svg",
           width: theming.iconSizeLarge,
           height: theming.iconSizeLarge,
-          colorFilter:
-              theming.iconColor != null
-                  ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                  : null,
+          colorFilter: theming.iconColor != null
+              ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+              : null,
         ),
         title: Text('Lighthouse Power management', style: headTheme),
       ),
@@ -217,35 +217,37 @@ class _SettingsContentState extends State<SettingsContent> {
         stream: blocWithoutListen.settings.getSleepStateAsStream().shareReplay(
           maxSize: 1,
         ),
-        builder: (
-          final BuildContext c,
-          final AsyncSnapshot<LighthousePowerState> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            debugPrint(snapshot.error.toString());
-            return Container(
-              color: Colors.red,
-              child: ListTile(
-                title: const Text('Error'),
-                subtitle: Text(snapshot.error.toString()),
-              ),
-            );
-          }
-          final state =
-              snapshot.hasData && snapshot.data == LighthousePowerState.standby;
-          return SwitchListTile(
-            title: const Text('Use STANDBY instead of SLEEP'),
-            subtitle: const Text('Only V2 lighthouse support this.'),
-            value: state,
-            onChanged: (final value) {
-              blocWithoutListen.settings.setSleepState(
-                value
-                    ? LighthousePowerState.standby
-                    : LighthousePowerState.sleep,
+        builder:
+            (
+              final BuildContext c,
+              final AsyncSnapshot<LighthousePowerState> snapshot,
+            ) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error.toString());
+                return Container(
+                  color: Colors.red,
+                  child: ListTile(
+                    title: const Text('Error'),
+                    subtitle: Text(snapshot.error.toString()),
+                  ),
+                );
+              }
+              final state =
+                  snapshot.hasData &&
+                  snapshot.data == LighthousePowerState.standby;
+              return SwitchListTile(
+                title: const Text('Use STANDBY instead of SLEEP'),
+                subtitle: const Text('Only V2 lighthouse support this.'),
+                value: state,
+                onChanged: (final value) {
+                  blocWithoutListen.settings.setSleepState(
+                    value
+                        ? LighthousePowerState.standby
+                        : LighthousePowerState.sleep,
+                  );
+                },
               );
             },
-          );
-        },
       ),
       const Divider(),
       StreamBuilder<int>(
@@ -274,15 +276,14 @@ class _SettingsContentState extends State<SettingsContent> {
                 await blocWithoutListen.settings.setScanDuration(value);
               }
             },
-            items:
-                SettingsDao.scanDurationValues
-                    .map<DropdownMenuItem<int>>(
-                      (final int value) => DropdownMenuItem<int>(
-                        value: value,
-                        child: Text('$value seconds'),
-                      ),
-                    )
-                    .toList(),
+            items: SettingsDao.scanDurationValues
+                .map<DropdownMenuItem<int>>(
+                  (final int value) => DropdownMenuItem<int>(
+                    value: value,
+                    child: Text('$value seconds'),
+                  ),
+                )
+                .toList(),
           );
         },
       ),
@@ -317,72 +318,74 @@ class _SettingsContentState extends State<SettingsContent> {
                 await blocWithoutListen.settings.setUpdateInterval(value);
               }
             },
-            items:
-                SettingsDao.updateIntervalValues
-                    .map<DropdownMenuItem<int>>(
-                      (final int value) => DropdownMenuItem<int>(
-                        value: value,
-                        child: Text('$value seconds'),
-                      ),
-                    )
-                    .toList(),
+            items: SettingsDao.updateIntervalValues
+                .map<DropdownMenuItem<int>>(
+                  (final int value) => DropdownMenuItem<int>(
+                    value: value,
+                    child: Text('$value seconds'),
+                  ),
+                )
+                .toList(),
           );
         },
       ),
       const Divider(),
       FutureBuilder<List<ThemeMode>>(
         future: _getSupportedThemeModes(),
-        builder: (
-          final BuildContext context,
-          final AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot,
-        ) {
-          final supportedThemes = supportedThemesSnapshot.data;
-          if (supportedThemes == null) {
-            return const CircularProgressIndicator();
-          }
-          return StreamBuilder<ThemeMode>(
-            stream: blocWithoutListen.settings
-                .getPreferredThemeAsStream()
-                .shareReplay(maxSize: 1),
-            builder: (
+        builder:
+            (
               final BuildContext context,
-              final AsyncSnapshot<ThemeMode> snapshot,
+              final AsyncSnapshot<List<ThemeMode>> supportedThemesSnapshot,
             ) {
-              if (snapshot.hasError) {
-                debugPrint(snapshot.error.toString());
-                return Container(
-                  color: Colors.red,
-                  child: ListTile(
-                    title: const Text('Error'),
-                    subtitle: Text(snapshot.error.toString()),
-                  ),
-                );
-              }
-              if (!snapshot.hasData) {
+              final supportedThemes = supportedThemesSnapshot.data;
+              if (supportedThemes == null) {
                 return const CircularProgressIndicator();
               }
-              return DropdownMenuListTile<ThemeMode>(
-                title: const Text('Set preferred theme'),
-                value: snapshot.requireData,
-                onChanged: (final ThemeMode? theme) async {
-                  if (theme != null) {
-                    await blocWithoutListen.settings.setPreferredTheme(theme);
-                  }
-                },
-                items:
-                    supportedThemes
-                        .map<DropdownMenuItem<ThemeMode>>(
-                          (final ThemeMode theme) =>
-                              DropdownMenuItem<ThemeMode>(
-                                value: theme,
-                                child: Text(_themeModeToString(theme)),
-                              ),
-                        )
-                        .toList(),
+              return StreamBuilder<ThemeMode>(
+                stream: blocWithoutListen.settings
+                    .getPreferredThemeAsStream()
+                    .shareReplay(maxSize: 1),
+                builder:
+                    (
+                      final BuildContext context,
+                      final AsyncSnapshot<ThemeMode> snapshot,
+                    ) {
+                      if (snapshot.hasError) {
+                        debugPrint(snapshot.error.toString());
+                        return Container(
+                          color: Colors.red,
+                          child: ListTile(
+                            title: const Text('Error'),
+                            subtitle: Text(snapshot.error.toString()),
+                          ),
+                        );
+                      }
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      return DropdownMenuListTile<ThemeMode>(
+                        title: const Text('Set preferred theme'),
+                        value: snapshot.requireData,
+                        onChanged: (final ThemeMode? theme) async {
+                          if (theme != null) {
+                            await blocWithoutListen.settings.setPreferredTheme(
+                              theme,
+                            );
+                          }
+                        },
+                        items: supportedThemes
+                            .map<DropdownMenuItem<ThemeMode>>(
+                              (final ThemeMode theme) =>
+                                  DropdownMenuItem<ThemeMode>(
+                                    value: theme,
+                                    child: Text(_themeModeToString(theme)),
+                                  ),
+                            )
+                            .toList(),
+                      );
+                    },
               );
             },
-          );
-        },
       ),
       const Divider(),
       FutureBuilder<List<AppStyle>>(
@@ -436,33 +439,33 @@ class _SettingsContentState extends State<SettingsContent> {
         },
       ),
       StreamBuilder(
-        stream:
-            blocWithoutListen.settings.getGroupOfflineWarningEnabledStream(),
-        builder: (
-          final BuildContext context,
-          final AsyncSnapshot<bool> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            debugPrint(snapshot.error.toString());
-            return Container(
-              color: Colors.red,
-              child: ListTile(
-                title: const Text('Error'),
-                subtitle: Text(snapshot.error.toString()),
-              ),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const CircularProgressIndicator();
-          }
-          return SwitchListTile(
-            title: const Text('Show devices in group offline warning'),
-            value: snapshot.requireData,
-            onChanged: (final value) {
-              blocWithoutListen.settings.setGroupOfflineWarningEnabled(value);
+        stream: blocWithoutListen.settings
+            .getGroupOfflineWarningEnabledStream(),
+        builder:
+            (final BuildContext context, final AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasError) {
+                debugPrint(snapshot.error.toString());
+                return Container(
+                  color: Colors.red,
+                  child: ListTile(
+                    title: const Text('Error'),
+                    subtitle: Text(snapshot.error.toString()),
+                  ),
+                );
+              }
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+              return SwitchListTile(
+                title: const Text('Show devices in group offline warning'),
+                value: snapshot.requireData,
+                onChanged: (final value) {
+                  blocWithoutListen.settings.setGroupOfflineWarningEnabled(
+                    value,
+                  );
+                },
+              );
             },
-          );
-        },
       ),
       const Divider(),
       StreamBuilder(
@@ -553,51 +556,57 @@ class _SettingsContentState extends State<SettingsContent> {
                 ListTile(title: Text('Shortcuts | BETA', style: headTheme)),
                 const Divider(thickness: 1.5),
                 StreamBuilder<bool>(
-                  stream:
-                      blocWithoutListen.settings.getShortcutsEnabledStream(),
+                  stream: blocWithoutListen.settings
+                      .getShortcutsEnabledStream(),
                   initialData: false,
-                  builder: (
-                    final BuildContext context,
-                    final AsyncSnapshot<bool> snapshot,
-                  ) {
-                    // Disable the setting if for some reason it got set to true,
-                    // while not being supported.
-                    if (!supported && (snapshot.data ?? false)) {
-                      blocWithoutListen.settings.setShortcutsEnabledStream(
-                        false,
-                      );
-                    }
-                    return SwitchListTile(
-                      title: const Text('BETA: enable support for shortcuts'),
-                      value: snapshot.requireData,
-                      inactiveThumbColor:
-                          (supported) ? null : theming.disabledColor,
-                      onChanged: (enabled) async {
-                        if (!supported) {
-                          ShortcutNotSupportedWidget.showCustomDialog(context);
-                        } else {
-                          if (enabled) {
-                            enabled =
-                                await ShortcutBetaAlertWidget.showCustomDialog(
-                                  context,
-                                );
-                          }
-                          await blocWithoutListen.settings
-                              .setShortcutsEnabledStream(enabled);
-                          if (enabled) {
-                            if (context.mounted) {
-                              ToastContext().init(context);
-                              Toast.show(
-                                'Thanks for participating in the beta',
-                                duration: Toast.lengthShort,
-                                gravity: Toast.bottom,
-                              );
-                            }
-                          }
+                  builder:
+                      (
+                        final BuildContext context,
+                        final AsyncSnapshot<bool> snapshot,
+                      ) {
+                        // Disable the setting if for some reason it got set to true,
+                        // while not being supported.
+                        if (!supported && (snapshot.data ?? false)) {
+                          blocWithoutListen.settings.setShortcutsEnabledStream(
+                            false,
+                          );
                         }
+                        return SwitchListTile(
+                          title: const Text(
+                            'BETA: enable support for shortcuts',
+                          ),
+                          value: snapshot.requireData,
+                          inactiveThumbColor: (supported)
+                              ? null
+                              : theming.disabledColor,
+                          onChanged: (enabled) async {
+                            if (!supported) {
+                              ShortcutNotSupportedWidget.showCustomDialog(
+                                context,
+                              );
+                            } else {
+                              if (enabled) {
+                                enabled =
+                                    await ShortcutBetaAlertWidget.showCustomDialog(
+                                      context,
+                                    );
+                              }
+                              await blocWithoutListen.settings
+                                  .setShortcutsEnabledStream(enabled);
+                              if (enabled) {
+                                if (context.mounted) {
+                                  ToastContext().init(context);
+                                  Toast.show(
+                                    'Thanks for participating in the beta',
+                                    duration: Toast.lengthShort,
+                                    gravity: Toast.bottom,
+                                  );
+                                }
+                              }
+                            }
+                          },
+                        );
                       },
-                    );
-                  },
                 ),
                 const Divider(),
               ],
@@ -677,10 +686,9 @@ class _SettingsContentState extends State<SettingsContent> {
             "assets/images/f-droid-logo.svg",
             width: theming.iconSizeLarge,
             height: theming.iconSizeLarge,
-            colorFilter:
-                theming.iconColor != null
-                    ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
-                    : null,
+            colorFilter: theming.iconColor != null
+                ? ColorFilter.mode(theming.iconColor!, BlendMode.srcIn)
+                : null,
           ),
           onTap: () async {
             await launchUrl(
@@ -771,32 +779,30 @@ class _SettingsContentState extends State<SettingsContent> {
               const Divider(),
               StreamBuilder<bool>(
                 stream: blocWithoutListen.settings.getUseFakeBackEndStream(),
-                builder: (
-                  final BuildContext c,
-                  final AsyncSnapshot<bool> snapshot,
-                ) {
-                  if (snapshot.hasError) {
-                    debugPrint(snapshot.error.toString());
-                    return Container(
-                      color: Colors.red,
-                      child: ListTile(
-                        title: const Text('Error'),
-                        subtitle: Text(snapshot.error.toString()),
-                      ),
-                    );
-                  }
-                  final enabled = snapshot.data ?? false;
-                  return SwitchListTile(
-                    title: const Text('Use a fake back end'),
-                    subtitle: const Text(
-                      'A fake back end shows devices used for testing.',
-                    ),
-                    value: enabled,
-                    onChanged: (final value) {
-                      blocWithoutListen.settings.setUseFakeBackEnd(value);
+                builder:
+                    (final BuildContext c, final AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasError) {
+                        debugPrint(snapshot.error.toString());
+                        return Container(
+                          color: Colors.red,
+                          child: ListTile(
+                            title: const Text('Error'),
+                            subtitle: Text(snapshot.error.toString()),
+                          ),
+                        );
+                      }
+                      final enabled = snapshot.data ?? false;
+                      return SwitchListTile(
+                        title: const Text('Use a fake back end'),
+                        subtitle: const Text(
+                          'A fake back end shows devices used for testing.',
+                        ),
+                        value: enabled,
+                        onChanged: (final value) {
+                          blocWithoutListen.settings.setUseFakeBackEnd(value);
+                        },
+                      );
                     },
-                  );
-                },
               ),
               const Divider(),
             ],

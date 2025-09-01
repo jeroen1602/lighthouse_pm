@@ -55,67 +55,67 @@ class _SettingsViveBaseStationIdsPageState
   Widget build(final BuildContext context) {
     return StreamBuilder<List<ViveBaseStationId>>(
       stream: bloc.viveBaseStation.getViveBaseStationIdsAsStream(),
-      builder: (
-        final BuildContext _,
-        final AsyncSnapshot<List<ViveBaseStationId>> snapshot,
-      ) {
-        Widget body = const Center(child: CircularProgressIndicator());
-        final data = snapshot.data;
-        if (data != null) {
-          data.sort((final a, final b) {
-            return a.deviceId.compareTo(b.deviceId);
-          });
-          if (data.isEmpty) {
-            body = const _EmptyPage();
-          } else {
-            body = _DataPage(
-              ids: data,
-              selecting: selected.isNotEmpty,
-              selectItem: _selectItem,
-              deselectItem: _deselectItem,
-              isSelected: _isSelected,
-              deleteItem: _deleteItem,
-            );
-          }
-        }
+      builder:
+          (
+            final BuildContext _,
+            final AsyncSnapshot<List<ViveBaseStationId>> snapshot,
+          ) {
+            Widget body = const Center(child: CircularProgressIndicator());
+            final data = snapshot.data;
+            if (data != null) {
+              data.sort((final a, final b) {
+                return a.deviceId.compareTo(b.deviceId);
+              });
+              if (data.isEmpty) {
+                body = const _EmptyPage();
+              } else {
+                body = _DataPage(
+                  ids: data,
+                  selecting: selected.isNotEmpty,
+                  selectItem: _selectItem,
+                  deselectItem: _deselectItem,
+                  isSelected: _isSelected,
+                  deleteItem: _deleteItem,
+                );
+              }
+            }
 
-        final List<Widget> actions =
-            selected.isEmpty
+            final List<Widget> actions = selected.isEmpty
                 ? const []
                 : [
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    tooltip: 'Delete selected',
-                    onPressed: () async {
-                      for (final id in selected) {
-                        await blocWithoutListen.viveBaseStation.deleteId(id);
-                      }
-                      setState(() {
-                        selected.clear();
-                      });
-                      if (context.mounted) {
-                        ToastContext().init(context);
-                        Toast.show('Ids have been removed!');
-                      }
-                    },
-                  ),
-                ];
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      tooltip: 'Delete selected',
+                      onPressed: () async {
+                        for (final id in selected) {
+                          await blocWithoutListen.viveBaseStation.deleteId(id);
+                        }
+                        setState(() {
+                          selected.clear();
+                        });
+                        if (context.mounted) {
+                          ToastContext().init(context);
+                          Toast.show('Ids have been removed!');
+                        }
+                      },
+                    ),
+                  ];
 
-        return Scaffold(
-          appBar: createSelectableAppBar(
-            context,
-            numberOfSelections: selected.length,
-            title: const Text('Vive Base station ids'),
-            actions: actions,
-            onClearSelection: () {
-              setState(() {
-                selected.clear();
-              });
-            },
-          ),
-          body: body,
-        );
-      },
+            return Scaffold(
+              appBar: createSelectableAppBar(
+                context,
+                numberOfSelections: selected.length,
+                title: const Text('Vive Base station ids'),
+                actions: actions,
+                onClearSelection: () {
+                  setState(() {
+                    selected.clear();
+                  });
+                },
+              ),
+              body: body,
+            );
+          },
     );
   }
 }
@@ -195,59 +195,55 @@ class _EmptyState extends State<_EmptyPage> {
   Widget build(final BuildContext context) {
     final theming = Theming.of(context);
 
-    final Widget blockIcon =
-        kReleaseMode
-            ? const Icon(Icons.block, size: 120.0)
-            : GestureDetector(
-              onTap: () {
-                if (tapCounter < _tapTop) {
-                  tapCounter++;
+    final Widget blockIcon = kReleaseMode
+        ? const Icon(Icons.block, size: 120.0)
+        : GestureDetector(
+            onTap: () {
+              if (tapCounter < _tapTop) {
+                tapCounter++;
+              }
+              if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
+                if (context.mounted) {
+                  ToastContext().init(context);
+                  Toast.show(
+                    'Just ${_tapTop - tapCounter} left until a fake ids are created',
+                  );
                 }
-                if (tapCounter < _tapTop && tapCounter > _tapTop - 3) {
-                  if (context.mounted) {
-                    ToastContext().init(context);
-                    Toast.show(
-                      'Just ${_tapTop - tapCounter} left until a fake ids are created',
-                    );
-                  }
-                }
-                if (tapCounter == _tapTop) {
-                  blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(
-                      0xFFFFFFFF,
-                    ).toString(),
+              }
+              if (tapCounter == _tapTop) {
+                blocWithoutListen.viveBaseStation.insertId(
+                  FakeDeviceIdentifier.generateDeviceIdentifier(
                     0xFFFFFFFF,
-                  );
-                  blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(
-                      0xFFFFFFFE,
-                    ).toString(),
+                  ).toString(),
+                  0xFFFFFFFF,
+                );
+                blocWithoutListen.viveBaseStation.insertId(
+                  FakeDeviceIdentifier.generateDeviceIdentifier(
                     0xFFFFFFFE,
-                  );
-                  blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(
-                      0xFFFFFFFD,
-                    ).toString(),
+                  ).toString(),
+                  0xFFFFFFFE,
+                );
+                blocWithoutListen.viveBaseStation.insertId(
+                  FakeDeviceIdentifier.generateDeviceIdentifier(
                     0xFFFFFFFD,
-                  );
-                  blocWithoutListen.viveBaseStation.insertId(
-                    FakeDeviceIdentifier.generateDeviceIdentifier(
-                      0xFFFFFFFC,
-                    ).toString(),
+                  ).toString(),
+                  0xFFFFFFFD,
+                );
+                blocWithoutListen.viveBaseStation.insertId(
+                  FakeDeviceIdentifier.generateDeviceIdentifier(
                     0xFFFFFFFC,
-                  );
-                  if (context.mounted) {
-                    ToastContext().init(context);
-                    Toast.show(
-                      'Fake ids created!',
-                      duration: Toast.lengthShort,
-                    );
-                  }
-                  tapCounter++;
+                  ).toString(),
+                  0xFFFFFFFC,
+                );
+                if (context.mounted) {
+                  ToastContext().init(context);
+                  Toast.show('Fake ids created!', duration: Toast.lengthShort);
                 }
-              },
-              child: const Icon(Icons.block, size: 120.0),
-            );
+                tapCounter++;
+              }
+            },
+            child: const Icon(Icons.block, size: 120.0),
+          );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,

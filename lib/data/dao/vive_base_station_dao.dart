@@ -12,9 +12,10 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
   ViveBaseStationDao(super.attachedDatabase);
 
   Future<int?> getId(final String deviceId) {
-    return (select(viveBaseStationIds)..where(
-      (final tbl) => tbl.deviceId.equals(deviceId),
-    )).getSingleOrNull().then((final value) => value?.baseStationId);
+    return (select(viveBaseStationIds)
+          ..where((final tbl) => tbl.deviceId.equals(deviceId)))
+        .getSingleOrNull()
+        .then((final value) => value?.baseStationId);
   }
 
   Stream<List<ViveBaseStationId>> getViveBaseStationIdsAsStream() {
@@ -34,8 +35,9 @@ class ViveBaseStationDao extends DatabaseAccessor<LighthouseDatabase>
   }
 
   Future<void> deleteId(final String deviceId) {
-    return (delete(viveBaseStationIds)
-      ..where((final tbl) => tbl.deviceId.equals(deviceId))).go();
+    return (delete(
+      viveBaseStationIds,
+    )..where((final tbl) => tbl.deviceId.equals(deviceId))).go();
   }
 
   Future<void> deleteIds() {

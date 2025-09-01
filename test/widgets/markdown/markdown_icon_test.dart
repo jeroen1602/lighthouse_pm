@@ -209,8 +209,8 @@ void main() {
           reason: 'Should contain two rich text blocks',
         );
 
-        final text =
-            ((richTexts[1] as RichText).text as TextSpan).toPlainText();
+        final text = ((richTexts[1] as RichText).text as TextSpan)
+            .toPlainText();
         expect(text, contains('mat-'));
         expect(text, isNot(contains('<icon>')));
         expect(text, isNot(contains('</icon>')));

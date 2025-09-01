@@ -44,13 +44,9 @@ void main() {
     expect(find.byType(Dialog), findsOneWidget);
     expect(find.text("Delete group"), findsOneWidget);
 
-    final richText =
-        (tester.widgetList<RichText>(
-          find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(RichText),
-          ),
-        )).toList()[1];
+    final richText = (tester.widgetList<RichText>(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(RichText)),
+    )).toList()[1];
     final text = richText.text.toPlainText();
 
     expect(text, contains("Test group"));

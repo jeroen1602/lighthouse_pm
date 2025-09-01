@@ -17,13 +17,9 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final richText =
-        (tester.widgetList<RichText>(
-          find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(RichText),
-          ),
-        )).first;
+    final richText = (tester.widgetList<RichText>(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(RichText)),
+    )).first;
     final text = richText.text.toPlainText();
     expect(text, contains('Base station id required.'));
     expect(text, contains('1020'), reason: "Find device id ending");
@@ -46,13 +42,9 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final richText =
-        (tester.widgetList<RichText>(
-          find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(RichText),
-          ),
-        )).first;
+    final richText = (tester.widgetList<RichText>(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(RichText)),
+    )).first;
     final text = richText.text.toPlainText();
     expect(text, contains('Base station id required.'));
     expect(
@@ -80,13 +72,9 @@ void main() {
     await tester.tap(find.text('X'));
     await tester.pumpAndSettle();
 
-    final richText =
-        (tester.widgetList<RichText>(
-          find.descendant(
-            of: find.byType(Dialog),
-            matching: find.byType(RichText),
-          ),
-        )).first;
+    final richText = (tester.widgetList<RichText>(
+      find.descendant(of: find.byType(Dialog), matching: find.byType(RichText)),
+    )).first;
     final text = richText.text.toPlainText();
     expect(text, contains('Base station id required.'));
     expect(text, contains('1020'), reason: "Find device id ending");
@@ -138,13 +126,12 @@ void main() {
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
 
-      final richText =
-          (tester.widgetList<RichText>(
-            find.descendant(
-              of: find.byType(Dialog),
-              matching: find.byType(RichText),
-            ),
-          )).first;
+      final richText = (tester.widgetList<RichText>(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(RichText),
+        ),
+      )).first;
       final text = richText.text.toPlainText();
       expect(text, contains('Base station id required.'));
       expect(text, contains('1020'), reason: "Find device id ending");
@@ -162,18 +149,17 @@ void main() {
       expect(find.text("The end of the id doesn't match"), findsOneWidget);
 
       // Get the second element
-      final richTextNewDialog =
-          tester
-              .widgetList<RichText>(
-                find.descendant(
-                  of: find.ancestor(
-                    of: find.text("The end of the id doesn't match"),
-                    matching: find.byType(Dialog),
-                  ),
-                  matching: find.byType(RichText),
-                ),
-              )
-              .toList()[1];
+      final richTextNewDialog = tester
+          .widgetList<RichText>(
+            find.descendant(
+              of: find.ancestor(
+                of: find.text("The end of the id doesn't match"),
+                matching: find.byType(Dialog),
+              ),
+              matching: find.byType(RichText),
+            ),
+          )
+          .toList()[1];
 
       final confirmationDialogText = richTextNewDialog.text.toPlainText();
 
@@ -196,13 +182,12 @@ void main() {
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
 
-      var richText =
-          (tester.widgetList<RichText>(
-            find.descendant(
-              of: find.byType(Dialog),
-              matching: find.byType(RichText),
-            ),
-          )).first;
+      var richText = (tester.widgetList<RichText>(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(RichText),
+        ),
+      )).first;
       var text = richText.text.toPlainText();
       expect(text, contains('Base station id required.'));
       expect(text, contains('1020'), reason: "Find device id ending");
@@ -220,18 +205,17 @@ void main() {
       expect(find.text("The end of the id doesn't match"), findsOneWidget);
 
       // Get the second element
-      final richTextNewDialog =
-          tester
-              .widgetList<RichText>(
-                find.descendant(
-                  of: find.ancestor(
-                    of: find.text("The end of the id doesn't match"),
-                    matching: find.byType(Dialog),
-                  ),
-                  matching: find.byType(RichText),
-                ),
-              )
-              .toList()[1];
+      final richTextNewDialog = tester
+          .widgetList<RichText>(
+            find.descendant(
+              of: find.ancestor(
+                of: find.text("The end of the id doesn't match"),
+                matching: find.byType(Dialog),
+              ),
+              matching: find.byType(RichText),
+            ),
+          )
+          .toList()[1];
 
       final confirmationDialogText = richTextNewDialog.text.toPlainText();
 
@@ -245,13 +229,12 @@ void main() {
       // The other dialog should still be here!
       expect(find.text("The end of the id doesn't match"), findsNothing);
 
-      richText =
-          (tester.widgetList<RichText>(
-            find.descendant(
-              of: find.byType(Dialog),
-              matching: find.byType(RichText),
-            ),
-          )).first;
+      richText = (tester.widgetList<RichText>(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(RichText),
+        ),
+      )).first;
       text = richText.text.toPlainText();
       expect(text, contains('Base station id required.'));
       expect(text, contains('1020'), reason: "Find device id ending");
@@ -271,13 +254,12 @@ void main() {
       await tester.tap(find.text('X'));
       await tester.pumpAndSettle();
 
-      final richText =
-          (tester.widgetList<RichText>(
-            find.descendant(
-              of: find.byType(Dialog),
-              matching: find.byType(RichText),
-            ),
-          )).first;
+      final richText = (tester.widgetList<RichText>(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(RichText),
+        ),
+      )).first;
       final text = richText.text.toPlainText();
       expect(text, contains('Base station id required.'));
       expect(text, contains('1020'), reason: "Find device id ending");
@@ -295,18 +277,17 @@ void main() {
       expect(find.text("The end of the id doesn't match"), findsOneWidget);
 
       // Get the second element
-      final richTextNewDialog =
-          tester
-              .widgetList<RichText>(
-                find.descendant(
-                  of: find.ancestor(
-                    of: find.text("The end of the id doesn't match"),
-                    matching: find.byType(Dialog),
-                  ),
-                  matching: find.byType(RichText),
-                ),
-              )
-              .toList()[1];
+      final richTextNewDialog = tester
+          .widgetList<RichText>(
+            find.descendant(
+              of: find.ancestor(
+                of: find.text("The end of the id doesn't match"),
+                matching: find.byType(Dialog),
+              ),
+              matching: find.byType(RichText),
+            ),
+          )
+          .toList()[1];
 
       final confirmationDialogText = richTextNewDialog.text.toPlainText();
 

@@ -128,19 +128,18 @@ class ContentContainerListView extends StatelessWidget {
           scrollbarChildBuilder: (final context, final controller) {
             return ListView(
               controller: controller,
-              children:
-                  children
-                      .map(
-                        (final item) => ContentContainerWidget(
-                          builder: (final context) {
-                            return item;
-                          },
-                          addMaterial: false,
-                          maxSize: maxSize,
-                          contentSize: contentSize,
-                        ),
-                      )
-                      .toList(),
+              children: children
+                  .map(
+                    (final item) => ContentContainerWidget(
+                      builder: (final context) {
+                        return item;
+                      },
+                      addMaterial: false,
+                      maxSize: maxSize,
+                      contentSize: contentSize,
+                    ),
+                  )
+                  .toList(),
             );
           },
           maxSize: maxSize,

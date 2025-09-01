@@ -17,24 +17,25 @@ class PermissionsStream extends WaterfallStreamWidget<PermissionStatus>
   Widget build(final BuildContext context) {
     return FutureBuilder<PermissionStatus>(
       future: BLEPermissionsHelper.hasBLEPermissions(),
-      builder: (
-        final context,
-        final AsyncSnapshot<PermissionStatus> permissionSnapshot,
-      ) {
-        final permissions = permissionSnapshot.data;
-        if (permissions == null) {
-          return const Text('Loading...');
-        }
-        if (permissionSnapshot.data != PermissionStatus.granted) {
-          WidgetsBinding.instance.addPostFrameCallback((final _) async {
-            await closeCurrentRouteWithWait(context);
-          });
-          return const Text('Permission has not been given!');
-        }
-        return buildScanPopScope(
-          child: getNextStreamDown(context, permissions),
-        );
-      },
+      builder:
+          (
+            final context,
+            final AsyncSnapshot<PermissionStatus> permissionSnapshot,
+          ) {
+            final permissions = permissionSnapshot.data;
+            if (permissions == null) {
+              return const Text('Loading...');
+            }
+            if (permissionSnapshot.data != PermissionStatus.granted) {
+              WidgetsBinding.instance.addPostFrameCallback((final _) async {
+                await closeCurrentRouteWithWait(context);
+              });
+              return const Text('Permission has not been given!');
+            }
+            return buildScanPopScope(
+              child: getNextStreamDown(context, permissions),
+            );
+          },
     );
   }
 

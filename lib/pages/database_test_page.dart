@@ -136,8 +136,9 @@ class DatabaseTestPage extends BasePage with WithBlocStateless {
       items.addAll(<Widget>[
         ListTile(
           title: Text(dao.daoName),
-          subtitle:
-              dao.daoDescription != null ? Text(dao.daoDescription!) : null,
+          subtitle: dao.daoDescription != null
+              ? Text(dao.daoDescription!)
+              : null,
           trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () async {
             Navigator.pushNamed(context, '/databaseTest${dao.pageLink}');

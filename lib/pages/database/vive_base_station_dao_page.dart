@@ -40,8 +40,10 @@ class _ViveBaseStationIdConverter
     final newValue = await DaoSimpleChangeStringAlertWidget.showCustomDialog(
       context,
       primaryKey: data.deviceId,
-      startValue:
-          data.baseStationId.toRadixString(16).padLeft(8, '0').toUpperCase(),
+      startValue: data.baseStationId
+          .toRadixString(16)
+          .padLeft(8, '0')
+          .toUpperCase(),
     );
     if (newValue == null) {
       return;
@@ -75,8 +77,8 @@ class _ViveBaseStationIdConverter
       return;
     }
 
-    String? deviceId =
-        (decorators[0] as DaoDataCreateAlertStringDecorator).getNewValue();
+    String? deviceId = (decorators[0] as DaoDataCreateAlertStringDecorator)
+        .getNewValue();
     if (SharedPlatform.isAndroid) {
       deviceId = deviceId?.trim().toUpperCase();
     }
