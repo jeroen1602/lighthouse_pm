@@ -71,7 +71,7 @@ dependencies:
     path: shared/shared_platform
   lighthouse_logger:
     path: lighthouse_provider/lighthouse_logger
-  flutter_blue_plus: ^1.35.5
+  flutter_blue_plus: ^1.35.10
   markdown_widget: ^2.3.2+8
 
 dev_dependencies:
