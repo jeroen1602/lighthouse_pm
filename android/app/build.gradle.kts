@@ -95,5 +95,5 @@ flutter {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.20")
 }
