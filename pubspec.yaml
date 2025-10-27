@@ -44,7 +44,7 @@ dependencies:
   provider: ^6.1.5+1
   tuple: ^2.0.2
   intl: ^0.20.2
-  device_info_plus: ^12.1.0
+  device_info_plus: ^12.2.0
   meta: ^1.16.0
   markdown: ^7.3.0
   # Android/ iOS
