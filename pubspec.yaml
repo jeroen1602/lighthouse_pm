@@ -28,7 +28,7 @@ dependencies:
   rxdart: ^0.28.0
   package_info_plus: ^9.0.0
   permission_handler: ^12.0.1
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.2
   url_launcher: ^6.3.2
   community_material_icon: 5.9.55
   dynamic_color: ^1.8.1
