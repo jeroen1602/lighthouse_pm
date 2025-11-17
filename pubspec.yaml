@@ -45,7 +45,7 @@ dependencies:
   tuple: ^2.0.2
   intl: ^0.20.2
   device_info_plus: ^12.1.0
-  meta: ^1.16.0
+  meta: ^1.17.0
   markdown: ^7.3.0
   # Android/ iOS
   flutter_blue_plus_back_end:
