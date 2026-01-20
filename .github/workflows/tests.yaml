@@ -32,6 +32,8 @@ jobs:
           dart pub get
           cd ../flutter_blue_plus_back_end
           flutter pub get
+          cd ../quick_blue_back_end
+          flutter pub get
           cd ../flutter_web_bluetooth_back_end
           dart pub get
           cd ../../lighthouse_logger
